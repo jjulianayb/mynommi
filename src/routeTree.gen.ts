@@ -12,12 +12,14 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AjudaRouteImport } from './routes/ajuda'
 import { Route as CadastroRouteImport } from './routes/cadastro'
+import { Route as CheckInRouteImport } from './routes/check-in'
 import { Route as ClubeRouteImport } from './routes/clube'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as ConversasRouteImport } from './routes/conversas'
 import { Route as ConvidarRouteImport } from './routes/convidar'
 import { Route as CriarGrupoRouteImport } from './routes/criar-grupo'
 import { Route as DescobrirRouteImport } from './routes/descobrir'
+import { Route as EscreverAmigaRouteImport } from './routes/escrever-amiga'
 import { Route as GruposRouteImport } from './routes/grupos'
 import { Route as LancarDesafioRouteImport } from './routes/lancar-desafio'
 import { Route as LoginRouteImport } from './routes/login'
@@ -25,6 +27,7 @@ import { Route as LoginParceiroRouteImport } from './routes/login-parceiro'
 import { Route as NotificacoesRouteImport } from './routes/notificacoes'
 import { Route as ParceiroRouteImport } from './routes/parceiro'
 import { Route as PerfilRouteImport } from './routes/perfil'
+import { Route as PostarMomentoRouteImport } from './routes/postar-momento'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ProRouteImport } from './routes/pro'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
@@ -44,6 +47,11 @@ const AjudaRoute = AjudaRouteImport.update({
 const CadastroRoute = CadastroRouteImport.update({
   id: '/cadastro',
   path: '/cadastro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckInRoute = CheckInRouteImport.update({
+  id: '/check-in',
+  path: '/check-in',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ClubeRoute = ClubeRouteImport.update({
@@ -74,6 +82,11 @@ const CriarGrupoRoute = CriarGrupoRouteImport.update({
 const DescobrirRoute = DescobrirRouteImport.update({
   id: '/descobrir',
   path: '/descobrir',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EscreverAmigaRoute = EscreverAmigaRouteImport.update({
+  id: '/escrever-amiga',
+  path: '/escrever-amiga',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GruposRoute = GruposRouteImport.update({
@@ -111,6 +124,11 @@ const PerfilRoute = PerfilRouteImport.update({
   path: '/perfil',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PostarMomentoRoute = PostarMomentoRouteImport.update({
+  id: '/postar-momento',
+  path: '/postar-momento',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacidadeRoute = PrivacidadeRouteImport.update({
   id: '/privacidade',
   path: '/privacidade',
@@ -141,12 +159,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ajuda': typeof AjudaRoute
   '/cadastro': typeof CadastroRoute
+  '/check-in': typeof CheckInRoute
   '/clube': typeof ClubeRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/conversas': typeof ConversasRoute
   '/convidar': typeof ConvidarRoute
   '/criar-grupo': typeof CriarGrupoRoute
   '/descobrir': typeof DescobrirRoute
+  '/escrever-amiga': typeof EscreverAmigaRoute
   '/grupos': typeof GruposRoute
   '/lancar-desafio': typeof LancarDesafioRoute
   '/login': typeof LoginRoute
@@ -154,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/notificacoes': typeof NotificacoesRoute
   '/parceiro': typeof ParceiroRoute
   '/perfil': typeof PerfilRoute
+  '/postar-momento': typeof PostarMomentoRoute
   '/privacidade': typeof PrivacidadeRoute
   '/pro': typeof ProRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
@@ -164,12 +185,14 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ajuda': typeof AjudaRoute
   '/cadastro': typeof CadastroRoute
+  '/check-in': typeof CheckInRoute
   '/clube': typeof ClubeRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/conversas': typeof ConversasRoute
   '/convidar': typeof ConvidarRoute
   '/criar-grupo': typeof CriarGrupoRoute
   '/descobrir': typeof DescobrirRoute
+  '/escrever-amiga': typeof EscreverAmigaRoute
   '/grupos': typeof GruposRoute
   '/lancar-desafio': typeof LancarDesafioRoute
   '/login': typeof LoginRoute
@@ -177,6 +200,7 @@ export interface FileRoutesByTo {
   '/notificacoes': typeof NotificacoesRoute
   '/parceiro': typeof ParceiroRoute
   '/perfil': typeof PerfilRoute
+  '/postar-momento': typeof PostarMomentoRoute
   '/privacidade': typeof PrivacidadeRoute
   '/pro': typeof ProRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
@@ -188,12 +212,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/ajuda': typeof AjudaRoute
   '/cadastro': typeof CadastroRoute
+  '/check-in': typeof CheckInRoute
   '/clube': typeof ClubeRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/conversas': typeof ConversasRoute
   '/convidar': typeof ConvidarRoute
   '/criar-grupo': typeof CriarGrupoRoute
   '/descobrir': typeof DescobrirRoute
+  '/escrever-amiga': typeof EscreverAmigaRoute
   '/grupos': typeof GruposRoute
   '/lancar-desafio': typeof LancarDesafioRoute
   '/login': typeof LoginRoute
@@ -201,6 +227,7 @@ export interface FileRoutesById {
   '/notificacoes': typeof NotificacoesRoute
   '/parceiro': typeof ParceiroRoute
   '/perfil': typeof PerfilRoute
+  '/postar-momento': typeof PostarMomentoRoute
   '/privacidade': typeof PrivacidadeRoute
   '/pro': typeof ProRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
@@ -213,12 +240,14 @@ export interface FileRouteTypes {
     | '/'
     | '/ajuda'
     | '/cadastro'
+    | '/check-in'
     | '/clube'
     | '/configuracoes'
     | '/conversas'
     | '/convidar'
     | '/criar-grupo'
     | '/descobrir'
+    | '/escrever-amiga'
     | '/grupos'
     | '/lancar-desafio'
     | '/login'
@@ -226,6 +255,7 @@ export interface FileRouteTypes {
     | '/notificacoes'
     | '/parceiro'
     | '/perfil'
+    | '/postar-momento'
     | '/privacidade'
     | '/pro'
     | '/recuperar-senha'
@@ -236,12 +266,14 @@ export interface FileRouteTypes {
     | '/'
     | '/ajuda'
     | '/cadastro'
+    | '/check-in'
     | '/clube'
     | '/configuracoes'
     | '/conversas'
     | '/convidar'
     | '/criar-grupo'
     | '/descobrir'
+    | '/escrever-amiga'
     | '/grupos'
     | '/lancar-desafio'
     | '/login'
@@ -249,6 +281,7 @@ export interface FileRouteTypes {
     | '/notificacoes'
     | '/parceiro'
     | '/perfil'
+    | '/postar-momento'
     | '/privacidade'
     | '/pro'
     | '/recuperar-senha'
@@ -259,12 +292,14 @@ export interface FileRouteTypes {
     | '/'
     | '/ajuda'
     | '/cadastro'
+    | '/check-in'
     | '/clube'
     | '/configuracoes'
     | '/conversas'
     | '/convidar'
     | '/criar-grupo'
     | '/descobrir'
+    | '/escrever-amiga'
     | '/grupos'
     | '/lancar-desafio'
     | '/login'
@@ -272,6 +307,7 @@ export interface FileRouteTypes {
     | '/notificacoes'
     | '/parceiro'
     | '/perfil'
+    | '/postar-momento'
     | '/privacidade'
     | '/pro'
     | '/recuperar-senha'
@@ -283,12 +319,14 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AjudaRoute: typeof AjudaRoute
   CadastroRoute: typeof CadastroRoute
+  CheckInRoute: typeof CheckInRoute
   ClubeRoute: typeof ClubeRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
   ConversasRoute: typeof ConversasRoute
   ConvidarRoute: typeof ConvidarRoute
   CriarGrupoRoute: typeof CriarGrupoRoute
   DescobrirRoute: typeof DescobrirRoute
+  EscreverAmigaRoute: typeof EscreverAmigaRoute
   GruposRoute: typeof GruposRoute
   LancarDesafioRoute: typeof LancarDesafioRoute
   LoginRoute: typeof LoginRoute
@@ -296,6 +334,7 @@ export interface RootRouteChildren {
   NotificacoesRoute: typeof NotificacoesRoute
   ParceiroRoute: typeof ParceiroRoute
   PerfilRoute: typeof PerfilRoute
+  PostarMomentoRoute: typeof PostarMomentoRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   ProRoute: typeof ProRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
@@ -324,6 +363,13 @@ declare module '@tanstack/react-router' {
       path: '/cadastro'
       fullPath: '/cadastro'
       preLoaderRoute: typeof CadastroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/check-in': {
+      id: '/check-in'
+      path: '/check-in'
+      fullPath: '/check-in'
+      preLoaderRoute: typeof CheckInRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/clube': {
@@ -366,6 +412,13 @@ declare module '@tanstack/react-router' {
       path: '/descobrir'
       fullPath: '/descobrir'
       preLoaderRoute: typeof DescobrirRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/escrever-amiga': {
+      id: '/escrever-amiga'
+      path: '/escrever-amiga'
+      fullPath: '/escrever-amiga'
+      preLoaderRoute: typeof EscreverAmigaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/grupos': {
@@ -417,6 +470,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PerfilRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/postar-momento': {
+      id: '/postar-momento'
+      path: '/postar-momento'
+      fullPath: '/postar-momento'
+      preLoaderRoute: typeof PostarMomentoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacidade': {
       id: '/privacidade'
       path: '/privacidade'
@@ -459,12 +519,14 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AjudaRoute: AjudaRoute,
   CadastroRoute: CadastroRoute,
+  CheckInRoute: CheckInRoute,
   ClubeRoute: ClubeRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
   ConversasRoute: ConversasRoute,
   ConvidarRoute: ConvidarRoute,
   CriarGrupoRoute: CriarGrupoRoute,
   DescobrirRoute: DescobrirRoute,
+  EscreverAmigaRoute: EscreverAmigaRoute,
   GruposRoute: GruposRoute,
   LancarDesafioRoute: LancarDesafioRoute,
   LoginRoute: LoginRoute,
@@ -472,6 +534,7 @@ const rootRouteChildren: RootRouteChildren = {
   NotificacoesRoute: NotificacoesRoute,
   ParceiroRoute: ParceiroRoute,
   PerfilRoute: PerfilRoute,
+  PostarMomentoRoute: PostarMomentoRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   ProRoute: ProRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
