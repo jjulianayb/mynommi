@@ -1,4 +1,5 @@
-# Nomi — etapa visual
+# Nommi — etapa visual
+- [x] Conferir todas as telas e substituir qualquer ocorrência visível de Nomi por Nommi.
 - [x] Criar pacote de 24 figurinhas transparentes de 512 × 512.
 - [x] Adicionar bandeja Recentes, Favoritas e Pacotes nos chats individuais e de grupo.
 - [x] Validar envio sem balão, horário e persistência de recentes/favoritas.
@@ -7,7 +8,7 @@
 - [x] Reorganizar topo e navegação inferior em cinco itens; adicionar folhas de ações e configurações.
 - [x] Incluir telas auxiliares, estados vazios/carregamento e acabamento em telas pequenas.
 - [x] Validar entrada completa, navegação, sessão, configurações e saída.
-- [x] Aplicar nome provisório Nomi em toda a interface; continuar no projeto existente.
+- [x] Aplicar nome provisório Nommi em toda a interface; continuar no projeto existente.
 - [x] Reproduzir identidade, avatares, ícones e figurinhas do anexo.
 - [x] Construir todas as telas e navegação com dados de exemplo locais.
 - [x] Validar match, chat, aprovação do mural, confirmação de visita e resgate.
