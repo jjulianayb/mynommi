@@ -1,4 +1,7 @@
 # Nomi — etapa visual
+- [ ] Criar pacote de 24 figurinhas transparentes de 512 × 512.
+- [ ] Adicionar bandeja Recentes, Favoritas e Pacotes nos chats individuais e de grupo.
+- [ ] Validar envio sem balão, horário e persistência de recentes/favoritas.
 - [x] Criar splash, boas-vindas, cadastro em seis etapas, login e recuperação simulados.
 - [x] Persistir sessão de demonstração; incluir sair e exclusão local com confirmação.
 - [x] Reorganizar topo e navegação inferior em cinco itens; adicionar folhas de ações e configurações.
