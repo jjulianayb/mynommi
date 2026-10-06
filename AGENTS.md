@@ -16,3 +16,4 @@
 - Keep demo access in a separate browser-only session provider; persist only simulated email/session flags, never passwords, and never use it as real authorization.
 - Use native modal dialogs for bottom sheets so keyboard focus and dismissal stay accessible.
 - Keep the social shell session-aware and leave entry/legal/help routes public; backend authentication remains out of scope.
+- Keep the chat sticker catalogue and tray in focused reusable modules; both private and group chats share browser-local favorites, recents, and message timestamps.
