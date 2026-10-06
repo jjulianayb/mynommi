@@ -1,5 +1,5 @@
 # Nommi — etapa visual
-- [ ] Conferir todas as telas e substituir qualquer ocorrência visível de Nomi por Nommi.
+- [x] Conferir todas as telas e substituir qualquer ocorrência visível de Nomi por Nommi.
 - [x] Criar pacote de 24 figurinhas transparentes de 512 × 512.
 - [x] Adicionar bandeja Recentes, Favoritas e Pacotes nos chats individuais e de grupo.
 - [x] Validar envio sem balão, horário e persistência de recentes/favoritas.
