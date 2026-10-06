@@ -1,7 +1,7 @@
 # Nommi — etapa visual
-- [ ] Trocar barras de navegação por topo fixo, gaveta direita e botão flutuante com cinco ações.
-- [ ] Adicionar escrever sobre amiga, postar momento, check-in e menu de segurança em outros perfis.
-- [ ] Verificar navegação, ações locais e animações no computador e celular.
+- [x] Trocar barras de navegação por topo fixo, gaveta direita e botão flutuante com cinco ações.
+- [x] Adicionar escrever sobre amiga, postar momento, check-in e menu de segurança em outros perfis.
+- [x] Verificar navegação, ações locais e animações no computador e celular.
 - [x] Conferir todas as telas e substituir qualquer ocorrência visível de Nomi por Nommi.
 - [x] Criar pacote de 24 figurinhas transparentes de 512 × 512.
 - [x] Adicionar bandeja Recentes, Favoritas e Pacotes nos chats individuais e de grupo.
