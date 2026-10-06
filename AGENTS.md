@@ -12,3 +12,7 @@
 - Use a shared React demo-state provider with browser-local persistence for the visual-only prototype; no remote backend is permitted in this phase.
 - Keep each content screen in a dedicated TanStack route with unique metadata and shared navigation; this makes every screen directly navigable.
 - Preserve the supplied SVG art through reusable avatar, icon and sticker components, using global semantic color tokens for fidelity.
+
+- Keep demo access in a separate browser-only session provider; persist only simulated email/session flags, never passwords, and never use it as real authorization.
+- Use native modal dialogs for bottom sheets so keyboard focus and dismissal stay accessible.
+- Keep the social shell session-aware and leave entry/legal/help routes public; backend authentication remains out of scope.
