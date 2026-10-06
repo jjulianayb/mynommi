@@ -12,7 +12,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { FriendsProvider } from "../components/friends/store";
-import { FriendsShell } from "../components/friends/app";
+import { SocialShell } from "../components/friends/social-shell";
+import { DemoSessionProvider } from "../components/friends/session";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -79,7 +80,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { title: "Nomi — Amizades para continuar" },
       { name: "description", content: "Amizades para conversar, combinar e continuar." },
       { property: "og:title", content: "Nomi — Amizades para continuar" },
@@ -125,7 +126,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <FriendsProvider><FriendsShell><Outlet /></FriendsShell></FriendsProvider>
+      <FriendsProvider><DemoSessionProvider><SocialShell><Outlet /></SocialShell></DemoSessionProvider></FriendsProvider>
     </QueryClientProvider>
   );
 }

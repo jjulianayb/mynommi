@@ -1,4 +1,9 @@
 # Nomi — etapa visual
+- [x] Criar splash, boas-vindas, cadastro em seis etapas, login e recuperação simulados.
+- [x] Persistir sessão de demonstração; incluir sair e exclusão local com confirmação.
+- [x] Reorganizar topo e navegação inferior em cinco itens; adicionar folhas de ações e configurações.
+- [x] Incluir telas auxiliares, estados vazios/carregamento e acabamento em telas pequenas.
+- [x] Validar entrada completa, navegação, sessão, configurações e saída.
 - [x] Aplicar nome provisório Nomi em toda a interface; continuar no projeto existente.
 - [x] Reproduzir identidade, avatares, ícones e figurinhas do anexo.
 - [x] Construir todas as telas e navegação com dados de exemplo locais.

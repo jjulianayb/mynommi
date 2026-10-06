@@ -10,19 +10,35 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AjudaRouteImport } from './routes/ajuda'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as ClubeRouteImport } from './routes/clube'
+import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as ConversasRouteImport } from './routes/conversas'
+import { Route as ConvidarRouteImport } from './routes/convidar'
+import { Route as CriarGrupoRouteImport } from './routes/criar-grupo'
 import { Route as DescobrirRouteImport } from './routes/descobrir'
 import { Route as GruposRouteImport } from './routes/grupos'
+import { Route as LancarDesafioRouteImport } from './routes/lancar-desafio'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as LoginParceiroRouteImport } from './routes/login-parceiro'
+import { Route as NotificacoesRouteImport } from './routes/notificacoes'
 import { Route as ParceiroRouteImport } from './routes/parceiro'
 import { Route as PerfilRouteImport } from './routes/perfil'
+import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ProRouteImport } from './routes/pro'
+import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
+import { Route as TermosRouteImport } from './routes/termos'
 import { Route as GruposIdRouteImport } from './routes/grupos_.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AjudaRoute = AjudaRouteImport.update({
+  id: '/ajuda',
+  path: '/ajuda',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CadastroRoute = CadastroRouteImport.update({
@@ -35,9 +51,24 @@ const ClubeRoute = ClubeRouteImport.update({
   path: '/clube',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConversasRoute = ConversasRouteImport.update({
   id: '/conversas',
   path: '/conversas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConvidarRoute = ConvidarRouteImport.update({
+  id: '/convidar',
+  path: '/convidar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CriarGrupoRoute = CriarGrupoRouteImport.update({
+  id: '/criar-grupo',
+  path: '/criar-grupo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DescobrirRoute = DescobrirRouteImport.update({
@@ -50,6 +81,26 @@ const GruposRoute = GruposRouteImport.update({
   path: '/grupos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LancarDesafioRoute = LancarDesafioRouteImport.update({
+  id: '/lancar-desafio',
+  path: '/lancar-desafio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginParceiroRoute = LoginParceiroRouteImport.update({
+  id: '/login-parceiro',
+  path: '/login-parceiro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificacoesRoute = NotificacoesRouteImport.update({
+  id: '/notificacoes',
+  path: '/notificacoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ParceiroRoute = ParceiroRouteImport.update({
   id: '/parceiro',
   path: '/parceiro',
@@ -60,9 +111,24 @@ const PerfilRoute = PerfilRouteImport.update({
   path: '/perfil',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacidadeRoute = PrivacidadeRouteImport.update({
+  id: '/privacidade',
+  path: '/privacidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProRoute = ProRouteImport.update({
   id: '/pro',
   path: '/pro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecuperarSenhaRoute = RecuperarSenhaRouteImport.update({
+  id: '/recuperar-senha',
+  path: '/recuperar-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermosRoute = TermosRouteImport.update({
+  id: '/termos',
+  path: '/termos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GruposIdRoute = GruposIdRouteImport.update({
@@ -73,90 +139,167 @@ const GruposIdRoute = GruposIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ajuda': typeof AjudaRoute
   '/cadastro': typeof CadastroRoute
   '/clube': typeof ClubeRoute
+  '/configuracoes': typeof ConfiguracoesRoute
   '/conversas': typeof ConversasRoute
+  '/convidar': typeof ConvidarRoute
+  '/criar-grupo': typeof CriarGrupoRoute
   '/descobrir': typeof DescobrirRoute
   '/grupos': typeof GruposRoute
+  '/lancar-desafio': typeof LancarDesafioRoute
+  '/login': typeof LoginRoute
+  '/login-parceiro': typeof LoginParceiroRoute
+  '/notificacoes': typeof NotificacoesRoute
   '/parceiro': typeof ParceiroRoute
   '/perfil': typeof PerfilRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/pro': typeof ProRoute
+  '/recuperar-senha': typeof RecuperarSenhaRoute
+  '/termos': typeof TermosRoute
   '/grupos/$id': typeof GruposIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ajuda': typeof AjudaRoute
   '/cadastro': typeof CadastroRoute
   '/clube': typeof ClubeRoute
+  '/configuracoes': typeof ConfiguracoesRoute
   '/conversas': typeof ConversasRoute
+  '/convidar': typeof ConvidarRoute
+  '/criar-grupo': typeof CriarGrupoRoute
   '/descobrir': typeof DescobrirRoute
   '/grupos': typeof GruposRoute
+  '/lancar-desafio': typeof LancarDesafioRoute
+  '/login': typeof LoginRoute
+  '/login-parceiro': typeof LoginParceiroRoute
+  '/notificacoes': typeof NotificacoesRoute
   '/parceiro': typeof ParceiroRoute
   '/perfil': typeof PerfilRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/pro': typeof ProRoute
+  '/recuperar-senha': typeof RecuperarSenhaRoute
+  '/termos': typeof TermosRoute
   '/grupos/$id': typeof GruposIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ajuda': typeof AjudaRoute
   '/cadastro': typeof CadastroRoute
   '/clube': typeof ClubeRoute
+  '/configuracoes': typeof ConfiguracoesRoute
   '/conversas': typeof ConversasRoute
+  '/convidar': typeof ConvidarRoute
+  '/criar-grupo': typeof CriarGrupoRoute
   '/descobrir': typeof DescobrirRoute
   '/grupos': typeof GruposRoute
+  '/lancar-desafio': typeof LancarDesafioRoute
+  '/login': typeof LoginRoute
+  '/login-parceiro': typeof LoginParceiroRoute
+  '/notificacoes': typeof NotificacoesRoute
   '/parceiro': typeof ParceiroRoute
   '/perfil': typeof PerfilRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/pro': typeof ProRoute
+  '/recuperar-senha': typeof RecuperarSenhaRoute
+  '/termos': typeof TermosRoute
   '/grupos_/$id': typeof GruposIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/ajuda'
     | '/cadastro'
     | '/clube'
+    | '/configuracoes'
     | '/conversas'
+    | '/convidar'
+    | '/criar-grupo'
     | '/descobrir'
     | '/grupos'
+    | '/lancar-desafio'
+    | '/login'
+    | '/login-parceiro'
+    | '/notificacoes'
     | '/parceiro'
     | '/perfil'
+    | '/privacidade'
     | '/pro'
+    | '/recuperar-senha'
+    | '/termos'
     | '/grupos/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/ajuda'
     | '/cadastro'
     | '/clube'
+    | '/configuracoes'
     | '/conversas'
+    | '/convidar'
+    | '/criar-grupo'
     | '/descobrir'
     | '/grupos'
+    | '/lancar-desafio'
+    | '/login'
+    | '/login-parceiro'
+    | '/notificacoes'
     | '/parceiro'
     | '/perfil'
+    | '/privacidade'
     | '/pro'
+    | '/recuperar-senha'
+    | '/termos'
     | '/grupos/$id'
   id:
     | '__root__'
     | '/'
+    | '/ajuda'
     | '/cadastro'
     | '/clube'
+    | '/configuracoes'
     | '/conversas'
+    | '/convidar'
+    | '/criar-grupo'
     | '/descobrir'
     | '/grupos'
+    | '/lancar-desafio'
+    | '/login'
+    | '/login-parceiro'
+    | '/notificacoes'
     | '/parceiro'
     | '/perfil'
+    | '/privacidade'
     | '/pro'
+    | '/recuperar-senha'
+    | '/termos'
     | '/grupos_/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AjudaRoute: typeof AjudaRoute
   CadastroRoute: typeof CadastroRoute
   ClubeRoute: typeof ClubeRoute
+  ConfiguracoesRoute: typeof ConfiguracoesRoute
   ConversasRoute: typeof ConversasRoute
+  ConvidarRoute: typeof ConvidarRoute
+  CriarGrupoRoute: typeof CriarGrupoRoute
   DescobrirRoute: typeof DescobrirRoute
   GruposRoute: typeof GruposRoute
+  LancarDesafioRoute: typeof LancarDesafioRoute
+  LoginRoute: typeof LoginRoute
+  LoginParceiroRoute: typeof LoginParceiroRoute
+  NotificacoesRoute: typeof NotificacoesRoute
   ParceiroRoute: typeof ParceiroRoute
   PerfilRoute: typeof PerfilRoute
+  PrivacidadeRoute: typeof PrivacidadeRoute
   ProRoute: typeof ProRoute
+  RecuperarSenhaRoute: typeof RecuperarSenhaRoute
+  TermosRoute: typeof TermosRoute
   GruposIdRoute: typeof GruposIdRoute
 }
 
@@ -167,6 +310,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ajuda': {
+      id: '/ajuda'
+      path: '/ajuda'
+      fullPath: '/ajuda'
+      preLoaderRoute: typeof AjudaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cadastro': {
@@ -183,11 +333,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClubeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/configuracoes': {
+      id: '/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/configuracoes'
+      preLoaderRoute: typeof ConfiguracoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/conversas': {
       id: '/conversas'
       path: '/conversas'
       fullPath: '/conversas'
       preLoaderRoute: typeof ConversasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/convidar': {
+      id: '/convidar'
+      path: '/convidar'
+      fullPath: '/convidar'
+      preLoaderRoute: typeof ConvidarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/criar-grupo': {
+      id: '/criar-grupo'
+      path: '/criar-grupo'
+      fullPath: '/criar-grupo'
+      preLoaderRoute: typeof CriarGrupoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/descobrir': {
@@ -204,6 +375,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GruposRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lancar-desafio': {
+      id: '/lancar-desafio'
+      path: '/lancar-desafio'
+      fullPath: '/lancar-desafio'
+      preLoaderRoute: typeof LancarDesafioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login-parceiro': {
+      id: '/login-parceiro'
+      path: '/login-parceiro'
+      fullPath: '/login-parceiro'
+      preLoaderRoute: typeof LoginParceiroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notificacoes': {
+      id: '/notificacoes'
+      path: '/notificacoes'
+      fullPath: '/notificacoes'
+      preLoaderRoute: typeof NotificacoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/parceiro': {
       id: '/parceiro'
       path: '/parceiro'
@@ -218,11 +417,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PerfilRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacidade': {
+      id: '/privacidade'
+      path: '/privacidade'
+      fullPath: '/privacidade'
+      preLoaderRoute: typeof PrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pro': {
       id: '/pro'
       path: '/pro'
       fullPath: '/pro'
       preLoaderRoute: typeof ProRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recuperar-senha': {
+      id: '/recuperar-senha'
+      path: '/recuperar-senha'
+      fullPath: '/recuperar-senha'
+      preLoaderRoute: typeof RecuperarSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/termos': {
+      id: '/termos'
+      path: '/termos'
+      fullPath: '/termos'
+      preLoaderRoute: typeof TermosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/grupos_/$id': {
@@ -237,14 +457,25 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AjudaRoute: AjudaRoute,
   CadastroRoute: CadastroRoute,
   ClubeRoute: ClubeRoute,
+  ConfiguracoesRoute: ConfiguracoesRoute,
   ConversasRoute: ConversasRoute,
+  ConvidarRoute: ConvidarRoute,
+  CriarGrupoRoute: CriarGrupoRoute,
   DescobrirRoute: DescobrirRoute,
   GruposRoute: GruposRoute,
+  LancarDesafioRoute: LancarDesafioRoute,
+  LoginRoute: LoginRoute,
+  LoginParceiroRoute: LoginParceiroRoute,
+  NotificacoesRoute: NotificacoesRoute,
   ParceiroRoute: ParceiroRoute,
   PerfilRoute: PerfilRoute,
+  PrivacidadeRoute: PrivacidadeRoute,
   ProRoute: ProRoute,
+  RecuperarSenhaRoute: RecuperarSenhaRoute,
+  TermosRoute: TermosRoute,
   GruposIdRoute: GruposIdRoute,
 }
 export const routeTree = rootRouteImport
