@@ -18,8 +18,7 @@ import { Route as GruposRouteImport } from './routes/grupos'
 import { Route as ParceiroRouteImport } from './routes/parceiro'
 import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as ProRouteImport } from './routes/pro'
-import { Route as GruposIndexRouteImport } from './routes/grupos.index'
-import { Route as GruposIdRouteImport } from './routes/grupos.$id'
+import { Route as GruposIdRouteImport } from './routes/grupos_.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -66,15 +65,10 @@ const ProRoute = ProRouteImport.update({
   path: '/pro',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GruposIndexRoute = GruposIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => GruposRoute,
-} as any)
 const GruposIdRoute = GruposIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => GruposRoute,
+  id: '/grupos_/$id',
+  path: '/grupos/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -83,12 +77,11 @@ export interface FileRoutesByFullPath {
   '/clube': typeof ClubeRoute
   '/conversas': typeof ConversasRoute
   '/descobrir': typeof DescobrirRoute
-  '/grupos': typeof GruposRouteWithChildren
+  '/grupos': typeof GruposRoute
   '/parceiro': typeof ParceiroRoute
   '/perfil': typeof PerfilRoute
   '/pro': typeof ProRoute
   '/grupos/$id': typeof GruposIdRoute
-  '/grupos/': typeof GruposIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -96,11 +89,11 @@ export interface FileRoutesByTo {
   '/clube': typeof ClubeRoute
   '/conversas': typeof ConversasRoute
   '/descobrir': typeof DescobrirRoute
+  '/grupos': typeof GruposRoute
   '/parceiro': typeof ParceiroRoute
   '/perfil': typeof PerfilRoute
   '/pro': typeof ProRoute
   '/grupos/$id': typeof GruposIdRoute
-  '/grupos': typeof GruposIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -109,12 +102,11 @@ export interface FileRoutesById {
   '/clube': typeof ClubeRoute
   '/conversas': typeof ConversasRoute
   '/descobrir': typeof DescobrirRoute
-  '/grupos': typeof GruposRouteWithChildren
+  '/grupos': typeof GruposRoute
   '/parceiro': typeof ParceiroRoute
   '/perfil': typeof PerfilRoute
   '/pro': typeof ProRoute
-  '/grupos/$id': typeof GruposIdRoute
-  '/grupos/': typeof GruposIndexRoute
+  '/grupos_/$id': typeof GruposIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -129,7 +121,6 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/pro'
     | '/grupos/$id'
-    | '/grupos/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -137,11 +128,11 @@ export interface FileRouteTypes {
     | '/clube'
     | '/conversas'
     | '/descobrir'
+    | '/grupos'
     | '/parceiro'
     | '/perfil'
     | '/pro'
     | '/grupos/$id'
-    | '/grupos'
   id:
     | '__root__'
     | '/'
@@ -153,8 +144,7 @@ export interface FileRouteTypes {
     | '/parceiro'
     | '/perfil'
     | '/pro'
-    | '/grupos/$id'
-    | '/grupos/'
+    | '/grupos_/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -163,10 +153,11 @@ export interface RootRouteChildren {
   ClubeRoute: typeof ClubeRoute
   ConversasRoute: typeof ConversasRoute
   DescobrirRoute: typeof DescobrirRoute
-  GruposRoute: typeof GruposRouteWithChildren
+  GruposRoute: typeof GruposRoute
   ParceiroRoute: typeof ParceiroRoute
   PerfilRoute: typeof PerfilRoute
   ProRoute: typeof ProRoute
+  GruposIdRoute: typeof GruposIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -234,35 +225,15 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/grupos/': {
-      id: '/grupos/'
-      path: '/'
-      fullPath: '/grupos/'
-      preLoaderRoute: typeof GruposIndexRouteImport
-      parentRoute: typeof GruposRoute
-    }
-    '/grupos/$id': {
-      id: '/grupos/$id'
-      path: '/$id'
+    '/grupos_/$id': {
+      id: '/grupos_/$id'
+      path: '/grupos/$id'
       fullPath: '/grupos/$id'
       preLoaderRoute: typeof GruposIdRouteImport
-      parentRoute: typeof GruposRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
-
-interface GruposRouteChildren {
-  GruposIdRoute: typeof GruposIdRoute
-  GruposIndexRoute: typeof GruposIndexRoute
-}
-
-const GruposRouteChildren: GruposRouteChildren = {
-  GruposIdRoute: GruposIdRoute,
-  GruposIndexRoute: GruposIndexRoute,
-}
-
-const GruposRouteWithChildren =
-  GruposRoute._addFileChildren(GruposRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -270,10 +241,11 @@ const rootRouteChildren: RootRouteChildren = {
   ClubeRoute: ClubeRoute,
   ConversasRoute: ConversasRoute,
   DescobrirRoute: DescobrirRoute,
-  GruposRoute: GruposRouteWithChildren,
+  GruposRoute: GruposRoute,
   ParceiroRoute: ParceiroRoute,
   PerfilRoute: PerfilRoute,
   ProRoute: ProRoute,
+  GruposIdRoute: GruposIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
