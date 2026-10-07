@@ -15,4 +15,5 @@
 - [x] Reproduzir identidade, avatares, ícones e figurinhas do anexo.
 - [x] Construir todas as telas e navegação com dados de exemplo locais.
 - [x] Validar match, chat, aprovação do mural, confirmação de visita e resgate.
-- [x] Conferir telas pequenas, metadados e ausência de serviços reais.
+- [x] Conferir telas pequenas, metadados e ausência de serviços reais.- [x] Fase 1/2: Seu Nommi (nommi.me/nome + Card Nommi), modo Presencial/Virtual/Híbrida, Minha Teia no perfil.
+- [ ] Fase 3: Momento Real (aguarda aprovação).
