@@ -69,7 +69,7 @@
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.604 0.215 27);
+  --primary: oklch(0.672 0.195 43);
   --primary-foreground: oklch(0.984 0.003 247.858);
   --secondary: oklch(0.932 0.032 88);
   --secondary-foreground: oklch(0.208 0.042 265.755);
@@ -148,10 +148,10 @@
  --primary: oklch(0.604 0.215 27); --primary-foreground: oklch(1 0 0);
  --secondary: oklch(0.932 0.032 88); --secondary-foreground: var(--foreground); --muted-foreground: oklch(0.499 0.030 263);
  --border: oklch(0.903 0.036 88); --input: var(--border); --accent: oklch(0.962 0.030 88); --accent-foreground: var(--foreground);
- --blue: oklch(0.553 0.179 258); --teal: oklch(0.640 0.107 187); --sunshine: oklch(0.855 0.162 86); --butter: oklch(0.937 0.080 86); --paper: oklch(1 0 0);
+ --blue: oklch(0.580 0.115 235); --teal: oklch(0.690 0.130 168); --sunshine: oklch(0.850 0.160 88); --butter: oklch(0.945 0.045 72); --paper: oklch(1 0 0);
  --skin-1: oklch(0.859 0.065 63); --skin-2: oklch(0.752 0.085 58); --skin-3: oklch(0.634 0.093 52); --skin-4: oklch(0.512 0.077 52); --skin-5: oklch(0.903 0.048 62);
  --hair-1: oklch(0.377 0.056 52); --hair-2: oklch(0.241 0.031 51); --hair-3: oklch(0.675 0.126 76);
- --sticker-yellow: oklch(0.875 0.156 89); --sticker-orange: oklch(0.782 0.149 58); --sticker-pink: oklch(0.843 0.090 5); --sticker-mint: oklch(0.818 0.090 180);
+ --sticker-yellow: oklch(0.875 0.156 89); --sticker-orange: oklch(0.760 0.150 55); --sticker-pink: oklch(0.843 0.090 5); --sticker-mint: oklch(0.850 0.110 168);
  --map-bg: oklch(0.937 0.032 259); --map-water: oklch(0.866 0.065 254);
  --shadow-soft: 0 6px 24px oklch(0.252 0.029 264 / 0.045); --shadow-toast: 0 12px 40px oklch(0.252 0.029 264 / 0.18);
 }
