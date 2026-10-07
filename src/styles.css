@@ -209,3 +209,4 @@ body {font-family:'DM Sans',sans-serif;margin:0} h1,h2,h3,h4 {font-family:'Brico
 .web-moment{margin:0;padding:12px;border-radius:20px;display:flex;flex-direction:column;gap:8px;background:var(--secondary)}
 .web-moment figcaption{font-size:.8rem;font-weight:700}
 @media (prefers-reduced-motion:reduce){.web-line{animation:none}}
+.web-node,.web-moment figcaption{color:var(--foreground)!important}.web-node .tone-icon{color:var(--paper)}.web-moment .avatar-stack{display:flex}
