@@ -196,7 +196,7 @@ body {font-family:'DM Sans',sans-serif;margin:0} h1,h2,h3,h4 {font-family:'Brico
 .nommi-card h3{font-family:'Bricolage Grotesque',sans-serif;font-size:1.5rem}.nommi-card-handle{color:var(--primary);font-weight:700}
 .social-web h2{margin-bottom:4px}
 .web-canvas{position:relative;height:300px;margin:16px 0;border-radius:28px;background:radial-gradient(circle at 50% 50%,var(--card),transparent 70%)}
-.web-canvas svg{position:absolute;inset:0;width:100%;height:100%}
+.web-canvas>svg{position:absolute;inset:0;width:100%;height:100%}
 .web-line{stroke:var(--muted-foreground);stroke-width:.6;stroke-dasharray:2 2;opacity:.6;animation:web-dash 6s linear infinite}
 @keyframes web-dash{to{stroke-dashoffset:-40}}
 .web-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;padding:4px;background:var(--card);box-shadow:0 8px 24px -10px color-mix(in oklab,var(--foreground) 40%,transparent)}
