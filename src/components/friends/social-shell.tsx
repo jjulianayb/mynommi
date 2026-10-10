@@ -6,7 +6,7 @@ import { Sheet,LoadingState,Brand } from './surfaces';
 import { useDemoSession } from './session';
 import { useFriends } from './store';
 import { Welcome } from './entry';
-const nav=[{to:'/' as const,label:'Início',icon:'home'},{to:'/descobrir' as const,label:'Descobrir',icon:'spark'},{to:'/conversas' as const,label:'Conversas',icon:'chat'},{to:'/grupos' as const,label:'Grupos',icon:'users'},{to:'/clube' as const,label:'Clube Nommi',icon:'gift'},{to:'/pro' as const,label:'Meu plano Pro',icon:'star'}];
+const nav=[{to:'/' as const,label:'Início',icon:'home'},{to:'/descobrir' as const,label:'Descobrir',icon:'spark'},{to:'/radar' as const,label:'Radar Nommi',icon:'pin'},{to:'/conversas' as const,label:'Conversas',icon:'chat'},{to:'/grupos' as const,label:'Grupos',icon:'users'},{to:'/clube' as const,label:'Clube Nommi',icon:'gift'},{to:'/pro' as const,label:'Meu plano Pro',icon:'star'}];
 const entryPaths=['/cadastro','/login','/login-parceiro','/recuperar-senha'];
 const legalPaths=['/termos','/privacidade','/ajuda'];
 export function SocialShell({children}:{children:ReactNode}){
