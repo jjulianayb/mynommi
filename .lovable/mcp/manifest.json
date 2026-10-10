@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "sdk_version": "3.0.5",
+  "path": "/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "amizades-em-a-o",
+      "version": "0.1.0",
+      "title": "Amizades em Ação"
+    },
+    "tools": [
+      {
+        "name": "list_partners",
+        "title": "Listar parceiros do Clube Nommi",
+        "description": "Lista os estabelecimentos parceiros de exemplo do Clube Nommi, com categoria, benefício e pontos de grupo necessários.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string",
+              "enum": [
+                "Bares",
+                "Beleza",
+                "Lazer"
+              ],
+              "description": "Filtrar por categoria."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_groups",
+        "title": "Listar grupos de exemplo",
+        "description": "Lista os grupos de amizade de exemplo do Nommi, com modo (presencial, online ou híbrido) e número de pessoas.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {},
+          "additionalProperties": false
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
