@@ -31,6 +31,7 @@ import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as PostarMomentoRouteImport } from './routes/postar-momento'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ProRouteImport } from './routes/pro'
+import { Route as RadarRouteImport } from './routes/radar'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as TermosRouteImport } from './routes/termos'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
@@ -146,6 +147,11 @@ const ProRoute = ProRouteImport.update({
   path: '/pro',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RadarRoute = RadarRouteImport.update({
+  id: '/radar',
+  path: '/radar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RecuperarSenhaRoute = RecuperarSenhaRouteImport.update({
   id: '/recuperar-senha',
   path: '/recuperar-senha',
@@ -191,6 +197,7 @@ export interface FileRoutesByFullPath {
   '/postar-momento': typeof PostarMomentoRoute
   '/privacidade': typeof PrivacidadeRoute
   '/pro': typeof ProRoute
+  '/radar': typeof RadarRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/termos': typeof TermosRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -219,6 +226,7 @@ export interface FileRoutesByTo {
   '/postar-momento': typeof PostarMomentoRoute
   '/privacidade': typeof PrivacidadeRoute
   '/pro': typeof ProRoute
+  '/radar': typeof RadarRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/termos': typeof TermosRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -248,6 +256,7 @@ export interface FileRoutesById {
   '/postar-momento': typeof PostarMomentoRoute
   '/privacidade': typeof PrivacidadeRoute
   '/pro': typeof ProRoute
+  '/radar': typeof RadarRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/termos': typeof TermosRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -278,6 +287,7 @@ export interface FileRouteTypes {
     | '/postar-momento'
     | '/privacidade'
     | '/pro'
+    | '/radar'
     | '/recuperar-senha'
     | '/termos'
     | '/.well-known/oauth-protected-resource'
@@ -306,6 +316,7 @@ export interface FileRouteTypes {
     | '/postar-momento'
     | '/privacidade'
     | '/pro'
+    | '/radar'
     | '/recuperar-senha'
     | '/termos'
     | '/.well-known/oauth-protected-resource'
@@ -334,6 +345,7 @@ export interface FileRouteTypes {
     | '/postar-momento'
     | '/privacidade'
     | '/pro'
+    | '/radar'
     | '/recuperar-senha'
     | '/termos'
     | '/.well-known/oauth-protected-resource'
@@ -363,6 +375,7 @@ export interface RootRouteChildren {
   PostarMomentoRoute: typeof PostarMomentoRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   ProRoute: typeof ProRoute
+  RadarRoute: typeof RadarRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
   TermosRoute: typeof TermosRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -525,6 +538,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/radar': {
+      id: '/radar'
+      path: '/radar'
+      fullPath: '/radar'
+      preLoaderRoute: typeof RadarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/recuperar-senha': {
       id: '/recuperar-senha'
       path: '/recuperar-senha'
@@ -579,6 +599,7 @@ const rootRouteChildren: RootRouteChildren = {
   PostarMomentoRoute: PostarMomentoRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   ProRoute: ProRoute,
+  RadarRoute: RadarRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
   TermosRoute: TermosRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
