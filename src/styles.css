@@ -210,3 +210,14 @@ body {font-family:'DM Sans',sans-serif;margin:0} h1,h2,h3,h4 {font-family:'Brico
 .web-moment figcaption{font-size:.8rem;font-weight:700}
 @media (prefers-reduced-motion:reduce){.web-line{animation:none}}
 .web-node,.web-moment figcaption{color:var(--foreground)!important}.web-node .tone-icon{color:var(--paper)}.web-moment .avatar-stack{display:flex}
+.radar-page{display:grid;gap:16px}.radar-head h1{font-family:'Bricolage Grotesque',sans-serif;font-size:2rem;margin:0}.radar-head p{margin:4px 0 0;color:var(--muted-foreground)}
+.radar-setup{display:grid;gap:16px;padding:16px}.radar-setup label{display:grid;gap:8px;font-weight:700}.radar-setup select{min-height:48px;border-radius:16px;border:1px solid var(--border);padding:0 12px;background:var(--card);color:var(--foreground)}
+.radar-map{position:relative;aspect-ratio:1;max-width:480px;width:100%;margin:0 auto;border-radius:50%;background:radial-gradient(circle,var(--butter),var(--card));overflow:hidden;box-shadow:0 8px 24px color-mix(in oklch,var(--foreground) 10%,transparent)}
+.radar-ring{position:absolute;inset:50%;border:2px solid color-mix(in oklch,var(--teal) 45%,transparent);border-radius:50%;transform:translate(-50%,-50%);animation:radar-pulse 3s ease-out infinite}.radar-ring.r2{animation-delay:1s}.radar-ring.r3{animation-delay:2s}
+@keyframes radar-pulse{from{width:0;height:0;opacity:1}to{width:100%;height:100%;opacity:0}}
+.radar-me,.radar-pin{position:absolute;display:grid;justify-items:center;gap:2px;transform:translate(-50%,-50%);background:none;border:0;color:var(--foreground);font-weight:700}.radar-me{left:50%;top:50%}
+.radar-pin{cursor:pointer;animation:radar-bob 2.4s ease-in-out infinite}.radar-pin .friend-avatar{border:3px solid var(--primary);border-radius:50%}.radar-pin:active{transform:translate(-50%,-50%) scale(.94)}
+@keyframes radar-bob{50%{margin-top:-6px}}
+.radar-status{display:flex;align-items:center;gap:12px;padding:12px 16px}.radar-status>div{flex:1}.radar-status p{margin:0}
+.radar-card{display:grid;gap:12px;padding:16px;animation:radar-in .3s ease}.radar-card-top{display:flex;gap:12px;align-items:center}.radar-card h2{margin:0}.radar-actions{display:flex;gap:8px;flex-wrap:wrap}.radar-ok{color:var(--teal);font-weight:700}
+@keyframes radar-in{from{opacity:0;transform:translateY(8px)}}
