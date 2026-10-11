@@ -1,29 +1,63 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { chatStickers, isStickerId, recentStickerIds } from '@/lib/sticker-catalogue';
+import { addCustomSticker, makeSticker, MAX_CAPTION, type CustomSticker } from '@/lib/sticker-maker';
+import type { Message } from '@/lib/friends-data';
 import { Icon } from './art';
 import { useFriends } from './store';
 
-export function ChatSticker({id}:{id:number}) {
+export function ChatSticker({id,custom}:{id:number;custom?:{src:string;caption:string}}) {
+ if(custom)return <img className="chat-sticker-image" src={custom.src} width={320} height={320} alt={custom.caption||'Figurinha criada'} draggable={false}/>;
  const sticker=chatStickers[id];
  if(!sticker)return null;
  return <img className="chat-sticker-image" src={sticker.src} width={512} height={512} alt={sticker.caption} draggable={false}/>;
 }
-export function ChatStickerTray({onSend,onClose}:{onSend:(id:number)=>void;onClose:()=>void}) {
+
+/** Salvar figurinha recebida, como no WhatsApp: originais vão para Favoritas; criadas por outras pessoas, para Minhas. */
+export function SaveStickerButton({message}:{message:Message}){
+ const {state,setState,notify}=useFriends();
+ const c=message.custom;
+ const saved=c?(state.customStickers??[]).some(s=>s.src===c.src):(state.favoriteStickers??[]).includes(message.sticker??-1);
+ return <Button type="button" variant="ghost" size="sm" className="sticker-save" disabled={saved} onClick={()=>{
+  if(c)setState(s=>({...s,customStickers:addCustomSticker(s.customStickers??[],{id:'s'+Date.now(),src:c.src,caption:c.caption})}));
+  else if(isStickerId(message.sticker))setState(s=>({...s,favoriteStickers:[...new Set([...(s.favoriteStickers??[]),message.sticker as number])]}));
+  notify(c?'Figurinha salva em Minhas.':'Figurinha salva nas Favoritas.');
+ }}><Icon name={saved?'check':'heart'}/>{saved?'Salva':'Salvar figurinha'}</Button>;
+}
+
+function StickerMaker({onDone}:{onDone:()=>void}){
+ const {setState,notify}=useFriends();const [caption,setCaption]=useState('');const [file,setFile]=useState<File|null>(null);const [busy,setBusy]=useState(false);
+ return <form className="sticker-maker" onSubmit={async e=>{e.preventDefault();if(!file)return;setBusy(true);try{const src=await makeSticker(file,caption);setState(s=>({...s,customStickers:addCustomSticker(s.customStickers??[],{id:'c'+Date.now(),src,caption:caption.trim()})}));notify('Figurinha criada! Ela está em Minhas.');onDone()}catch{notify('Não foi possível usar essa foto. Tente outra.')}finally{setBusy(false)}}}>
+  <label>Foto<input className="input" type="file" accept="image/*" onChange={e=>setFile(e.target.files?.[0]??null)} required/></label>
+  <label>Legenda (opcional)<input className="input" maxLength={MAX_CAPTION} value={caption} onChange={e=>setCaption(e.target.value)} placeholder="ex.: bora marcar"/></label>
+  <div className="sticker-maker-actions"><Button type="button" variant="secondary" onClick={onDone}>Cancelar</Button><Button disabled={!file||busy}>{busy?'Criando…':'Criar figurinha'}</Button></div>
+  <p className="small-note">A figurinha fica salva só neste aparelho e pode ser enviada nas conversas e nas suas teias.</p>
+ </form>;
+}
+
+type Tab='Recentes'|'Favoritas'|'Minhas'|'Pacotes';
+export function ChatStickerTray({onSend,onSendCustom,onClose}:{onSend:(id:number)=>void;onSendCustom?:(c:{src:string;caption:string})=>void;onClose:()=>void}) {
  const {state,setState}=useFriends();
- const [tab,setTab]=useState<'Recentes'|'Favoritas'|'Pacotes'>('Pacotes');
+ const [tab,setTab]=useState<Tab>('Pacotes');const [making,setMaking]=useState(false);
  const tray=useRef<HTMLElement>(null);
  const favorites=(state.favoriteStickers??[]).filter(isStickerId);
  const recent=(state.recentStickers??[]).filter(isStickerId);
+ const mine:CustomSticker[]=state.customStickers??[];
  const ids=tab==='Recentes'?recent:tab==='Favoritas'?favorites:chatStickers.map(s=>s.id);
  useEffect(()=>{tray.current?.scrollIntoView({block:'nearest',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'})},[]);
  function toggleFavorite(id:number){setState(s=>({...s,favoriteStickers:(s.favoriteStickers??[]).includes(id)?(s.favoriteStickers??[]).filter(v=>v!==id):[...(s.favoriteStickers??[]),id]}))}
+ const icons:Record<Tab,string>={Recentes:'clock',Favoritas:'heart',Minhas:'plus',Pacotes:'stickers'};
  return <section className="chat-sticker-tray" aria-label="Bandeja de figurinhas" ref={tray} onKeyDown={e=>{if(e.key==='Escape'){e.stopPropagation();onClose()}}}>
   <div className="sticker-tray-heading"><span>Figurinhas</span><Button variant="ghost" size="icon" type="button" aria-label="Fechar figurinhas" onClick={onClose}><Icon name="close"/></Button></div>
-  <div className="sticker-tray-tabs" role="tablist" aria-label="Coleções de figurinhas">{(['Recentes','Favoritas','Pacotes'] as const).map(name=><Button type="button" variant="ghost" role="tab" aria-selected={tab===name} aria-controls="sticker-tray-panel" id={'sticker-tab-'+name} key={name} onClick={()=>setTab(name)}><Icon name={name==='Recentes'?'clock':name==='Favoritas'?'heart':'stickers'}/>{name}</Button>)}</div>
+  <div className="sticker-tray-tabs" role="tablist" aria-label="Coleções de figurinhas">{(['Recentes','Favoritas','Minhas','Pacotes'] as const).map(name=><Button type="button" variant="ghost" role="tab" aria-selected={tab===name} aria-controls="sticker-tray-panel" id={'sticker-tab-'+name} key={name} onClick={()=>{setTab(name);setMaking(false)}}><Icon name={icons[name]}/>{name}</Button>)}</div>
   <div id="sticker-tray-panel" role="tabpanel" aria-labelledby={'sticker-tab-'+tab} className="sticker-tray-panel">
+   {tab==='Minhas'?(making?<StickerMaker onDone={()=>setMaking(false)}/>:<div className="chat-sticker-grid">
+    <div className="chat-sticker-tile"><Button type="button" variant="secondary" className="sticker-create" onClick={()=>setMaking(true)}><Icon name="plus"/>Criar</Button></div>
+    {mine.map(s=><div className="chat-sticker-tile" key={s.id}><Button variant="ghost" type="button" className="chat-sticker-send" aria-label={'Enviar figurinha '+(s.caption||'criada')} onClick={()=>onSendCustom?.({src:s.src,caption:s.caption})}><ChatSticker id={0} custom={s}/></Button><Button variant="ghost" type="button" size="icon" className="sticker-favorite" aria-label={'Apagar figurinha '+(s.caption||'criada')} title="Apagar" onClick={()=>setState(p=>({...p,customStickers:(p.customStickers??[]).filter(v=>v.id!==s.id)}))}><Icon name="close"/></Button></div>)}
+   </div>):<>
    {tab==='Pacotes'&&<div className="sticker-pack-heading"><span className="sticker-pack-mark"><Icon name="stickers"/></span><div><strong>Teia Nommi</strong><small>24 figurinhas · pacote original</small></div><Icon name="check"/></div>}
-   {!ids.length?<div className="sticker-tray-empty"><ChatSticker id={tab==='Recentes'?7:20}/><p>{tab==='Recentes'?'Suas próximas figurinhas ficam aqui.':'Ainda não há favoritas.'}</p></div>:<div className="chat-sticker-grid">{ids.map(id=>{const s=chatStickers[id];if(!s)return null;return <div className="chat-sticker-tile" key={id}><Button variant="ghost" type="button" className="chat-sticker-send" aria-label={'Enviar figurinha '+s.caption} onClick={()=>{setState(prev=>({...prev,recentStickers:recentStickerIds(prev.recentStickers??[],id)}));onSend(id)}}><ChatSticker id={id}/></Button><Button variant="ghost" type="button" size="icon" className="sticker-favorite" aria-label={(favorites.includes(id)?'Remover dos favoritos: ':'Favoritar: ')+s.caption} aria-pressed={favorites.includes(id)} title={favorites.includes(id)?'Remover dos favoritos':'Favoritar figurinha'} onClick={()=>toggleFavorite(id)}><Icon name="heart"/></Button></div>})}</div>}
+   {!ids.length?<div className="sticker-tray-empty"><ChatSticker id={tab==='Recentes'?7:20}/><p>{tab==='Recentes'?'Suas próximas figurinhas ficam aqui.':'Ainda não há favoritas. Toque em "Salvar figurinha" numa conversa.'}</p></div>:<div className="chat-sticker-grid">{ids.map(id=>{const s=chatStickers[id];if(!s)return null;return <div className="chat-sticker-tile" key={id}><Button variant="ghost" type="button" className="chat-sticker-send" aria-label={'Enviar figurinha '+s.caption} onClick={()=>{setState(prev=>({...prev,recentStickers:recentStickerIds(prev.recentStickers??[],id)}));onSend(id)}}><ChatSticker id={id}/></Button><Button variant="ghost" type="button" size="icon" className="sticker-favorite" aria-label={(favorites.includes(id)?'Remover dos favoritos: ':'Favoritar: ')+s.caption} aria-pressed={favorites.includes(id)} title={favorites.includes(id)?'Remover dos favoritos':'Favoritar figurinha'} onClick={()=>toggleFavorite(id)}><Icon name="heart"/></Button></div>})}</div>}
+   </>}
   </div>
  </section>;
 }
