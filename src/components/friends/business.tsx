@@ -100,7 +100,7 @@ export function Company({ id }: { id: number }) {
   const ambassadors = (AMBASSADORS[id] ?? []).map(pid => people.find(x => x.id === pid)).filter(x => !!x && !state.blocked.includes(x.id));
   return <>
     <Cover tone={p.tone} />
-    <div className="company-head"><span className={'tone-icon ' + p.tone}><Icon name={p.icon} /></span><div><p className="eyebrow">{p.category.toUpperCase()} · PARCEIRO NOMMI</p><h1>{p.name}</h1><p className="small-note">Região aproximada · Belo Horizonte</p></div></div>
+    <div className="company-head"><span className={'tone-icon ' + p.tone}><Icon name={p.icon} /></span><div><p className="eyebrow">{p.category.toUpperCase()} · ANFITRIÃO NOMMI</p><h1>{p.name}</h1><p className="small-note">Região aproximada · Belo Horizonte</p></div></div>
     <section className="redemption"><h2>Para teias</h2><p>{p.benefit} · {p.points} pontos da teia</p><p className="small-note">{p.visits===1?'1 encontro':p.visits+' encontros'} de teias por aqui neste mês.</p></section>
     {teia && <section className="redemption"><span className="boost-badge"><Icon name="users" />Teia da marca</span><h2>{teia.name}</h2><p>{teia.time} · {teia.members} pessoas · entrada sem aprovação</p><div className="company-actions">{member ? <><Button asChild><Link to="/grupos/$id" params={{ id: String(teia.id) }}><Icon name="chat" />Abrir conversa</Link></Button><Button variant="secondary" onClick={() => { setState(s => leaveTeia(s, teia.id)); notify('Você saiu da teia.'); }}>Sair da teia</Button></> : <Button onClick={() => { setState(s => joinTeia(s, teia.id)); notify('Você entrou! Diga oi para a teia.'); }}><Icon name="users" />Entrar</Button>}</div></section>}
     <div className="section-heading"><h2>Quem agita aqui</h2></div>
