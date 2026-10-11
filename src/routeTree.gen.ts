@@ -16,6 +16,7 @@ import { Route as CarteiraRouteImport } from './routes/carteira'
 import { Route as CheckInRouteImport } from './routes/check-in'
 import { Route as ClubeRouteImport } from './routes/clube'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
+import { Route as ContaRouteImport } from './routes/conta'
 import { Route as ConversasRouteImport } from './routes/conversas'
 import { Route as ConvidarRouteImport } from './routes/convidar'
 import { Route as ConvitesRouteImport } from './routes/convites'
@@ -71,6 +72,11 @@ const ClubeRoute = ClubeRouteImport.update({
 const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
   id: '/configuracoes',
   path: '/configuracoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContaRoute = ContaRouteImport.update({
+  id: '/conta',
+  path: '/conta',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConversasRoute = ConversasRouteImport.update({
@@ -187,6 +193,7 @@ export interface FileRoutesByFullPath {
   '/check-in': typeof CheckInRoute
   '/clube': typeof ClubeRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/conta': typeof ContaRoute
   '/conversas': typeof ConversasRoute
   '/convidar': typeof ConvidarRoute
   '/convites': typeof ConvitesRoute
@@ -217,6 +224,7 @@ export interface FileRoutesByTo {
   '/check-in': typeof CheckInRoute
   '/clube': typeof ClubeRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/conta': typeof ContaRoute
   '/conversas': typeof ConversasRoute
   '/convidar': typeof ConvidarRoute
   '/convites': typeof ConvitesRoute
@@ -248,6 +256,7 @@ export interface FileRoutesById {
   '/check-in': typeof CheckInRoute
   '/clube': typeof ClubeRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/conta': typeof ContaRoute
   '/conversas': typeof ConversasRoute
   '/convidar': typeof ConvidarRoute
   '/convites': typeof ConvitesRoute
@@ -280,6 +289,7 @@ export interface FileRouteTypes {
     | '/check-in'
     | '/clube'
     | '/configuracoes'
+    | '/conta'
     | '/conversas'
     | '/convidar'
     | '/convites'
@@ -310,6 +320,7 @@ export interface FileRouteTypes {
     | '/check-in'
     | '/clube'
     | '/configuracoes'
+    | '/conta'
     | '/conversas'
     | '/convidar'
     | '/convites'
@@ -340,6 +351,7 @@ export interface FileRouteTypes {
     | '/check-in'
     | '/clube'
     | '/configuracoes'
+    | '/conta'
     | '/conversas'
     | '/convidar'
     | '/convites'
@@ -371,6 +383,7 @@ export interface RootRouteChildren {
   CheckInRoute: typeof CheckInRoute
   ClubeRoute: typeof ClubeRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
+  ContaRoute: typeof ContaRoute
   ConversasRoute: typeof ConversasRoute
   ConvidarRoute: typeof ConvidarRoute
   ConvitesRoute: typeof ConvitesRoute
@@ -443,6 +456,13 @@ declare module '@tanstack/react-router' {
       path: '/configuracoes'
       fullPath: '/configuracoes'
       preLoaderRoute: typeof ConfiguracoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conta': {
+      id: '/conta'
+      path: '/conta'
+      fullPath: '/conta'
+      preLoaderRoute: typeof ContaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/conversas': {
@@ -603,6 +623,7 @@ const rootRouteChildren: RootRouteChildren = {
   CheckInRoute: CheckInRoute,
   ClubeRoute: ClubeRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
+  ContaRoute: ContaRoute,
   ConversasRoute: ConversasRoute,
   ConvidarRoute: ConvidarRoute,
   ConvitesRoute: ConvitesRoute,

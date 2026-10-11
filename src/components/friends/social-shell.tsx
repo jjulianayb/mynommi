@@ -8,7 +8,7 @@ import { useFriends } from './store';
 import { Welcome } from './entry';
 import { hasPending } from '@/lib/today';
 const nav=[{to:'/' as const,label:'Início',icon:'home'},{to:'/descobrir' as const,label:'Descobrir',icon:'spark'},{to:'/radar' as const,label:'Radar Nommi',icon:'pin'},{to:'/conversas' as const,label:'Conversas',icon:'chat'},{to:'/grupos' as const,label:'Teias',icon:'users'},{to:'/clube' as const,label:'Clube Nommi',icon:'gift'},{to:'/carteira' as const,label:'Carteira',icon:'gift'},{to:'/pro' as const,label:'Meu plano Pro',icon:'star'}];
-const entryPaths=['/cadastro','/login','/login-parceiro','/recuperar-senha'];
+const entryPaths=['/conta','/cadastro','/login','/login-parceiro','/recuperar-senha'];
 const legalPaths=['/termos','/privacidade','/ajuda'];
 export function SocialShell({children}:{children:ReactNode}){
  const {session,ready,signOut}=useDemoSession();const {state}=useFriends();const {pathname,searchStr}=useLocation();const [create,setCreate]=useState(false);const [drawer,setDrawer]=useState(false);

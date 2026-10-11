@@ -20,6 +20,7 @@ export function DemoSessionProvider({children}:{children:ReactNode}){
    if(!u){setCloudUser(null);setIsAdmin(false);return}
    setCloudUser({id:u.id,email:u.email??''});
    const {data}=await supabase.rpc('has_role',{_user_id:u.id,_role:'admin'});if(alive)setIsAdmin(data===true);
+   try{if(localStorage.getItem('nommi-business-intent')){localStorage.removeItem('nommi-business-intent');await supabase.from('profiles').update({is_business:true}).eq('id',u.id)}}catch{}
    // Primeira entrada com conta real: abre o app como conta nova (sem dados de exemplo).
    const {data:p}=await supabase.from('profiles').select('nickname,city,interests,about,profile_mode,is_business').eq('id',u.id).maybeSingle();
    if(!alive)return;
