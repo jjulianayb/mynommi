@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AjudaRouteImport } from './routes/ajuda'
 import { Route as CadastroRouteImport } from './routes/cadastro'
+import { Route as CarteiraRouteImport } from './routes/carteira'
 import { Route as CheckInRouteImport } from './routes/check-in'
 import { Route as ClubeRouteImport } from './routes/clube'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
@@ -34,6 +35,7 @@ import { Route as ProRouteImport } from './routes/pro'
 import { Route as RadarRouteImport } from './routes/radar'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as TermosRouteImport } from './routes/termos'
+import { Route as EmpresaIdRouteImport } from './routes/empresa.$id'
 import { Route as GruposIdRouteImport } from './routes/grupos_.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -49,6 +51,11 @@ const AjudaRoute = AjudaRouteImport.update({
 const CadastroRoute = CadastroRouteImport.update({
   id: '/cadastro',
   path: '/cadastro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CarteiraRoute = CarteiraRouteImport.update({
+  id: '/carteira',
+  path: '/carteira',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CheckInRoute = CheckInRouteImport.update({
@@ -161,6 +168,11 @@ const TermosRoute = TermosRouteImport.update({
   path: '/termos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmpresaIdRoute = EmpresaIdRouteImport.update({
+  id: '/empresa/$id',
+  path: '/empresa/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GruposIdRoute = GruposIdRouteImport.update({
   id: '/grupos_/$id',
   path: '/grupos/$id',
@@ -171,6 +183,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ajuda': typeof AjudaRoute
   '/cadastro': typeof CadastroRoute
+  '/carteira': typeof CarteiraRoute
   '/check-in': typeof CheckInRoute
   '/clube': typeof ClubeRoute
   '/configuracoes': typeof ConfiguracoesRoute
@@ -193,12 +206,14 @@ export interface FileRoutesByFullPath {
   '/radar': typeof RadarRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/termos': typeof TermosRoute
+  '/empresa/$id': typeof EmpresaIdRoute
   '/grupos/$id': typeof GruposIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ajuda': typeof AjudaRoute
   '/cadastro': typeof CadastroRoute
+  '/carteira': typeof CarteiraRoute
   '/check-in': typeof CheckInRoute
   '/clube': typeof ClubeRoute
   '/configuracoes': typeof ConfiguracoesRoute
@@ -221,6 +236,7 @@ export interface FileRoutesByTo {
   '/radar': typeof RadarRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/termos': typeof TermosRoute
+  '/empresa/$id': typeof EmpresaIdRoute
   '/grupos/$id': typeof GruposIdRoute
 }
 export interface FileRoutesById {
@@ -228,6 +244,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/ajuda': typeof AjudaRoute
   '/cadastro': typeof CadastroRoute
+  '/carteira': typeof CarteiraRoute
   '/check-in': typeof CheckInRoute
   '/clube': typeof ClubeRoute
   '/configuracoes': typeof ConfiguracoesRoute
@@ -250,6 +267,7 @@ export interface FileRoutesById {
   '/radar': typeof RadarRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/termos': typeof TermosRoute
+  '/empresa/$id': typeof EmpresaIdRoute
   '/grupos_/$id': typeof GruposIdRoute
 }
 export interface FileRouteTypes {
@@ -258,6 +276,7 @@ export interface FileRouteTypes {
     | '/'
     | '/ajuda'
     | '/cadastro'
+    | '/carteira'
     | '/check-in'
     | '/clube'
     | '/configuracoes'
@@ -280,12 +299,14 @@ export interface FileRouteTypes {
     | '/radar'
     | '/recuperar-senha'
     | '/termos'
+    | '/empresa/$id'
     | '/grupos/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/ajuda'
     | '/cadastro'
+    | '/carteira'
     | '/check-in'
     | '/clube'
     | '/configuracoes'
@@ -308,12 +329,14 @@ export interface FileRouteTypes {
     | '/radar'
     | '/recuperar-senha'
     | '/termos'
+    | '/empresa/$id'
     | '/grupos/$id'
   id:
     | '__root__'
     | '/'
     | '/ajuda'
     | '/cadastro'
+    | '/carteira'
     | '/check-in'
     | '/clube'
     | '/configuracoes'
@@ -336,6 +359,7 @@ export interface FileRouteTypes {
     | '/radar'
     | '/recuperar-senha'
     | '/termos'
+    | '/empresa/$id'
     | '/grupos_/$id'
   fileRoutesById: FileRoutesById
 }
@@ -343,6 +367,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AjudaRoute: typeof AjudaRoute
   CadastroRoute: typeof CadastroRoute
+  CarteiraRoute: typeof CarteiraRoute
   CheckInRoute: typeof CheckInRoute
   ClubeRoute: typeof ClubeRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
@@ -365,6 +390,7 @@ export interface RootRouteChildren {
   RadarRoute: typeof RadarRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
   TermosRoute: typeof TermosRoute
+  EmpresaIdRoute: typeof EmpresaIdRoute
   GruposIdRoute: typeof GruposIdRoute
 }
 
@@ -389,6 +415,13 @@ declare module '@tanstack/react-router' {
       path: '/cadastro'
       fullPath: '/cadastro'
       preLoaderRoute: typeof CadastroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/carteira': {
+      id: '/carteira'
+      path: '/carteira'
+      fullPath: '/carteira'
+      preLoaderRoute: typeof CarteiraRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/check-in': {
@@ -545,6 +578,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/empresa/$id': {
+      id: '/empresa/$id'
+      path: '/empresa/$id'
+      fullPath: '/empresa/$id'
+      preLoaderRoute: typeof EmpresaIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/grupos_/$id': {
       id: '/grupos_/$id'
       path: '/grupos/$id'
@@ -559,6 +599,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AjudaRoute: AjudaRoute,
   CadastroRoute: CadastroRoute,
+  CarteiraRoute: CarteiraRoute,
   CheckInRoute: CheckInRoute,
   ClubeRoute: ClubeRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
@@ -581,6 +622,7 @@ const rootRouteChildren: RootRouteChildren = {
   RadarRoute: RadarRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
   TermosRoute: TermosRoute,
+  EmpresaIdRoute: EmpresaIdRoute,
   GruposIdRoute: GruposIdRoute,
 }
 export const routeTree = rootRouteImport
