@@ -21,3 +21,6 @@
 - [x] Perfil público ou privado (cadastro, Configurações > Privacidade, selo no perfil, listagens).
 - [x] Proposta de parceiros no Clube, login de parceiro e boas-vindas; aviso de primeiro encontro.
 - [ ] Busca por nome de usuário (ainda não existe; respeitar perfis privados quando for criada).
+- [x] Conta nova começa vazia (emptyState) e demonstração usa demoState.
+- [x] Início "Hoje": check-in de conexão, pergunta do dia, planos, pessoas, teias, momentos só de amizades.
+- [x] Sino só com pendências reais; cartão "Quem você ainda não respondeu".

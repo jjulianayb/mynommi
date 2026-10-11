@@ -17,6 +17,7 @@
 - Use native modal dialogs for bottom sheets so keyboard focus and dismissal stay accessible.
 - Use a shared fixed header and a native right-side navigation dialog instead of persistent navigation bars; expose creation through a floating action button.
 - Keep the social shell session-aware and leave entry/legal/help routes public; backend authentication remains out of scope.
+- New accounts start from emptyState; demo mode loads demoState. Daily-routine rules (greeting, question of the day, pending bell, awaiting reply) live in src/lib/today.ts so they stay testable.
 - Profile visibility (public/private) lives in DemoState and listings filter private people via one shared helper so future search reuses it.
 - Keep the chat sticker catalogue and tray in focused reusable modules; both private and group chats share browser-local favorites, recents, and message timestamps.
 - No MCP server: the public demo catalog server was removed; reintroduce only with authenticated access once real accounts exist.
