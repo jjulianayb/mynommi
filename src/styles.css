@@ -232,3 +232,21 @@ body {font-family:'DM Sans',sans-serif;margin:0} h1,h2,h3,h4 {font-family:'Brico
 .location-picker{display:grid;gap:12px}
 .opener-box{display:grid;gap:12px;padding:16px;margin:16px 0;border-radius:24px;background:var(--card);border:1px solid var(--border)}.opener-box h2{display:flex;gap:8px;align-items:center;margin:0}
 .opener-item{display:flex;gap:12px;align-items:center;padding:12px;border-radius:16px;background:var(--butter)}.opener-item p{flex:1;margin:0}
+
+/* Home social feed */
+.home-roles{margin:0 0 var(--space-4,16px)}
+.home-roles .roles-row{display:flex;gap:12px;overflow-x:auto;padding:4px 2px}
+.moments-feed{display:grid;gap:16px;margin-bottom:24px}
+.moment-card{background:var(--card);border:1px solid var(--border);border-radius:24px;overflow:hidden;box-shadow:0 6px 18px -12px rgb(27 34 48 / 18%)}
+.moment-head{display:flex;align-items:center;gap:10px;padding:12px 16px}
+.moment-head h3{margin:0;font-size:15px}
+.moment-head p{margin:0;font-size:12px;color:var(--muted-foreground)}
+.moment-art{position:relative;display:flex;align-items:center;justify-content:center;padding:28px 16px}
+.moment-art .role-pair.big{display:flex}
+.moment-art .role-pair.big>*+*{margin-left:-14px}
+.moment-icon{position:absolute;right:14px;bottom:12px;background:var(--card);border-radius:999px;padding:8px;display:grid;place-items:center;box-shadow:0 4px 10px -6px rgb(27 34 48 / 30%)}
+.moment-foot{padding:12px 16px 16px;display:grid;gap:6px}
+.moment-foot h3{margin:0;font-size:16px}
+.moment-foot p{margin:0;font-size:13px;color:var(--muted-foreground);display:flex;align-items:center;gap:6px}
+.moment-foot .btn,.moment-foot button{justify-self:start;margin-top:4px}
+@media (min-width:768px){.moments-feed{grid-template-columns:1fr 1fr}}

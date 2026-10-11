@@ -5,7 +5,7 @@ import { Avatar, Icon } from './art';
 import { Sheet } from './surfaces';
 
 /** "Rolês": story-like circles with real outings shared with friends. */
-const roles = [
+export const roles = [
   { title: 'Karaokê de sexta', place: 'Karaokê Bem-Te-Vi', friend: 1, tone: 'red', icon: 'mic', when: 'há 2 dias' },
   { title: 'Vinho na varanda', place: 'Bar do Vinho Azul', friend: 2, tone: 'blue', icon: 'glass', when: 'há 4 dias' },
   { title: 'Trilha cedinho', place: 'Trilha Aberta', friend: 6, tone: 'teal', icon: 'pin', when: 'semana passada' },
