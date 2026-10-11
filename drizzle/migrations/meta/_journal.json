@@ -15,6 +15,13 @@
       "when": 1791725125022,
       "tag": "0001_business_intent_on_signup",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791725328902,
+      "tag": "0002_lock_down_function_execute",
+      "breakpoints": true
     }
   ]
 }
