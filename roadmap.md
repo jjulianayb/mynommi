@@ -33,3 +33,7 @@
 - [ ] Cobrança real de créditos (aguarda contas reais e provedor de pagamento).
 - [x] Radar Nommi: usar localização (vira lugar público aproximado), busca entre 20 lugares, "Perto de você" e o que cada pessoa topa.
 - [x] Painel do parceiro: perfil e comunidade da marca + ideias de encontros com IA.
+- [x] Botão "Explorar como parceiro" na boas-vindas e link do painel no menu.
+- [ ] Contas reais de pessoas e empresas (Lovable Cloud) — aguarda respostas da Juliana.
+- [ ] Painel de administração (perfis de empresas, ideias, créditos) — aguarda respostas.
+- [ ] Carteira com pagamento real e saldo no servidor — aguarda país/CNPJ e provedor.
