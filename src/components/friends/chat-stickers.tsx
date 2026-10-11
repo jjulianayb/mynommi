@@ -6,7 +6,7 @@ import type { Message } from '@/lib/friends-data';
 import { Icon } from './art';
 import { useFriends } from './store';
 
-export function ChatSticker({id,custom}:{id:number;custom?:{src:string;caption:string}}) {
+export function ChatSticker({id,custom}:{id:number;custom?:{src:string;caption:string}|undefined}) {
  if(custom)return <img className="chat-sticker-image" src={custom.src} width={320} height={320} alt={custom.caption||'Figurinha criada'} draggable={false}/>;
  const sticker=chatStickers[id];
  if(!sticker)return null;
