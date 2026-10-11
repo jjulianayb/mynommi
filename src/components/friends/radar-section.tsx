@@ -24,7 +24,7 @@ export function RadarSection(){
   const sel=nearby.find(n=>n.id===pick);
   const label=custom||place.name;
   return <div className="radar-page">
-    <header className="radar-head"><h1>Radar Nommi</h1><p>Diga onde você está e o que topa agora. Veja outros nomi por perto para um café, uma volta ou um cinema.</p></header>
+    <header className="radar-head"><h1>Radar Nommi</h1><p>Diga onde você está e o que topa agora. Veja outros nommi por perto para um café, uma volta ou um cinema.</p></header>
     {!on?<section className="card radar-setup">
       <Button type="button" variant="secondary" className="wide" onClick={locate} disabled={locating}><Icon name="pin"/>{locating?'Procurando…':'Usar minha localização'}</Button>
       <label>Ou procure o lugar<input className="input" value={query} placeholder="Ex.: Savassi, cinema, parque" onChange={e=>setQuery(e.target.value)}/></label>
@@ -37,12 +37,12 @@ export function RadarSection(){
       <Button type="button" className="wide" onClick={async()=>{if(cloudUser){const {error}=await supabase.from('radar_presence').upsert({user_id:cloudUser.id,place_name:label.slice(0,60),area:place.area,activity,until:new Date(Date.now()+mins*60000).toISOString()});if(error){notify('Não foi possível entrar no radar agora. Tente de novo.');return}}setOn(true);save({on:true})}}>Ativar meu bonequinho</Button>
       {state.profileMode==='privado'&&<p className="muted small">Seu perfil é privado: no radar, seu perfil fica fora da listagem pública.</p>}<p className="muted small">Só lugares públicos. Nunca mostramos nem guardamos sua localização exata. Você some do radar quando o tempo acaba.</p>
     </section>:<>
-      <section className="radar-map" aria-label={'nomi perto de '+label}>
+      <section className="radar-map" aria-label={'nommi perto de '+label}>
         <span className="radar-ring r1"/><span className="radar-ring r2"/><span className="radar-ring r3"/>
         <div className="radar-me"><Avatar id={3} size={56}/><small>Você</small></div>
         {nearby.slice(0,6).map((n,i)=>{const ang=i*1.05+0.4,r=n.km<0.3?22:n.km<0.8?32:42;return <Button variant="ghost" key={n.id} type="button" className={'radar-pin'+(SAMPLE_BOOSTED_PEOPLE.includes(n.id)?' boosted':'')} style={{left:50+Math.cos(ang)*r+'%',top:50+Math.sin(ang)*r+'%'}} onClick={()=>setPick(n.id)} aria-label={n.person.name+' — '+n.activity+', '+n.label}><Avatar id={n.id} size={44}/><small>{n.person.name.split(' ')[0]}</small></Button>})}
       </section>
-      <div className="card radar-status"><Icon name="pin"/><div><b>{label}</b><p className="muted small">{activity} · visível por {mins<60?mins+' min':mins/60+'h'} · {nearby.length} nomi por perto</p></div><Button type="button" variant="ghost" onClick={()=>{setOn(false);setPick(null);save({on:false});if(cloudUser)void supabase.from('radar_presence').delete().eq('user_id',cloudUser.id)}}>Sair do radar</Button></div>
+      <div className="card radar-status"><Icon name="pin"/><div><b>{label}</b><p className="muted small">{activity} · visível por {mins<60?mins+' min':mins/60+'h'} · {nearby.length} nommi por perto</p></div><Button type="button" variant="ghost" onClick={()=>{setOn(false);setPick(null);save({on:false});if(cloudUser)void supabase.from('radar_presence').delete().eq('user_id',cloudUser.id)}}>Sair do radar</Button></div>
       {sel&&<section className="card radar-card">
         <div className="radar-card-top"><Avatar id={sel.id} size={64}/><div><h2>{sel.person.name}, {sel.person.age}</h2><p className="mode-chip">{sel.activity}</p><p className="muted small">{sel.place} · {sel.label}</p><p className="muted small">Curte {sel.person.interests.join(' e ')}</p></div></div>
         {sent.includes(sel.id)?<p className="radar-ok">Convite enviado. Se {sel.person.name.split(' ')[0]} topar, vocês podem se encontrar numa teia primeiro.</p>:
@@ -57,7 +57,7 @@ export function RadarSection(){
 }
 
 type Real={user_id:string;place_name:string;area:string;activity:string;nickname:string;interests:string[];km:number};
-/** nomi reais no radar agora (só perfis públicos; a regra é conferida no servidor). */
+/** nommi reais no radar agora (só perfis públicos; a regra é conferida no servidor). */
 function RealNearby({here,me}:{here:Place;me:string}){
   const {notify}=useFriends();const [list,setList]=useState<Real[]|null>(null);const [sent,setSent]=useState<string[]>([]);
   useEffect(()=>{let alive=true;(async()=>{
@@ -66,6 +66,6 @@ function RealNearby({here,me}:{here:Place;me:string}){
     const {data:profs}=await supabase.from('profiles').select('id,nickname,interests').in('id',ids);
     const out=(pres??[]).flatMap(p=>{const pr=profs?.find(x=>x.id===p.user_id);if(!pr)return[];const pl=PLACES.find(x=>x.name===p.place_name)??PLACES.find(x=>x.area===p.area);const d=p.place_name===here.name?0:pl?km(here,pl):5;return d>3?[]:[{...p,nickname:pr.nickname||'Nommi',interests:pr.interests??[],km:d}]}).sort((a,b)=>a.km-b.km);
     if(alive)setList(out)})();return()=>{alive=false}},[here,me]);
-  return <><div className="section-heading"><h2>nomi de verdade por perto</h2></div>
+  return <><div className="section-heading"><h2>nommi de verdade por perto</h2></div>
     {list===null?<p className="small-note">Procurando…</p>:list.length?<div className="activity-list">{list.map(r=><article className="activity" key={r.user_id}><span className="tone-icon teal"><Icon name="users"/></span><div><h3>{r.nickname} · topa {r.activity.toLowerCase()}</h3><p>{r.place_name} · {distanceLabel(r.km)}{r.interests.length?' · curte '+r.interests.slice(0,2).join(' e '):''}</p></div>{sent.includes(r.user_id)?<span className="boost-badge"><Icon name="check"/>Registrado</span>:<Button onClick={()=>{setSent([...sent,r.user_id]);notify('Interesse registrado. Quando o chat entre contas reais chegar, vocês poderão combinar por lá.')}}>Topo também</Button>}</article>)}</div>:<p className="small-note">Ainda ninguém com conta real por aqui agora. Você aparece para quem chegar depois.</p>}</>;
 }
