@@ -17,11 +17,22 @@ export type Message={text?:string;sticker?:number;mine:boolean;author?:string;ti
 export type Challenge={id:number;group:number;name:string;points:number;partner:number;status:'open'|'pending'|'done';code?:string};
 export type WallItem={id:number;author:string;status:'approved'|'pending'};
 export type Audience='todos'|'amizades'|'so-eu';
-export type Invite={id:number;title:string;category:string;date:string;place:string;host:number;joined:number[]};
+export type When='Hoje'|'Amanhã'|'Esta semana'|'Fim de semana'|'Depois';
+export const WHEN_OPTIONS:When[]=['Hoje','Amanhã','Esta semana','Fim de semana','Depois'];
+export const REGION_OPTIONS=['Centro-Sul','Centro','Savassi','Pampulha','Leste','Oeste'];
+export type Invite={id:number;title:string;category:string;date:string;place:string;host:number;joined:number[];when?:When;region?:string};
 export const demoInvites:Invite[]=[
-{id:1,title:'Academia com companhia',category:'Academia',date:'Sábado, 8h',place:'Perto do Parque Municipal',host:12,joined:[3]},
-{id:2,title:'Vinho para novos começos',category:'Vinho',date:'Sexta, 20h',place:'Bar do Vinho Azul · Savassi',host:4,joined:[1,3]},
-{id:3,title:'Natal em boa companhia',category:'Celebração',date:'25 de dez, 17h',place:'Região Centro-Sul',host:8,joined:[]}];
+{id:1,title:'Academia com companhia',category:'Academia',date:'Sábado, 8h',place:'Perto do Parque Municipal',host:12,joined:[3],when:'Fim de semana',region:'Centro-Sul'},
+{id:2,title:'Vinho para novos começos',category:'Vinho',date:'Sexta, 20h',place:'Bar do Vinho Azul · Savassi',host:4,joined:[1,3],when:'Esta semana',region:'Savassi'},
+{id:3,title:'Natal em boa companhia',category:'Celebração',date:'25 de dez, 17h',place:'Região Centro-Sul',host:8,joined:[],when:'Depois',region:'Centro-Sul'},
+{id:4,title:'Café antes do expediente',category:'Outro',date:'Quinta, 7h30',place:'Praça da Liberdade',host:1,joined:[3],when:'Esta semana',region:'Centro'},
+{id:5,title:'Vinho com vista para a lagoa',category:'Vinho',date:'Hoje, 19h30',place:'Perto da Pampulha',host:2,joined:[4],when:'Hoje',region:'Pampulha'},
+{id:6,title:'Corrida no parque',category:'Trilha',date:'Domingo, 7h',place:'Perto das Mangabeiras',host:10,joined:[3],when:'Fim de semana',region:'Leste'},
+{id:7,title:'Bolo caseiro e série',category:'Cozinha',date:'Amanhã, 18h',place:'Região Oeste',host:6,joined:[],when:'Amanhã',region:'Oeste'}];
+const norm=(t:string)=>t.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const WHEN_HINTS:[RegExp,When][]=[[/\bhoje\b/i,'Hoje'],[/amanh/i,'Amanhã'],[/sabado|domingo/i,'Fim de semana'],[/sexta|segunda|terca|quarta|quinta/i,'Esta semana']];
+export function inviteWhen(i:Invite):When|''{if(i.when)return i.when;for(const[re,w]of WHEN_HINTS)if(re.test(i.date))return w;return ''}
+export function inviteRegion(i:Invite):string{if(i.region)return i.region;const t=norm(i.place);for(const r of [...REGION_OPTIONS].sort((a,b)=>b.length-a.length))if(t.includes(norm(r)))return r;return ''}
 export type DemoState={visibility?:{fotos:Audience;roles:Audience;teia:Audience};mode?:'Presencial'|'Virtual'|'Híbrida';socialPosts?:{kind:'friend'|'moment';text:string;person?:number;author:string}[];invites?:Invite[];recentStickers?:number[];favoriteStickers?:number[];city:string;birthday:string;photo:string;nickname:string;interests:string[];goals:string[];cityOnly:boolean;wallApproval:boolean;adult:boolean;pro:boolean;points:number[];matches:number[];sent:number[];blocked:number[];messages:Record<string,Message[]>;groupMessages:Record<string,Message[]>;challenges:Challenge[];wall:WallItem[];visits:{code:string;people:number;bill:number}[];campaigns:{name:string;points:number;active:boolean}[];rewards:{partner:number;group:number;code:string}[]};
 export const initialState:DemoState={recentStickers:[],favoriteStickers:[],invites:demoInvites,city:'Belo Horizonte',birthday:'1991-01-01',photo:'',nickname:'Dani',interests:['karaokê','vinho'],goals:['conversar online','grupos'],cityOnly:true,wallApproval:true,adult:true,pro:false,points:[30,20,10],matches:[7,4,6],sent:[],blocked:[],messages:{'7':[{text:'Oi! Vi que você curte karaokê.',mine:false},{text:'Amo! Vamos marcar sábado?',mine:true}],'4':[{text:'Topa um vinho na sexta?',mine:false}],'6':[{text:'Que bom o match! Entra no nosso grupo?',mine:false}]},groupMessages:{'0':[{text:'Sábado tem karaokê?',mine:false,author:'Carla'},{sticker:3,mine:false,author:'Bia'},{text:'Bora! Já lancei o desafio.',mine:true}], '1':[{text:'Uma taça e muita conversa na sexta?',mine:false,author:'Léo'}], '2':[{text:'Qual música marcou sua semana?',mine:false,author:'Joana'}]},challenges:[{id:1,group:0,name:'Noite de karaokê',points:20,partner:0,status:'open'},{id:2,group:1,name:'Vinho em grupo',points:10,partner:1,status:'open'}],wall:[{id:0,author:'Carla',status:'approved'},{id:1,author:'Léo',status:'approved'},{id:3,author:'Dani',status:'approved'}],visits:[],campaigns:[{name:'Chope em dobro às terças',points:40,active:true},{name:'Taça de boas-vindas',points:30,active:true}],rewards:[]};
 export const money=(n:number)=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});

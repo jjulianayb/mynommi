@@ -279,3 +279,18 @@ body {font-family:'DM Sans',sans-serif;margin:0} h1,h2,h3,h4 {font-family:'Brico
 .plan-strip .invite-card{flex:0 0 272px;scroll-snap-align:start;display:flex;flex-direction:column}
 .plan-strip .invite-card .wide{margin-top:auto}
 .plan-strip .invite-head h3{font-size:16px}
+
+.plan-filters{display:flex;flex-direction:column;gap:6px;margin:-4px 0 14px}
+.plan-filter-pills{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:2px}
+.plan-filter-pills::-webkit-scrollbar{display:none}
+.friends-app .plan-pill{flex:none;min-height:38px;border-radius:999px;background:var(--card);font-size:12px;padding:7px 13px;display:flex;align-items:center;gap:6px}
+.friends-app .plan-pill.on{border-color:var(--primary);background:var(--butter)}
+.plan-pill b{font-weight:800;font-family:'DM Sans';font-size:11px}
+.plan-pill .friend-icon{width:14px;height:14px}
+.plan-pill .pill-caret{width:11px;opacity:.55}
+.friends-app .plan-clear{font-size:11px;color:var(--muted-foreground);min-height:30px;padding:4px 8px;align-self:flex-start}
+.plan-sheet-options{display:grid;gap:8px;padding-bottom:16px}
+.plan-sheet-options button{width:100%;justify-content:space-between;min-height:46px;font-size:14px}
+.plan-sheet-options .friend-icon{width:16px;height:16px}
+.plan-empty{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--card);border:1px dashed var(--border);border-radius:18px;padding:16px;font-size:13px;color:var(--muted-foreground)}
+.plan-empty button{font-size:12px;min-height:36px}
