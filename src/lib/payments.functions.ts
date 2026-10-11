@@ -50,8 +50,6 @@ export const createCreditCheckout = createServerFn({ method: 'POST' })
         ui_mode: 'embedded_page',
         return_url: data.returnUrl,
         customer: customerId,
-        customer_update: { address: 'auto' },
-        automatic_tax: { enabled: true },
         payment_intent_data: { description: product.name },
         metadata: { userId, priceId: data.priceId, managed_payments: 'false' },
       };
