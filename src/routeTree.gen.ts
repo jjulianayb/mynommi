@@ -25,7 +25,6 @@ import { Route as GruposRouteImport } from './routes/grupos'
 import { Route as LancarDesafioRouteImport } from './routes/lancar-desafio'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LoginParceiroRouteImport } from './routes/login-parceiro'
-import { Route as McpRouteImport } from './routes/mcp'
 import { Route as NotificacoesRouteImport } from './routes/notificacoes'
 import { Route as ParceiroRouteImport } from './routes/parceiro'
 import { Route as PerfilRouteImport } from './routes/perfil'
@@ -35,7 +34,6 @@ import { Route as ProRouteImport } from './routes/pro'
 import { Route as RadarRouteImport } from './routes/radar'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as TermosRouteImport } from './routes/termos'
-import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as GruposIdRouteImport } from './routes/grupos_.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -118,11 +116,6 @@ const LoginParceiroRoute = LoginParceiroRouteImport.update({
   path: '/login-parceiro',
   getParentRoute: () => rootRouteImport,
 } as any)
-const McpRoute = McpRouteImport.update({
-  id: '/mcp',
-  path: '/mcp',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const NotificacoesRoute = NotificacoesRouteImport.update({
   id: '/notificacoes',
   path: '/notificacoes',
@@ -168,12 +161,6 @@ const TermosRoute = TermosRouteImport.update({
   path: '/termos',
   getParentRoute: () => rootRouteImport,
 } as any)
-const Char91DotwellKnownChar93OauthProtectedResourceRoute =
-  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
-    id: '/.well-known/oauth-protected-resource',
-    path: '/.well-known/oauth-protected-resource',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const GruposIdRoute = GruposIdRouteImport.update({
   id: '/grupos_/$id',
   path: '/grupos/$id',
@@ -197,7 +184,6 @@ export interface FileRoutesByFullPath {
   '/lancar-desafio': typeof LancarDesafioRoute
   '/login': typeof LoginRoute
   '/login-parceiro': typeof LoginParceiroRoute
-  '/mcp': typeof McpRoute
   '/notificacoes': typeof NotificacoesRoute
   '/parceiro': typeof ParceiroRoute
   '/perfil': typeof PerfilRoute
@@ -207,7 +193,6 @@ export interface FileRoutesByFullPath {
   '/radar': typeof RadarRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/termos': typeof TermosRoute
-  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/grupos/$id': typeof GruposIdRoute
 }
 export interface FileRoutesByTo {
@@ -227,7 +212,6 @@ export interface FileRoutesByTo {
   '/lancar-desafio': typeof LancarDesafioRoute
   '/login': typeof LoginRoute
   '/login-parceiro': typeof LoginParceiroRoute
-  '/mcp': typeof McpRoute
   '/notificacoes': typeof NotificacoesRoute
   '/parceiro': typeof ParceiroRoute
   '/perfil': typeof PerfilRoute
@@ -237,7 +221,6 @@ export interface FileRoutesByTo {
   '/radar': typeof RadarRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/termos': typeof TermosRoute
-  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/grupos/$id': typeof GruposIdRoute
 }
 export interface FileRoutesById {
@@ -258,7 +241,6 @@ export interface FileRoutesById {
   '/lancar-desafio': typeof LancarDesafioRoute
   '/login': typeof LoginRoute
   '/login-parceiro': typeof LoginParceiroRoute
-  '/mcp': typeof McpRoute
   '/notificacoes': typeof NotificacoesRoute
   '/parceiro': typeof ParceiroRoute
   '/perfil': typeof PerfilRoute
@@ -268,7 +250,6 @@ export interface FileRoutesById {
   '/radar': typeof RadarRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/termos': typeof TermosRoute
-  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/grupos_/$id': typeof GruposIdRoute
 }
 export interface FileRouteTypes {
@@ -290,7 +271,6 @@ export interface FileRouteTypes {
     | '/lancar-desafio'
     | '/login'
     | '/login-parceiro'
-    | '/mcp'
     | '/notificacoes'
     | '/parceiro'
     | '/perfil'
@@ -300,7 +280,6 @@ export interface FileRouteTypes {
     | '/radar'
     | '/recuperar-senha'
     | '/termos'
-    | '/.well-known/oauth-protected-resource'
     | '/grupos/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -320,7 +299,6 @@ export interface FileRouteTypes {
     | '/lancar-desafio'
     | '/login'
     | '/login-parceiro'
-    | '/mcp'
     | '/notificacoes'
     | '/parceiro'
     | '/perfil'
@@ -330,7 +308,6 @@ export interface FileRouteTypes {
     | '/radar'
     | '/recuperar-senha'
     | '/termos'
-    | '/.well-known/oauth-protected-resource'
     | '/grupos/$id'
   id:
     | '__root__'
@@ -350,7 +327,6 @@ export interface FileRouteTypes {
     | '/lancar-desafio'
     | '/login'
     | '/login-parceiro'
-    | '/mcp'
     | '/notificacoes'
     | '/parceiro'
     | '/perfil'
@@ -360,7 +336,6 @@ export interface FileRouteTypes {
     | '/radar'
     | '/recuperar-senha'
     | '/termos'
-    | '/.well-known/oauth-protected-resource'
     | '/grupos_/$id'
   fileRoutesById: FileRoutesById
 }
@@ -381,7 +356,6 @@ export interface RootRouteChildren {
   LancarDesafioRoute: typeof LancarDesafioRoute
   LoginRoute: typeof LoginRoute
   LoginParceiroRoute: typeof LoginParceiroRoute
-  McpRoute: typeof McpRoute
   NotificacoesRoute: typeof NotificacoesRoute
   ParceiroRoute: typeof ParceiroRoute
   PerfilRoute: typeof PerfilRoute
@@ -391,7 +365,6 @@ export interface RootRouteChildren {
   RadarRoute: typeof RadarRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
   TermosRoute: typeof TermosRoute
-  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   GruposIdRoute: typeof GruposIdRoute
 }
 
@@ -509,13 +482,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginParceiroRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/mcp': {
-      id: '/mcp'
-      path: '/mcp'
-      fullPath: '/mcp'
-      preLoaderRoute: typeof McpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/notificacoes': {
       id: '/notificacoes'
       path: '/notificacoes'
@@ -579,13 +545,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermosRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.well-known/oauth-protected-resource': {
-      id: '/.well-known/oauth-protected-resource'
-      path: '/.well-known/oauth-protected-resource'
-      fullPath: '/.well-known/oauth-protected-resource'
-      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/grupos_/$id': {
       id: '/grupos_/$id'
       path: '/grupos/$id'
@@ -613,7 +572,6 @@ const rootRouteChildren: RootRouteChildren = {
   LancarDesafioRoute: LancarDesafioRoute,
   LoginRoute: LoginRoute,
   LoginParceiroRoute: LoginParceiroRoute,
-  McpRoute: McpRoute,
   NotificacoesRoute: NotificacoesRoute,
   ParceiroRoute: ParceiroRoute,
   PerfilRoute: PerfilRoute,
@@ -623,8 +581,6 @@ const rootRouteChildren: RootRouteChildren = {
   RadarRoute: RadarRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
   TermosRoute: TermosRoute,
-  Char91DotwellKnownChar93OauthProtectedResourceRoute:
-    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   GruposIdRoute: GruposIdRoute,
 }
 export const routeTree = rootRouteImport
