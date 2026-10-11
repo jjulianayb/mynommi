@@ -31,3 +31,5 @@
 - [x] Carteira de créditos simulada (Pix, Apple Pay, Google Pay), destaque de perfil e de convite.
 - [x] Perfis de empresas, teia da marca, "Agita aqui" e comunidade no painel do parceiro.
 - [ ] Cobrança real de créditos (aguarda contas reais e provedor de pagamento).
+- [x] Radar Nommi: usar localização (vira lugar público aproximado), busca entre 20 lugares, "Perto de você" e o que cada pessoa topa.
+- [x] Painel do parceiro: perfil e comunidade da marca + ideias de encontros com IA.
