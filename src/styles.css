@@ -250,3 +250,13 @@ body {font-family:'DM Sans',sans-serif;margin:0} h1,h2,h3,h4 {font-family:'Brico
 .moment-foot p{margin:0;font-size:13px;color:var(--muted-foreground);display:flex;align-items:center;gap:6px}
 .moment-foot .btn,.moment-foot button{justify-self:start;margin-top:4px}
 @media (min-width:768px){.moments-feed{grid-template-columns:1fr 1fr}}
+.friend-avatar img{display:block;width:100%;height:100%;object-fit:cover}
+.role-thumb{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
+.moment-art img{width:100%;height:220px;object-fit:cover;display:block}
+.grid-shot img{width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0}
+.grid-shot{position:relative;overflow:hidden}
+.grid-shot figcaption{position:absolute;left:0;right:0;bottom:0;z-index:1}
+.role-photo{width:100%;height:260px;object-fit:cover;border-radius:16px;display:block}
+.role-view-people{display:flex;justify-content:center;margin-top:-26px;position:relative}
+.role-view-people .friend-avatar{border:3px solid var(--card)}
+.role-view-people .friend-avatar:last-child{margin-left:-10px}
