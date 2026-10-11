@@ -307,3 +307,4 @@ body {font-family:'DM Sans',sans-serif;margin:0} h1,h2,h3,h4 {font-family:'Brico
 .pix-box{display:flex;gap:14px;align-items:center;margin:12px 0}.pix-qr{display:grid;grid-template-columns:repeat(7,1fr);width:96px;height:96px;flex:none;padding:6px;background:var(--background);border:1px solid var(--border);border-radius:10px}.pix-qr i.on{background:var(--foreground)}.pix-code{font-size:11px;word-break:break-all;color:var(--muted-foreground);margin:4px 0 8px}
 .company-head{display:flex;gap:12px;align-items:center;margin:16px 0}.company-head h1{font-size:26px}.company-wall{display:flex;gap:8px;flex-wrap:wrap}
 .radar-pin.boosted .friend-avatar,.radar-pin.boosted img{box-shadow:0 0 0 3px var(--sunshine)}
+.company-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.redemption+.redemption{margin-top:12px}
