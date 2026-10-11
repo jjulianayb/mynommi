@@ -8,6 +8,13 @@
       "when": 1791725056577,
       "tag": "0000_accounts_businesses_radar_credits",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791725125022,
+      "tag": "0001_business_intent_on_signup",
+      "breakpoints": true
     }
   ]
 }
