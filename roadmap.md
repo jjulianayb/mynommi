@@ -24,3 +24,7 @@
 - [x] Conta nova começa vazia (emptyState) e demonstração usa demoState.
 - [x] Início "Hoje": check-in de conexão, pergunta do dia, planos, pessoas, teias, momentos só de amizades.
 - [x] Sino só com pendências reais; cartão "Quem você ainda não respondeu".
+- [x] Teias abertas com entrada imediata, boas-vindas e "Sair da teia".
+- [x] Descobrir sem beco sem saída; sugestões de abertura em conversas vazias.
+- [x] Episódio da semana compacto no Início; campo "Sobre mim".
+- [x] Figurinhas e troféu com legendas neutras (arte recriada).

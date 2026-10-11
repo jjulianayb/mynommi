@@ -294,3 +294,7 @@ body {font-family:'DM Sans',sans-serif;margin:0} h1,h2,h3,h4 {font-family:'Brico
 .plan-sheet-options .friend-icon{width:16px;height:16px}
 .plan-empty{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--card);border:1px dashed var(--border);border-radius:18px;padding:16px;font-size:13px;color:var(--muted-foreground)}
 .plan-empty button{font-size:12px;min-height:36px}
+.episode-compact{padding-block:18px}
+.episode-compact h2{font-size:1.35rem}
+.open-teias{scroll-margin-top:84px;border-radius:24px;transition:box-shadow .6s ease}
+.open-teias.highlight{box-shadow:0 0 0 3px color-mix(in oklab,var(--primary) 35%,transparent);padding:8px}
