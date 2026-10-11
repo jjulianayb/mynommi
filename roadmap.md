@@ -1,3 +1,4 @@
+- [x] Correção: pessoa nommi, etiqueta Teias, estrelas apenas privadas no Clube e mural com aprovação obrigatória.
 # Nommi — marca, entrada e navegação
 - [x] Vocabulário nomi/Anfitriões/teias; estrelas visuais em vez de troféus.
 - [x] Cadastro real curto e redirecionamentos antigos; apresentação apenas por ?demo=1.

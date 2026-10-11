@@ -9,4 +9,4 @@ export function Sheet({title,onClose,children,side='bottom'}:{title:string;onClo
 }
 export function LoadingState(){return <div className="loading-state" role="status" aria-label="Carregando"><span className="skeleton skeleton-circle"/><span className="skeleton skeleton-line"/><span className="skeleton skeleton-banner"/><div className="skeleton-grid"><span className="skeleton"/><span className="skeleton"/><span className="skeleton"/></div><span className="sr-only">Carregando seu Nommi</span></div>}
 export function EmptyState({title,text,children}:{title:string;text:string;children?:ReactNode}){return <div className="empty-state"><Sticker id={4} size={112}/><h2>{title}</h2><p>{text}</p>{children}</div>}
-export function Brand(){return <span className="wordmark">nommi<span className="brand-dot"/></span>}
+export function Brand(){return <span className="wordmark" aria-label="nommi.">nommi<span className="brand-dot" aria-hidden="true"/></span>}

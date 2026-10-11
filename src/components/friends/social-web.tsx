@@ -12,7 +12,7 @@ export const slug = (name: string) => name.toLowerCase().normalize('NFD').replac
 export function NommiIdentity({ name, avatar, interests, mode, own }: { name: string; avatar: number; interests: string[]; mode: ConnectionMode; own: boolean }) {
   const { setState, notify } = useFriends(); const [card, setCard] = useState(false); const handle = 'nommi.me/' + slug(name.split(' ')[0] ?? name);
   return <div className="nommi-identity">
-    <Button variant="secondary" className="nommi-handle" onClick={() => setCard(true)}><Icon name="link" />{own ? 'Meu nomi' : 'nomi'}: <b>{handle}</b></Button>
+    <Button variant="secondary" className="nommi-handle" onClick={() => setCard(true)}><Icon name="link" />{own ? 'Meu nommi' : 'nommi'}: <b>{handle}</b></Button>
     <div className="mode-row" role="group" aria-label="Modo de amizade">{(['Presencial', 'Virtual', 'Híbrida'] as ConnectionMode[]).map(m => own
       ? <Button key={m} size="sm" variant={mode === m ? 'default' : 'ghost'} aria-pressed={mode === m} onClick={() => { setState(s => ({ ...s, mode: m })); notify('Modo de amizade: ' + m + '.') }}><Icon name={modeIcon[m]} />{m}</Button>
       : mode === m && <span key={m} className="mode-chip"><Icon name={modeIcon[m]} />Prefere amizade {m.toLowerCase()}</span>)}</div>

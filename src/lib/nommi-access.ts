@@ -4,7 +4,7 @@ export const SIGNUP_INTERESTS = ['café', 'karaokê', 'vinho', 'cinema', 'trilha
 
 export function signupDetails(input: { nickname: string; city: string; birthday: string; interests: string[] }, today = new Date()) {
   const profile = profileSchema.safeParse(input);
-  if (!profile.success) return { error: profile.error.issues[0]?.message ?? 'Confira seu nomi e sua cidade.' };
+  if (!profile.success) return { error: profile.error.issues[0]?.message ?? 'Confira seu nommi e sua cidade.' };
   const age = ageOn(input.birthday, today);
   if (age < 18 || age > 120) return { error: age >= 0 && age < 18 ? 'O Nommi é para quem tem 18 anos ou mais.' : 'Confira sua data de nascimento.' };
   const interests = [...new Set(input.interests)].filter(i => SIGNUP_INTERESTS.includes(i));
