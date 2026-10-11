@@ -63,23 +63,23 @@
 
 :root {
   --radius: 1.5rem;
-  --background: oklch(0.983 0.018 88);
+  --background: oklch(1 0 0);
   --foreground: oklch(0.252 0.029 264);
-  --card: oklch(0.991 0.010 88);
+  --card: oklch(0.995 0.004 95);
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.129 0.042 264.695);
   --primary: oklch(0.672 0.195 43);
   --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.932 0.032 88);
+  --secondary: oklch(0.955 0.012 95);
   --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
+  --muted: oklch(0.968 0.006 255);
   --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
+  --accent: oklch(0.968 0.006 255);
   --accent-foreground: oklch(0.208 0.042 265.755);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.903 0.036 88);
+  --border: oklch(0.915 0.008 255);
   --input: oklch(0.929 0.013 255.508);
   --ring: oklch(0.704 0.04 256.788);
   --chart-1: oklch(0.646 0.222 41.116);
@@ -144,10 +144,10 @@
 }
 
 :root {
- --background: oklch(0.983 0.018 88); --foreground: oklch(0.252 0.029 264); --card: oklch(0.991 0.010 88);
- --primary: oklch(0.604 0.215 27); --primary-foreground: oklch(1 0 0);
- --secondary: oklch(0.932 0.032 88); --secondary-foreground: var(--foreground); --muted-foreground: oklch(0.499 0.030 263);
- --border: oklch(0.903 0.036 88); --input: var(--border); --accent: oklch(0.962 0.030 88); --accent-foreground: var(--foreground);
+--background: oklch(1 0 0); --foreground: oklch(0.252 0.029 264); --card: oklch(0.995 0.004 95);
+--primary: oklch(0.604 0.215 27); --primary-foreground: oklch(1 0 0);
+--secondary: oklch(0.955 0.012 95); --secondary-foreground: var(--foreground); --muted-foreground: oklch(0.499 0.030 263);
+--border: oklch(0.915 0.008 255); --input: var(--border); --accent: oklch(0.968 0.006 255); --accent-foreground: var(--foreground);
  --blue: oklch(0.580 0.115 235); --teal: oklch(0.690 0.130 168); --sunshine: oklch(0.850 0.160 88); --butter: oklch(0.945 0.045 72); --paper: oklch(1 0 0);
  --skin-1: oklch(0.859 0.065 63); --skin-2: oklch(0.752 0.085 58); --skin-3: oklch(0.634 0.093 52); --skin-4: oklch(0.512 0.077 52); --skin-5: oklch(0.903 0.048 62);
  --hair-1: oklch(0.377 0.056 52); --hair-2: oklch(0.241 0.031 51); --hair-3: oklch(0.675 0.126 76);
