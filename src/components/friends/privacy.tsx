@@ -4,7 +4,7 @@ import { Icon } from './art';
 import { useFriends } from './store';
 
 type Area = 'fotos' | 'roles' | 'teia';
-const labels: Record<Area, [string, string]> = { fotos: ['Fotos e momentos', 'A grade de momentos do seu perfil.'], roles: ['Rolês', 'Suas saídas com amigas e amigos.'], teia: ['Teia de amizades', 'As teias e pessoas com quem você se conecta.'] };
+const labels: Record<Area, [string, string]> = { fotos: ['Fotos e momentos', 'A grade de momentos do seu perfil.'], roles: ['Rolês', 'Suas saídas com as suas amizades.'], teia: ['Teia de amizades', 'As teias e pessoas com quem você se conecta.'] };
 const audiences: [Audience, string][] = [['todos', 'Todo mundo no Nommi'], ['amizades', 'Só minhas amizades'], ['so-eu', 'Só eu']];
 export const defaultVisibility = { fotos: 'amizades', roles: 'amizades', teia: 'todos' } as Record<Area, Audience>;
 

@@ -19,7 +19,7 @@ export function ProfileRoles({ avatar, name }: { avatar: number; name: string })
   const [open, setOpen] = useState<number | null>(null); const r = open !== null ? roles[open] : undefined;
   const friend = r && people.find(p => p.id === r.friend);
   return <section className="roles" aria-label="Rolês">
-    <h2>Rolês <small>saídas com amigas e amigos</small></h2>
+    <h2>Rolês <small>saídas com as amizades</small></h2>
     <div className="roles-row">{roles.map((x, i) => <button key={x.title} type="button" className="role-bubble" onClick={() => setOpen(i)}><span className={'role-ring tone-' + x.tone}><img className="role-thumb" src={x.photo} alt="" loading="lazy" /></span><small>{x.title}</small></button>)}</div>
     {r && <Sheet title={r.title} onClose={() => setOpen(null)}><div className={'role-view tone-bg-' + r.tone}><span className="role-progress">{roles.map((_, i) => <i key={i} className={i <= open! ? 'on' : ''} />)}</span><img className="role-photo" src={r.photo} alt={r.title} /><div className="role-view-people"><Avatar id={avatar} size={44} /><Avatar id={r.friend} size={44} /></div><h3>{name.split(' ')[0]} e {friend?.name.split(' ')[0]}</h3><p><Icon name={r.icon} />{r.place} · {r.when}</p></div>
       <div className="role-actions"><Button variant="secondary" disabled={open === 0} onClick={() => setOpen(o => (o ?? 1) - 1)}>Anterior</Button><Button disabled={open === roles.length - 1} onClick={() => setOpen(o => (o ?? 0) + 1)}>Próximo<Icon name="arrow" /></Button></div>
