@@ -28,3 +28,6 @@
 - [x] Descobrir sem beco sem saída; sugestões de abertura em conversas vazias.
 - [x] Episódio da semana compacto no Início; campo "Sobre mim".
 - [x] Figurinhas e troféu com legendas neutras (arte recriada).
+- [x] Carteira de créditos simulada (Pix, Apple Pay, Google Pay), destaque de perfil e de convite.
+- [x] Perfis de empresas, teia da marca, "Agita aqui" e comunidade no painel do parceiro.
+- [ ] Cobrança real de créditos (aguarda contas reais e provedor de pagamento).

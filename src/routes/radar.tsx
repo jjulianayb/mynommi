@@ -2,7 +2,8 @@ import {createFileRoute,Link} from '@tanstack/react-router';
 import {useEffect,useState} from 'react';
 import {Avatar,Icon} from '@/components/friends/art';
 import {people,visibleInListings} from '@/lib/friends-data';
-import {useFriends} from '@/components/friends/store';
+import {useFriends} from '@/components/friends/store'
+import {SAMPLE_BOOSTED_PEOPLE} from '@/lib/credits';
 
 export const Route=createFileRoute('/radar')({head:()=>({meta:[{title:'Radar Nommi — quem topa um café por perto'},{name:'description',content:'Ative seu bonequinho Nommi em lugares públicos e veja quem também topa um café agora.'},{property:'og:title',content:'Radar Nommi — quem topa um café por perto'},{property:'og:description',content:'Ative seu bonequinho Nommi em lugares públicos e veja quem também topa um café agora.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]}),component:Radar});
 
@@ -29,7 +30,7 @@ function Radar(){
       <section className="radar-map" aria-label={'Pessoas Nommi em '+place}>
         <span className="radar-ring r1"/><span className="radar-ring r2"/><span className="radar-ring r3"/>
         <div className="radar-me"><Avatar id={3} size={56}/><small>Você</small></div>
-        {nearby.map(n=>{const p=people.find(x=>x.id===n.id);return <button key={n.id} type="button" className="radar-pin" style={{left:n.x+'%',top:n.y+'%'}} onClick={()=>setPick(n.id)} aria-label={p?.name+' — '+n.mood}><Avatar id={n.id} size={44}/><small>{p?.name.split(' ')[0]}</small></button>})}
+        {nearby.map(n=>{const p=people.find(x=>x.id===n.id);return <button key={n.id} type="button" className={'radar-pin'+(SAMPLE_BOOSTED_PEOPLE.includes(n.id)?' boosted':'')} style={{left:n.x+'%',top:n.y+'%'}} onClick={()=>setPick(n.id)} aria-label={p?.name+' — '+n.mood+(SAMPLE_BOOSTED_PEOPLE.includes(n.id)?' · em destaque':'')}><Avatar id={n.id} size={44}/><small>{p?.name.split(' ')[0]}</small></button>})}
       </section>
       <div className="card radar-status"><Icon name="pin"/><div><b>{place}</b><p className="muted small">{mood} · visível por {mins<60?mins+' min':mins/60+'h'} · {nearby.length} Nommis por aqui</p></div><button type="button" className="button ghost" onClick={()=>{setOn(false);setPick(null)}}>Sair do radar</button></div>
       {sel&&person&&<section className="card radar-card">
