@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AjudaRouteImport } from './routes/ajuda'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as CarteiraRouteImport } from './routes/carteira'
@@ -42,6 +43,11 @@ import { Route as GruposIdRouteImport } from './routes/grupos_.$id'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AjudaRoute = AjudaRouteImport.update({
@@ -187,6 +193,7 @@ const GruposIdRoute = GruposIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/ajuda': typeof AjudaRoute
   '/cadastro': typeof CadastroRoute
   '/carteira': typeof CarteiraRoute
@@ -218,6 +225,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/ajuda': typeof AjudaRoute
   '/cadastro': typeof CadastroRoute
   '/carteira': typeof CarteiraRoute
@@ -250,6 +258,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/ajuda': typeof AjudaRoute
   '/cadastro': typeof CadastroRoute
   '/carteira': typeof CarteiraRoute
@@ -283,6 +292,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/ajuda'
     | '/cadastro'
     | '/carteira'
@@ -314,6 +324,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/ajuda'
     | '/cadastro'
     | '/carteira'
@@ -345,6 +356,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/ajuda'
     | '/cadastro'
     | '/carteira'
@@ -377,6 +389,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   AjudaRoute: typeof AjudaRoute
   CadastroRoute: typeof CadastroRoute
   CarteiraRoute: typeof CarteiraRoute
@@ -414,6 +427,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ajuda': {
@@ -617,6 +637,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   AjudaRoute: AjudaRoute,
   CadastroRoute: CadastroRoute,
   CarteiraRoute: CarteiraRoute,
