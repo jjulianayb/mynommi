@@ -23,7 +23,13 @@ function CloudWallet({ userId }: { userId: string }) {
     ]);
     setAcc(a.data ?? { balance: 0, boost_until: null }); setHist(h.data ?? []);
   }
-  useEffect(() => { void load(); }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    void load();
+    // Após voltar do pagamento, atualiza o saldo algumas vezes até a confirmação chegar.
+    if (new URLSearchParams(window.location.search).get('compra') !== 'ok') return;
+    let n = 0; const t = setInterval(() => { n++; void load(); if (n >= 12) clearInterval(t); }, 5000);
+    return () => clearInterval(t);
+  }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
   const boosted = !!acc?.boost_until && new Date(acc.boost_until) > new Date();
   async function boost() {
     const { error } = await supabase.rpc('spend_boost');
