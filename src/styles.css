@@ -281,7 +281,7 @@ body {font-family:'DM Sans',sans-serif;margin:0} h1,h2,h3,h4 {font-family:'Brico
 .plan-strip .invite-head h3{font-size:16px}
 
 .plan-filters{display:flex;flex-direction:column;gap:6px;margin:-4px 0 14px}
-.plan-filter-pills{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.plan-filter-pills{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:2px}
 .plan-filter-pills::-webkit-scrollbar{display:none}
 .friends-app .plan-pill{flex:none;min-height:38px;border-radius:999px;background:var(--card);font-size:12px;padding:7px 13px;display:flex;align-items:center;gap:6px}
 .friends-app .plan-pill.on{border-color:var(--primary);background:var(--butter)}
