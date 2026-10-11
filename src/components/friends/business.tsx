@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { partners, people, getPartner, money } from '@/lib/friends-data';
@@ -9,7 +9,6 @@ import { EmptyState } from './surfaces';
 import { useFriends } from './store';
 import { useDemoSession } from './session';
 import { supabase } from '@/integrations/supabase/client';
-import { useEffect } from 'react';
 
 /** Carteira da conta real: saldo e destaque guardados no servidor. */
 function CloudWallet({ userId }: { userId: string }) {
