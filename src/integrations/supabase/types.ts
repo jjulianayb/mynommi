@@ -14,16 +14,256 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      businesses: {
+        Row: {
+          active: boolean
+          area: string
+          capacity: string
+          created_at: string
+          hours: string
+          id: string
+          interests: string[]
+          kind: string
+          name: string
+          note: string
+          offer: string
+          owner_id: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          area?: string
+          capacity?: string
+          created_at?: string
+          hours?: string
+          id?: string
+          interests?: string[]
+          kind?: string
+          name: string
+          note?: string
+          offer?: string
+          owner_id: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          area?: string
+          capacity?: string
+          created_at?: string
+          hours?: string
+          id?: string
+          interests?: string[]
+          kind?: string
+          name?: string
+          note?: string
+          offer?: string
+          owner_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      credit_accounts: {
+        Row: {
+          balance: number
+          boost_until: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          boost_until?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          boost_until?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      credit_ledger: {
+        Row: {
+          actor_id: string | null
+          amount: number
+          created_at: string
+          id: string
+          reason: string
+          user_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          amount: number
+          created_at?: string
+          id?: string
+          reason: string
+          user_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          amount?: number
+          created_at?: string
+          id?: string
+          reason?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      meetup_ideas: {
+        Row: {
+          bonus: string
+          business_id: string
+          created_at: string
+          description: string
+          id: string
+          owner_id: string
+          points: number
+          status: string
+          teia_size: string
+          title: string
+          welcoming: string
+          when_text: string
+        }
+        Insert: {
+          bonus?: string
+          business_id: string
+          created_at?: string
+          description?: string
+          id?: string
+          owner_id: string
+          points?: number
+          status?: string
+          teia_size?: string
+          title: string
+          welcoming?: string
+          when_text?: string
+        }
+        Update: {
+          bonus?: string
+          business_id?: string
+          created_at?: string
+          description?: string
+          id?: string
+          owner_id?: string
+          points?: number
+          status?: string
+          teia_size?: string
+          title?: string
+          welcoming?: string
+          when_text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meetup_ideas_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          about: string
+          city: string
+          created_at: string
+          id: string
+          interests: string[]
+          is_business: boolean
+          nickname: string
+          profile_mode: string
+          updated_at: string
+        }
+        Insert: {
+          about?: string
+          city?: string
+          created_at?: string
+          id: string
+          interests?: string[]
+          is_business?: boolean
+          nickname?: string
+          profile_mode?: string
+          updated_at?: string
+        }
+        Update: {
+          about?: string
+          city?: string
+          created_at?: string
+          id?: string
+          interests?: string[]
+          is_business?: boolean
+          nickname?: string
+          profile_mode?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      radar_presence: {
+        Row: {
+          activity: string
+          area: string
+          place_name: string
+          until: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          activity: string
+          area?: string
+          place_name: string
+          until: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          activity?: string
+          area?: string
+          place_name?: string
+          until?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      admin_adjust_credits: {
+        Args: { _amount: number; _reason: string; _user_id: string }
+        Returns: number
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      spend_boost: { Args: never; Returns: string }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +390,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
