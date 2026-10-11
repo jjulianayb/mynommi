@@ -29,7 +29,7 @@ export function SocialWeb({ name, avatar, photo }: { name: string; avatar: numbe
       <div className="web-center">{photo ? <img src={photo} alt="" /> : <Avatar id={avatar} size={72} />}</div>
       {groups.map((gr, i) => <Button key={gr.id} variant="ghost" className={'web-node' + (sel === i ? ' selected' : '')} style={{ left: pos[i]!.x + '%', top: pos[i]!.y + '%' }} onClick={() => setSel(i)} aria-pressed={sel === i}><span className={'tone-icon ' + gr.tone}><Icon name={gr.icon} /></span><small>{gr.name}</small></Button>)}
     </div>
-    <article className="web-detail"><div className="row"><span className={'tone-icon ' + g.tone}><Icon name={g.icon} /></span><div><h3>{g.name}</h3><p>{g.mode} · {g.members} pessoas · {3 + sel} encontros juntas</p></div></div>
+    <article className="web-detail"><div className="row"><span className={'tone-icon ' + g.tone}><Icon name={g.icon} /></span><div><h3>{g.name}</h3><p>{g.mode} · {g.members} pessoas · {3 + sel} encontros em comum</p></div></div>
       <div className="web-moments">{g.ids.slice(0, 4).map((id, i) => <figure key={id} className="web-moment"><div className="avatar-stack"><Avatar id={avatar} size={34} /><Avatar id={id} size={34} /></div><figcaption>{['Brinde de sexta', 'Refrão em dupla', 'Café sem pressa', 'Papo online'][i]}</figcaption></figure>)}</div>
       <p className="small-note">Ilustrações de exemplo. Fotos reais só com aprovação de todas.</p></article>
   </section>;
