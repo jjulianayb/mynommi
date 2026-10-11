@@ -26,3 +26,4 @@
 - Radar rules (places, nearest public place, approximate distance, privacy filter) live in src/lib/radar.ts; device coordinates are never persisted. Partner meetup ideas use a server function with the same best-effort in-memory rate limit as openers.
 
 - Credit balances change only through security-definer database functions (admin adjust, boost spend) that write the ledger; clients never write balances directly.
+- Real credit purchases use embedded card checkout; balances change only in the payment webhook via the idempotent grant_purchased_credits function (keyed by checkout session), so a client can never add credits itself.
