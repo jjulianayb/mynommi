@@ -4,7 +4,7 @@
 - [x] Verificar navegação, ações locais e animações no computador e celular.
 - [x] Conferir todas as telas e substituir qualquer ocorrência visível de Nomi por Nommi.
 - [x] Criar pacote de 24 figurinhas transparentes de 512 × 512.
-- [x] Adicionar bandeja Recentes, Favoritas e Pacotes nos chats individuais e de grupo.
+- [x] Adicionar bandeja Recentes, Favoritas e Pacotes nos chats individuais e de teia.
 - [x] Validar envio sem balão, horário e persistência de recentes/favoritas.
 - [x] Criar splash, boas-vindas, cadastro em seis etapas, login e recuperação simulados.
 - [x] Persistir sessão de demonstração; incluir sair e exclusão local com confirmação.
@@ -17,3 +17,7 @@
 - [x] Validar match, chat, aprovação do mural, confirmação de visita e resgate.
 - [x] Conferir telas pequenas, metadados e ausência de serviços reais.- [x] Fase 1/2: Seu Nommi (nommi.me/nome + Card Nommi), modo Presencial/Virtual/Híbrida, Minha Teia no perfil.
 - [ ] Fase 3: Momento Real (aguarda aprovação).
+- [x] Linguagem neutra em todo o app; grupos/turmas passam a se chamar "teias".
+- [x] Perfil público ou privado (cadastro, Configurações > Privacidade, selo no perfil, listagens).
+- [x] Proposta de parceiros no Clube, login de parceiro e boas-vindas; aviso de primeiro encontro.
+- [ ] Busca por nome de usuário (ainda não existe; respeitar perfis privados quando for criada).
