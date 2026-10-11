@@ -1,10 +1,14 @@
 import type { DemoState } from './friends-data';
 
 export const CREDIT_PACKS = [
-  { id: 'p10', credits: 10, price: 9.9 },
-  { id: 'p30', credits: 30, price: 24.9 },
-  { id: 'p80', credits: 80, price: 54.9 },
+  { id: 'p10', priceId: 'credits_10_once', credits: 10, price: 9.9 },
+  { id: 'p30', priceId: 'credits_30_once', credits: 30, price: 24.9 },
+  { id: 'p80', priceId: 'credits_80_once', credits: 80, price: 54.9 },
 ] as const;
+/** Quantos créditos um pacote pago concede; undefined se o pacote não existir. */
+export function creditsForPrice(priceId: unknown): number | undefined {
+  return CREDIT_PACKS.find(p => p.priceId === priceId)?.credits;
+}
 export type PayMethod = 'Pix' | 'Apple Pay' | 'Google Pay';
 export const PAY_METHODS: PayMethod[] = ['Pix', 'Apple Pay', 'Google Pay'];
 export const BOOST_COST = 5;
