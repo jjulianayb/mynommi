@@ -18,4 +18,5 @@
 - Use a shared fixed header and a native right-side navigation dialog instead of persistent navigation bars; expose creation through a floating action button.
 - Keep the social shell session-aware and leave entry/legal/help routes public; backend authentication remains out of scope.
 - Keep the chat sticker catalogue and tray in focused reusable modules; both private and group chats share browser-local favorites, recents, and message timestamps.
-- MCP server lives in src/lib/mcp (one tool per file) and exposes only static demo catalog data publicly; browser-local user state is never reachable.
+- No MCP server: the public demo catalog server was removed; reintroduce only with authenticated access once real accounts exist.
+- The AI opener endpoint applies a best-effort in-memory rate limit (per IP and global daily cap); it is not durable across worker instances.
