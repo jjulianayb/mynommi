@@ -3,9 +3,9 @@ import { buyCredits, boostProfile, boostInvite, isBoosted, withBoosts } from '@/
 const now = new Date('2026-10-11T12:00:00Z');
 describe('Créditos de alcance', () => {
   it('pacotes somam 10, 30 e 80 créditos', () => {
-    expect(buyCredits({}, 'p10', 'Pix', now).credits).toBe(10);
+    expect(buyCredits({ credits: 0 }, 'p10', 'Pix', now).credits).toBe(10);
     expect(buyCredits({ credits: 10 }, 'p30', 'Apple Pay', now).credits).toBe(40);
-    expect(buyCredits({}, 'p80', 'Google Pay', now).credits).toBe(80);
+    expect(buyCredits({ credits: 0 }, 'p80', 'Google Pay', now).credits).toBe(80);
   });
   it('destaque custa 5 créditos e dura 24 h', () => {
     const s = boostProfile({ credits: 7 }, now)!;
