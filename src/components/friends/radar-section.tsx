@@ -8,7 +8,7 @@ import {useDemoSession} from '@/components/friends/session';
 import {supabase} from '@/integrations/supabase/client';
 import {km,distanceLabel} from '@/lib/radar';
 import {SAMPLE_BOOSTED_PEOPLE} from '@/lib/credits';
-import {ACTIVITIES,PLACES,PLACE_TYPES,nearestPlace,nearbynomi,searchPlaces,type Activity,type Place,type PlaceType} from '@/lib/radar';
+import {ACTIVITIES,PLACES,PLACE_TYPES,nearestPlace,nearbyNommis,searchPlaces,type Activity,type Place,type PlaceType} from '@/lib/radar';
 
 type Saved={on:boolean;place:string;activity:Activity;mins:number;until:number};
 export function RadarSection(){
@@ -20,7 +20,7 @@ export function RadarSection(){
   function save(next:Partial<Saved>){try{localStorage.setItem('nommi-radar',JSON.stringify({on,place:place.name,activity,mins,until:Date.now()+mins*60000,...next}))}catch{}}
   function locate(){if(!('geolocation' in navigator)){notify('Seu aparelho não permite localização. Escolha o lugar na lista.');return}setLocating(true);navigator.geolocation.getCurrentPosition(pos=>{const p=nearestPlace(pos.coords.latitude,pos.coords.longitude);setPlace(p);setCustom('');setQuery('');setLocating(false);notify('Lugar mais próximo: '+p.name+'. Sua localização exata não é guardada.')},()=>{setLocating(false);notify('Não conseguimos sua localização. Escolha o lugar na lista.')},{enableHighAccuracy:false,timeout:10000,maximumAge:300000})}
   const results=searchPlaces(query,type);
-  const nearby=demoMode?nearbynomi(place,{matches:state.matches,blocked:state.blocked,activity:filter}):[];
+  const nearby=demoMode?nearbyNommis(place,{matches:state.matches,blocked:state.blocked,activity:filter}):[];
   const sel=nearby.find(n=>n.id===pick);
   const label=custom||place.name;
   return <div className="radar-page">
@@ -49,7 +49,7 @@ export function RadarSection(){
         <div className="radar-actions"><Button type="button" onClick={()=>{setSent([...sent,sel.id]);notify('Convite enviado para '+sel.person.name.split(' ')[0]+'.')}}>Topo também</Button><Button asChild variant="secondary"><Link to="/perfil" search={{p:sel.id}}>Ver perfil</Link></Button></div>}
         <p className="muted small">Primeiro encontro? Prefira um lugar público e avise alguém de confiança.</p>
       </section>}
-      {cloudUser&&<RealNearby here={place} me={cloudUser.id}/>}<div className="section-heading"><h2>{cloudUser?'Exemplos por perto':'Perto de você'}</h2></div>
+      {cloudUser&&<RealNearby here={place} me={cloudUser.id}/>}<div className="section-heading"><h2>{cloudUser?'Escolha o que você topa':'Perto de você'}</h2></div>
       <div className="chips">{(['',...ACTIVITIES] as const).map(m=><Button variant="ghost" key={m||'todos'} type="button" className={'chip'+(m===filter?' active':'')} aria-pressed={m===filter} onClick={()=>setFilter(m)}>{m||'Tudo'}</Button>)}</div>
       {nearby.length?<div className="activity-list">{nearby.map(n=><Button variant="ghost" type="button" className="activity radar-row" key={n.id} onClick={()=>{setPick(n.id);window.scrollTo({top:0,behavior:'smooth'})}}><Avatar id={n.id} size={44}/><div><h3>{n.person.name.split(' ')[0]} · topa {n.activity.toLowerCase()}</h3><p>{n.place} · {n.label}</p></div><Icon name="arrow"/></Button>)}</div>:<EmptyState title="Ninguém por perto com essa vontade agora." text="Tente outra opção ou entre numa teia aberta."><Button asChild><Link to="/grupos" hash="teias-abertas">Ver teias abertas</Link></Button></EmptyState>}
     </>}

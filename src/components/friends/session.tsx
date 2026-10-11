@@ -27,7 +27,7 @@ export function DemoSessionProvider({children}:{children:ReactNode}){
    // Complete profile fields collected at signup using existing owner-editable columns only.
    if(meta['nommi_profile_pending']===true){
     const r=signupDetails({nickname:typeof meta['nickname']==='string'?meta['nickname']:'',city:typeof meta['city']==='string'?meta['city']:'',birthday:typeof meta['birthday']==='string'?meta['birthday']:'',interests:Array.isArray(meta['interests'])?meta['interests']:[]});
-    if(r.data){const {data:saved}=await supabase.from('profiles').update({nickname:r.data.nickname,city:r.data.city,interests:r.data.interests}).eq('id',u.id).select('nickname,city,interests,about,profile_mode,is_business').maybeSingle();if(saved)p=saved;}
+    if(r.data){const {data:saved}=await supabase.from('profiles').update({nickname:r.data.nickname,city:r.data.city,interests:r.data.interests}).eq('id',u.id).select('nickname,city,interests,about,profile_mode,is_business').maybeSingle();if(saved){p=saved;await supabase.auth.updateUser({data:{nommi_profile_pending:false}});}}
    }
    try{if(localStorage.getItem('nommi-business-intent')){const {error}=await supabase.from('profiles').update({is_business:true}).eq('id',u.id);if(!error&&p)p={...p,is_business:true};localStorage.removeItem('nommi-business-intent');}}catch{}
    if(!alive||request!==version)return;
