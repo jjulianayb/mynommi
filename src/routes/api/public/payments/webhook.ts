@@ -27,6 +27,7 @@ export const Route = createFileRoute('/api/public/payments/webhook')({
           const obj = event.data.object;
           if (event.type === 'checkout.session.completed' && obj.payment_status !== 'unpaid') await fulfill(obj, env);
           if (event.type === 'checkout.session.async_payment_succeeded') await fulfill(obj, env);
+          if (event.type === 'checkout.session.async_payment_failed') console.warn('Pix não pago/expirado; nada creditado', obj.id);
           return Response.json({ received: true });
         } catch (e) {
           console.error('Webhook error:', e);

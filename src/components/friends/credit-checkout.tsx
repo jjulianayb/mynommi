@@ -29,7 +29,7 @@ export function CreditPurchase() {
     {paymentsTestMode && <p className="small-note">Modo de teste: nenhuma cobrança real. Use o cartão 4242 4242 4242 4242.</p>}
     <div className="pack-grid" role="radiogroup" aria-label="Pacotes de créditos">{CREDIT_PACKS.map(p => <Button key={p.id} type="button" variant="outline" role="radio" aria-checked={pack === p.id} className={'pack-card ' + (pack === p.id ? 'selected' : '')} onClick={() => { setPack(p.id); setOpen(null); }}><strong>{p.credits}</strong><span>créditos</span><small>{money(p.price)}</small></Button>)}</div>
     {open ? <><Checkout key={open} priceId={open} /><Button variant="secondary" className="wide" onClick={() => setOpen(null)}>Cancelar</Button></>
-      : <Button className="wide" onClick={() => setOpen(chosen.priceId)}>Pagar {money(chosen.price)} com cartão</Button>}
-    <p className="small-note">Pagamento seguro por cartão. Os créditos entram no saldo assim que o pagamento é confirmado.</p>
+      : <Button className="wide" onClick={() => setOpen(chosen.priceId)}>Pagar {money(chosen.price)}</Button>}
+    <p className="small-note">Pague com cartão ou Pix (quando disponível). No Pix, os créditos entram só depois que o pagamento é confirmado; se não pagar, nada é cobrado.</p>
   </>;
 }

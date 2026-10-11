@@ -44,18 +44,23 @@ export const createCreditCheckout = createServerFn({ method: 'POST' })
       const productId = typeof price.product === 'string' ? price.product : price.product.id;
       const product = await stripe.products.retrieve(productId);
       const customerId = await resolveOrCreateCustomer(stripe, { email: user?.email ?? undefined, userId });
-      const session = await stripe.checkout.sessions.create({
+      const base = {
         line_items: [{ price: price.id, quantity: 1 }],
         mode: 'payment',
         ui_mode: 'embedded_page',
-        payment_method_types: ['card'],
         return_url: data.returnUrl,
         customer: customerId,
-        customer_update: { address: 'auto' },
-        automatic_tax: { enabled: true },
         payment_intent_data: { description: product.name },
         metadata: { userId, priceId: data.priceId, managed_payments: 'false' },
-      } as Stripe.Checkout.SessionCreateParams);
+      };
+      // Tenta cartão + Pix; se a conta ainda não aceita Pix, segue só com cartão.
+      let session: Stripe.Checkout.Session;
+      try {
+        session = await stripe.checkout.sessions.create({ ...base, payment_method_types: ['card', 'pix'], payment_method_options: { pix: { expires_after_seconds: 3600 } } } as Stripe.Checkout.SessionCreateParams);
+      } catch (pixError) {
+        console.warn('Pix indisponível, usando só cartão:', getStripeErrorMessage(pixError));
+        session = await stripe.checkout.sessions.create({ ...base, payment_method_types: ['card'] } as Stripe.Checkout.SessionCreateParams);
+      }
       return { clientSecret: session.client_secret ?? '' };
     } catch (error) {
       return { error: getStripeErrorMessage(error) };

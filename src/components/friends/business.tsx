@@ -23,7 +23,13 @@ function CloudWallet({ userId }: { userId: string }) {
     ]);
     setAcc(a.data ?? { balance: 0, boost_until: null }); setHist(h.data ?? []);
   }
-  useEffect(() => { void load(); }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    void load();
+    // Após voltar do pagamento, atualiza o saldo algumas vezes até a confirmação chegar.
+    if (new URLSearchParams(window.location.search).get('compra') !== 'ok') return;
+    let n = 0; const t = setInterval(() => { n++; void load(); if (n >= 12) clearInterval(t); }, 5000);
+    return () => clearInterval(t);
+  }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
   const boosted = !!acc?.boost_until && new Date(acc.boost_until) > new Date();
   async function boost() {
     const { error } = await supabase.rpc('spend_boost');
@@ -36,7 +42,7 @@ function CloudWallet({ userId }: { userId: string }) {
     <section className="card wallet-balance"><span className="tone-icon yellow"><Icon name="star" /></span><div><small>Seu saldo</small><strong>{acc ? acc.balance : '…'} créditos</strong></div>{boosted && <span className="boost-badge"><Icon name="spark" />Em destaque até {fmt(acc!.boost_until as string)}</span>}</section>
     <div className="activity-list"><article className="activity"><span className="tone-icon red"><Icon name="spark" /></span><div><h3>Destaque por 24 h</h3><p>Seu perfil aparece antes para quem combina · {BOOST_COST} créditos</p></div><Button onClick={boost} disabled={!acc}>{boosted ? 'Estender' : 'Destacar'}</Button></article></div>
     <div className="section-heading"><h2>Adicionar créditos</h2></div>
-    {typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('compra') === 'ok' && <p className="small-note">Pagamento recebido! Seus créditos aparecem no saldo em instantes. <Button variant="link" onClick={() => void load()}>Atualizar saldo</Button></p>}
+    {typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('compra') === 'ok' && <p className="small-note">Pagamento enviado! Cartão confirma na hora; Pix aguardando pagamento até a confirmação. Os créditos aparecem no saldo assim que confirmar. <Button variant="link" onClick={() => void load()}>Atualizar saldo</Button></p>}
     <CreditPurchase />
     <div className="section-heading"><h2>Histórico</h2></div>
     {hist.length ? <div className="activity-list">{hist.map((h, i) => <div className="activity" key={i}><span className={'tone-icon ' + (h.amount > 0 ? 'teal' : 'red')}><Icon name={h.amount > 0 ? 'plus' : 'spark'} /></span><div><h3>{h.reason}</h3><p>{fmt(h.created_at)}</p></div><b>{h.amount > 0 ? '+' : ''}{h.amount}</b></div>)}</div> : <p className="small-note">Ainda não há movimentações.</p>}
