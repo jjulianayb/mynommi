@@ -17,6 +17,7 @@ import { Route as ClubeRouteImport } from './routes/clube'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as ConversasRouteImport } from './routes/conversas'
 import { Route as ConvidarRouteImport } from './routes/convidar'
+import { Route as ConvitesRouteImport } from './routes/convites'
 import { Route as CriarGrupoRouteImport } from './routes/criar-grupo'
 import { Route as DescobrirRouteImport } from './routes/descobrir'
 import { Route as EscreverAmigaRouteImport } from './routes/escrever-amiga'
@@ -75,6 +76,11 @@ const ConversasRoute = ConversasRouteImport.update({
 const ConvidarRoute = ConvidarRouteImport.update({
   id: '/convidar',
   path: '/convidar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConvitesRoute = ConvitesRouteImport.update({
+  id: '/convites',
+  path: '/convites',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CriarGrupoRoute = CriarGrupoRouteImport.update({
@@ -183,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/configuracoes': typeof ConfiguracoesRoute
   '/conversas': typeof ConversasRoute
   '/convidar': typeof ConvidarRoute
+  '/convites': typeof ConvitesRoute
   '/criar-grupo': typeof CriarGrupoRoute
   '/descobrir': typeof DescobrirRoute
   '/escrever-amiga': typeof EscreverAmigaRoute
@@ -212,6 +219,7 @@ export interface FileRoutesByTo {
   '/configuracoes': typeof ConfiguracoesRoute
   '/conversas': typeof ConversasRoute
   '/convidar': typeof ConvidarRoute
+  '/convites': typeof ConvitesRoute
   '/criar-grupo': typeof CriarGrupoRoute
   '/descobrir': typeof DescobrirRoute
   '/escrever-amiga': typeof EscreverAmigaRoute
@@ -242,6 +250,7 @@ export interface FileRoutesById {
   '/configuracoes': typeof ConfiguracoesRoute
   '/conversas': typeof ConversasRoute
   '/convidar': typeof ConvidarRoute
+  '/convites': typeof ConvitesRoute
   '/criar-grupo': typeof CriarGrupoRoute
   '/descobrir': typeof DescobrirRoute
   '/escrever-amiga': typeof EscreverAmigaRoute
@@ -273,6 +282,7 @@ export interface FileRouteTypes {
     | '/configuracoes'
     | '/conversas'
     | '/convidar'
+    | '/convites'
     | '/criar-grupo'
     | '/descobrir'
     | '/escrever-amiga'
@@ -302,6 +312,7 @@ export interface FileRouteTypes {
     | '/configuracoes'
     | '/conversas'
     | '/convidar'
+    | '/convites'
     | '/criar-grupo'
     | '/descobrir'
     | '/escrever-amiga'
@@ -331,6 +342,7 @@ export interface FileRouteTypes {
     | '/configuracoes'
     | '/conversas'
     | '/convidar'
+    | '/convites'
     | '/criar-grupo'
     | '/descobrir'
     | '/escrever-amiga'
@@ -361,6 +373,7 @@ export interface RootRouteChildren {
   ConfiguracoesRoute: typeof ConfiguracoesRoute
   ConversasRoute: typeof ConversasRoute
   ConvidarRoute: typeof ConvidarRoute
+  ConvitesRoute: typeof ConvitesRoute
   CriarGrupoRoute: typeof CriarGrupoRoute
   DescobrirRoute: typeof DescobrirRoute
   EscreverAmigaRoute: typeof EscreverAmigaRoute
@@ -438,6 +451,13 @@ declare module '@tanstack/react-router' {
       path: '/convidar'
       fullPath: '/convidar'
       preLoaderRoute: typeof ConvidarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/convites': {
+      id: '/convites'
+      path: '/convites'
+      fullPath: '/convites'
+      preLoaderRoute: typeof ConvitesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/criar-grupo': {
@@ -585,6 +605,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConfiguracoesRoute: ConfiguracoesRoute,
   ConversasRoute: ConversasRoute,
   ConvidarRoute: ConvidarRoute,
+  ConvitesRoute: ConvitesRoute,
   CriarGrupoRoute: CriarGrupoRoute,
   DescobrirRoute: DescobrirRoute,
   EscreverAmigaRoute: EscreverAmigaRoute,
