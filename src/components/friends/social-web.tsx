@@ -23,7 +23,7 @@ export function NommiIdentity({ name, avatar, interests, mode, own }: { name: st
 export function SocialWeb({ name, avatar, photo }: { name: string; avatar: number; photo?: string }) {
   const [sel, setSel] = useState(0); const g = groups[sel] ?? groups[0]!;
   const pos = [{ x: 50, y: 14 }, { x: 15, y: 74 }, { x: 85, y: 74 }];
-  return <section className="social-web"><h2>Minha teia</h2><p className="small-note">Como {name.split(' ')[0]} se conecta com as pessoas.</p>
+  return <section className="social-web"><h2>Teia de amizades</h2><p className="small-note">Com quem {name.split(' ')[0]} se conecta. As teias de que participa ficam em outra aba.</p>
     <div className="web-canvas">
       <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">{pos.map((p, i) => <line key={i} x1="50" y1="50" x2={p.x} y2={p.y} className={'web-line ' + (groups[i]?.tone ?? '')} />)}</svg>
       <div className="web-center">{photo ? <img src={photo} alt="" /> : <Avatar id={avatar} size={72} />}</div>
