@@ -16,7 +16,7 @@
 - Keep demo access in a separate browser-only session provider; persist only simulated email/session flags, never passwords, and never use it as real authorization.
 - Use native modal dialogs for bottom sheets so keyboard focus and dismissal stay accessible.
 - Use a shared fixed header, five-slot bottom navigation and native dialogs for secondary navigation and creation; this keeps primary journeys directly accessible.
-- Keep the social shell session-aware and leave entry/legal/help routes public; backend authentication remains out of scope.
+- Keep the social shell session-aware and leave entry/legal/help routes public; private data handlers continue enforcing their own existing server authentication.
 - Browser-local teia membership, attendance history and created teias use the shared helpers in src/lib/teias.ts; no shared teia database exists, so never present local participation as real multi-account enrollment.
 - Validate short signup through src/lib/nommi-access.ts and populate existing profile fields after authentication; birth date remains Auth metadata because the profile schema has no birth-date column.
 - Host-only frontend affordances use the authenticated profile flag, not demo session flags; this controls presentation without changing existing server authorization.
@@ -29,3 +29,5 @@
 
 - Credit balances change only through security-definer database functions (admin adjust, boost spend) that write the ledger; clients never write balances directly.
 - Real credit purchases use embedded card checkout; balances change only in the payment webhook via the idempotent grant_purchased_credits function (keyed by checkout session), so a client can never add credits itself.
+
+- Keep the visual reward catalogue in a focused module; it reads existing published host ideas without modifying payment or reward-balance rules.

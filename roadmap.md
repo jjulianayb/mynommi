@@ -1,45 +1,10 @@
-# Nommi — etapa visual
-- [ ] Rodada de marca: nomi, Anfitriões, teias e estrelas visuais, sem tocar em pagamentos/admin/banco.
-- [ ] Entrada real curta, redirecionamentos antigos e demonstração só por link de apresentação.
-- [ ] Navegação inferior, Início focado, ações de criação e áreas exclusivas de anfitrião real.
-- [ ] Seletores das teias participantes e conversas apenas após teia compartilhada.
-- [ ] Testar regras e conferir telas no celular e computador; explicar limites de dados reais.
-- [x] Trocar barras de navegação por topo fixo, gaveta direita e botão flutuante com cinco ações.
-- [x] Adicionar escrever sobre amiga, postar momento, check-in e menu de segurança em outros perfis.
-- [x] Verificar navegação, ações locais e animações no computador e celular.
-- [x] Conferir todas as telas e substituir qualquer ocorrência visível de Nomi por Nommi.
-- [x] Criar pacote de 24 figurinhas transparentes de 512 × 512.
-- [x] Adicionar bandeja Recentes, Favoritas e Pacotes nos chats individuais e de teia.
-- [x] Validar envio sem balão, horário e persistência de recentes/favoritas.
-- [x] Criar splash, boas-vindas, cadastro em seis etapas, login e recuperação simulados.
-- [x] Persistir sessão de demonstração; incluir sair e exclusão local com confirmação.
-- [x] Reorganizar topo e navegação inferior em cinco itens; adicionar folhas de ações e configurações.
-- [x] Incluir telas auxiliares, estados vazios/carregamento e acabamento em telas pequenas.
-- [x] Validar entrada completa, navegação, sessão, configurações e saída.
-- [x] Aplicar nome provisório Nommi em toda a interface; continuar no projeto existente.
-- [x] Reproduzir identidade, avatares, ícones e figurinhas do anexo.
-- [x] Construir todas as telas e navegação com dados de exemplo locais.
-- [x] Validar match, chat, aprovação do mural, confirmação de visita e resgate.
-- [x] Conferir telas pequenas, metadados e ausência de serviços reais.- [x] Fase 1/2: Seu Nommi (nommi.me/nome + Card Nommi), modo Presencial/Virtual/Híbrida, Minha Teia no perfil.
-- [ ] Fase 3: Momento Real (aguarda aprovação).
-- [x] Linguagem neutra em todo o app; grupos/turmas passam a se chamar "teias".
-- [x] Perfil público ou privado (cadastro, Configurações > Privacidade, selo no perfil, listagens).
-- [x] Proposta de parceiros no Clube, login de parceiro e boas-vindas; aviso de primeiro encontro.
-- [ ] Busca por nome de usuário (ainda não existe; respeitar perfis privados quando for criada).
-- [x] Conta nova começa vazia (emptyState) e demonstração usa demoState.
-- [x] Início "Hoje": check-in de conexão, pergunta do dia, planos, pessoas, teias, momentos só de amizades.
-- [x] Sino só com pendências reais; cartão "Quem você ainda não respondeu".
-- [x] Teias abertas com entrada imediata, boas-vindas e "Sair da teia".
-- [x] Descobrir sem beco sem saída; sugestões de abertura em conversas vazias.
-- [x] Episódio da semana compacto no Início; campo "Sobre mim".
-- [x] Figurinhas e troféu com legendas neutras (arte recriada).
-- [x] Carteira de créditos simulada (Pix, Apple Pay, Google Pay), destaque de perfil e de convite.
-- [x] Perfis de empresas, teia da marca, "Agita aqui" e comunidade no painel do parceiro.
-- [ ] Cobrança real de créditos (aguarda contas reais e provedor de pagamento).
-- [x] Radar Nommi: usar localização (vira lugar público aproximado), busca entre 20 lugares, "Perto de você" e o que cada pessoa topa.
-- [x] Painel do parceiro: perfil e comunidade da marca + ideias de encontros com IA.
-- [x] Botão "Explorar como parceiro" na boas-vindas e link do painel no menu.
-- [x] Contas reais de pessoas e empresas (e-mail, Google, Apple); Radar e ideias do parceiro gravados no servidor.
-- [x] Painel de administração em /admin (netnommi@gmail.com).
-- [x] Saldo e destaque guardados no servidor.
-- [ ] Pagamento real (Pix, Apple Pay, Google Pay, vários países) — etapa 2, aguarda aprovação.
+# Nommi — marca, entrada e navegação
+- [x] Vocabulário nomi/Anfitriões/teias; estrelas visuais em vez de troféus.
+- [x] Cadastro real curto e redirecionamentos antigos; apresentação apenas por ?demo=1.
+- [x] Navegação inferior em cinco itens; menu secundário e três ações no +.
+- [x] Início focado, Radar integrado e Desafios dentro de Teias.
+- [x] Carteira e painel expostos somente a anfitrião real; pagamentos e administração preservados.
+- [x] Seletores reutilizam teias participantes/criadas; conversa exige encontro anterior na mesma teia.
+- [x] Conferir telas no celular/computador; 36 testes passaram e aplicação sem erros.
+- [ ] Verificar cadastro confirmado e entrada de anfitrião real de ponta a ponta — aguarda sessão da responsável na prévia.
+- [ ] Rolês, teias, presenças em encontros e conversas compartilhadas entre contas — requer futura autorização para alterar tabelas/regras, fora desta rodada.
