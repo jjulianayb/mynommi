@@ -25,7 +25,7 @@ export function PartnerIdeas() {
     catch { setError('As ideias estão indisponíveis no momento. Tente mais tarde.'); }
     finally { setLoading(false); }
   }
-  function useIdea(i: MeetupIdea) {
+  function applyIdea(i: MeetupIdea) {
     setState(s => ({ ...s, challenges: [...s.challenges, { id: Math.max(0, ...s.challenges.map(c => c.id)) + 1, group: 0, name: i.title.slice(0, 60), points: i.points, partner: 0, status: 'open' }] }));
     notify('Encontro criado como desafio para as teias.');
   }
@@ -50,7 +50,7 @@ export function PartnerIdeas() {
       <p className="small-note"><Icon name="clock" />{i.when} · {i.teiaSize}</p>
       <p className="small-note"><Icon name="gift" />{i.bonus} · +{i.points} pontos da teia</p>
       <p className="idea-welcome"><Icon name="heart" />{i.welcoming}</p>
-      <Button variant="secondary" onClick={() => useIdea(i)}><Icon name="check" />Usar como desafio</Button>
+      <Button variant="secondary" onClick={() => applyIdea(i)}><Icon name="check" />Usar como desafio</Button>
     </article>)}</div>}
     <p className="small-note">Ideias criadas por IA: revise antes de divulgar.</p>
   </section>;
