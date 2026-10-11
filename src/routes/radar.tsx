@@ -1,44 +1,56 @@
 import {createFileRoute,Link} from '@tanstack/react-router';
 import {useEffect,useState} from 'react';
+import {Button} from '@/components/ui/button';
 import {Avatar,Icon} from '@/components/friends/art';
-import {people,visibleInListings} from '@/lib/friends-data';
-import {useFriends} from '@/components/friends/store'
+import {EmptyState} from '@/components/friends/surfaces';
+import {useFriends} from '@/components/friends/store';
 import {SAMPLE_BOOSTED_PEOPLE} from '@/lib/credits';
+import {ACTIVITIES,PLACES,PLACE_TYPES,nearestPlace,nearbyNommis,searchPlaces,type Activity,type Place,type PlaceType} from '@/lib/radar';
 
 export const Route=createFileRoute('/radar')({head:()=>({meta:[{title:'Radar Nommi — quem topa um café por perto'},{name:'description',content:'Ative seu bonequinho Nommi em lugares públicos e veja quem também topa um café agora.'},{property:'og:title',content:'Radar Nommi — quem topa um café por perto'},{property:'og:description',content:'Ative seu bonequinho Nommi em lugares públicos e veja quem também topa um café agora.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]}),component:Radar});
 
-const places=['Shopping Pátio Savassi','Parque Municipal','Café do Mercado Central','Livraria Quixote'];
-const moods=['Topa um café','Bater papo','Dar uma volta','Só dizer oi'];
-const nearbyAll=[{id:7,x:22,y:30,mood:'Topa um café'},{id:4,x:70,y:24,mood:'Dar uma volta'},{id:6,x:78,y:66,mood:'Topa um café'},{id:1,x:28,y:72,mood:'Bater papo'}];
-
+type Saved={on:boolean;place:string;activity:Activity;mins:number;until:number};
 function Radar(){
-  const {state}=useFriends();const nearby=nearbyAll.filter(n=>{const p=people.find(x=>x.id===n.id);return !!p&&visibleInListings(p,state.matches)});
-  const [on,setOn]=useState(false);const [place,setPlace]=useState(places[0]!);const [mood,setMood]=useState(moods[0]!);
-  const [mins,setMins]=useState(60);const [pick,setPick]=useState<number|null>(null);const [sent,setSent]=useState<number[]>([]);
-  useEffect(()=>{try{const v=JSON.parse(localStorage.getItem('nommi-radar')||'{}');if(v.on){setOn(true);setPlace(v.place);setMood(v.mood);setMins(v.mins)}}catch{}},[]);
-  useEffect(()=>{localStorage.setItem('nommi-radar',JSON.stringify({on,place,mood,mins}))},[on,place,mood,mins]);
-  const sel=nearby.find(n=>n.id===pick);const person=sel&&people.find(p=>p.id===sel.id);
+  const {state,notify}=useFriends();
+  const [on,setOn]=useState(false);const [place,setPlace]=useState<Place>(PLACES[0]!);const [custom,setCustom]=useState('');
+  const [query,setQuery]=useState('');const [type,setType]=useState<PlaceType|''>('');const [activity,setActivity]=useState<Activity>('Tomar um café');
+  const [mins,setMins]=useState(60);const [filter,setFilter]=useState<Activity|''>('');const [pick,setPick]=useState<number|null>(null);const [sent,setSent]=useState<number[]>([]);const [locating,setLocating]=useState(false);
+  useEffect(()=>{try{const v=JSON.parse(localStorage.getItem('nommi-radar')||'{}') as Partial<Saved>;const p=PLACES.find(x=>x.name===v.place);if(v.on&&p&&(v.until??0)>Date.now()){setOn(true);setPlace(p);if(v.activity)setActivity(v.activity);if(v.mins)setMins(v.mins)}}catch{}},[]);
+  function save(next:Partial<Saved>){try{localStorage.setItem('nommi-radar',JSON.stringify({on,place:place.name,activity,mins,until:Date.now()+mins*60000,...next}))}catch{}}
+  function locate(){if(!('geolocation' in navigator)){notify('Seu aparelho não permite localização. Escolha o lugar na lista.');return}setLocating(true);navigator.geolocation.getCurrentPosition(pos=>{const p=nearestPlace(pos.coords.latitude,pos.coords.longitude);setPlace(p);setCustom('');setQuery('');setLocating(false);notify('Lugar mais próximo: '+p.name+'. Sua localização exata não é guardada.')},()=>{setLocating(false);notify('Não conseguimos sua localização. Escolha o lugar na lista.')},{enableHighAccuracy:false,timeout:10000,maximumAge:300000})}
+  const results=searchPlaces(query,type);
+  const nearby=nearbyNommis(place,{matches:state.matches,blocked:state.blocked,activity:filter});
+  const sel=nearby.find(n=>n.id===pick);
+  const label=custom||place.name;
   return <main className="screen radar-page">
-    <header className="radar-head"><h1>Radar Nommi</h1><p>Ative seu bonequinho num lugar público e veja quem também está disponível para um café ou uma conversa.</p></header>
+    <header className="radar-head"><h1>Radar Nommi</h1><p>Diga onde você está e o que topa agora. Veja outros Nommis por perto para um café, uma volta ou um cinema.</p></header>
     {!on?<section className="card radar-setup">
-      <label>Onde você está<select value={place} onChange={e=>setPlace(e.target.value)}>{places.map(p=><option key={p}>{p}</option>)}</select></label>
-      <div><b>Estou a fim de</b><div className="chips">{moods.map(m=><button key={m} type="button" className={'chip'+(m===mood?' active':'')} aria-pressed={m===mood} onClick={()=>setMood(m)}>{m}</button>)}</div></div>
+      <Button type="button" variant="secondary" className="wide" onClick={locate} disabled={locating}><Icon name="pin"/>{locating?'Procurando…':'Usar minha localização'}</Button>
+      <label>Ou procure o lugar<input className="input" value={query} placeholder="Ex.: Savassi, cinema, parque" onChange={e=>setQuery(e.target.value)}/></label>
+      <div className="chips">{(['',...PLACE_TYPES] as const).map(t=><button key={t||'todos'} type="button" className={'chip'+(t===type?' active':'')} aria-pressed={t===type} onClick={()=>setType(t)}>{t||'Todos'}</button>)}</div>
+      <div className="radar-places" role="listbox" aria-label="Lugares públicos">{results.slice(0,8).map(p=><button key={p.name} type="button" role="option" aria-selected={p.name===place.name&&!custom} className={'radar-place'+(p.name===place.name&&!custom?' active':'')} onClick={()=>{setPlace(p);setCustom('')}}><b>{p.name}</b><small>{p.type} · {p.area}</small></button>)}{!results.length&&<p className="muted small">Nenhum lugar com esse nome na lista.</p>}</div>
+      {query.trim().length>2&&!results.length&&<Button type="button" variant="outline" onClick={()=>{setCustom(query.trim().slice(0,60));notify('Lugar anotado. Mostramos quem está mais perto do centro da cidade.')}}>Estou em "{query.trim().slice(0,60)}"</Button>}
+      <p className="radar-here"><Icon name="pin"/>Você está em: <b>{label}</b></p>
+      <div><b>Topo agora</b><div className="chips">{ACTIVITIES.map(m=><button key={m} type="button" className={'chip'+(m===activity?' active':'')} aria-pressed={m===activity} onClick={()=>setActivity(m)}>{m}</button>)}</div></div>
       <div><b>Por quanto tempo</b><div className="chips">{[30,60,120].map(m=><button key={m} type="button" className={'chip'+(m===mins?' active':'')} aria-pressed={m===mins} onClick={()=>setMins(m)}>{m<60?m+' min':m/60+'h'}</button>)}</div></div>
-      <button type="button" className="button primary" onClick={()=>setOn(true)}>Ativar meu bonequinho</button>
-      {state.profileMode==='privado'&&<p className="muted small">Seu perfil é privado: no radar, só quem já tem match com você te vê.</p>}<p className="muted small">Mostramos só o lugar, nunca sua localização exata. Você some do radar quando o tempo acaba.</p>
+      <Button type="button" className="wide" onClick={()=>{setOn(true);save({on:true})}}>Ativar meu bonequinho</Button>
+      {state.profileMode==='privado'&&<p className="muted small">Seu perfil é privado: no radar, só quem já tem match com você te vê.</p>}<p className="muted small">Só lugares públicos. Nunca mostramos nem guardamos sua localização exata. Você some do radar quando o tempo acaba.</p>
     </section>:<>
-      <section className="radar-map" aria-label={'Pessoas Nommi em '+place}>
+      <section className="radar-map" aria-label={'Nommis perto de '+label}>
         <span className="radar-ring r1"/><span className="radar-ring r2"/><span className="radar-ring r3"/>
         <div className="radar-me"><Avatar id={3} size={56}/><small>Você</small></div>
-        {nearby.map(n=>{const p=people.find(x=>x.id===n.id);return <button key={n.id} type="button" className={'radar-pin'+(SAMPLE_BOOSTED_PEOPLE.includes(n.id)?' boosted':'')} style={{left:n.x+'%',top:n.y+'%'}} onClick={()=>setPick(n.id)} aria-label={p?.name+' — '+n.mood+(SAMPLE_BOOSTED_PEOPLE.includes(n.id)?' · em destaque':'')}><Avatar id={n.id} size={44}/><small>{p?.name.split(' ')[0]}</small></button>})}
+        {nearby.slice(0,6).map((n,i)=>{const ang=i*1.05+0.4,r=n.km<0.3?22:n.km<0.8?32:42;return <button key={n.id} type="button" className={'radar-pin'+(SAMPLE_BOOSTED_PEOPLE.includes(n.id)?' boosted':'')} style={{left:50+Math.cos(ang)*r+'%',top:50+Math.sin(ang)*r+'%'}} onClick={()=>setPick(n.id)} aria-label={n.person.name+' — '+n.activity+', '+n.label}><Avatar id={n.id} size={44}/><small>{n.person.name.split(' ')[0]}</small></button>})}
       </section>
-      <div className="card radar-status"><Icon name="pin"/><div><b>{place}</b><p className="muted small">{mood} · visível por {mins<60?mins+' min':mins/60+'h'} · {nearby.length} Nommis por aqui</p></div><button type="button" className="button ghost" onClick={()=>{setOn(false);setPick(null)}}>Sair do radar</button></div>
-      {sel&&person&&<section className="card radar-card">
-        <div className="radar-card-top"><Avatar id={person.id} size={64}/><div><h2>{person.name}, {person.age}</h2><p className="mode-chip">{sel.mood}</p><p className="muted small">Curte {person.interests.join(' e ')}</p></div></div>
-        {sent.includes(person.id)?<p className="radar-ok">Convite enviado. Se {person.name.split(' ')[0]} aceitar, vocês combinam pelo chat.</p>:
-        <div className="radar-actions"><button type="button" className="button primary" onClick={()=>setSent([...sent,person.id])}>Convidar para um café</button><Link to="/perfil" search={{p:person.id} as never} className="button ghost">Ver perfil</Link></div>}
-        <p className="muted small">Encontros do Radar acontecem só em lugares públicos. Avise alguém de confiança e use Denunciar ou Bloquear se algo incomodar.</p>
+      <div className="card radar-status"><Icon name="pin"/><div><b>{label}</b><p className="muted small">{activity} · visível por {mins<60?mins+' min':mins/60+'h'} · {nearby.length} Nommis por perto</p></div><Button type="button" variant="ghost" onClick={()=>{setOn(false);setPick(null);save({on:false})}}>Sair do radar</Button></div>
+      {sel&&<section className="card radar-card">
+        <div className="radar-card-top"><Avatar id={sel.id} size={64}/><div><h2>{sel.person.name}, {sel.person.age}</h2><p className="mode-chip">{sel.activity}</p><p className="muted small">{sel.place} · {sel.label}</p><p className="muted small">Curte {sel.person.interests.join(' e ')}</p></div></div>
+        {sent.includes(sel.id)?<p className="radar-ok">Convite enviado. Se {sel.person.name.split(' ')[0]} topar, vocês combinam pelo chat.</p>:
+        <div className="radar-actions"><Button type="button" onClick={()=>{setSent([...sent,sel.id]);notify('Convite enviado para '+sel.person.name.split(' ')[0]+'.')}}>Topo também</Button><Button asChild variant="secondary"><Link to="/perfil" search={{p:sel.id}}>Ver perfil</Link></Button></div>}
+        <p className="muted small">Primeiro encontro? Prefira um lugar público e avise alguém de confiança.</p>
       </section>}
+      <div className="section-heading"><h2>Perto de você</h2></div>
+      <div className="chips">{(['',...ACTIVITIES] as const).map(m=><button key={m||'todos'} type="button" className={'chip'+(m===filter?' active':'')} aria-pressed={m===filter} onClick={()=>setFilter(m)}>{m||'Tudo'}</button>)}</div>
+      {nearby.length?<div className="activity-list">{nearby.map(n=><button type="button" className="activity radar-row" key={n.id} onClick={()=>{setPick(n.id);window.scrollTo({top:0,behavior:'smooth'})}}><Avatar id={n.id} size={44}/><div><h3>{n.person.name.split(' ')[0]} · topa {n.activity.toLowerCase()}</h3><p>{n.place} · {n.label}</p></div><Icon name="arrow"/></button>)}</div>:<EmptyState title="Ninguém por perto com essa vontade agora." text="Tente outra opção ou entre numa teia aberta."><Button asChild><Link to="/grupos" hash="teias-abertas">Ver teias abertas</Link></Button></EmptyState>}
     </>}
   </main>
 }
