@@ -9,7 +9,7 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-- Use a shared React demo-state provider with browser-local persistence for the visual-only prototype; no remote backend is permitted in this phase.
+- Demo modes keep the browser-local demo-state provider; real accounts (people and businesses) use Lovable Cloud with RLS, and admin rights come only from the user_roles table checked server-side.
 - Keep each content screen in a dedicated TanStack route with unique metadata and shared navigation; this makes every screen directly navigable.
 - Preserve the supplied SVG art through reusable avatar, icon and sticker components, using global semantic color tokens for fidelity.
 
@@ -24,3 +24,5 @@
 - No MCP server: the public demo catalog server was removed; reintroduce only with authenticated access once real accounts exist.
 - The AI opener endpoint applies a best-effort in-memory rate limit (per IP and global daily cap); it is not durable across worker instances.
 - Radar rules (places, nearest public place, approximate distance, privacy filter) live in src/lib/radar.ts; device coordinates are never persisted. Partner meetup ideas use a server function with the same best-effort in-memory rate limit as openers.
+
+- Credit balances change only through security-definer database functions (admin adjust, boost spend) that write the ledger; clients never write balances directly.

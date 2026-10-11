@@ -34,6 +34,7 @@
 - [x] Radar Nommi: usar localização (vira lugar público aproximado), busca entre 20 lugares, "Perto de você" e o que cada pessoa topa.
 - [x] Painel do parceiro: perfil e comunidade da marca + ideias de encontros com IA.
 - [x] Botão "Explorar como parceiro" na boas-vindas e link do painel no menu.
-- [ ] Contas reais de pessoas e empresas (Lovable Cloud) — aguarda respostas da Juliana.
-- [ ] Painel de administração (perfis de empresas, ideias, créditos) — aguarda respostas.
-- [ ] Carteira com pagamento real e saldo no servidor — aguarda país/CNPJ e provedor.
+- [x] Contas reais de pessoas e empresas (e-mail, Google, Apple); Radar e ideias do parceiro gravados no servidor.
+- [x] Painel de administração em /admin (netnommi@gmail.com).
+- [x] Saldo e destaque guardados no servidor.
+- [ ] Pagamento real (Pix, Apple Pay, Google Pay, vários países) — etapa 2, aguarda aprovação.
