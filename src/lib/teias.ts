@@ -1,6 +1,6 @@
 import { groups, type DemoState, type Message } from './friends-data';
 
-export type Teia = { id: number; name: string; mode: string; members: number; icon: string; tone: string; ids: number[]; place?: string; time?: string; rule?: string; moderated?: boolean; host?: string };
+export type Teia = { id: number; name: string; mode: string; members: number; icon: string; tone: string; ids: number[]; place?: string; time?: string; rule?: string; moderated?: boolean; host?: string; partner?: number };
 
 /** Teias abertas: entrada imediata, sem aprovação. */
 export const openTeias: Teia[] = [
@@ -9,7 +9,14 @@ export const openTeias: Teia[] = [
   { id: 5, name: 'Séries sem spoiler', mode: 'Online', members: 21, icon: 'star', tone: 'blue', ids: [13, 11, 4], time: 'Qualquer hora', host: 'Helena' },
   { id: 6, name: 'Desabafo sem julgamento', mode: 'Online', members: 17, icon: 'heart', tone: 'red', ids: [8, 7, 2], time: 'Qualquer hora', rule: 'Aqui a gente escuta', moderated: true, host: 'Joana' },
 ];
-export const allTeias: Teia[] = [...groups, ...openTeias];
+/** Teias de marca: abertas, criadas por empresas parceiras (índice em partners). */
+export const brandTeias: Teia[] = [
+  { id: 7, name: 'Corredores do Trilha Aberta', mode: 'Presencial', members: 26, icon: 'pin', tone: 'teal', ids: [12, 10, 8], place: 'Mangabeiras', time: 'Domingos, 7h', host: 'Trilha Aberta', partner: 5 },
+  { id: 8, name: 'Quinta do karaokê', mode: 'Presencial', members: 31, icon: 'mic', tone: 'red', ids: [7, 6, 1], place: 'Centro', time: 'Quintas, 20h', host: 'Karaokê Bem-Te-Vi', partner: 0 },
+  { id: 9, name: 'Confraria do Vinho Azul', mode: 'Presencial', members: 18, icon: 'glass', tone: 'blue', ids: [4, 2, 7], place: 'Savassi', time: 'Sextas, 19h', host: 'Bar do Vinho Azul', partner: 1 },
+];
+export const brandTeiaFor = (partner: number) => brandTeias.find((t) => t.partner === partner);
+export const allTeias: Teia[] = [...groups, ...openTeias, ...brandTeias];
 export const getTeia = (id: number) => allTeias.find((t) => t.id === id);
 export const WELCOME_TEXT = 'Oi! Que bom que você chegou. Conta o que te trouxe aqui?';
 

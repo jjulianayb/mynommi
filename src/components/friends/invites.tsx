@@ -1,3 +1,4 @@
+import { boostInvite, INVITE_BOOST_COST } from '@/lib/credits';
 import { FirstMeetNotice } from './privacy';
 import { useState } from 'react';
 import { z } from 'zod';
@@ -22,7 +23,8 @@ const inviteSchema = z.object({
 });
 
 export function InviteCard({ invite }: { invite: Invite }) {
-  const { setState, notify } = useFriends();
+  const { state, setState, notify } = useFriends();
+  const boosted = (state.boostedInvites ?? []).includes(invite.id);
   const host = people.find(p => p.id === invite.host);
   const going = invite.joined.includes(ME);
   const others = invite.joined.filter(id => id !== ME && id !== invite.host).slice(0, 4);
@@ -39,6 +41,8 @@ export function InviteCard({ invite }: { invite: Invite }) {
       {invite.host === ME && <span className="invite-host">Seu convite</span>}
       <span className="avatar-stack">{others.map(id => <Avatar key={id} id={id} size={26} />)}{invite.joined.length > 0 && <b className="invite-count">{invite.joined.length} {invite.joined.length === 1 ? 'pessoa vai' : 'pessoas vão'}</b>}</span>
     </div>
+    {boosted && <span className="boost-badge"><Icon name="spark" />Em destaque</span>}
+    {invite.host === ME && !boosted && <Button variant="outline" className="wide" onClick={() => { const next = boostInvite(state, invite.id); if (!next) { notify('Faltam créditos. Adicione na Carteira.'); return; } setState(next); notify('Convite em destaque.'); }}><Icon name="spark" />Destacar · {INVITE_BOOST_COST} créditos</Button>}
     <Button variant={going ? 'secondary' : 'default'} className="wide" onClick={toggle}><Icon name={going ? 'check' : 'heart'} />{going ? 'Você vai' : 'Quero ir'}</Button>
   </article>;
 }
