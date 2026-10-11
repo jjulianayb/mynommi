@@ -273,7 +273,7 @@ body {font-family:'DM Sans',sans-serif;margin:0} h1,h2,h3,h4 {font-family:'Brico
 .invite-form{display:grid;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:22px;padding:18px;margin-top:14px}
 .invite-form label{display:grid;gap:6px;font-size:12px;font-weight:700}
 
-.plan-strip{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 16px;scrollbar-width:thin}
+.plan-strip{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-right:78px;padding:4px 78px 16px 2px;scrollbar-width:thin}
 .plan-strip::-webkit-scrollbar{height:6px}
 .plan-strip::-webkit-scrollbar-thumb{background:var(--border);border-radius:999px}
 .plan-strip .invite-card{flex:0 0 272px;scroll-snap-align:start;display:flex;flex-direction:column}
