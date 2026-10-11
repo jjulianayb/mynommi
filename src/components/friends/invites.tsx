@@ -1,3 +1,4 @@
+import { FirstMeetNotice } from './privacy';
 import { useState } from 'react';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
@@ -79,6 +80,7 @@ export function Invites() {
 
   return <div className="action-page invites-page">
     <div className="section-heading"><h1>Convites</h1><Button variant="secondary" onClick={() => setCreating(c => !c)}><Icon name="plus" />Criar convite</Button></div>
+    <FirstMeetNotice />
     <p className="intro">Academia, vinho, uma celebração: proponha um plano e veja quem topa. O local é sempre aproximado.</p>
     {creating && <form className="invite-form" onSubmit={create}>
       <label>Nome do convite<input className="input" required maxLength={60} placeholder="Ex.: Corrida de domingo cedo" value={title} onChange={e => setTitle(e.target.value)} /></label>
