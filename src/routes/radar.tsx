@@ -4,6 +4,9 @@ import {Button} from '@/components/ui/button';
 import {Avatar,Icon} from '@/components/friends/art';
 import {EmptyState} from '@/components/friends/surfaces';
 import {useFriends} from '@/components/friends/store';
+import {useDemoSession} from '@/components/friends/session';
+import {supabase} from '@/integrations/supabase/client';
+import {km,distanceLabel} from '@/lib/radar';
 import {SAMPLE_BOOSTED_PEOPLE} from '@/lib/credits';
 import {ACTIVITIES,PLACES,PLACE_TYPES,nearestPlace,nearbyNommis,searchPlaces,type Activity,type Place,type PlaceType} from '@/lib/radar';
 
@@ -11,7 +14,7 @@ export const Route=createFileRoute('/radar')({head:()=>({meta:[{title:'Radar Nom
 
 type Saved={on:boolean;place:string;activity:Activity;mins:number;until:number};
 function Radar(){
-  const {state,notify}=useFriends();
+  const {state,notify}=useFriends();const {cloudUser}=useDemoSession();
   const [on,setOn]=useState(false);const [place,setPlace]=useState<Place>(PLACES[0]!);const [custom,setCustom]=useState('');
   const [query,setQuery]=useState('');const [type,setType]=useState<PlaceType|''>('');const [activity,setActivity]=useState<Activity>('Tomar um café');
   const [mins,setMins]=useState(60);const [filter,setFilter]=useState<Activity|''>('');const [pick,setPick]=useState<number|null>(null);const [sent,setSent]=useState<number[]>([]);const [locating,setLocating]=useState(false);
@@ -33,7 +36,7 @@ function Radar(){
       <p className="radar-here"><Icon name="pin"/>Você está em: <b>{label}</b></p>
       <div><b>Topo agora</b><div className="chips">{ACTIVITIES.map(m=><button key={m} type="button" className={'chip'+(m===activity?' active':'')} aria-pressed={m===activity} onClick={()=>setActivity(m)}>{m}</button>)}</div></div>
       <div><b>Por quanto tempo</b><div className="chips">{[30,60,120].map(m=><button key={m} type="button" className={'chip'+(m===mins?' active':'')} aria-pressed={m===mins} onClick={()=>setMins(m)}>{m<60?m+' min':m/60+'h'}</button>)}</div></div>
-      <Button type="button" className="wide" onClick={()=>{setOn(true);save({on:true})}}>Ativar meu bonequinho</Button>
+      <Button type="button" className="wide" onClick={async()=>{if(cloudUser){const {error}=await supabase.from('radar_presence').upsert({user_id:cloudUser.id,place_name:label.slice(0,60),area:place.area,activity,until:new Date(Date.now()+mins*60000).toISOString()});if(error){notify('Não foi possível entrar no radar agora. Tente de novo.');return}}setOn(true);save({on:true})}}>Ativar meu bonequinho</Button>
       {state.profileMode==='privado'&&<p className="muted small">Seu perfil é privado: no radar, só quem já tem match com você te vê.</p>}<p className="muted small">Só lugares públicos. Nunca mostramos nem guardamos sua localização exata. Você some do radar quando o tempo acaba.</p>
     </section>:<>
       <section className="radar-map" aria-label={'Nommis perto de '+label}>
@@ -41,16 +44,30 @@ function Radar(){
         <div className="radar-me"><Avatar id={3} size={56}/><small>Você</small></div>
         {nearby.slice(0,6).map((n,i)=>{const ang=i*1.05+0.4,r=n.km<0.3?22:n.km<0.8?32:42;return <button key={n.id} type="button" className={'radar-pin'+(SAMPLE_BOOSTED_PEOPLE.includes(n.id)?' boosted':'')} style={{left:50+Math.cos(ang)*r+'%',top:50+Math.sin(ang)*r+'%'}} onClick={()=>setPick(n.id)} aria-label={n.person.name+' — '+n.activity+', '+n.label}><Avatar id={n.id} size={44}/><small>{n.person.name.split(' ')[0]}</small></button>})}
       </section>
-      <div className="card radar-status"><Icon name="pin"/><div><b>{label}</b><p className="muted small">{activity} · visível por {mins<60?mins+' min':mins/60+'h'} · {nearby.length} Nommis por perto</p></div><Button type="button" variant="ghost" onClick={()=>{setOn(false);setPick(null);save({on:false})}}>Sair do radar</Button></div>
+      <div className="card radar-status"><Icon name="pin"/><div><b>{label}</b><p className="muted small">{activity} · visível por {mins<60?mins+' min':mins/60+'h'} · {nearby.length} Nommis por perto</p></div><Button type="button" variant="ghost" onClick={()=>{setOn(false);setPick(null);save({on:false});if(cloudUser)void supabase.from('radar_presence').delete().eq('user_id',cloudUser.id)}}>Sair do radar</Button></div>
       {sel&&<section className="card radar-card">
         <div className="radar-card-top"><Avatar id={sel.id} size={64}/><div><h2>{sel.person.name}, {sel.person.age}</h2><p className="mode-chip">{sel.activity}</p><p className="muted small">{sel.place} · {sel.label}</p><p className="muted small">Curte {sel.person.interests.join(' e ')}</p></div></div>
         {sent.includes(sel.id)?<p className="radar-ok">Convite enviado. Se {sel.person.name.split(' ')[0]} topar, vocês combinam pelo chat.</p>:
         <div className="radar-actions"><Button type="button" onClick={()=>{setSent([...sent,sel.id]);notify('Convite enviado para '+sel.person.name.split(' ')[0]+'.')}}>Topo também</Button><Button asChild variant="secondary"><Link to="/perfil" search={{p:sel.id}}>Ver perfil</Link></Button></div>}
         <p className="muted small">Primeiro encontro? Prefira um lugar público e avise alguém de confiança.</p>
       </section>}
-      <div className="section-heading"><h2>Perto de você</h2></div>
+      {cloudUser&&<RealNearby here={place} me={cloudUser.id}/>}<div className="section-heading"><h2>{cloudUser?'Exemplos por perto':'Perto de você'}</h2></div>
       <div className="chips">{(['',...ACTIVITIES] as const).map(m=><button key={m||'todos'} type="button" className={'chip'+(m===filter?' active':'')} aria-pressed={m===filter} onClick={()=>setFilter(m)}>{m||'Tudo'}</button>)}</div>
       {nearby.length?<div className="activity-list">{nearby.map(n=><button type="button" className="activity radar-row" key={n.id} onClick={()=>{setPick(n.id);window.scrollTo({top:0,behavior:'smooth'})}}><Avatar id={n.id} size={44}/><div><h3>{n.person.name.split(' ')[0]} · topa {n.activity.toLowerCase()}</h3><p>{n.place} · {n.label}</p></div><Icon name="arrow"/></button>)}</div>:<EmptyState title="Ninguém por perto com essa vontade agora." text="Tente outra opção ou entre numa teia aberta."><Button asChild><Link to="/grupos" hash="teias-abertas">Ver teias abertas</Link></Button></EmptyState>}
     </>}
   </main>
+}
+
+type Real={user_id:string;place_name:string;area:string;activity:string;nickname:string;interests:string[];km:number};
+/** Nommis reais no radar agora (só perfis públicos; a regra é conferida no servidor). */
+function RealNearby({here,me}:{here:Place;me:string}){
+  const {notify}=useFriends();const [list,setList]=useState<Real[]|null>(null);const [sent,setSent]=useState<string[]>([]);
+  useEffect(()=>{let alive=true;(async()=>{
+    const {data:pres}=await supabase.from('radar_presence').select('user_id,place_name,area,activity,until').gt('until',new Date().toISOString()).neq('user_id',me).limit(100);
+    const ids=(pres??[]).map(p=>p.user_id);if(!ids.length){if(alive)setList([]);return}
+    const {data:profs}=await supabase.from('profiles').select('id,nickname,interests').in('id',ids);
+    const out=(pres??[]).flatMap(p=>{const pr=profs?.find(x=>x.id===p.user_id);if(!pr)return[];const pl=PLACES.find(x=>x.name===p.place_name)??PLACES.find(x=>x.area===p.area);const d=p.place_name===here.name?0:pl?km(here,pl):5;return d>3?[]:[{...p,nickname:pr.nickname||'Nommi',interests:pr.interests??[],km:d}]}).sort((a,b)=>a.km-b.km);
+    if(alive)setList(out)})();return()=>{alive=false}},[here,me]);
+  return <><div className="section-heading"><h2>Nommis de verdade por perto</h2></div>
+    {list===null?<p className="small-note">Procurando…</p>:list.length?<div className="activity-list">{list.map(r=><article className="activity" key={r.user_id}><span className="tone-icon teal"><Icon name="users"/></span><div><h3>{r.nickname} · topa {r.activity.toLowerCase()}</h3><p>{r.place_name} · {distanceLabel(r.km)}{r.interests.length?' · curte '+r.interests.slice(0,2).join(' e '):''}</p></div>{sent.includes(r.user_id)?<span className="boost-badge"><Icon name="check"/>Registrado</span>:<Button onClick={()=>{setSent([...sent,r.user_id]);notify('Interesse registrado. Quando o chat entre contas reais chegar, vocês poderão combinar por lá.')}}>Topo também</Button>}</article>)}</div>:<p className="small-note">Ainda ninguém com conta real por aqui agora. Você aparece para quem chegar depois.</p>}</>;
 }

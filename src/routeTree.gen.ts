@@ -10,12 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AjudaRouteImport } from './routes/ajuda'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as CarteiraRouteImport } from './routes/carteira'
 import { Route as CheckInRouteImport } from './routes/check-in'
 import { Route as ClubeRouteImport } from './routes/clube'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
+import { Route as ContaRouteImport } from './routes/conta'
 import { Route as ConversasRouteImport } from './routes/conversas'
 import { Route as ConvidarRouteImport } from './routes/convidar'
 import { Route as ConvitesRouteImport } from './routes/convites'
@@ -41,6 +43,11 @@ import { Route as GruposIdRouteImport } from './routes/grupos_.$id'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AjudaRoute = AjudaRouteImport.update({
@@ -71,6 +78,11 @@ const ClubeRoute = ClubeRouteImport.update({
 const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
   id: '/configuracoes',
   path: '/configuracoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContaRoute = ContaRouteImport.update({
+  id: '/conta',
+  path: '/conta',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConversasRoute = ConversasRouteImport.update({
@@ -181,12 +193,14 @@ const GruposIdRoute = GruposIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/ajuda': typeof AjudaRoute
   '/cadastro': typeof CadastroRoute
   '/carteira': typeof CarteiraRoute
   '/check-in': typeof CheckInRoute
   '/clube': typeof ClubeRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/conta': typeof ContaRoute
   '/conversas': typeof ConversasRoute
   '/convidar': typeof ConvidarRoute
   '/convites': typeof ConvitesRoute
@@ -211,12 +225,14 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/ajuda': typeof AjudaRoute
   '/cadastro': typeof CadastroRoute
   '/carteira': typeof CarteiraRoute
   '/check-in': typeof CheckInRoute
   '/clube': typeof ClubeRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/conta': typeof ContaRoute
   '/conversas': typeof ConversasRoute
   '/convidar': typeof ConvidarRoute
   '/convites': typeof ConvitesRoute
@@ -242,12 +258,14 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/ajuda': typeof AjudaRoute
   '/cadastro': typeof CadastroRoute
   '/carteira': typeof CarteiraRoute
   '/check-in': typeof CheckInRoute
   '/clube': typeof ClubeRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/conta': typeof ContaRoute
   '/conversas': typeof ConversasRoute
   '/convidar': typeof ConvidarRoute
   '/convites': typeof ConvitesRoute
@@ -274,12 +292,14 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/ajuda'
     | '/cadastro'
     | '/carteira'
     | '/check-in'
     | '/clube'
     | '/configuracoes'
+    | '/conta'
     | '/conversas'
     | '/convidar'
     | '/convites'
@@ -304,12 +324,14 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/ajuda'
     | '/cadastro'
     | '/carteira'
     | '/check-in'
     | '/clube'
     | '/configuracoes'
+    | '/conta'
     | '/conversas'
     | '/convidar'
     | '/convites'
@@ -334,12 +356,14 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/ajuda'
     | '/cadastro'
     | '/carteira'
     | '/check-in'
     | '/clube'
     | '/configuracoes'
+    | '/conta'
     | '/conversas'
     | '/convidar'
     | '/convites'
@@ -365,12 +389,14 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   AjudaRoute: typeof AjudaRoute
   CadastroRoute: typeof CadastroRoute
   CarteiraRoute: typeof CarteiraRoute
   CheckInRoute: typeof CheckInRoute
   ClubeRoute: typeof ClubeRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
+  ContaRoute: typeof ContaRoute
   ConversasRoute: typeof ConversasRoute
   ConvidarRoute: typeof ConvidarRoute
   ConvitesRoute: typeof ConvitesRoute
@@ -401,6 +427,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ajuda': {
@@ -443,6 +476,13 @@ declare module '@tanstack/react-router' {
       path: '/configuracoes'
       fullPath: '/configuracoes'
       preLoaderRoute: typeof ConfiguracoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conta': {
+      id: '/conta'
+      path: '/conta'
+      fullPath: '/conta'
+      preLoaderRoute: typeof ContaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/conversas': {
@@ -597,12 +637,14 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   AjudaRoute: AjudaRoute,
   CadastroRoute: CadastroRoute,
   CarteiraRoute: CarteiraRoute,
   CheckInRoute: CheckInRoute,
   ClubeRoute: ClubeRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
+  ContaRoute: ContaRoute,
   ConversasRoute: ConversasRoute,
   ConvidarRoute: ConvidarRoute,
   ConvitesRoute: ConvitesRoute,

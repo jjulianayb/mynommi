@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { partners, people, getPartner, money } from '@/lib/friends-data';
@@ -7,11 +7,49 @@ import { brandTeiaFor, isMember, joinTeia, leaveTeia } from '@/lib/teias';
 import { Avatar, Cover, Icon, Sticker } from './art';
 import { EmptyState } from './surfaces';
 import { useFriends } from './store';
+import { useDemoSession } from './session';
+import { supabase } from '@/integrations/supabase/client';
+
+/** Carteira da conta real: saldo e destaque guardados no servidor. */
+function CloudWallet({ userId }: { userId: string }) {
+  const { notify } = useFriends();
+  const [acc, setAcc] = useState<{ balance: number; boost_until: string | null } | null>(null);
+  const [hist, setHist] = useState<{ amount: number; reason: string; created_at: string }[]>([]);
+  async function load() {
+    const [a, h] = await Promise.all([
+      supabase.from('credit_accounts').select('balance,boost_until').eq('user_id', userId).maybeSingle(),
+      supabase.from('credit_ledger').select('amount,reason,created_at').eq('user_id', userId).order('created_at', { ascending: false }).limit(50),
+    ]);
+    setAcc(a.data ?? { balance: 0, boost_until: null }); setHist(h.data ?? []);
+  }
+  useEffect(() => { void load(); }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
+  const boosted = !!acc?.boost_until && new Date(acc.boost_until) > new Date();
+  async function boost() {
+    const { error } = await supabase.rpc('spend_boost');
+    if (error) { notify(error.message.includes('saldo') ? 'Faltam créditos para o destaque.' : 'Não foi possível destacar agora.'); return; }
+    notify('Seu perfil está em destaque por 24 h.'); void load();
+  }
+  return <>
+    <Heading title="Carteira" label="CRÉDITOS DE ALCANCE · SUA CONTA" />
+    <p className="intro">Seu saldo fica guardado na sua conta e vale em qualquer aparelho.</p>
+    <section className="card wallet-balance"><span className="tone-icon yellow"><Icon name="star" /></span><div><small>Seu saldo</small><strong>{acc ? acc.balance : '…'} créditos</strong></div>{boosted && <span className="boost-badge"><Icon name="spark" />Em destaque até {fmt(acc!.boost_until as string)}</span>}</section>
+    <div className="activity-list"><article className="activity"><span className="tone-icon red"><Icon name="spark" /></span><div><h3>Destaque por 24 h</h3><p>Seu perfil aparece antes para quem combina · {BOOST_COST} créditos</p></div><Button onClick={boost} disabled={!acc}>{boosted ? 'Estender' : 'Destacar'}</Button></article></div>
+    <div className="section-heading"><h2>Adicionar créditos</h2></div>
+    <p className="small-note">A compra com Pix, Apple Pay e Google Pay chega na próxima etapa. Até lá, a equipe Nommi pode adicionar créditos pelo painel de administração.</p>
+    <div className="section-heading"><h2>Histórico</h2></div>
+    {hist.length ? <div className="activity-list">{hist.map((h, i) => <div className="activity" key={i}><span className={'tone-icon ' + (h.amount > 0 ? 'teal' : 'red')}><Icon name={h.amount > 0 ? 'plus' : 'spark'} /></span><div><h3>{h.reason}</h3><p>{fmt(h.created_at)}</p></div><b>{h.amount > 0 ? '+' : ''}{h.amount}</b></div>)}</div> : <p className="small-note">Ainda não há movimentações.</p>}
+  </>;
+}
 
 function Heading({ title, label }: { title: string; label?: string }) { return <div className="page-title"><div>{label && <p className="eyebrow">{label}</p>}<h1>{title}</h1></div></div>; }
 const fmt = (iso: string) => new Date(iso).toLocaleString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
 
 export function Wallet() {
+  const { cloudUser } = useDemoSession();
+  if (cloudUser) return <CloudWallet userId={cloudUser.id} />;
+  return <DemoWallet />;
+}
+function DemoWallet() {
   const { state, setState, notify } = useFriends();
   const [pack, setPack] = useState<string>('p30');
   const [method, setMethod] = useState<PayMethod>('Pix');
