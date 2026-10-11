@@ -1,4 +1,9 @@
 # Nommi — etapa visual
+- [ ] Rodada de marca: nomi, Anfitriões, teias e estrelas visuais, sem tocar em pagamentos/admin/banco.
+- [ ] Entrada real curta, redirecionamentos antigos e demonstração só por link de apresentação.
+- [ ] Navegação inferior, Início focado, ações de criação e áreas exclusivas de anfitrião real.
+- [ ] Seletores das teias participantes e conversas apenas após teia compartilhada.
+- [ ] Testar regras e conferir telas no celular e computador; explicar limites de dados reais.
 - [x] Trocar barras de navegação por topo fixo, gaveta direita e botão flutuante com cinco ações.
 - [x] Adicionar escrever sobre amiga, postar momento, check-in e menu de segurança em outros perfis.
 - [x] Verificar navegação, ações locais e animações no computador e celular.
