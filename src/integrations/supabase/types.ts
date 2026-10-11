@@ -110,6 +110,42 @@ export type Database = {
         }
         Relationships: []
       }
+      credit_purchases: {
+        Row: {
+          amount_total: number | null
+          created_at: string
+          credits: number
+          currency: string | null
+          environment: string
+          id: string
+          price_id: string
+          stripe_session_id: string
+          user_id: string
+        }
+        Insert: {
+          amount_total?: number | null
+          created_at?: string
+          credits: number
+          currency?: string | null
+          environment?: string
+          id?: string
+          price_id: string
+          stripe_session_id: string
+          user_id: string
+        }
+        Update: {
+          amount_total?: number | null
+          created_at?: string
+          credits?: number
+          currency?: string | null
+          environment?: string
+          id?: string
+          price_id?: string
+          stripe_session_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       meetup_ideas: {
         Row: {
           bonus: string
@@ -252,6 +288,18 @@ export type Database = {
       admin_adjust_credits: {
         Args: { _amount: number; _reason: string; _user_id: string }
         Returns: number
+      }
+      grant_purchased_credits: {
+        Args: {
+          _amount: number
+          _credits: number
+          _currency: string
+          _env: string
+          _price_id: string
+          _session_id: string
+          _user_id: string
+        }
+        Returns: boolean
       }
       has_role: {
         Args: {
