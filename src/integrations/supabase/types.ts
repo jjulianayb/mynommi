@@ -146,6 +146,27 @@ export type Database = {
         }
         Relationships: []
       }
+      invite_boosts: {
+        Row: {
+          created_at: string
+          id: string
+          invite_ref: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          invite_ref: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          invite_ref?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       meetup_ideas: {
         Row: {
           bonus: string
@@ -309,6 +330,7 @@ export type Database = {
         Returns: boolean
       }
       spend_boost: { Args: never; Returns: string }
+      spend_invite_boost: { Args: { _invite_ref: string }; Returns: number }
     }
     Enums: {
       app_role: "admin" | "user"
