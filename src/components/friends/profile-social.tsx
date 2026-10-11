@@ -10,7 +10,7 @@ export const roles = [
   { title: 'Karaokê de sexta', place: 'Karaokê Bem-Te-Vi', friend: 1, tone: 'red', icon: 'mic', when: 'há 2 dias', photo: momentPhoto.karaoke },
   { title: 'Vinho na varanda', place: 'Bar do Vinho Azul', friend: 2, tone: 'blue', icon: 'glass', when: 'há 4 dias', photo: momentPhoto.vinho },
   { title: 'Trilha cedinho', place: 'Trilha Aberta', friend: 6, tone: 'teal', icon: 'pin', when: 'semana passada', photo: momentPhoto.trilha },
-  { title: 'Pizza da turma', place: 'Pizzaria Forno Doce', friend: 10, tone: 'yellow', icon: 'star', when: 'semana passada', photo: momentPhoto.pizza },
+  { title: 'Pizza da teia', place: 'Pizzaria Forno Doce', friend: 10, tone: 'yellow', icon: 'star', when: 'semana passada', photo: momentPhoto.pizza },
   { title: 'Bolo de cenoura', place: 'Casa da Tati', friend: 6, tone: 'red', icon: 'heart', when: 'há 10 dias', photo: momentPhoto.bolo },
   { title: 'Corrida no parque', place: 'Parque Municipal', friend: 8, tone: 'teal', icon: 'pin', when: 'há 12 dias', photo: momentPhoto.corrida },
 ];
@@ -32,7 +32,7 @@ const shots: { label: string; photo?: string }[] = [
   { label: 'Refrão em dupla', photo: momentPhoto.karaoke },
   { label: 'Bolo de cenoura', photo: momentPhoto.bolo },
   { label: 'Corrida no parque', photo: momentPhoto.corrida },
-  { label: 'Trilha com a turma', photo: momentPhoto.trilha },
+  { label: 'Trilha com a teia', photo: momentPhoto.trilha },
   { label: 'Pizza de domingo', photo: momentPhoto.pizza },
 ];
 export function ProfileGrid({ avatar }: { avatar: number }) {
