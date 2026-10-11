@@ -15,9 +15,11 @@
 
 - Keep demo access in a separate browser-only session provider; persist only simulated email/session flags, never passwords, and never use it as real authorization.
 - Use native modal dialogs for bottom sheets so keyboard focus and dismissal stay accessible.
-- Use a shared fixed header and a native right-side navigation dialog instead of persistent navigation bars; expose creation through a floating action button.
+- Use a shared fixed header, five-slot bottom navigation and native dialogs for secondary navigation and creation; this keeps primary journeys directly accessible.
 - Keep the social shell session-aware and leave entry/legal/help routes public; backend authentication remains out of scope.
-- Teia membership lives in DemoState.joinedTeias; join/leave rules and the open-teias catalog live in src/lib/teias.ts (original groups stay in friends-data for the social-web layout).
+- Browser-local teia membership, attendance history and created teias use the shared helpers in src/lib/teias.ts; no shared teia database exists, so never present local participation as real multi-account enrollment.
+- Validate short signup through src/lib/nommi-access.ts and populate existing profile fields after authentication; birth date remains Auth metadata because the profile schema has no birth-date column.
+- Host-only frontend affordances use the authenticated profile flag, not demo session flags; this controls presentation without changing existing server authorization.
 - New accounts start from emptyState; demo mode loads demoState. Daily-routine rules (greeting, question of the day, pending bell, awaiting reply) live in src/lib/today.ts so they stay testable.
 - Profile visibility (public/private) lives in DemoState and listings filter private people via one shared helper so future search reuses it.
 - Keep the chat sticker catalogue and tray in focused reusable modules; both private and group chats share browser-local favorites, recents, and message timestamps.
