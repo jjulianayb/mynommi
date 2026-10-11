@@ -260,3 +260,15 @@ body {font-family:'DM Sans',sans-serif;margin:0} h1,h2,h3,h4 {font-family:'Brico
 .role-view-people{display:flex;justify-content:center;margin-top:-26px;position:relative}
 .role-view-people .friend-avatar{border:3px solid var(--card)}
 .role-view-people .friend-avatar:last-child{margin-left:-10px}
+.invite-list{display:grid;gap:14px;margin-top:18px}
+.invite-card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:18px;box-shadow:var(--shadow-soft)}
+.invite-head{display:flex;gap:12px;align-items:center}
+.invite-head h3{font-size:17px}
+.invite-head p{font-size:11px;color:var(--muted-foreground);margin-top:2px}
+.invite-when,.invite-where{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted-foreground);margin-top:10px}
+.invite-when .friend-icon,.invite-where .friend-icon{width:15px;height:15px}
+.invite-people{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 0 4px;flex-wrap:wrap}
+.invite-host{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700}
+.invite-count{font-size:11px;color:var(--muted-foreground);margin-left:8px;font-family:'DM Sans';font-weight:600}
+.invite-form{display:grid;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:22px;padding:18px;margin-top:14px}
+.invite-form label{display:grid;gap:6px;font-size:12px;font-weight:700}
