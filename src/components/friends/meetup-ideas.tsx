@@ -11,7 +11,7 @@ const INTERESTS = ['café', 'karaokê', 'leitura', 'corrida', 'trilhas', 'culin�
 export type PartnerProfile = { name: string; kind: string; area: string; hours: string; capacity: string; offer: string; interests: string[]; note: string };
 export const defaultPartnerProfile: PartnerProfile = { name: 'Karaokê Bem-Te-Vi', kind: 'Karaokê e petiscos', area: 'Centro', hours: 'Terça a quinta, 19h às 22h', capacity: 'Até 30 pessoas', offer: '6 rodadas de chope ou sucos para a teia', interests: ['karaokê', 'música'], note: '' };
 
-/** Painel do parceiro: perfil do estabelecimento, comunidade da marca e ideias de encontros com IA. */
+/** Painel do Anfitrião: perfil do estabelecimento, comunidade da marca e ideias de encontros com IA. */
 export function PartnerIdeas() {
   const { state, setState, notify } = useFriends();
   const saved = state.partnerProfile ?? defaultPartnerProfile;

@@ -1,3 +1,5 @@
+import { useDemoSession } from './session';
+import { isRealHost } from '@/lib/nommi-access';
 import { boostInvite, INVITE_BOOST_COST } from '@/lib/credits';
 import { FirstMeetNotice } from './privacy';
 import { useState } from 'react';
@@ -24,13 +26,14 @@ const inviteSchema = z.object({
 
 export function InviteCard({ invite }: { invite: Invite }) {
   const { state, setState, notify } = useFriends();
+  const {cloudUser,demoMode}=useDemoSession();
   const boosted = (state.boostedInvites ?? []).includes(invite.id);
   const host = people.find(p => p.id === invite.host);
   const going = invite.joined.includes(ME);
   const others = invite.joined.filter(id => id !== ME && id !== invite.host).slice(0, 4);
   function toggle() {
     setState(s => ({ ...s, invites: (s.invites ?? []).map(i => i.id === invite.id ? { ...i, joined: i.joined.includes(ME) ? i.joined.filter(x => x !== ME) : [...i.joined, ME] } : i) }));
-    notify(going ? 'Você saiu do convite.' : 'Presença confirmada! A pessoa anfitriã foi avisada nesta demonstração.');
+    notify(going ? 'Você saiu do convite.' : 'Você entrou no rolê desta apresentação.');
   }
   return <article className="invite-card">
     <div className="invite-head"><span className={'tone-icon ' + (catTone[invite.category] ?? 'yellow')}><Icon name={catIcon[invite.category] ?? 'spark'} /></span><div><h3>{invite.title}</h3><p>{invite.category}</p></div></div>
@@ -42,8 +45,8 @@ export function InviteCard({ invite }: { invite: Invite }) {
       <span className="avatar-stack">{others.map(id => <Avatar key={id} id={id} size={26} />)}{invite.joined.length > 0 && <b className="invite-count">{invite.joined.length} {invite.joined.length === 1 ? 'pessoa vai' : 'pessoas vão'}</b>}</span>
     </div>
     {boosted && <span className="boost-badge"><Icon name="spark" />Em destaque</span>}
-    {invite.host === ME && !boosted && <Button variant="outline" className="wide" onClick={() => { const next = boostInvite(state, invite.id); if (!next) { notify('Faltam créditos. Adicione na Carteira.'); return; } setState(next); notify('Convite em destaque.'); }}><Icon name="spark" />Destacar · {INVITE_BOOST_COST} créditos</Button>}
-    <Button variant={going ? 'secondary' : 'default'} className="wide" onClick={toggle}><Icon name={going ? 'check' : 'heart'} />{going ? 'Você vai' : 'Quero ir'}</Button>
+    {isRealHost(cloudUser,demoMode) && invite.host === ME && !boosted && <Button variant="outline" className="wide" onClick={() => { const next = boostInvite(state, invite.id); if (!next) { notify('Faltam créditos. Adicione na Carteira.'); return; } setState(next); notify('Convite em destaque.'); }}><Icon name="spark" />Destacar · {INVITE_BOOST_COST} créditos</Button>}
+    <Button variant={going ? 'secondary' : 'default'} className="wide" onClick={toggle}><Icon name={going ? 'check' : 'teia'} />{going ? 'Você vai' : 'Quero ir'}</Button>
   </article>;
 }
 
@@ -65,9 +68,10 @@ export function PlanFilterBar({ options, value, onChange, onClear, showClear }: 
   </div>;
 }
 
-export function Invites() {
+export function Invites({initialCreating=false}:{initialCreating?:boolean}) {
   const { state, setState, notify } = useFriends();
-  const [creating, setCreating] = useState(false);
+  const {cloudUser,demoMode}=useDemoSession();
+  const [creating, setCreating] = useState(initialCreating);
   const [title, setTitle] = useState(''); const [category, setCategory] = useState<string>('Academia');
   const [date, setDate] = useState(''); const [place, setPlace] = useState(''); const [error, setError] = useState('');
   const [when, setWhen] = useState(''); const [region, setRegion] = useState('');
@@ -75,6 +79,7 @@ export function Invites() {
 
   function create(e: React.FormEvent) {
     e.preventDefault();
+    if(!demoMode){setError('A publicação de rolês entre contas chega na próxima rodada.');return;}
     const result = inviteSchema.safeParse({ title, category, date, place, when, region });
     if (!result.success) { setError(result.error.issues[0]?.message ?? 'Confira os campos.'); return; }
     setState(s => ({ ...s, invites: [...(s.invites ?? []), { id: Date.now(), title: result.data.title, category: result.data.category, date: result.data.date, place: result.data.place, when: result.data.when as When, region: result.data.region, host: ME, joined: [ME] }] }));
@@ -83,11 +88,11 @@ export function Invites() {
   }
 
   return <div className="action-page invites-page">
-    <div className="section-heading"><h1>Convites</h1><Button variant="secondary" onClick={() => setCreating(c => !c)}><Icon name="plus" />Criar convite</Button></div>
+    <div className="section-heading"><h1>Rolês abertos</h1><Button variant="secondary" onClick={() => setCreating(c => !c)}><Icon name="plus" />Criar rolê aberto</Button></div>
     <FirstMeetNotice />
     <p className="intro">Academia, vinho, uma celebração: proponha um plano e veja quem topa. O local é sempre aproximado.</p>
     {creating && <form className="invite-form" onSubmit={create}>
-      <label>Nome do convite<input className="input" required maxLength={60} placeholder="Ex.: Corrida de domingo cedo" value={title} onChange={e => setTitle(e.target.value)} /></label>
+      <label>Nome do rolê<input className="input" required maxLength={60} placeholder="Ex.: Corrida de domingo cedo" value={title} onChange={e => setTitle(e.target.value)} /></label>
       <label>Atividade<select className="input" value={category} onChange={e => setCategory(e.target.value)}>{CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}</select></label>
       <label>Quando<input className="input" required maxLength={40} placeholder="Ex.: Domingo, 7h30" value={date} onChange={e => setDate(e.target.value)} /></label>
       <label>Periodo<select className="input" value={when} onChange={e => setWhen(e.target.value)}><option value="">Escolha…</option>{WHEN_OPTIONS.map(w => <option key={w} value={w}>{w}</option>)}</select></label>

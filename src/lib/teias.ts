@@ -18,6 +18,17 @@ export const brandTeias: Teia[] = [
 export const brandTeiaFor = (partner: number) => brandTeias.find((t) => t.partner === partner);
 export const allTeias: Teia[] = [...groups, ...openTeias, ...brandTeias];
 export const getTeia = (id: number) => allTeias.find((t) => t.id === id);
+export function teiasFor(state: Pick<DemoState, 'joinedTeias' | 'createdTeias'>) {
+  return [...allTeias, ...(state.createdTeias ?? [])].filter(t => (state.joinedTeias ?? []).includes(t.id));
+}
+export function teiaFor(state: Pick<DemoState, 'createdTeias'>, id: number) {
+  return state.createdTeias?.find(t => t.id === id) ?? getTeia(id);
+}
+export function hasSharedTeia(state: DemoState, personId: number) {
+  if (state.blocked.includes(personId)) return false;
+  const attended = [...(state.attendedTeias ?? []), ...state.challenges.filter(c => c.status === 'done').map(c => c.group)];
+  return attended.some(id => teiaFor(state, id)?.ids.includes(personId));
+}
 export const WELCOME_TEXT = 'Oi! Que bom que você chegou. Conta o que te trouxe aqui?';
 
 export function joinedIds(state: Pick<DemoState, 'joinedTeias'>) { return state.joinedTeias ?? []; }
@@ -25,7 +36,7 @@ export function isMember(state: Pick<DemoState, 'joinedTeias'>, id: number) { re
 
 /** Entra na teia na hora e recebe uma mensagem de boas-vindas (uma única vez). */
 export function joinTeia(state: DemoState, id: number): DemoState {
-  const t = getTeia(id); if (!t || isMember(state, id)) return state;
+  const t = teiaFor(state, id); if (!t || isMember(state, id)) return state;
   const key = String(id); const msgs = state.groupMessages[key] ?? [];
   const welcome: Message = { text: WELCOME_TEXT, mine: false, author: t.host ?? 'Nommi' };
   return { ...state, joinedTeias: [...joinedIds(state), id], groupMessages: { ...state.groupMessages, [key]: msgs.some((m) => m.text === WELCOME_TEXT) ? msgs : [...msgs, welcome] } };

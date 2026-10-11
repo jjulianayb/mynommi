@@ -1,74 +1,66 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { lovable } from '@/integrations/lovable/index';
 import { emailSchema, passwordSchema } from '@/lib/nomi-validation';
+import { SIGNUP_INTERESTS, signupDetails } from '@/lib/nommi-access';
 import { Icon } from './art';
 import { Brand } from './surfaces';
 import { useDemoSession } from './session';
 
-/** Contas reais de pessoas e empresas (e-mail e senha, Google ou Apple). */
-export function Account() {
+export function Account({initialMode='entrar',initialBusiness=false}:{initialMode?:'entrar'|'criar';initialBusiness?:boolean}) {
   const { cloudUser, signOut } = useDemoSession();
   const navigate = useNavigate();
-  const [mode, setMode] = useState<'entrar' | 'criar'>('entrar');
-  const [business, setBusiness] = useState(false);
-  const [email, setEmail] = useState(''); const [password, setPassword] = useState(''); const [nickname, setNickname] = useState('');
-  const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [sent, setSent] = useState(false);
-
-  async function social(provider: 'google' | 'apple') {
+  const [mode, setMode] = useState(initialMode); const [business, setBusiness] = useState(initialBusiness);
+  const [email,setEmail]=useState(''); const [password,setPassword]=useState(''); const [nickname,setNickname]=useState('');
+  const [birthday,setBirthday]=useState(''); const [city,setCity]=useState(''); const [interests,setInterests]=useState<string[]>([]);
+  const [busy,setBusy]=useState(false); const [error,setError]=useState(''); const [sent,setSent]=useState(false); const [terms,setTerms]=useState(false);
+  async function social(provider:'google'|'apple') {
     setError(''); setBusy(true);
-    try { if (business) localStorage.setItem('nommi-business-intent', '1'); } catch { /* sem armazenamento */ }
-    const r = await lovable.auth.signInWithOAuth(provider, { redirect_uri: window.location.origin });
-    setBusy(false);
-    if (r.error) { setError('Não foi possível entrar agora. Tente de novo.'); return; }
-    if (!r.redirected) void navigate({ to: business ? '/parceiro' : '/' });
+    try {
+      if (business) localStorage.setItem('nommi-business-intent','1');
+      const r=await lovable.auth.signInWithOAuth(provider,{redirect_uri:window.location.origin});
+      if(r.error) setError('Não foi possível entrar agora. Tente de novo.');
+      else if(!r.redirected) void navigate({to:'/conta'});
+    } catch {setError('Não foi possível entrar agora. Tente de novo.');} finally {setBusy(false);}
   }
-  async function submit(e: React.FormEvent) {
-    e.preventDefault(); setError('');
-    const em = emailSchema.safeParse(email); if (!em.success) { setError(em.error.issues[0]?.message ?? 'Confira o e-mail.'); return; }
-    const pw = passwordSchema.safeParse(password); if (!pw.success) { setError(pw.error.issues[0]?.message ?? 'Confira a senha.'); return; }
+  async function submit(e:React.FormEvent) {
+    e.preventDefault();setError('');
+    const em=emailSchema.safeParse(email);const pw=passwordSchema.safeParse(password);
+    if(!em.success||!pw.success){setError(em.error?.issues[0]?.message??pw.error?.issues[0]?.message??'Confira seu acesso.');return;}
     setBusy(true);
-    if (mode === 'criar') {
-      if (nickname.trim().length < 2) { setBusy(false); setError('Seu apelido precisa ter pelo menos 2 letras.'); return; }
-      const { error: err } = await supabase.auth.signUp({ email: em.data, password, options: { emailRedirectTo: window.location.origin, data: { nickname: nickname.trim().slice(0, 30), is_business: business } } });
-      setBusy(false);
-      if (err) { setError(err.message.includes('registered') ? 'Este e-mail já tem conta. Use "Entrar".' : 'Não foi possível criar a conta. Tente de novo.'); return; }
-      setSent(true); return;
-    }
-    const { error: err } = await supabase.auth.signInWithPassword({ email: em.data, password });
-    setBusy(false);
-    if (err) { setError(err.message.toLowerCase().includes('confirm') ? 'Confirme seu e-mail pelo link que enviamos.' : 'E-mail ou senha não conferem.'); return; }
-    void navigate({ to: '/' });
+    try {
+      if(mode==='criar') {
+        const details=signupDetails({nickname,city,birthday,interests});
+        if(!details.data){setError(details.error??'Confira seus dados.');return;}
+        if(!terms){setError('Aceite os Termos e a Privacidade para continuar.');return;}
+        const {error:err}=await supabase.auth.signUp({email:em.data,password,options:{emailRedirectTo:window.location.origin+'/conta',data:{...details.data,is_business:business,nommi_profile_pending:true}}});
+        if(err){setError(err.message.includes('registered')?'Este e-mail já tem conta. Use Entrar.':'Não foi possível criar a conta. Tente de novo.');return;}
+        setPassword('');setSent(true);return;
+      }
+      const {error:err}=await supabase.auth.signInWithPassword({email:em.data,password});
+      if(err){setError(err.message.toLowerCase().includes('confirm')?'Confirme seu e-mail pelo link que enviamos.':'E-mail ou senha não conferem.');return;}
+      void navigate({to:'/conta'});
+    } catch {setError('A conexão deu uma pausa. Tente de novo.');} finally {setBusy(false);}
   }
-
-  if (cloudUser) return <div className="entry-layout"><Brand /><h1>Sua conta Nommi</h1><p className="intro">Você entrou como <b>{cloudUser.email}</b>.</p>
-    <Button asChild className="wide"><Link to="/">Abrir o Nommi<Icon name="arrow" /></Link></Button>
-    <Button variant="secondary" className="wide" onClick={() => signOut()}><Icon name="logout" />Sair</Button></div>;
-
-  if (sent) return <div className="entry-layout"><Brand /><h1>Confira seu e-mail</h1><p className="intro">Enviamos um link para <b>{email}</b>. Toque nele para ativar sua conta e depois entre por aqui.</p><Button className="wide" onClick={() => { setSent(false); setMode('entrar'); }}>Já confirmei, entrar</Button></div>;
-
-  return <div className="entry-layout account-page">
-    <Brand />
-    <h1>{mode === 'entrar' ? 'Entrar no Nommi' : 'Criar sua conta'}</h1>
-    <p className="intro">Para quem quer companhia para sair, conversar e criar novas amizades.</p>
-    <div className="chips" role="radiogroup" aria-label="Tipo de conta">
-      <Button type="button" variant="outline" role="radio" aria-checked={!business} className={'chip ' + (!business ? 'selected' : '')} onClick={() => setBusiness(false)}>Sou pessoa</Button>
-      <Button type="button" variant="outline" role="radio" aria-checked={business} className={'chip ' + (business ? 'selected' : '')} onClick={() => setBusiness(true)}>Sou empresa</Button>
-    </div>
-    <Button type="button" variant="secondary" className="wide" disabled={busy} onClick={() => social('google')}>Continuar com Google</Button>
-    <Button type="button" variant="secondary" className="wide" disabled={busy} onClick={() => social('apple')}>Continuar com Apple</Button>
-    <p className="small-note account-or">ou com e-mail</p>
+  if(cloudUser) return <CompleteAccount />;
+  if(sent) return <div className="entry-layout"><Brand/><h1>Um pulinho no seu e-mail.</h1><p className="intro">Confira o link enviado para <b>{email}</b>. Depois da confirmação, seu primeiro rolê espera aqui.</p><Button className="wide" onClick={()=>{setSent(false);setMode('entrar');}}>Já confirmei, entrar</Button></div>;
+  return <div className="entry-layout account-page"><Brand/><div className="account-heading"><Icon name="teia"/><h1>{mode==='entrar'?'Bom te ver por aqui.':'Qual é o seu nomi?'}</h1><p className="intro">{mode==='criar'?'Três coisas que você curte. Um bom começo de conversa.':'O próximo “bora?” pode estar bem perto.'}</p></div>
+    <div className="chips" role="radiogroup" aria-label="Tipo de conta">{[false,true].map(b=><Button key={String(b)} type="button" variant="outline" role="radio" aria-checked={business===b} className={'chip '+(business===b?'selected':'')} onClick={()=>setBusiness(b)}>{b?'Sou anfitrião':'Sou nomi'}</Button>)}</div>
+    {mode==='entrar'&&<><Button type="button" variant="secondary" className="wide" disabled={busy} onClick={()=>social('google')}>Continuar com Google</Button><Button type="button" variant="secondary" className="wide" disabled={busy} onClick={()=>social('apple')}>Continuar com Apple</Button><p className="small-note account-or">ou com e-mail</p></>}
     <form className="account-form" onSubmit={submit}>
-      {mode === 'criar' && <label>{business ? 'Nome do estabelecimento ou seu apelido' : 'Qual apelido você quer usar?'}<input className="input" maxLength={30} value={nickname} onChange={e => setNickname(e.target.value)} required /></label>}
-      <label>E-mail<input className="input" type="email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} required /></label>
-      <label>Senha<input className="input" type="password" autoComplete={mode === 'criar' ? 'new-password' : 'current-password'} value={password} onChange={e => setPassword(e.target.value)} required /></label>
-      {error && <p role="alert" className="form-error">{error}</p>}
-      <Button className="wide" disabled={busy}>{busy ? 'Aguarde…' : mode === 'entrar' ? 'Entrar' : 'Criar conta'}</Button>
-    </form>
-    <Button type="button" variant="ghost" className="wide" onClick={() => { setMode(mode === 'entrar' ? 'criar' : 'entrar'); setError(''); }}>{mode === 'entrar' ? 'Ainda não tenho conta' : 'Já tenho conta'}</Button>
-    {mode === 'criar' && <p className="small-note">Ao criar a conta, você confirma ter 18 anos ou mais e aceita os <Link to="/termos">Termos</Link> e a <Link to="/privacidade">Privacidade</Link>.</p>}
-    <Button asChild variant="ghost" className="wide"><Link to="/">Voltar</Link></Button>
+      <label>E-mail<input className="input" type="email" autoComplete="email" value={email} onChange={e=>setEmail(e.target.value)} required/></label>
+      <label>Senha<input className="input" type="password" minLength={8} autoComplete={mode==='criar'?'new-password':'current-password'} value={password} onChange={e=>setPassword(e.target.value)} required/></label>
+      {mode==='criar'&&<><label>{business?'Seu nomi ou nome do lugar':'Seu nomi (apelido)'}<input className="input" maxLength={30} autoComplete="nickname" value={nickname} onChange={e=>setNickname(e.target.value)} required/></label><div className="account-fields"><label>Data de nascimento<input className="input" type="date" autoComplete="bday" value={birthday} onChange={e=>setBirthday(e.target.value)} required/></label><label>Cidade<input className="input" maxLength={80} autoComplete="address-level2" value={city} onChange={e=>setCity(e.target.value)} required/></label></div><fieldset><legend>Escolha 3 interesses <small>{interests.length}/3</small></legend><div className="chips">{SIGNUP_INTERESTS.map(i=><Button type="button" key={i} variant="outline" className={'chip '+(interests.includes(i)?'selected':'')} disabled={interests.length===3&&!interests.includes(i)} aria-pressed={interests.includes(i)} onClick={()=>setInterests(v=>v.includes(i)?v.filter(x=>x!==i):[...v,i])}>{i}</Button>)}</div></fieldset><label className="checkbox-line"><input type="checkbox" checked={terms} onChange={e=>setTerms(e.target.checked)} required/><span>Aceito os <Link to="/termos">Termos</Link> e a <Link to="/privacidade">Privacidade</Link>.</span></label></>}
+      {error&&<p role="alert" className="form-error">{error}</p>}<Button className="wide" disabled={busy}>{busy?'Só um instante…':mode==='criar'?'Criar conta':'Entrar'}<Icon name="arrow"/></Button>
+    </form><Button type="button" variant="ghost" className="wide" onClick={()=>{setMode(mode==='entrar'?'criar':'entrar');setError('');}}>{mode==='entrar'?'Ainda não tenho conta':'Já tenho conta'}</Button><Button asChild variant="ghost" className="wide"><Link to="/">Voltar</Link></Button>
   </div>;
+}
+function CompleteAccount(){
+  const {cloudUser,signOut}=useDemoSession();const navigate=useNavigate();
+  const [nickname,setNickname]=useState('');const [birthday,setBirthday]=useState('');const [city,setCity]=useState('');const [interests,setInterests]=useState<string[]>([]);const [busy,setBusy]=useState(false);const [error,setError]=useState('');
+  if(!cloudUser)return null;
+  if(cloudUser.profileComplete)return <div className="entry-layout"><Brand/><h1>Seu nomi está pronto.</h1><p className="intro">Tem um lugar na roda esperando por você.</p><Button asChild className="wide"><Link to={cloudUser.isBusiness?'/parceiro':'/'}>Ver meu próximo rolê<Icon name="arrow"/></Link></Button><Button variant="ghost" className="wide" onClick={()=>signOut()}>Sair</Button></div>;
+  return <div className="entry-layout account-page"><Brand/><h1>Só falta o seu nomi.</h1><form className="account-form" onSubmit={async e=>{e.preventDefault();const r=signupDetails({nickname,birthday,city,interests});if(!r.data){setError(r.error??'Confira seus dados.');return;}setBusy(true);const {error:err}=await supabase.from('profiles').update({nickname:r.data.nickname,city:r.data.city,interests:r.data.interests}).eq('id',cloudUser.id);if(err){setError('Não foi possível salvar. Tente de novo.');setBusy(false);return;}const {error:authError}=await supabase.auth.updateUser({data:{...r.data,nommi_profile_pending:false}});setBusy(false);if(authError){setError('Não foi possível concluir. Tente de novo.');return;}void navigate({to:cloudUser.isBusiness?'/parceiro':'/'});}}><label>Seu nomi<input className="input" value={nickname} onChange={e=>setNickname(e.target.value)} required maxLength={30}/></label><label>Data de nascimento<input className="input" type="date" value={birthday} onChange={e=>setBirthday(e.target.value)} required/></label><label>Cidade<input className="input" value={city} onChange={e=>setCity(e.target.value)} required maxLength={80}/></label><fieldset><legend>3 interesses</legend><div className="chips">{SIGNUP_INTERESTS.map(i=><Button type="button" key={i} variant="outline" className={'chip '+(interests.includes(i)?'selected':'')} disabled={interests.length===3&&!interests.includes(i)} onClick={()=>setInterests(v=>v.includes(i)?v.filter(x=>x!==i):[...v,i])}>{i}</Button>)}</div></fieldset>{error&&<p role="alert" className="form-error">{error}</p>}<Button className="wide" disabled={busy}>{busy?'Salvando…':'Ver meu primeiro rolê'}<Icon name="teia"/></Button></form></div>;
 }

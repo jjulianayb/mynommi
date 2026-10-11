@@ -12,7 +12,7 @@ export const slug = (name: string) => name.toLowerCase().normalize('NFD').replac
 export function NommiIdentity({ name, avatar, interests, mode, own }: { name: string; avatar: number; interests: string[]; mode: ConnectionMode; own: boolean }) {
   const { setState, notify } = useFriends(); const [card, setCard] = useState(false); const handle = 'nommi.me/' + slug(name.split(' ')[0] ?? name);
   return <div className="nommi-identity">
-    <Button variant="secondary" className="nommi-handle" onClick={() => setCard(true)}><Icon name="link" />{own ? 'Seu Nommi' : 'Nommi'}: <b>{handle}</b></Button>
+    <Button variant="secondary" className="nommi-handle" onClick={() => setCard(true)}><Icon name="link" />{own ? 'Meu nomi' : 'nomi'}: <b>{handle}</b></Button>
     <div className="mode-row" role="group" aria-label="Modo de amizade">{(['Presencial', 'Virtual', 'Híbrida'] as ConnectionMode[]).map(m => own
       ? <Button key={m} size="sm" variant={mode === m ? 'default' : 'ghost'} aria-pressed={mode === m} onClick={() => { setState(s => ({ ...s, mode: m })); notify('Modo de amizade: ' + m + '.') }}><Icon name={modeIcon[m]} />{m}</Button>
       : mode === m && <span key={m} className="mode-chip"><Icon name={modeIcon[m]} />Prefere amizade {m.toLowerCase()}</span>)}</div>
@@ -31,6 +31,6 @@ export function SocialWeb({ name, avatar, photo }: { name: string; avatar: numbe
     </div>
     <article className="web-detail"><div className="row"><span className={'tone-icon ' + g.tone}><Icon name={g.icon} /></span><div><h3>{g.name}</h3><p>{g.mode} · {g.members} pessoas · {3 + sel} encontros em comum</p></div></div>
       <div className="web-moments">{g.ids.slice(0, 4).map((id, i) => <figure key={id} className="web-moment"><div className="avatar-stack"><Avatar id={avatar} size={34} /><Avatar id={id} size={34} /></div><figcaption>{['Brinde de sexta', 'Refrão em dupla', 'Café sem pressa', 'Papo online'][i]}</figcaption></figure>)}</div>
-      <p className="small-note">Ilustrações de exemplo. Fotos reais só com aprovação de todas.</p></article>
+      <p className="small-note">Ilustrações de exemplo. Fotos reais só com aprovação de quem participou.</p></article>
   </section>;
 }

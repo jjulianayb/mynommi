@@ -17,7 +17,7 @@ export function Gate({ area, own, personId, children }: { area: Area; own: boole
   if (own) return <><p className="privacy-badge"><Icon name="lock" />{labels[area][0]}: {audiences.find(a => a[0] === vis[area])?.[1]}</p>{children}</>;
   const a = otherAudience(area, personId); const friend = state.matches.includes(personId);
   if (a === 'todos' || (a === 'amizades' && friend)) return <>{children}</>;
-  return <div className="privacy-locked"><Icon name="lock" /><p><b>{labels[area][0]} visíveis só para amizades.</b><br /><span className="small-note">Quando vocês tiverem match, isso aparece aqui.</span></p></div>;
+  return <div className="privacy-locked"><Icon name="lock" /><p><b>{labels[area][0]} visíveis só para amizades.</b><br /><span className="small-note">Depois de um encontro na mesma teia, isso aparece aqui.</span></p></div>;
 }
 
 export function PrivacyControls() {
@@ -27,7 +27,7 @@ export function PrivacyControls() {
 
 export const PROFILE_MODES: [ProfileMode, string, string][] = [
   ['publico', 'Perfil público', 'Qualquer pessoa pode te encontrar pelo nome de usuário e ver o que você deixou visível.'],
-  ['privado', 'Perfil privado', 'Só quem tem match ou amizade confirmada vê seu perfil; você não aparece em buscas e sugestões.'],
+  ['privado', 'Perfil privado', 'Só quem tem teia em comum ou amizade confirmada vê seu perfil; você não aparece em buscas e sugestões.'],
 ];
 /** Ao mudar o modo, ajusta o padrão de visibilidade (cada área ainda pode ser ajustada depois). */
 export function visibilityFor(mode: ProfileMode): Record<Area, Audience> {
