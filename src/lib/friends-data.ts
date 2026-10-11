@@ -39,7 +39,7 @@ export const demoState:DemoState={profileMode:'publico',teias:[0,1,2],dailyAnswe
 /** Mantido por compatibilidade: o estado padrão é o da demonstração. */
 export const initialState=demoState;
 /** Conta nova: sem amizades, mensagens, pontos, desafios ou mural; só sugestões (pessoas e convites). */
-export const emptyState:DemoState={...demoState,teias:[],points:[0,0,0],matches:[],sent:[],blocked:[],messages:{},groupMessages:{},challenges:[],wall:[],visits:[],rewards:[],dailyAnswers:[],todayMood:undefined,socialPosts:[],recentStickers:[],favoriteStickers:[],invites:demoInvites,nickname:'',photo:'',interests:[],goals:[],birthday:'',adult:false,pro:false};
+export const emptyState:DemoState={...demoState,teias:[],points:[0,0,0],matches:[],sent:[],blocked:[],messages:{},groupMessages:{},challenges:[],wall:[],visits:[],rewards:[],dailyAnswers:[],socialPosts:[],recentStickers:[],favoriteStickers:[],invites:demoInvites,nickname:'',photo:'',interests:[],goals:[],birthday:'',adult:false,pro:false};
 export const money=(n:number)=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
 export function getPartner(id:number){const value=partners[id]??partners[0];if(!value)throw new Error('Partner examples unavailable');return value}
