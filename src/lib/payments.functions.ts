@@ -4,7 +4,7 @@ import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { creditsForPrice } from '@/lib/credits';
 import { type StripeEnv, createStripeClient, getStripeErrorMessage } from '@/lib/stripe.server';
 
-async function resolveOrCreateCustomer(stripe: ReturnType<typeof createStripeClient>, options: { email?: string; userId?: string }): Promise<string> {
+async function resolveOrCreateCustomer(stripe: ReturnType<typeof createStripeClient>, options: { email?: string | undefined; userId?: string | undefined }): Promise<string> {
   if (options.userId && !/^[a-zA-Z0-9_-]+$/.test(options.userId)) throw new Error('Invalid userId');
   if (options.userId) {
     const found = await stripe.customers.search({ query: `metadata['userId']:'${options.userId}'`, limit: 1 });
@@ -40,7 +40,7 @@ export const createCreditCheckout = createServerFn({ method: 'POST' })
       const stripe = createStripeClient(data.environment);
       const prices = await stripe.prices.list({ lookup_keys: [data.priceId] });
       if (!prices.data.length) throw new Error('Pacote não encontrado');
-      const price = prices.data[0];
+      const price = prices.data[0]!;
       const productId = typeof price.product === 'string' ? price.product : price.product.id;
       const product = await stripe.products.retrieve(productId);
       const customerId = await resolveOrCreateCustomer(stripe, { email: user?.email ?? undefined, userId });

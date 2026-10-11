@@ -70,14 +70,15 @@ export async function verifyWebhook(req: Request, env: StripeEnv): Promise<{ typ
   const v1Signatures: string[] = [];
   for (const part of signature.split(',')) {
     const [key, value] = part.split('=', 2);
-    if (key === 't') timestamp = value;
-    if (key === 'v1') v1Signatures.push(value);
+    if (key === 't' && value) timestamp = value;
+    if (key === 'v1' && value) v1Signatures.push(value);
   }
   if (!timestamp || v1Signatures.length === 0) throw new Error('Invalid signature format');
   const age = Math.abs(Date.now() / 1000 - Number(timestamp));
+  const ts = timestamp;
   if (age > 300) throw new Error('Webhook timestamp too old');
   const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-  const signed = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(`${timestamp}.${body}`));
+  const signed = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(`${ts}.${body}`));
   const expected = Array.from(new Uint8Array(signed)).map(b => b.toString(16).padStart(2, '0')).join('');
   if (!v1Signatures.includes(expected)) throw new Error('Invalid webhook signature');
   return JSON.parse(body);
