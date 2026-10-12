@@ -283,6 +283,57 @@ export type Database = {
         }
         Relationships: []
       }
+      teia_members: {
+        Row: {
+          joined_at: string
+          nickname: string
+          teia_key: string
+          user_id: string
+        }
+        Insert: {
+          joined_at?: string
+          nickname?: string
+          teia_key: string
+          user_id: string
+        }
+        Update: {
+          joined_at?: string
+          nickname?: string
+          teia_key?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      teia_messages: {
+        Row: {
+          author: string
+          body: string | null
+          created_at: string
+          id: string
+          sender_id: string
+          sticker: number | null
+          teia_key: string
+        }
+        Insert: {
+          author?: string
+          body?: string | null
+          created_at?: string
+          id?: string
+          sender_id: string
+          sticker?: number | null
+          teia_key: string
+        }
+        Update: {
+          author?: string
+          body?: string | null
+          created_at?: string
+          id?: string
+          sender_id?: string
+          sticker?: number | null
+          teia_key?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -327,6 +378,10 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_teia_member: {
+        Args: { _teia: string; _user: string }
         Returns: boolean
       }
       spend_boost: { Args: never; Returns: string }
