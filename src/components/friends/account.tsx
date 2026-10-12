@@ -59,7 +59,7 @@ export function Account({initialMode='entrar',initialBusiness=false}:{initialMod
   </div>;
 }
 export function passwordChecks(p:string){return [{label:'Pelo menos 8 caracteres',ok:p.length>=8},{label:'Uma letra maiúscula e uma minúscula',ok:/[A-Z]/.test(p)&&/[a-z]/.test(p)},{label:'Pelo menos um número',ok:/[0-9]/.test(p)},{label:'Um símbolo (ex.: ! @ # -)',ok:/[^A-Za-z0-9]/.test(p)}];}
-function signupErrorMessage(err:{message:string;code?:string;status?:number}){const m=err.message.toLowerCase();
+function signupErrorMessage(err:{message:string;code?:string|undefined;status?:number|undefined}){const m=err.message.toLowerCase();
   if(err.code==='weak_password'||m.includes('weak')||m.includes('pwned'))return 'Essa senha é muito comum ou fácil de adivinhar. Siga as dicas abaixo do campo de senha e tente outra.';
   if(m.includes('registered')||err.code==='user_already_exists')return 'Este e-mail já tem conta. Use Entrar.';
   if(err.status===429||m.includes('rate'))return 'Muitas tentativas seguidas. Espere alguns minutos e tente de novo, ou use Google ou Apple.';
