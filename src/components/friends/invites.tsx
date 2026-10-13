@@ -3,6 +3,8 @@ import { isRealHost } from '@/lib/nommi-access';
 import { boostInvite, INVITE_BOOST_COST } from '@/lib/credits';
 import { FirstMeetNotice } from './privacy';
 import { useState } from 'react';
+import { Link, useNavigate } from '@tanstack/react-router';
+import { createRealTeia, useRealTeias, sortByCity } from '@/lib/real-teias';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { people, WHEN_OPTIONS, REGION_OPTIONS, type Invite, type When } from '@/lib/friends-data';
@@ -76,10 +78,25 @@ export function Invites({initialCreating=false}:{initialCreating?:boolean}) {
   const [date, setDate] = useState(''); const [place, setPlace] = useState(''); const [error, setError] = useState('');
   const [when, setWhen] = useState(''); const [region, setRegion] = useState('');
   const invites = (state.invites ?? []).filter(i => i.host !== undefined && !state.blocked.includes(i.host));
+  const cloud = !!cloudUser && !demoMode; const navigate = useNavigate();
+  const real = useRealTeias(cloud ? cloudUser!.id : null); const [city, setCity] = useState(state.city); const [busy, setBusy] = useState(false);
+  const realRoles = sortByCity(real.rows.filter(r => r.kind === 'role'), state.city);
 
   function create(e: React.FormEvent) {
     e.preventDefault();
-    if(!demoMode){setError('A publicação de rolês entre contas chega na próxima rodada.');return;}
+    if (cloud) {
+      const r = inviteSchema.omit({ region: true }).safeParse({ title, category, date, place, when });
+      if (!r.success) { setError(r.error.issues[0]?.message ?? 'Confira os campos.'); return; }
+      if (city.trim().length < 2) { setError('Diga a cidade do rolê.'); return; }
+      setBusy(true);
+      void createRealTeia({ kind: 'role', name: r.data.title, category: r.data.category, city, place: r.data.place, when: r.data.date + ' · ' + r.data.when }, cloudUser!.id, state.nickname || 'nommi').then(id => {
+        setBusy(false);
+        if (!id) { setError('Não deu para publicar agora. Tente de novo.'); return; }
+        notify('Rolê publicado! A conversa dele já está aberta.');
+        void navigate({ to: '/grupos/$id', params: { id: String(id) } });
+      });
+      return;
+    }
     const result = inviteSchema.safeParse({ title, category, date, place, when, region });
     if (!result.success) { setError(result.error.issues[0]?.message ?? 'Confira os campos.'); return; }
     setState(s => ({ ...s, invites: [...(s.invites ?? []), { id: Date.now(), title: result.data.title, category: result.data.category, date: result.data.date, place: result.data.place, when: result.data.when as When, region: result.data.region, host: ME, joined: [ME] }] }));
@@ -96,12 +113,13 @@ export function Invites({initialCreating=false}:{initialCreating?:boolean}) {
       <label>Atividade<select className="input" value={category} onChange={e => setCategory(e.target.value)}>{CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}</select></label>
       <label>Quando<input className="input" required maxLength={40} placeholder="Ex.: Domingo, 7h30" value={date} onChange={e => setDate(e.target.value)} /></label>
       <label>Periodo<select className="input" value={when} onChange={e => setWhen(e.target.value)}><option value="">Escolha…</option>{WHEN_OPTIONS.map(w => <option key={w} value={w}>{w}</option>)}</select></label>
-      <label>Local aproximado<input className="input" required maxLength={60} placeholder="Ex.: Perto da Lagoa da Pampulha" value={place} onChange={e => setPlace(e.target.value)} /></label>
-      <label>Região aproximada<select className="input" value={region} onChange={e => setRegion(e.target.value)}><option value="">Escolha…</option>{REGION_OPTIONS.map(r => <option key={r} value={r}>{r}</option>)}</select></label>
+      <label>Local aproximado<input className="input" required maxLength={60} placeholder="Ex.: Perto da praça central" value={place} onChange={e => setPlace(e.target.value)} /></label>
+      {cloud ? <label>Cidade<input className="input" required maxLength={80} value={city} onChange={e => setCity(e.target.value)} /></label> : <label>Região aproximada<select className="input" value={region} onChange={e => setRegion(e.target.value)}><option value="">Escolha…</option>{REGION_OPTIONS.map(r => <option key={r} value={r}>{r}</option>)}</select></label>}
       {error && <p role="alert" className="form-error">{error}</p>}
-      <Button className="wide"><Icon name="send" />Publicar convite</Button>
+      <Button className="wide" disabled={busy}><Icon name="send" />{busy ? 'Publicando…' : 'Publicar convite'}</Button>
     </form>}
-    <div className="invite-list">{invites.map(i => <InviteCard key={i.id} invite={i} />)}</div>
-    <p className="small-note">Demonstração com convites fictícios. Endereços exatos só são compartilhados depois que você confirma presença.</p>
+    {cloud ? <div className="group-grid">{realRoles.length ? realRoles.map(r => <article className="group-card" key={r.id}><h3>{r.name}</h3><p>{[r.category, r.city, r.place, r.when_text].filter(Boolean).join(' · ')}</p>{r.creator_nickname && <p className="small-note">Proposto por {r.creator_nickname}</p>}<div className="group-card-bottom">{real.joined.includes(r.id) ? <Button asChild variant="secondary"><Link to="/grupos/$id" params={{ id: String(r.id) }}>Abrir conversa<Icon name="arrow" /></Link></Button> : <Button onClick={async () => { if (await real.join(r.id, state.nickname || 'nommi')) void navigate({ to: '/grupos/$id', params: { id: String(r.id) } }); else notify('Não deu para entrar agora.'); }}><Icon name="plus" />Quero ir</Button>}</div></article>) : <p className="small-note">{real.ready ? 'Ainda não há rolês abertos. Proponha o primeiro!' : 'Carregando rolês…'}</p>}</div>
+    : <><div className="invite-list">{invites.map(i => <InviteCard key={i.id} invite={i} />)}</div>
+    <p className="small-note">Demonstração com convites fictícios. Endereços exatos só são compartilhados depois que você confirma presença.</p></>}
   </div>;
 }

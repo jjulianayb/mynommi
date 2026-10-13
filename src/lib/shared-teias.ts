@@ -8,7 +8,7 @@ type Member = { user_id: string; nickname: string };
 /** Map a server message row to the chat Message shape for the current viewer. */
 export function toMessage(row: Row, me: string): Message {
   const time = new Date(row.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-  return { text: row.body ?? undefined, sticker: row.sticker ?? undefined, mine: row.sender_id === me, author: row.sender_id === me ? undefined : row.author || 'nommi', time };
+  return { ...(row.body != null ? { text: row.body } : {}), ...(row.sticker != null ? { sticker: row.sticker } : {}), mine: row.sender_id === me, ...(row.sender_id === me ? {} : { author: row.author || 'nommi' }), time };
 }
 
 /** Real cross-account teia: membership + messages stored in Lovable Cloud with live updates. */

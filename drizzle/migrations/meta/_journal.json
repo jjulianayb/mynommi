@@ -43,6 +43,13 @@
       "when": 1791830940802,
       "tag": "0005_teias_compartilhadas",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791860546415,
+      "tag": "0006_teias_reais",
+      "breakpoints": true
     }
   ]
 }
