@@ -334,6 +334,48 @@ export type Database = {
         }
         Relationships: []
       }
+      teias: {
+        Row: {
+          category: string | null
+          city: string
+          created_at: string
+          created_by: string
+          creator_nickname: string
+          id: number
+          kind: string
+          mode: string
+          name: string
+          place: string
+          when_text: string
+        }
+        Insert: {
+          category?: string | null
+          city?: string
+          created_at?: string
+          created_by: string
+          creator_nickname?: string
+          id?: never
+          kind?: string
+          mode?: string
+          name: string
+          place?: string
+          when_text?: string
+        }
+        Update: {
+          category?: string | null
+          city?: string
+          created_at?: string
+          created_by?: string
+          creator_nickname?: string
+          id?: never
+          kind?: string
+          mode?: string
+          name?: string
+          place?: string
+          when_text?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
