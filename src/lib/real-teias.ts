@@ -6,7 +6,7 @@ export type RealTeiaRow = { id: number; kind: string; name: string; mode: string
 
 /** Converte uma teia salva no servidor para o formato usado pelas telas. */
 export function toTeia(r: RealTeiaRow): Teia {
-  return { id: r.id, name: r.name, mode: r.mode, members: 0, icon: r.kind === 'role' ? 'pin' : 'teia', tone: r.kind === 'role' ? 'yellow' : 'teal', ids: [], place: [r.place, r.city].filter(Boolean).join(' · ') || undefined, time: r.when_text || undefined, host: r.creator_nickname || undefined };
+  return { id: r.id, name: r.name, mode: r.mode, members: 0, icon: r.kind === 'role' ? 'pin' : 'teia', tone: r.kind === 'role' ? 'yellow' : 'teal', ids: [], ...(r.place || r.city ? { place: [r.place, r.city].filter(Boolean).join(' · ') } : {}), ...(r.when_text ? { time: r.when_text } : {}), ...(r.creator_nickname ? { host: r.creator_nickname } : {}) };
 }
 
 /** Coloca primeiro as teias da cidade da pessoa; o resto segue do mais novo ao mais antigo. */
