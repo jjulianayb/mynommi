@@ -20,14 +20,14 @@ export function DemoSessionProvider({children}:{children:ReactNode}){
    const request=++version;
    if(!u){if(!alive)return;setCloudUser(null);setIsAdmin(false);try{const raw=localStorage.getItem('nomi-demo-session');const d=raw?JSON.parse(raw):null;if(localStorage.getItem('nommi-demo-mode')&&d?.email==='demo@nommi.app'){setDemoMode(true);setSession({email:d.email,partner:false});}else{setDemoMode(false);setSession(null);}}catch{setSession(null);}setReady(true);return;}
    const {data:role}=await supabase.rpc('has_role',{_user_id:u.id,_role:'admin'});
-   const {data:profile}=await supabase.from('profiles').select('nickname,city,interests,about,profile_mode,is_business').eq('id',u.id).maybeSingle();
+   const {data:profile}=await supabase.from('profiles').select('nickname,city,interests,about,profile_mode,is_business,avatar_url').eq('id',u.id).maybeSingle();
    if(!alive||request!==version)return;
    let p=profile;
    const meta=u.user_metadata;
    // Complete profile fields collected at signup using existing owner-editable columns only.
    if(meta['nommi_profile_pending']===true){
     const r=signupDetails({nickname:typeof meta['nickname']==='string'?meta['nickname']:'',city:typeof meta['city']==='string'?meta['city']:'',birthday:typeof meta['birthday']==='string'?meta['birthday']:'',interests:Array.isArray(meta['interests'])?meta['interests']:[]});
-    if(r.data){const {data:saved}=await supabase.from('profiles').update({nickname:r.data.nickname,city:r.data.city,interests:r.data.interests}).eq('id',u.id).select('nickname,city,interests,about,profile_mode,is_business').maybeSingle();if(saved){p=saved;await supabase.auth.updateUser({data:{nommi_profile_pending:false}});}}
+    if(r.data){const {data:saved}=await supabase.from('profiles').update({nickname:r.data.nickname,city:r.data.city,interests:r.data.interests}).eq('id',u.id).select('nickname,city,interests,about,profile_mode,is_business,avatar_url').maybeSingle();if(saved){p=saved;await supabase.auth.updateUser({data:{nommi_profile_pending:false}});}}
    }
    try{if(localStorage.getItem('nommi-business-intent')){const {error}=await supabase.from('profiles').update({is_business:true}).eq('id',u.id);if(!error&&p)p={...p,is_business:true};localStorage.removeItem('nommi-business-intent');}}catch{}
    if(!alive||request!==version)return;
@@ -36,7 +36,7 @@ export function DemoSessionProvider({children}:{children:ReactNode}){
    const complete=!!p&&!!signupDetails({nickname:p.nickname,city:p.city,birthday,interests:p.interests}).data;
    setCloudUser({id:u.id,email:u.email??'',isBusiness:next.partner,profileComplete:complete});setIsAdmin(role===true);setDemoMode(false);setSession(next);
    try{localStorage.removeItem('nommi-demo-mode');localStorage.removeItem('nomi-demo-session');}catch{}
-   setState(s=>s.accountId===u.id?{...s,nickname:p?.nickname??'',city:p?.city??'',interests:p?.interests??[],birthday,about:p?.about??'',profileMode:p?.profile_mode==='privado'?'privado':'publico'}:{...emptyState,accountId:u.id,invites:[],nickname:p?.nickname??'',city:p?.city??'',interests:p?.interests??[],birthday,about:p?.about??'',profileMode:p?.profile_mode==='privado'?'privado':'publico',adult:complete});
+   setState(s=>s.accountId===u.id?{...s,nickname:p?.nickname??'',city:p?.city??'',interests:p?.interests??[],birthday,about:p?.about??'',photo:p?.avatar_url??'',profileMode:p?.profile_mode==='privado'?'privado':'publico'}:{...emptyState,accountId:u.id,invites:[],nickname:p?.nickname??'',city:p?.city??'',interests:p?.interests??[],birthday,about:p?.about??'',photo:p?.avatar_url??'',profileMode:p?.profile_mode==='privado'?'privado':'publico',adult:complete});
    setReady(true);
   }
   const {data:sub}=supabase.auth.onAuthStateChange((event,s)=>{if(['SIGNED_IN','SIGNED_OUT','USER_UPDATED','INITIAL_SESSION'].includes(event))setTimeout(()=>{void load(s?.user??null)},0);});

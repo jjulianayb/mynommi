@@ -17,7 +17,7 @@ export function PeopleSearch({ userId }: { userId: string }) {
   const { rows, loading } = usePeopleSearch(q, userId);
   const mine = new Set(state.interests ?? []);
   return <section className="people-search">
-    <label className="search-field"><Icon name="search" /><input className="input" type="search" value={q} onChange={e => setQ(e.target.value)} placeholder="Buscar por apelido ou cidade" aria-label="Buscar nommi por apelido ou cidade" maxLength={40} /></label>
+    <label className="search-field"><Icon name="users" /><input className="input" type="search" value={q} onChange={e => setQ(e.target.value)} placeholder="Buscar por apelido ou cidade" aria-label="Buscar nommi por apelido ou cidade" maxLength={40} /></label>
     {loading && !rows.length ? <p className="small-note">Procurando…</p> : !rows.length ? <EmptyState title={q ? 'Ninguém com esse nome ou cidade.' : 'Ainda há poucos nommi por aqui.'} text="Convide uma amizade para entrar no Nommi."><Button asChild variant="secondary"><Link to="/convidar">Convidar uma amizade</Link></Button></EmptyState> :
       <div className="people-list">{rows.map(p => { const common = p.interests.filter(i => mine.has(i)); return <Link key={p.id} to="/nommi/$id" params={{ id: p.id }} className="conversation">
         <Face p={p} size={56} />
