@@ -31,5 +31,5 @@
 - Real credit purchases use embedded card checkout; balances change only in the payment webhook via the idempotent grant_purchased_credits function (keyed by checkout session), so a client can never add credits itself.
 
 - Keep the visual reward catalogue in a focused module; it reads existing published host ideas without modifying payment or reward-balance rules.
-- Real-account teias and open rolês live in the teias table (any signed-in account reads, creator writes) via src/lib/real-teias.ts; ids start at 100000 so they never collide with demo teias.
+- Real-account teias and open rolês live in the teias table (table reads limited to creator/members; discovery via the list_teias() function that hides who created it; creator writes) via src/lib/real-teias.ts; ids start at 100000 so they never collide with demo teias.
 - Real-account profile edits, photo (resized data URL in profiles.avatar_url, since public storage buckets are blocked) and people search live in src/lib/real-profiles.ts; public profiles are at /nommi/$id.

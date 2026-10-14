@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import type { Teia } from './teias';
 
-export type RealTeiaRow = { id: number; kind: string; name: string; mode: string; category: string | null; city: string; place: string; when_text: string; created_by: string; creator_nickname: string; created_at: string };
+export type RealTeiaRow = { id: number; kind: string; name: string; mode: string; category: string | null; city: string; place: string; when_text: string; created_by?: string; creator_nickname: string; created_at: string };
 
 /** Converte uma teia salva no servidor para o formato usado pelas telas. */
 export function toTeia(r: RealTeiaRow): Teia {
@@ -23,7 +23,7 @@ export function useRealTeias(userId: string | null) {
   const load = useCallback(async () => {
     if (!userId) return;
     const [{ data: t }, { data: m }] = await Promise.all([
-      supabase.from('teias').select('*').order('created_at', { ascending: false }).limit(200),
+      supabase.rpc('list_teias', {}),
       supabase.from('teia_members').select('teia_key').eq('user_id', userId),
     ]);
     setRows((t as RealTeiaRow[]) ?? []);
@@ -56,7 +56,7 @@ export function useRealTeia(id: number, enabled: boolean) {
   const [ready, setReady] = useState(false);
   useEffect(() => {
     if (!enabled) return;
-    void supabase.from('teias').select('*').eq('id', id).maybeSingle().then(({ data }) => { setRow((data as RealTeiaRow) ?? null); setReady(true); });
+    void supabase.rpc('list_teias', { _id: id }).then(({ data }) => { setRow(((data as RealTeiaRow[] | null) ?? [])[0] ?? null); setReady(true); });
   }, [id, enabled]);
   return { row, ready };
 }
