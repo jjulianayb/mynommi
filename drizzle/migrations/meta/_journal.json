@@ -64,6 +64,13 @@
       "when": 1791941307561,
       "tag": "0008_profile_avatar_limit",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1791942030842,
+      "tag": "0009_teias_safe_listing",
+      "breakpoints": true
     }
   ]
 }

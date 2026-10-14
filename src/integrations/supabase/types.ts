@@ -429,6 +429,21 @@ export type Database = {
         Args: { _teia: string; _user: string }
         Returns: boolean
       }
+      list_teias: {
+        Args: { _creator?: string; _id?: number }
+        Returns: {
+          category: string
+          city: string
+          created_at: string
+          creator_nickname: string
+          id: number
+          kind: string
+          mode: string
+          name: string
+          place: string
+          when_text: string
+        }[]
+      }
       spend_boost: { Args: never; Returns: string }
       spend_invite_boost: { Args: { _invite_ref: string }; Returns: number }
     }
