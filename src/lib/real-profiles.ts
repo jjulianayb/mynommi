@@ -43,9 +43,9 @@ export function usePublicProfile(id: string, enabled: boolean) {
     void (async () => {
       const [{ data: p }, { data: t }] = await Promise.all([
         supabase.from('profiles').select(COLS).eq('id', id).maybeSingle(),
-        supabase.from('teias').select('id,name,kind,city').eq('created_by', id).order('created_at', { ascending: false }).limit(10),
+        supabase.rpc('list_teias', { _creator: id }),
       ]);
-      if (alive) setState({ ready: true, profile: (p as PublicProfile | null) ?? null, teias: t ?? [] });
+      if (alive) setState({ ready: true, profile: (p as PublicProfile | null) ?? null, teias: (t ?? []).slice(0, 10) });
     })();
     return () => { alive = false; };
   }, [id, enabled]);
