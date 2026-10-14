@@ -39,6 +39,7 @@ import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as TermosRouteImport } from './routes/termos'
 import { Route as EmpresaIdRouteImport } from './routes/empresa.$id'
 import { Route as GruposIdRouteImport } from './routes/grupos_.$id'
+import { Route as NommiIdRouteImport } from './routes/nommi.$id'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const IndexRoute = IndexRouteImport.update({
@@ -191,6 +192,11 @@ const GruposIdRoute = GruposIdRouteImport.update({
   path: '/grupos/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NommiIdRoute = NommiIdRouteImport.update({
+  id: '/nommi/$id',
+  path: '/nommi/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -229,6 +235,7 @@ export interface FileRoutesByFullPath {
   '/termos': typeof TermosRoute
   '/empresa/$id': typeof EmpresaIdRoute
   '/grupos/$id': typeof GruposIdRoute
+  '/nommi/$id': typeof NommiIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -262,6 +269,7 @@ export interface FileRoutesByTo {
   '/termos': typeof TermosRoute
   '/empresa/$id': typeof EmpresaIdRoute
   '/grupos/$id': typeof GruposIdRoute
+  '/nommi/$id': typeof NommiIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
@@ -296,6 +304,7 @@ export interface FileRoutesById {
   '/termos': typeof TermosRoute
   '/empresa/$id': typeof EmpresaIdRoute
   '/grupos_/$id': typeof GruposIdRoute
+  '/nommi/$id': typeof NommiIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
@@ -331,6 +340,7 @@ export interface FileRouteTypes {
     | '/termos'
     | '/empresa/$id'
     | '/grupos/$id'
+    | '/nommi/$id'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -364,6 +374,7 @@ export interface FileRouteTypes {
     | '/termos'
     | '/empresa/$id'
     | '/grupos/$id'
+    | '/nommi/$id'
     | '/api/public/payments/webhook'
   id:
     | '__root__'
@@ -397,6 +408,7 @@ export interface FileRouteTypes {
     | '/termos'
     | '/empresa/$id'
     | '/grupos_/$id'
+    | '/nommi/$id'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -431,6 +443,7 @@ export interface RootRouteChildren {
   TermosRoute: typeof TermosRoute
   EmpresaIdRoute: typeof EmpresaIdRoute
   GruposIdRoute: typeof GruposIdRoute
+  NommiIdRoute: typeof NommiIdRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
@@ -646,6 +659,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GruposIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/nommi/$id': {
+      id: '/nommi/$id'
+      path: '/nommi/$id'
+      fullPath: '/nommi/$id'
+      preLoaderRoute: typeof NommiIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
@@ -687,6 +707,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermosRoute: TermosRoute,
   EmpresaIdRoute: EmpresaIdRoute,
   GruposIdRoute: GruposIdRoute,
+  NommiIdRoute: NommiIdRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
