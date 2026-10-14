@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD CONSTRAINT profiles_avatar_url_len CHECK (char_length(avatar_url) <= 400000);
