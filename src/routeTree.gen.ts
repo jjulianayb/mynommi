@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AjudaRouteImport } from './routes/ajuda'
+import { Route as AmigosRouteImport } from './routes/amigos'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as CarteiraRouteImport } from './routes/carteira'
 import { Route as CheckInRouteImport } from './routes/check-in'
@@ -55,6 +56,11 @@ const AdminRoute = AdminRouteImport.update({
 const AjudaRoute = AjudaRouteImport.update({
   id: '/ajuda',
   path: '/ajuda',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AmigosRoute = AmigosRouteImport.update({
+  id: '/amigos',
+  path: '/amigos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CadastroRoute = CadastroRouteImport.update({
@@ -208,6 +214,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/ajuda': typeof AjudaRoute
+  '/amigos': typeof AmigosRoute
   '/cadastro': typeof CadastroRoute
   '/carteira': typeof CarteiraRoute
   '/check-in': typeof CheckInRoute
@@ -242,6 +249,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/ajuda': typeof AjudaRoute
+  '/amigos': typeof AmigosRoute
   '/cadastro': typeof CadastroRoute
   '/carteira': typeof CarteiraRoute
   '/check-in': typeof CheckInRoute
@@ -277,6 +285,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/ajuda': typeof AjudaRoute
+  '/amigos': typeof AmigosRoute
   '/cadastro': typeof CadastroRoute
   '/carteira': typeof CarteiraRoute
   '/check-in': typeof CheckInRoute
@@ -313,6 +322,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/ajuda'
+    | '/amigos'
     | '/cadastro'
     | '/carteira'
     | '/check-in'
@@ -347,6 +357,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/ajuda'
+    | '/amigos'
     | '/cadastro'
     | '/carteira'
     | '/check-in'
@@ -381,6 +392,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/ajuda'
+    | '/amigos'
     | '/cadastro'
     | '/carteira'
     | '/check-in'
@@ -416,6 +428,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   AjudaRoute: typeof AjudaRoute
+  AmigosRoute: typeof AmigosRoute
   CadastroRoute: typeof CadastroRoute
   CarteiraRoute: typeof CarteiraRoute
   CheckInRoute: typeof CheckInRoute
@@ -468,6 +481,13 @@ declare module '@tanstack/react-router' {
       path: '/ajuda'
       fullPath: '/ajuda'
       preLoaderRoute: typeof AjudaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/amigos': {
+      id: '/amigos'
+      path: '/amigos'
+      fullPath: '/amigos'
+      preLoaderRoute: typeof AmigosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cadastro': {
@@ -680,6 +700,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AjudaRoute: AjudaRoute,
+  AmigosRoute: AmigosRoute,
   CadastroRoute: CadastroRoute,
   CarteiraRoute: CarteiraRoute,
   CheckInRoute: CheckInRoute,
