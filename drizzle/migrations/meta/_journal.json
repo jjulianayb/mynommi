@@ -71,6 +71,13 @@
       "when": 1791942030842,
       "tag": "0009_teias_safe_listing",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1792034000602,
+      "tag": "0010_connections",
+      "breakpoints": true
     }
   ]
 }
