@@ -7,7 +7,7 @@ import { momentPhoto } from '@/lib/friends-photos';
 import { OpenerSuggest } from './opener-suggest';
 import { ProfileModeBadge, FirstMeetNotice } from './privacy';
 import { useState, useEffect, useRef, type ReactNode } from 'react';
-import { EmptyState } from './surfaces';
+import { EmptyState, BrandMark } from './surfaces';
 import { Link, useNavigate, useLocation } from '@tanstack/react-router';
 import { hasSharedTeia, teiasFor, teiaFor, allTeias, openTeias, getTeia, isMember, joinTeia, leaveTeia } from '@/lib/teias';
 import { awaitingReply, greeting, localDate, questionFor, CONNECT_OPTIONS, HEAVY, type ConnectChoice } from '@/lib/today';
