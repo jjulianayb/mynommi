@@ -12,4 +12,5 @@
 
 # Tela da teia — referência visual
 - [x] Capa fotográfica, identidade sobreposta e abas Membros/Posts/Eventos, preservando os fluxos existentes.
-- [ ] Conferir a tela e suas abas em celular e computador.
+- [x] Conferir capa, entrada, abas, comentário, reação e conversa na apresentação em celular e computador; 9 testes passaram.
+- [ ] Conferir a experiência autenticada da teia — aguarda entrada da responsável na prévia; sessão automática indisponível para sua conta.
