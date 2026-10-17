@@ -14,7 +14,7 @@ function communityPhoto(teia: Teia) {
  return momentPhoto.trilha;
 }
 
-function DemoPost({teia, text, nickname}: {teia: Teia; text?: string; nickname: string}) {
+function DemoPost({teia, text, nickname}: {teia: Teia; text?: string | undefined; nickname: string}) {
  const [liked, setLiked] = useState(false);
  const [comment, setComment] = useState('');
  const [comments, setComments] = useState<string[]>([]);
@@ -32,7 +32,7 @@ function DemoPost({teia, text, nickname}: {teia: Teia; text?: string; nickname: 
 export function CommunityDetail({teia, member, demoMode, nickname, members, onJoin, joining, conversation, events, firstMessage}: {
  teia: Teia; member: boolean; demoMode: boolean; nickname: string;
  members: {user_id: string; nickname: string}[]; onJoin: ()=>void; joining: boolean;
- conversation: ReactNode; events: ReactNode; firstMessage?: string;
+ conversation: ReactNode; events: ReactNode; firstMessage?: string | undefined;
 }) {
  const [tab,setTab]=useState('Posts');
  const memberCount=demoMode?teia.members:members.length;
