@@ -9,3 +9,7 @@
 - [x] Conferir telas no celular/computador; 36 testes passaram e aplicação sem erros.
 - [ ] Verificar cadastro confirmado e entrada de anfitrião real de ponta a ponta — aguarda sessão da responsável na prévia.
 - [ ] Rolês, teias, presenças em encontros e conversas compartilhadas entre contas — requer futura autorização para alterar tabelas/regras, fora desta rodada.
+
+# Tela da teia — referência visual
+- [x] Capa fotográfica, identidade sobreposta e abas Membros/Posts/Eventos, preservando os fluxos existentes.
+- [ ] Conferir a tela e suas abas em celular e computador.
