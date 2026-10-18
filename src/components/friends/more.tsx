@@ -14,7 +14,7 @@ import { OtherProfileMenu } from './social-actions';
 import { ageOn } from '@/lib/nomi-validation';
 import { Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
-import { Avatar, Cover, Icon, Sticker, StickerPicker } from './art';
+import { Avatar, Icon, Sticker, StickerPicker } from './art';
 import { useFriends } from './store';
 import { PartnerCommunity } from './business';
 import { PartnerIdeas } from './meetup-ideas';
