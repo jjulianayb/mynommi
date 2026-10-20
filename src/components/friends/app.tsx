@@ -211,7 +211,7 @@ function Safety({ person }: { person: number }) {
         onClick={() => {
           const reason = window.prompt("Qual é o motivo da denúncia?");
           if (reason?.trim())
-            notify("Denúncia registrada nesta demonstração. Valeu por cuidar da comunidade.");
+            notify("Denúncia registrada nesta demonstração. Valeu por cuidar da teia.");
         }}
       >
         <Icon name="flag" />
@@ -296,7 +296,7 @@ function useInterest() {
     matchOverlay: match ? <Match person={match} onClose={() => setMatch(null)} /> : null,
   };
 }
-const HOME_FILTERS = ["Todas", "Amizade", "Comunidades", "Eventos"];
+const HOME_FILTERS = ["Todas", "Amizade", "Teias", "Eventos"];
 const NEARBY_DISTANCES = ["a 5 min", "a 10 min", "a 15 min", "perto de você"];
 const MOVIMENTO_CARDS = [
   {
@@ -454,7 +454,7 @@ export function Home() {
           )}
         </section>
       )}
-      {(filter === "Todas" || filter === "Comunidades") && (
+      {(filter === "Todas" || filter === "Teias") && (
         <section className="home-section">
           <div className="section-heading">
             <h2>Teias para você</h2>
@@ -559,7 +559,7 @@ export function Home() {
           <RolesList me={cloudUser!.id} nickname={state.nickname || "nommi"} />
         </section>
       )}
-      {realHome && (filter === "Todas" || filter === "Amizade" || filter === "Comunidades") && (
+      {realHome && (filter === "Todas" || filter === "Amizade" || filter === "Teias") && (
         <section className="home-section">
           <div className="section-heading">
             <h2>Da sua rede</h2>
@@ -1322,7 +1322,7 @@ export function GroupDetail({ id }: { id: number }) {
     return (
       <EmptyState
         title="Esta teia não está disponível."
-        text="As teias da apresentação não são comunidades entre contas reais."
+        text="As teias da apresentação não são teias entre contas reais."
       />
     );
   function checkIn(challengeId: number) {

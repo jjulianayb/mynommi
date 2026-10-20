@@ -111,11 +111,11 @@ export function Company({ id }: { id: number }) {
   </>;
 }
 
-/** Bloco do painel do parceiro: comunidade da marca e alcance. */
+/** Bloco do painel do parceiro: teia da marca e alcance. */
 export function PartnerCommunity() {
   const teia = brandTeiaFor(0); const p = getPartner(0);
   return <>
-    <div className="section-heading"><h2>Comunidade da marca</h2><Link to="/empresa/$id" params={{ id: '0' }}>Ver perfil<Icon name="arrow" /></Link></div>
+    <div className="section-heading"><h2>Teia da marca</h2><Link to="/empresa/$id" params={{ id: '0' }}>Ver perfil<Icon name="arrow" /></Link></div>
     <div className="stats partner-stats"><div><b>{teia?.members ?? 0}</b><span>na teia</span></div><div><b>{p.visits * 3}</b><span>visitas/mês</span></div><div><b>2</b><span>agitam aqui</span></div><div><b>1</b><span>convite destacado</span></div></div>
     <p className="small-note">Sua teia da marca reúne quem gosta do lugar. Use créditos de alcance para mostrar seus encontros a mais gente por perto.</p>
     <Button asChild variant="secondary" className="wide"><Link to="/carteira"><Icon name="star" />Créditos de alcance</Link></Button>

@@ -48,7 +48,7 @@ export function SafetyMenu({ me, targetUserId, targetUserName, targetTeiaId }: {
       {reporting && <form onSubmit={async e => {
         e.preventDefault(); setBusy(true);
         const ok = await reportTarget(me, targetUserId ? { userId: targetUserId } : { teiaId: targetTeiaId }, reason, note);
-        setBusy(false); notify(ok ? 'Denúncia registrada. Obrigado por cuidar da comunidade.' : 'Não foi possível registrar a denúncia.');
+        setBusy(false); notify(ok ? 'Denúncia registrada. Obrigado por cuidar da teia.' : 'Não foi possível registrar a denúncia.');
         if (ok) close();
       }}>
         <label>Motivo<select className="input" value={reason} onChange={e => setReason(e.target.value as ReportReason)}>{REPORT_REASONS.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}</select></label>

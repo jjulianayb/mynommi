@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Avatar, Icon } from "./art";
 import { momentPhoto } from "@/lib/friends-photos";
@@ -231,12 +232,19 @@ export function CommunityDetail({
                     );
                   })
                 : members.map((m) => (
-                    <div className="community-member" key={m.user_id}>
+                    <Link
+                      className="community-member"
+                      key={m.user_id}
+                      to="/nommi/$id"
+                      params={{ id: m.user_id }}
+                      aria-label={"Ver o perfil de " + (m.nickname || "um nommi")}
+                    >
                       <span className="community-member-icon">
                         <Icon name="users" />
                       </span>
                       <h3>{m.nickname || "nommi"}</h3>
-                    </div>
+                      <Icon name="arrow" />
+                    </Link>
                   ))}
             </div>
             {!member && !demoMode && (
