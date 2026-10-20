@@ -456,3 +456,30 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .radar-person>div{flex:1 1 150px;min-width:0}
 .radar-person h3{font-size:15px}
 .radar-person .story-face{border:2px solid var(--card)}
+
+/* Entrada da nommi — paleta da marca: off-white, verde e grafite */
+:root{--nommi-verde:#00A651;--nommi-verde-ui:#007E46;--nommi-profundo:#075E3B;--nommi-off:#FAF9F6;--nommi-grafite:#2E2E2E;--nommi-amarelo:#FFB400}
+.brand-splash.nomi-splash{background:var(--nommi-off);color:var(--nommi-grafite);min-height:100dvh;display:flex;align-items:center;justify-content:center;gap:0}
+.brand-splash .wordmark{color:var(--nommi-grafite);font-size:64px}
+.brand-splash .brand-dot{background:var(--nommi-verde)!important}
+.brand-splash .brand-tagline{color:var(--nommi-grafite);border-bottom-color:var(--nommi-verde)}
+.welcome-nommi{min-height:100dvh;background:var(--nommi-off);color:var(--nommi-grafite)}
+.welcome-nommi-inner{max-width:520px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;padding:max(40px,calc(env(safe-area-inset-top) + 28px)) 28px max(28px,calc(env(safe-area-inset-bottom) + 16px))}
+.welcome-nommi-brand .wordmark{font-size:54px;color:var(--nommi-grafite)}
+.welcome-nommi-brand .brand-dot{background:var(--nommi-verde)!important}
+.welcome-nommi-brand .brand-tagline{color:var(--nommi-grafite);border-bottom-color:var(--nommi-verde)}
+.welcome-nommi-hero{margin:auto 0;display:flex;flex-direction:column;align-items:flex-start;gap:14px;padding:28px 0}
+.welcome-nommi-hero h1{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:34px;line-height:1.08;letter-spacing:-.02em;color:var(--nommi-grafite)}
+.welcome-nommi-hero p{font-size:16px;line-height:1.55;color:color-mix(in oklab,var(--nommi-grafite) 78%,transparent)}
+.teia-art{width:168px;height:168px;align-self:center;margin-bottom:6px;color:var(--nommi-profundo)}
+.teia-art line{stroke:currentColor;stroke-width:1.1;opacity:.35}
+.teia-art circle{fill:var(--nommi-profundo)}
+.teia-art circle.hub{fill:var(--nommi-verde)}
+.welcome-nommi-buttons{display:grid;gap:12px}
+.welcome-nommi-primary,.welcome-nommi-secondary{display:flex;align-items:center;justify-content:center;min-height:54px;border-radius:999px;font-weight:700;font-size:16px;text-decoration:none}
+.welcome-nommi-primary{background:var(--nommi-verde-ui);color:#fff}
+.welcome-nommi-secondary{border:1.5px solid color-mix(in oklab,var(--nommi-grafite) 30%,transparent);color:var(--nommi-grafite);background:transparent}
+.welcome-nommi-links{display:flex;justify-content:center;gap:22px;font-size:13px;margin-top:4px}
+.welcome-nommi-links a,.welcome-nommi-links button{color:var(--nommi-verde-ui);background:none;border:0;text-decoration:underline;text-underline-offset:3px;cursor:pointer;font:inherit}
+.welcome-nommi-note{font-size:12px;text-align:center;margin-top:14px;color:color-mix(in oklab,var(--nommi-grafite) 60%,transparent)}
+@media(min-width:768px){.welcome-nommi-hero h1{font-size:40px}.teia-art{width:200px;height:200px}}
