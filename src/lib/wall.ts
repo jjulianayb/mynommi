@@ -46,7 +46,7 @@ export function useWall(me: string | null, ownerId: string | null) {
   const [items, setItems] = useState<WallItem[]>([]);
   const load = useCallback(async () => {
     if (!me || !ownerId) return;
-    const { data } = await cloud
+    const { data } = await supabase
       .from("wall_items")
       .select("id,target_id,author_id,author,body,sticker,status,created_at")
       .eq("target_id", ownerId)

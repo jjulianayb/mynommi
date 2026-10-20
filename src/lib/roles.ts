@@ -141,7 +141,7 @@ export async function createRole(me: string, nickname: string, input: NewRole) {
     input.capacity == null
       ? null
       : Math.min(MAX_CAPACITY, Math.max(MIN_CAPACITY, Math.round(input.capacity)));
-  const { data, error } = await cloud
+  const { data, error } = await supabase
     .from("teias")
     .insert({
       kind: "role",

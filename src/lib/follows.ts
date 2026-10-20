@@ -59,7 +59,7 @@ export function useFollow(me: string | null, target: string | null) {
   const [ready, setReady] = useState(false);
   useEffect(() => {
     if (!me || !target || me === target) return;
-    void cloud
+    void supabase
       .from("follows")
       .select("followed_id")
       .eq("follower_id", me)
