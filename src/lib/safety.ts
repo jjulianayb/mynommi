@@ -12,7 +12,7 @@ export const REPORT_REASONS: { value: ReportReason; label: string }[] = [
 
 export async function reportTarget(
   me: string,
-  target: { userId?: string; teiaId?: number },
+  target: { userId?: string | undefined; teiaId?: number | undefined },
   reason: ReportReason,
   note = "",
 ) {
@@ -47,7 +47,11 @@ export function useBlocks(me: string | null) {
   };
   const unblock = async (id: string) => {
     if (!me) return false;
-    const { error } = await supabase.from("blocks").delete().eq("blocker_id", me).eq("blocked_id", id);
+    const { error } = await supabase
+      .from("blocks")
+      .delete()
+      .eq("blocker_id", me)
+      .eq("blocked_id", id);
     await load();
     return !error;
   };
