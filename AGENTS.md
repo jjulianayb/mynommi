@@ -35,3 +35,9 @@
 - Real-account profile edits, photo (resized data URL in profiles.avatar_url, since public storage buckets are blocked) and people search live in src/lib/real-profiles.ts; public profiles are at /nommi/$id.
 
 - Keep the community presentation in community-detail.tsx; GroupDetail owns existing membership, chat and challenges so visual redesigns do not replace real-account flows.
+- Posts, reações, comentários e mídia vivem em public.posts/post_media/post_reactions/post_comments; a visibilidade passa pela função can_view_post (membro da teia, seguidor ou amizade) e os arquivos ficam no bucket privado post-media (caminho começa pelo id de quem envia). Use src/lib/posts.ts.
+- Seguidores (public.follows) e os números do perfil (função profile_stats) estão em src/lib/follows.ts; cada pessoa pode esconder as próprias contagens com profiles.show_counts e não existe ranking nem lista de "mais seguidos".
+- Rolês com data (teias.starts_at), vagas (teias.capacity) e "Quero ir" (public.teia_rsvps) estão em src/lib/roles.ts; list_teias devolve going_count e i_am_going, e a regra do banco recusa rolê lotado ou que já passou.
+- O mural "Meus amigos dizem" (public.wall_items) só aceita texto de quem já é amizade; o status nasce no servidor por gatilho e só a dona do perfil aprova. Use src/lib/wall.ts.
+- Bloqueio (public.blocks, nos dois sentidos) e denúncias (public.reports, lidas só por admin) estão em src/lib/safety.ts; is_blocked_between corta perfis, posts, rolês e pedidos de conexão.
+- src/lib/cloud.ts existe porque integrations/supabase/types.ts ainda não conhece as tabelas novas; quando os tipos forem regenerados, troque cloud por supabase.
