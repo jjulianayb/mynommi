@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { cloud } from "./cloud";
+import { supabase } from "@/integrations/supabase/client";
 
 export type Reaction = "curtir" | "apoiar" | "rir";
 export const REACTIONS: { kind: Reaction; label: string }[] = [
@@ -143,7 +143,7 @@ export const totalReactions = (p: Pick<Post, "reactions">) =>
 export type FeedScope = { teiaId?: number; authorId?: string };
 
 export async function loadPosts(me: string, scope: FeedScope = {}, limit = 30): Promise<Post[]> {
-  let q = cloud
+  let q = supabase
     .from("posts")
     .select(
       "id,author_id,teia_id,body,location,created_at,post_media(id,kind,path,position),post_reactions(user_id,kind),post_comments(count)",
@@ -158,7 +158,7 @@ export async function loadPosts(me: string, scope: FeedScope = {}, limit = 30): 
   const ids = [...new Set(rows.map((r) => r.author_id))];
   const authors: Record<string, { nickname: string; avatar_url: string }> = {};
   if (ids.length) {
-    const { data: ps } = await cloud
+    const { data: ps } = await supabase
       .from("profiles")
       .select("id,nickname,avatar_url")
       .in("id", ids);
@@ -174,7 +174,7 @@ export async function loadPosts(me: string, scope: FeedScope = {}, limit = 30): 
 async function attachMediaUrls(posts: Post[]) {
   const all = posts.flatMap((p) => p.media);
   if (!all.length) return;
-  const { data } = await cloud.storage.from(BUCKET).createSignedUrls(
+  const { data } = await supabase.storage.from(BUCKET).createSignedUrls(
     all.map((m) => m.path),
     3600,
   );
@@ -197,7 +197,7 @@ export async function createPost(me: string, input: NewPost): Promise<CreateResu
     const p = mediaProblem(files[i]!, i);
     if (p) return { ok: false, error: p };
   }
-  const { data, error } = await cloud
+  const { data, error } = await supabase
     .from("posts")
     .insert({
       author_id: me,
@@ -212,10 +212,10 @@ export async function createPost(me: string, input: NewPost): Promise<CreateResu
   for (let i = 0; i < files.length; i++) {
     const file = files[i]!;
     const path = mediaPath(me, id, i, file.type);
-    const up = await cloud.storage.from(BUCKET).upload(path, file, { contentType: file.type });
+    const up = await supabase.storage.from(BUCKET).upload(path, file, { contentType: file.type });
     const ins = up.error
       ? null
-      : await cloud
+      : await supabase
           .from("post_media")
           .insert({ post_id: id, kind: mediaKind(file.type), path, position: i });
     if (up.error || ins?.error) {
@@ -227,10 +227,10 @@ export async function createPost(me: string, input: NewPost): Promise<CreateResu
 }
 
 export async function deletePost(id: string) {
-  const { data } = await cloud.from("post_media").select("path").eq("post_id", id);
+  const { data } = await supabase.from("post_media").select("path").eq("post_id", id);
   const paths = ((data as { path: string }[] | null) ?? []).map((x) => x.path);
-  if (paths.length) await cloud.storage.from(BUCKET).remove(paths);
-  const { error } = await cloud.from("posts").delete().eq("id", id);
+  if (paths.length) await supabase.storage.from(BUCKET).remove(paths);
+  const { error } = await supabase.from("posts").delete().eq("id", id);
   return !error;
 }
 
@@ -242,14 +242,14 @@ export async function setReaction(
   next: Reaction,
 ) {
   if (current === next) {
-    const { error } = await cloud
+    const { error } = await supabase
       .from("post_reactions")
       .delete()
       .eq("post_id", postId)
       .eq("user_id", me);
     return !error;
   }
-  const { error } = await cloud
+  const { error } = await supabase
     .from("post_reactions")
     .upsert({ post_id: postId, user_id: me, kind: next }, { onConflict: "post_id,user_id" });
   return !error;
@@ -291,7 +291,7 @@ export function useComments(me: string | null, postId: string | null) {
   const [items, setItems] = useState<PostComment[]>([]);
   const load = useCallback(async () => {
     if (!me || !postId) return;
-    const { data } = await cloud
+    const { data } = await supabase
       .from("post_comments")
       .select("id,post_id,author_id,author,body,created_at")
       .eq("post_id", postId)
@@ -323,7 +323,7 @@ export function useComments(me: string | null, postId: string | null) {
   useEffect(() => {
     if (!me || !postId) return;
     void load();
-    const ch = cloud
+    const ch = supabase
       .channel("comments-" + postId)
       .on(
         "postgres_changes",
@@ -334,20 +334,20 @@ export function useComments(me: string | null, postId: string | null) {
       )
       .subscribe();
     return () => {
-      void cloud.removeChannel(ch);
+      void supabase.removeChannel(ch);
     };
   }, [me, postId, load]);
   const add = async (text: string, nickname: string) => {
     const body = cleanBody(text, MAX_COMMENT);
     if (!me || !postId || !body) return false;
-    const { error } = await cloud
+    const { error } = await supabase
       .from("post_comments")
       .insert({ post_id: postId, author_id: me, author: nickname.slice(0, 40), body });
     await load();
     return !error;
   };
   const remove = async (id: string) => {
-    const { error } = await cloud.from("post_comments").delete().eq("id", id);
+    const { error } = await supabase.from("post_comments").delete().eq("id", id);
     await load();
     return !error;
   };

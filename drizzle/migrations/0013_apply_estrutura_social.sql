@@ -1,0 +1,1 @@
+COMMENT ON TABLE public.profiles IS 'Perfis das pessoas no Nommi';

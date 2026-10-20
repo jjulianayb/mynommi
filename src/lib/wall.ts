@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { cloud } from "./cloud";
+import { supabase } from "@/integrations/supabase/client";
 
 export type WallItem = {
   id: string;
@@ -46,7 +46,7 @@ export function useWall(me: string | null, ownerId: string | null) {
   const [items, setItems] = useState<WallItem[]>([]);
   const load = useCallback(async () => {
     if (!me || !ownerId) return;
-    const { data } = await cloud
+    const { data } = await supabase
       .from("wall_items")
       .select("id,target_id,author_id,author,body,sticker,status,created_at")
       .eq("target_id", ownerId)
@@ -66,7 +66,7 @@ export function useWall(me: string | null, ownerId: string | null) {
     const body = input.text ? cleanWallText(input.text) : null;
     if (input.text && !body) return false;
     if (!body && input.sticker == null) return false;
-    const { error } = await cloud.from("wall_items").insert({
+    const { error } = await supabase.from("wall_items").insert({
       target_id: ownerId,
       author_id: me,
       author: nickname.slice(0, 40),
@@ -77,12 +77,12 @@ export function useWall(me: string | null, ownerId: string | null) {
     return !error;
   };
   const approve = async (id: string) => {
-    const { error } = await cloud.from("wall_items").update({ status: "aprovado" }).eq("id", id);
+    const { error } = await supabase.from("wall_items").update({ status: "aprovado" }).eq("id", id);
     await load();
     return !error;
   };
   const remove = async (id: string) => {
-    const { error } = await cloud.from("wall_items").delete().eq("id", id);
+    const { error } = await supabase.from("wall_items").delete().eq("id", id);
     await load();
     return !error;
   };

@@ -92,6 +92,13 @@
       "when": 1792036000000,
       "tag": "0012_posts_seguidores_mural",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1792474217418,
+      "tag": "0013_apply_estrutura_social",
+      "breakpoints": true
     }
   ]
 }
