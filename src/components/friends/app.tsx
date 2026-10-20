@@ -5,6 +5,9 @@ import { useRealTeias, useRealTeia, toTeia, sortByCity } from "@/lib/real-teias"
 import { RadarSection } from "./radar-section";
 import { Feed, CreatePostForm, RolesList, RoleCard } from "./social-feed";
 import { InstallBanner } from "./install-banner";
+import { StoriesStrip } from "./stories-strip";
+import { CoverEditor } from "./cover-editor";
+import { useTeiaCovers } from "@/lib/covers";
 import { useRoles } from "@/lib/roles";
 import { PeopleSearch } from "./real-people";
 import { momentPhoto } from "@/lib/friends-photos";
@@ -547,6 +550,7 @@ export function Home() {
           </div>
         </section>
       )}
+      {realHome && <StoriesStrip me={cloudUser!.id} nickname={state.nickname || "nommi"} />}
       {realHome && (filter === "Todas" || filter === "Eventos") && (
         <section className="home-section">
           <div className="section-heading">
@@ -1307,6 +1311,8 @@ export function GroupDetail({ id }: { id: number }) {
     state.nickname || "nommi",
   );
   const realTeia = useRealTeia(id, cloud && id >= 100000);
+  const covers = useTeiaCovers(cloud && id >= 100000 ? id : null);
+  const amCreator = !!cloudUser && realTeia.row?.created_by === cloudUser.id;
   const g =
     (cloud && realTeia.row
       ? { ...toTeia(realTeia.row), members: shared.members.length }
@@ -1493,6 +1499,18 @@ export function GroupDetail({ id }: { id: number }) {
               </form>
             </section>
           </>
+        }
+        coverPath={covers.cover}
+        coverEditor={
+          amCreator && cloudUser ? (
+            <CoverEditor
+              target={{ kind: "teia", teiaId: id, userId: cloudUser.id }}
+              slot="cover"
+              current={covers.cover}
+              onSaved={covers.setCover}
+              label="Trocar capa"
+            />
+          ) : undefined
         }
         posts={
           cloud ? (

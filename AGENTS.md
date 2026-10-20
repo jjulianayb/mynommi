@@ -41,3 +41,7 @@
 - O mural "Meus amigos dizem" (public.wall_items) só aceita texto de quem já é amizade; o status nasce no servidor por gatilho e só a dona do perfil aprova. Use src/lib/wall.ts.
 - Bloqueio (public.blocks, nos dois sentidos) e denúncias (public.reports, lidas só por admin) estão em src/lib/safety.ts; is_blocked_between corta perfis, posts, rolês e pedidos de conexão.
 - O site é instalável (manifesto em public/manifest.webmanifest, ícones em public/icon-*.png e apple-touch-icon.png); o convite para adicionar à tela de início vive em install-banner.tsx com as regras testáveis em src/lib/install.ts.
+- Stories (public.stories/story_views, bucket privado stories) vivem em src/lib/stories.ts e aparecem na fita do Início via stories-strip.tsx; somem sozinhos em 24 h e a regra can_view_story segue amizades e seguidores.
+- Capas e planos de fundo (profiles.cover_path/background_path, teias.cover_path/background_path, bucket público covers) estão em src/lib/covers.ts e no componente cover-editor.tsx; há também fundos prontos sem upload.
+- O Radar nommi é global: a posição vai arredondada para ~1 km (coarse) e quem está por perto vem da função radar_nearby, que devolve distância e nunca coordenadas. A política de privacidade em settings.tsx descreve isso.
+- src/lib/cloud-novo.ts existe só enquanto types.ts não conhece as tabelas da migração 0014; depois de regenerar os tipos, troque `novo` por `supabase`.

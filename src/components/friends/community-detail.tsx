@@ -5,6 +5,7 @@ import { Avatar, Icon } from "./art";
 import { momentPhoto } from "@/lib/friends-photos";
 import type { Teia } from "@/lib/teias";
 import { people } from "@/lib/friends-data";
+import { coverStyle } from "@/lib/covers";
 
 function communityPhoto(teia: Teia) {
   const name = teia.name.toLowerCase();
@@ -110,6 +111,8 @@ export function CommunityDetail({
   events,
   firstMessage,
   posts,
+  coverPath,
+  coverEditor,
 }: {
   teia: Teia;
   member: boolean;
@@ -122,16 +125,21 @@ export function CommunityDetail({
   events: ReactNode;
   firstMessage?: string | undefined;
   posts?: ReactNode;
+  coverPath?: string;
+  coverEditor?: ReactNode;
 }) {
   const [tab, setTab] = useState("Posts");
   const memberCount = demoMode ? teia.members : members.length;
   return (
     <div className="community-detail">
-      <div className="community-cover">
-        <img src={communityPhoto(teia)} alt="Capa ilustrativa da teia" />
-        <span className="community-cover-caption">
-          {demoMode ? "Apresentação" : "Imagem ilustrativa"}
-        </span>
+      <div className="community-cover" style={coverPath ? coverStyle(coverPath) : undefined}>
+        {!coverPath && <img src={communityPhoto(teia)} alt="Capa ilustrativa da teia" />}
+        {!coverPath && (
+          <span className="community-cover-caption">
+            {demoMode ? "Apresentação" : "Imagem ilustrativa"}
+          </span>
+        )}
+        {coverEditor && <span className="community-cover-edit">{coverEditor}</span>}
       </div>
       <section className="community-summary">
         <span className="community-avatar">

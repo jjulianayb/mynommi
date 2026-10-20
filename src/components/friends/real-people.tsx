@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "@tanstack/react-router";
+import { coverStyle } from "@/lib/covers";
+import { novo } from "@/lib/cloud-novo";
 import { Button } from "@/components/ui/button";
 import { Avatar, Icon } from "./art";
 import { EmptyState } from "./surfaces";
@@ -91,6 +93,21 @@ export function PeopleSearch({ userId }: { userId: string }) {
       </p>
     </section>
   );
+}
+
+function ProfileCover({ userId }: { userId: string }) {
+  const [cover, setCover] = useState("");
+  useEffect(() => {
+    void novo
+      .from("profiles")
+      .select("cover_path")
+      .eq("id", userId)
+      .maybeSingle()
+      .then((r: { data: unknown }) =>
+        setCover((r.data as { cover_path?: string } | null)?.cover_path ?? ""),
+      );
+  }, [userId]);
+  return <div className="profile-cover-custom" style={coverStyle(cover) as React.CSSProperties} />;
 }
 
 export function PublicNommi({ id }: { id: string }) {

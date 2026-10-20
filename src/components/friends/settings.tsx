@@ -6,6 +6,9 @@ import { resizePhoto } from "@/lib/photo-resize";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { setShowCounts } from "@/lib/follows";
+import { CoverEditor } from "./cover-editor";
+import { novo } from "@/lib/cloud-novo";
+import { coverStyle } from "@/lib/covers";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Avatar, Icon, Sticker } from "./art";
@@ -15,6 +18,48 @@ import { useDemoSession } from "./session";
 import { PrivacyControls, ProfileModeSetting } from "./privacy";
 import { emptyState, people, groups, partners } from "@/lib/friends-data";
 import { ageOn, profileSchema } from "@/lib/nomi-validation";
+function MyCovers({ me }: { me: string }) {
+  const [cover, setCover] = useState("");
+  const [bg, setBg] = useState("");
+  useEffect(() => {
+    void novo
+      .from("profiles")
+      .select("cover_path,background_path")
+      .eq("id", me)
+      .maybeSingle()
+      .then(({ data }) => {
+        const d = data as { cover_path?: string; background_path?: string } | null;
+        setCover(d?.cover_path ?? "");
+        setBg(d?.background_path ?? "");
+      });
+  }, [me]);
+  return (
+    <section className="cover-settings">
+      <h2 className="settings-subtitle">Capa e plano de fundo</h2>
+      <div className="cover-preview" style={coverStyle(cover)}>
+        {!cover && <span>Capa padrão da nommi</span>}
+      </div>
+      <CoverEditor
+        target={{ kind: "perfil", userId: me }}
+        slot="cover"
+        current={cover}
+        onSaved={setCover}
+      />
+      <div className="cover-preview" style={coverStyle(bg)}>
+        {!bg && <span>Fundo padrão da nommi</span>}
+      </div>
+      <CoverEditor
+        target={{ kind: "perfil", userId: me }}
+        slot="background"
+        current={bg}
+        onSaved={setBg}
+      />
+      <p className="small-note">
+        A capa aparece no topo do seu perfil. O plano de fundo aparece atrás das suas conversas.
+      </p>
+    </section>
+  );
+}
 function ShowCountsToggle({ me }: { me: string }) {
   const { notify } = useFriends();
   const [on, setOn] = useState(true);
@@ -218,6 +263,7 @@ export function Settings({ section }: { section: string }) {
           </Button>
         </form>
       )}
+      {section === "perfil" && cloud && <MyCovers me={cloudUser!.id} />}
       {section === "privacidade" && (
         <>
           <ProfileModeSetting />
@@ -494,8 +540,27 @@ export function Legal({ kind }: { kind: "terms" | "privacy" | "help" }) {
           </p>
           <h2>Localização aproximada</h2>
           <p>
-            Não coletamos sua localização em tempo real. O perfil mostra somente a cidade informada
-            por você, ou oculta a cidade quando você desativa essa preferência.
+            O perfil mostra somente a cidade informada por você, ou oculta a cidade quando você
+            desativa essa preferência.
+          </p>
+          <h2>Radar nommi</h2>
+          <p>
+            O Radar nommi só funciona quando você o liga, e só depois de você autorizar a
+            localização no aparelho. Nesse momento guardamos uma posição arredondada para cerca de 1
+            km, o nome do lugar que você escreveu e a cidade, para calcular quem está por perto. Sua
+            localização exata nunca é salva nem mostrada: outras pessoas veem apenas a distância
+            aproximada, nunca o ponto onde você está.
+          </p>
+          <p>
+            Esses dados valem pelo tempo que você escolher, de 15 minutos a 4 horas, e são apagados
+            quando esse tempo acaba ou quando você sai do radar. Quem bloqueou você, ou foi
+            bloqueado por você, nunca aparece no radar. Perfis privados também ficam de fora.
+          </p>
+          <h2>Fotos, vídeos e stories</h2>
+          <p>
+            Fotos e vídeos de posts e stories ficam em um espaço privado e só são servidos a quem
+            tem permissão para ver aquele conteúdo. Stories somem sozinhos em 24 horas. Capas e
+            planos de fundo ficam em um espaço público, porque aparecem no seu perfil.
           </p>
           <h2>Seu controle</h2>
           <p>

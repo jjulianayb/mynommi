@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { novo } from "./cloud-novo";
 
@@ -87,4 +88,25 @@ export async function saveTeiaCover(teiaId: number, slot: CoverSlot, value: stri
     .update({ [slot === "cover" ? "cover_path" : "background_path"]: value })
     .eq("id", teiaId);
   return !error;
+}
+
+/** Capa e plano de fundo de uma teia, lidos do servidor. */
+export function useTeiaCovers(teiaId: number | null) {
+  const [cover, setCover] = useState("");
+  const [background, setBackground] = useState("");
+  const load = useCallback(async () => {
+    if (teiaId == null) return;
+    const { data } = await novo
+      .from("teias")
+      .select("cover_path,background_path")
+      .eq("id", teiaId)
+      .maybeSingle();
+    const d = data as { cover_path?: string; background_path?: string } | null;
+    setCover(d?.cover_path ?? "");
+    setBackground(d?.background_path ?? "");
+  }, [teiaId]);
+  useEffect(() => {
+    void load();
+  }, [load]);
+  return { cover, background, setCover, setBackground, reload: load };
 }
