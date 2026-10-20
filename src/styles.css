@@ -323,7 +323,7 @@ body {font-family:'DM Sans',sans-serif;margin:0} h1,h2,h3,h4 {font-family:'Brico
 .people-search{display:grid;gap:14px}.search-field{display:flex;align-items:center;gap:8px}.search-field .input{flex:1}.people-list{display:grid;gap:10px}.real-face{border-radius:50%;object-fit:cover;flex:none}.interest-tags span.common{background:var(--teal);color:var(--paper)}
 
 /* Marca nommi — referência oficial */
-.wordmark{font-family:'Fredoka','Bricolage Grotesque',sans-serif!important;font-weight:700!important;display:inline-flex!important;flex-direction:column;align-items:flex-start;line-height:.9;letter-spacing:-.02em;color:var(--foreground)}
+.wordmark{font-family:'Baloo 2','Fredoka','Bricolage Grotesque',sans-serif!important;font-weight:800!important;display:inline-flex!important;flex-direction:column;align-items:flex-start;line-height:.9;letter-spacing:-.02em;color:var(--foreground)}
 .wordmark .brand-word{display:inline-flex;align-items:baseline}
 .wordmark .brand-i{position:relative;display:inline-block}
 .wordmark .brand-i .brand-dot{position:absolute;left:50%;top:-.02em;transform:translateX(-50%);width:.24em!important;height:.24em!important;border-radius:50%;background:var(--primary)}
@@ -498,3 +498,9 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .welcome-rio-brand .wordmark{text-shadow:0 2px 16px rgba(0,0,0,.45)}
 .welcome-rio-brand .brand-tagline{border-bottom-color:var(--nommi-verde)}
 .welcome-rio-overlay{background:linear-gradient(180deg,rgba(0,0,0,.45) 0%,rgba(0,0,0,.12) 30%,rgba(0,0,0,.35) 60%,rgba(0,0,0,.78) 100%)}
+
+
+/* Letra do logo embutida no app: não depende do Google, aparece já no primeiro instante */
+@font-face{font-family:'Baloo 2';font-style:normal;font-weight:700;font-display:swap;src:url('/fonts/baloo2-700.woff2') format('woff2')}
+@font-face{font-family:'Baloo 2';font-style:normal;font-weight:800;font-display:swap;src:url('/fonts/baloo2-800.woff2') format('woff2')}
+.wordmark .brand-tagline{margin-left:.72em}
