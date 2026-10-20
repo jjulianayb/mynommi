@@ -78,6 +78,13 @@
       "when": 1792034000602,
       "tag": "0010_connections",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1792035000000,
+      "tag": "0011_estrutura_role_perfil",
+      "breakpoints": true
     }
   ]
 }
