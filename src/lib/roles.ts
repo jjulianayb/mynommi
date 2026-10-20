@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { cloud } from "./cloud";
+import { supabase } from "@/integrations/supabase/client";
 
 export type RoleRow = {
   id: number;
@@ -104,7 +104,7 @@ export function useRoles(me: string | null) {
   const [ready, setReady] = useState(false);
   const load = useCallback(async () => {
     if (!me) return;
-    const { data } = await cloud.rpc("list_teias", {});
+    const { data } = await supabase.rpc("list_teias", {});
     const rows = ((data as RoleRow[] | null) ?? []).filter((r) => r.kind === "role");
     setRoles(sortRoles(rows.map((r) => toRole(r))));
     setReady(true);
@@ -115,8 +115,8 @@ export function useRoles(me: string | null) {
   const toggleGoing = async (r: Role) => {
     if (!me) return false;
     const { error } = r.iAmGoing
-      ? await cloud.from("teia_rsvps").delete().eq("teia_id", r.id).eq("user_id", me)
-      : await cloud.from("teia_rsvps").insert({ teia_id: r.id, user_id: me });
+      ? await supabase.from("teia_rsvps").delete().eq("teia_id", r.id).eq("user_id", me)
+      : await supabase.from("teia_rsvps").insert({ teia_id: r.id, user_id: me });
     await load();
     return !error;
   };
@@ -160,15 +160,15 @@ export async function createRole(me: string, nickname: string, input: NewRole) {
     .single();
   if (error || !data) return null;
   const id = (data as { id: string }).id;
-  await cloud.from("teia_rsvps").insert({ teia_id: id, user_id: me });
+  await supabase.from("teia_rsvps").insert({ teia_id: id, user_id: me });
   return id;
 }
 
 /** Quem disse "Quero ir" (só o organizador consegue ler). */
 export async function loadGoing(roleId: number) {
-  const { data } = await cloud.from("teia_rsvps").select("user_id").eq("teia_id", roleId);
+  const { data } = await supabase.from("teia_rsvps").select("user_id").eq("teia_id", roleId);
   const ids = ((data as { user_id: string }[] | null) ?? []).map((x) => x.user_id);
   if (!ids.length) return [];
-  const { data: ps } = await cloud.from("profiles").select("id,nickname,avatar_url").in("id", ids);
+  const { data: ps } = await supabase.from("profiles").select("id,nickname,avatar_url").in("id", ids);
   return (ps as { id: string; nickname: string; avatar_url: string }[] | null) ?? [];
 }

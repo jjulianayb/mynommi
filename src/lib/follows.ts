@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { cloud } from "./cloud";
+import { supabase } from "@/integrations/supabase/client";
 
 export type ProfileStats = {
   followers: number;
@@ -44,7 +44,7 @@ export function useProfileStats(userId: string | null) {
   const [stats, setStats] = useState<ProfileStats | null>(null);
   const load = useCallback(async () => {
     if (!userId) return;
-    const { data } = await cloud.rpc("profile_stats", { _user: userId });
+    const { data } = await supabase.rpc("profile_stats", { _user: userId });
     setStats(toStats(((data as StatsRow[] | null) ?? [])[0]));
   }, [userId]);
   useEffect(() => {
@@ -73,8 +73,8 @@ export function useFollow(me: string | null, target: string | null) {
   const toggle = async () => {
     if (!me || !target || me === target) return false;
     const { error } = following
-      ? await cloud.from("follows").delete().eq("follower_id", me).eq("followed_id", target)
-      : await cloud.from("follows").insert({ follower_id: me, followed_id: target });
+      ? await supabase.from("follows").delete().eq("follower_id", me).eq("followed_id", target)
+      : await supabase.from("follows").insert({ follower_id: me, followed_id: target });
     if (!error) setFollowing(!following);
     return !error;
   };
@@ -83,6 +83,6 @@ export function useFollow(me: string | null, target: string | null) {
 
 /** Escolha de quem não quer mostrar os próprios números. */
 export async function setShowCounts(me: string, show: boolean) {
-  const { error } = await cloud.from("profiles").update({ show_counts: show }).eq("id", me);
+  const { error } = await supabase.from("profiles").update({ show_counts: show }).eq("id", me);
   return !error;
 }

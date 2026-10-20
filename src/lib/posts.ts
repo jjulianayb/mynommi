@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { cloud } from "./cloud";
+import { supabase } from "@/integrations/supabase/client";
 
 export type Reaction = "curtir" | "apoiar" | "rir";
 export const REACTIONS: { kind: Reaction; label: string }[] = [
@@ -174,7 +174,7 @@ export async function loadPosts(me: string, scope: FeedScope = {}, limit = 30): 
 async function attachMediaUrls(posts: Post[]) {
   const all = posts.flatMap((p) => p.media);
   if (!all.length) return;
-  const { data } = await cloud.storage.from(BUCKET).createSignedUrls(
+  const { data } = await supabase.storage.from(BUCKET).createSignedUrls(
     all.map((m) => m.path),
     3600,
   );
@@ -212,7 +212,7 @@ export async function createPost(me: string, input: NewPost): Promise<CreateResu
   for (let i = 0; i < files.length; i++) {
     const file = files[i]!;
     const path = mediaPath(me, id, i, file.type);
-    const up = await cloud.storage.from(BUCKET).upload(path, file, { contentType: file.type });
+    const up = await supabase.storage.from(BUCKET).upload(path, file, { contentType: file.type });
     const ins = up.error
       ? null
       : await cloud
@@ -227,10 +227,10 @@ export async function createPost(me: string, input: NewPost): Promise<CreateResu
 }
 
 export async function deletePost(id: string) {
-  const { data } = await cloud.from("post_media").select("path").eq("post_id", id);
+  const { data } = await supabase.from("post_media").select("path").eq("post_id", id);
   const paths = ((data as { path: string }[] | null) ?? []).map((x) => x.path);
-  if (paths.length) await cloud.storage.from(BUCKET).remove(paths);
-  const { error } = await cloud.from("posts").delete().eq("id", id);
+  if (paths.length) await supabase.storage.from(BUCKET).remove(paths);
+  const { error } = await supabase.from("posts").delete().eq("id", id);
   return !error;
 }
 
@@ -334,7 +334,7 @@ export function useComments(me: string | null, postId: string | null) {
       )
       .subscribe();
     return () => {
-      void cloud.removeChannel(ch);
+      void supabase.removeChannel(ch);
     };
   }, [me, postId, load]);
   const add = async (text: string, nickname: string) => {
@@ -347,7 +347,7 @@ export function useComments(me: string | null, postId: string | null) {
     return !error;
   };
   const remove = async (id: string) => {
-    const { error } = await cloud.from("post_comments").delete().eq("id", id);
+    const { error } = await supabase.from("post_comments").delete().eq("id", id);
     await load();
     return !error;
   };
