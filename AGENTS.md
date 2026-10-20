@@ -40,4 +40,4 @@
 - Rolês com data (teias.starts_at), vagas (teias.capacity) e "Quero ir" (public.teia_rsvps) estão em src/lib/roles.ts; list_teias devolve going_count e i_am_going, e a regra do banco recusa rolê lotado ou que já passou.
 - O mural "Meus amigos dizem" (public.wall_items) só aceita texto de quem já é amizade; o status nasce no servidor por gatilho e só a dona do perfil aprova. Use src/lib/wall.ts.
 - Bloqueio (public.blocks, nos dois sentidos) e denúncias (public.reports, lidas só por admin) estão em src/lib/safety.ts; is_blocked_between corta perfis, posts, rolês e pedidos de conexão.
-- src/lib/cloud.ts existe porque integrations/supabase/types.ts ainda não conhece as tabelas novas; quando os tipos forem regenerados, troque cloud por supabase.
+- O site é instalável (manifesto em public/manifest.webmanifest, ícones em public/icon-*.png e apple-touch-icon.png); o convite para adicionar à tela de início vive em install-banner.tsx com as regras testáveis em src/lib/install.ts.

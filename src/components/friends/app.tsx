@@ -4,6 +4,7 @@ import { useSharedTeia } from "@/lib/shared-teias";
 import { useRealTeias, useRealTeia, toTeia, sortByCity } from "@/lib/real-teias";
 import { RadarSection } from "./radar-section";
 import { Feed, CreatePostForm, RolesList, RoleCard } from "./social-feed";
+import { InstallBanner } from "./install-banner";
 import { useRoles } from "@/lib/roles";
 import { PeopleSearch } from "./real-people";
 import { momentPhoto } from "@/lib/friends-photos";
@@ -616,6 +617,8 @@ export function Home() {
           )}
         </section>
       )}
+      <InstallBanner />
+      <InstallBanner />
       <details className="home-radar">
         <summary>
           <Icon name="pin" />
