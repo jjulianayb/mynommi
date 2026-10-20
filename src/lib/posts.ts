@@ -143,7 +143,7 @@ export const totalReactions = (p: Pick<Post, "reactions">) =>
 export type FeedScope = { teiaId?: number; authorId?: string };
 
 export async function loadPosts(me: string, scope: FeedScope = {}, limit = 30): Promise<Post[]> {
-  let q = cloud
+  let q = supabase
     .from("posts")
     .select(
       "id,author_id,teia_id,body,location,created_at,post_media(id,kind,path,position),post_reactions(user_id,kind),post_comments(count)",
@@ -323,7 +323,7 @@ export function useComments(me: string | null, postId: string | null) {
   useEffect(() => {
     if (!me || !postId) return;
     void load();
-    const ch = cloud
+    const ch = supabase
       .channel("comments-" + postId)
       .on(
         "postgres_changes",
