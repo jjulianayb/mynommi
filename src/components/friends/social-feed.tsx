@@ -47,7 +47,7 @@ export function SafetyMenu({ me, targetUserId, targetUserName, targetTeiaId }: {
       </>}
       {reporting && <form onSubmit={async e => {
         e.preventDefault(); setBusy(true);
-        const ok = await reportTarget(me, { userId: targetUserId, teiaId: targetTeiaId }, reason, note);
+        const ok = await reportTarget(me, targetUserId ? { userId: targetUserId } : { teiaId: targetTeiaId }, reason, note);
         setBusy(false); notify(ok ? 'Denúncia registrada. Obrigado por cuidar da comunidade.' : 'Não foi possível registrar a denúncia.');
         if (ok) close();
       }}>
@@ -169,7 +169,7 @@ export function CreatePostForm({ me, nickname, teias, onDone }: { me: string; ni
   </form>;
 }
 
-export function RoleCard({ me, role, nickname, onToggle }: { me: string; role: Role; nickname: string; onToggle: (r: Role) => void }) {
+export function RoleCard({ me, role, nickname, onToggle }: { me: string; role: Role; nickname: string; onToggle: (r: Role) => Promise<boolean> }) {
   const { notify } = useFriends();
   const isHost = role.host === nickname;
   const blocker = goingBlocker(role, isHost);
