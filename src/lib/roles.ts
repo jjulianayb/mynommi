@@ -159,7 +159,7 @@ export async function createRole(me: string, nickname: string, input: NewRole) {
     .select("id")
     .single();
   if (error || !data) return null;
-  const id = (data as { id: string }).id;
+  const id = (data as { id: number }).id;
   await supabase.from("teia_rsvps").insert({ teia_id: id, user_id: me });
   return id;
 }
