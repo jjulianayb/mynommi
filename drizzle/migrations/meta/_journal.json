@@ -85,6 +85,13 @@
       "when": 1792035000000,
       "tag": "0011_estrutura_role_perfil",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1792036000000,
+      "tag": "0012_posts_seguidores_mural",
+      "breakpoints": true
     }
   ]
 }
