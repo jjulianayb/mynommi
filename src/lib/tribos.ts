@@ -14,6 +14,8 @@ export type Tribo = {
   moderated?: boolean;
   host?: string;
   partner?: number;
+  about?: string;
+  official?: boolean;
 };
 
 /** Tribos abertas: entrada imediata, sem aprovação. */

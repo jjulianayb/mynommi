@@ -113,6 +113,7 @@ export function CommunityDetail({
   posts,
   coverPath,
   coverEditor,
+  secrets,
 }: {
   tribo: Tribo;
   member: boolean;
@@ -127,6 +128,7 @@ export function CommunityDetail({
   posts?: ReactNode;
   coverPath?: string;
   coverEditor?: ReactNode;
+  secrets?: ReactNode;
 }) {
   const [tab, setTab] = useState("Posts");
   const memberCount = demoMode ? tribo.members : members.length;
@@ -147,7 +149,15 @@ export function CommunityDetail({
         </span>
         <div className="community-title-row">
           <div>
-            <h1>{tribo.name}</h1>
+            <h1>
+              {tribo.name}
+              {tribo.official && (
+                <span className="tribo-oficial">
+                  <Icon name="check" />
+                  da nommi
+                </span>
+              )}
+            </h1>
             <p>
               {memberCount} {memberCount === 1 ? "participante" : "participantes"}
               <span>·</span>
@@ -159,6 +169,7 @@ export function CommunityDetail({
             {joining ? "Entrando…" : member ? "Na tribo" : "Entrar"}
           </Button>
         </div>
+        {tribo.about && <p className="community-description">{tribo.about}</p>}
         <p className="community-description">
           {tribo.rule ||
             "Um assunto em comum, boas conversas e novos encontros. Aqui tem espaço para chegar do seu jeito."}
@@ -181,7 +192,10 @@ export function CommunityDetail({
         )}
       </section>
       <div role="tablist" aria-label="Conteúdo da tribo" className="community-tabs">
-        {["Membros", "Posts", "Eventos"].map((t) => (
+        {(secrets
+          ? ["Membros", "Posts", "Só entre nós", "Eventos"]
+          : ["Membros", "Posts", "Eventos"]
+        ).map((t) => (
           <Button
             key={t}
             variant="ghost"
@@ -260,6 +274,7 @@ export function CommunityDetail({
             )}
           </>
         )}
+        {tab === "Só entre nós" && secrets}
         {tab === "Eventos" && events}
       </section>
     </div>

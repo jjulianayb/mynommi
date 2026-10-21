@@ -7,6 +7,7 @@ import { Feed, CreatePostForm, RolesList, RoleCard } from "./social-feed";
 import { InstallBanner } from "./install-banner";
 import { StoriesStrip } from "./stories-strip";
 import { DirectConversations } from "./direct-chat";
+import { TribeSecrets } from "./tribe-secrets";
 import { CoverEditor } from "./cover-editor";
 import { useTeiaCovers } from "@/lib/covers";
 import { useRoles } from "@/lib/roles";
@@ -1068,11 +1069,22 @@ function RealGroups({ userId }: { userId: string }) {
                   tone={r.kind === "role" ? "yellow" : "teal"}
                 />
                 <div>
-                  <h3>{r.name}</h3>
+                  <h3>
+                    {r.name}
+                    {r.official && (
+                      <span className="tribo-oficial">
+                        <Icon name="check" />
+                        da nommi
+                      </span>
+                    )}
+                  </h3>
                   <p>
                     {r.kind === "role" ? "Rolê aberto" : r.mode}
                     {r.city ? " · " + r.city : ""}
                     {r.when_text ? " · " + r.when_text : ""}
+                    {r.member_count
+                      ? " · " + r.member_count + (r.member_count === 1 ? " pessoa" : " pessoas")
+                      : ""}
                   </p>
                 </div>
               </div>
@@ -1115,7 +1127,8 @@ function RealGroups({ userId }: { userId: string }) {
         </div>
         <p className="small-note">
           {open.length
-            ? (state.city ? "As de " + state.city + " aparecem primeiro. " : "") +
+            ? "As tribos da nommi vêm primeiro. " +
+              (state.city ? "Depois, as de " + state.city + ". " : "") +
               "Entre com um toque. Sair também é simples."
             : "Ainda não há outras tribos abertas. Que tal ser a primeira pessoa a criar uma?"}
         </p>
@@ -1128,16 +1141,35 @@ function RealGroups({ userId }: { userId: string }) {
                   tone={r.kind === "role" ? "yellow" : "teal"}
                 />
                 <div>
-                  <h3>{r.name}</h3>
+                  <h3>
+                    {r.name}
+                    {r.official && (
+                      <span className="tribo-oficial">
+                        <Icon name="check" />
+                        da nommi
+                      </span>
+                    )}
+                  </h3>
                   <p>
                     {r.kind === "role" ? "Rolê aberto" : r.mode}
                     {r.city ? " · " + r.city : ""}
                     {r.place ? " · " + r.place : ""}
                     {r.when_text ? " · " + r.when_text : ""}
+                    {r.member_count
+                      ? " · " + r.member_count + (r.member_count === 1 ? " pessoa" : " pessoas")
+                      : ""}
                   </p>
                 </div>
               </div>
-              {r.creator_nickname && <p className="small-note">Criada por {r.creator_nickname}</p>}
+              {r.about && <p className="tribo-about">{r.about}</p>}
+              {r.rule && (
+                <p className="small-note">
+                  <Icon name="lock" /> {r.rule}
+                </p>
+              )}
+              {!r.official && r.creator_nickname && (
+                <p className="small-note">Criada por {r.creator_nickname}</p>
+              )}
               <div className="group-card-bottom">
                 <Button
                   onClick={async () => {
@@ -1511,6 +1543,11 @@ export function GroupDetail({ id }: { id: number }) {
               </form>
             </section>
           </>
+        }
+        secrets={
+          cloud && cloudUser ? (
+            <TribeSecrets me={cloudUser.id} triboId={id} isMember={member} />
+          ) : undefined
         }
         coverPath={covers.cover}
         coverEditor={

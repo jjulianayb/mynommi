@@ -516,3 +516,26 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .chat-first{text-align:center;margin:28px 0}
 .nav-icon{position:relative;display:inline-flex}
 .nav-dot{position:absolute;top:-4px;right:-8px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--nommi-verde-ui);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* Só entre nós */
+.tribe-secrets{display:grid;gap:14px}
+.secrets-rule{display:flex;gap:12px;align-items:flex-start;background:var(--butter);border-radius:16px;padding:14px 16px}
+.secrets-rule .friend-icon{width:20px;flex:none;margin-top:2px;color:var(--prof,#075E3B)}
+.secrets-rule b{font-size:14px}
+.secrets-rule p{font-size:12.5px;line-height:1.5;margin-top:4px;color:var(--muted-foreground)}
+.secrets-form{display:grid;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px}
+.secrets-bottom{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.secrets-bottom .chips{margin:0;flex:1 1 auto}
+.secrets-bottom .small-note{margin:0}
+.secrets-list{display:grid;gap:10px}
+.secret-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 16px}
+.secret-card header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.secret-card header>div{flex:1;min-width:0}
+.secret-card header b{display:block;font-size:14px}
+.secret-card header small{font-size:11px;color:var(--muted-foreground)}
+.secret-card p{font-size:14.5px;line-height:1.55;overflow-wrap:anywhere}
+.tribo-oficial{display:inline-flex;align-items:center;gap:4px;background:var(--prof,#075E3B);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.06em}
+.group-card h3{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tribo-about{font-size:13.5px;line-height:1.5;color:var(--muted-foreground);margin-top:10px}
+.group-card .small-note .friend-icon{width:13px;height:13px;vertical-align:-2px}
+.community-title-row h1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}

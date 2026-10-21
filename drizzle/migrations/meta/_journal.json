@@ -113,6 +113,13 @@
       "when": 1792120000000,
       "tag": "0015_conversa_a_sos",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1792160000000,
+      "tag": "0016_fofoca_e_tribos_oficiais",
+      "breakpoints": true
     }
   ]
 }

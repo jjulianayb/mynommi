@@ -14,6 +14,12 @@ export type RealTeiaRow = {
   created_by?: string;
   creator_nickname: string;
   created_at: string;
+  about?: string;
+  rule?: string;
+  official?: boolean;
+  member_count?: number;
+  i_am_member?: boolean;
+  cover_path?: string;
 };
 
 /** Converte uma tribo salva no servidor para o formato usado pelas telas. */
@@ -22,13 +28,16 @@ export function toTeia(r: RealTeiaRow): Tribo {
     id: r.id,
     name: r.name,
     mode: r.mode,
-    members: 0,
+    members: r.member_count ?? 0,
     icon: r.kind === "role" ? "pin" : "teia",
     tone: r.kind === "role" ? "yellow" : "teal",
     ids: [],
     ...(r.place || r.city ? { place: [r.place, r.city].filter(Boolean).join(" · ") } : {}),
     ...(r.when_text ? { time: r.when_text } : {}),
     ...(r.creator_nickname ? { host: r.creator_nickname } : {}),
+    ...(r.about ? { about: r.about } : {}),
+    ...(r.rule ? { rule: r.rule } : {}),
+    ...(r.official ? { official: true } : {}),
   };
 }
 
