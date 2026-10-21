@@ -19,14 +19,19 @@ export function TribeSecrets({
   me,
   triboId,
   isMember,
+  nickname,
+  canPost = true,
 }: {
   me: string;
   triboId: number;
   isMember: boolean;
+  nickname?: string;
+  canPost?: boolean;
 }) {
   const { secrets, ready, publish, remove } = useSecrets(me, isMember ? triboId : null);
   const [text, setText] = useState("");
   const [dias, setDias] = useState<number>(DIAS_PADRAO);
+  const [anonimo, setAnonimo] = useState(false);
   const [erro, setErro] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -39,7 +44,10 @@ export function TribeSecrets({
     );
 
   return (
-    <section className="tribe-secrets">
+    <section
+      className="tribe-secrets"
+      style={{ "--marca": `"${(nickname || "nommi").replace(/"/g, "")}"` } as React.CSSProperties}
+    >
       <div className="secrets-rule">
         <Icon name="lock" />
         <div>
@@ -56,7 +64,7 @@ export function TribeSecrets({
         onSubmit={async (e) => {
           e.preventDefault();
           setBusy(true);
-          const r = await publish(text, dias);
+          const r = await publish(text, dias, anonimo);
           setBusy(false);
           if (r.ok) {
             setText("");
@@ -72,6 +80,15 @@ export function TribeSecrets({
           placeholder="Conta aí o que rolou no último encontro…"
           onChange={(e) => setText(e.target.value)}
         />
+        <label className="secrets-anon">
+          <input type="checkbox" checked={anonimo} onChange={(e) => setAnonimo(e.target.checked)} />
+          <span>
+            <b>Contar sem aparecer</b>
+            <small>
+              A tribo vê “Alguém da tribo”. A moderação da nommi continua sabendo quem foi.
+            </small>
+          </span>
+        </label>
         <div className="secrets-bottom">
           <div className="chips">
             {PRAZOS.map((p) => (
@@ -114,9 +131,15 @@ export function TribeSecrets({
           {secrets.map((s) => (
             <article className="secret-card" key={s.id}>
               <header>
-                <Face avatar={s.authorAvatar} />
+                {s.anonymous && !s.mine ? (
+                  <span className="secret-anon-face">
+                    <Icon name="lock" />
+                  </span>
+                ) : (
+                  <Face avatar={s.authorAvatar} />
+                )}
                 <div>
-                  <b>{s.mine ? "Você" : s.authorName}</b>
+                  <b>{s.mine ? (s.anonymous ? "Você, sem aparecer" : "Você") : s.authorName}</b>
                   <small>
                     {timeAgo(s.createdAt)} · {timeLeft(s.expiresAt)}
                   </small>
@@ -131,7 +154,12 @@ export function TribeSecrets({
                     <Icon name="trash" />
                   </Button>
                 ) : (
-                  <SafetyMenu me={me} targetUserId={s.authorId} targetUserName={s.authorName} />
+                  <SafetyMenu
+                    me={me}
+                    {...(s.authorId
+                      ? { targetUserId: s.authorId, targetUserName: s.authorName }
+                      : { targetTeiaId: triboId })}
+                  />
                 )}
               </header>
               <p>{s.body}</p>

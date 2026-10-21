@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { novo } from "./cloud-novo";
 import type { Tribo } from "./tribos";
 
 export type RealTeiaRow = {
@@ -21,6 +22,9 @@ export type RealTeiaRow = {
   i_am_member?: boolean;
   cover_path?: string;
   audience?: string;
+  who_posts?: string;
+  i_can_post?: boolean;
+  i_am_creator?: boolean;
 };
 
 /** Converte uma tribo salva no servidor para o formato usado pelas telas. */
@@ -94,11 +98,13 @@ export async function createRealTeia(
     city: string;
     place?: string;
     when?: string;
+    about?: string;
+    whoPosts?: "todos" | "criadora";
   },
   userId: string,
   nickname: string,
 ) {
-  const { data, error } = await supabase
+  const { data, error } = await novo
     .from("teias")
     .insert({
       kind: input.kind,
@@ -110,6 +116,8 @@ export async function createRealTeia(
       when_text: (input.when ?? "").trim().slice(0, 60),
       created_by: userId,
       creator_nickname: nickname.slice(0, 40),
+      about: (input.about ?? "").trim().slice(0, 280),
+      who_posts: input.whoPosts ?? "todos",
     })
     .select("id")
     .single();

@@ -3,13 +3,14 @@ import { novo } from "./cloud-novo";
 
 export type Secret = {
   id: string;
-  authorId: string;
+  authorId: string | null;
   authorName: string;
   authorAvatar: string;
   body: string;
   createdAt: string;
   expiresAt: string;
   mine: boolean;
+  anonymous: boolean;
 };
 
 export const MAX_SECRET = 500;
@@ -48,39 +49,30 @@ export function useSecrets(me: string | null, triboId: number | null) {
 
   const load = useCallback(async () => {
     if (!me || triboId == null) return;
-    const { data } = await novo
-      .from("posts")
-      .select("id,author_id,body,created_at,expires_at")
-      .eq("teia_id", triboId)
-      .eq("secret", true)
-      .eq("status", "publicado")
-      .order("created_at", { ascending: false })
-      .limit(100);
-    const rows = (data as Row[] | null) ?? [];
-    const ids = [...new Set(rows.map((r) => r.author_id))];
-    const quem = new Map<string, { nickname: string; avatar_url: string }>();
-    if (ids.length) {
-      const { data: ps } = await novo
-        .from("profiles")
-        .select("id,nickname,avatar_url")
-        .in("id", ids);
-      for (const p of (ps as { id: string; nickname: string; avatar_url: string }[] | null) ?? [])
-        quem.set(p.id, p);
-    }
+    const { data } = await novo.rpc("segredos_da_tribo", { _teia: triboId });
+    type Linha = {
+      id: string;
+      body: string;
+      created_at: string;
+      expires_at: string;
+      anonymous: boolean;
+      author_id: string | null;
+      nickname: string;
+      avatar_url: string;
+      mine: boolean;
+    };
     setSecrets(
-      rows.map((r) => {
-        const p = quem.get(r.author_id);
-        return {
-          id: r.id,
-          authorId: r.author_id,
-          authorName: p?.nickname || "nommi",
-          authorAvatar: p?.avatar_url ?? "",
-          body: r.body,
-          createdAt: r.created_at,
-          expiresAt: r.expires_at,
-          mine: r.author_id === me,
-        };
-      }),
+      ((data as Linha[] | null) ?? []).map((r) => ({
+        id: r.id,
+        authorId: r.author_id,
+        authorName: r.nickname || "nommi",
+        authorAvatar: r.avatar_url || "",
+        body: r.body,
+        createdAt: r.created_at,
+        expiresAt: r.expires_at,
+        mine: r.mine,
+        anonymous: r.anonymous,
+      })),
     );
     setReady(true);
   }, [me, triboId]);
@@ -103,15 +95,23 @@ export function useSecrets(me: string | null, triboId: number | null) {
     };
   }, [me, triboId, load]);
 
-  const publish = async (text: string, dias = DIAS_PADRAO) => {
+  const publish = async (text: string, dias = DIAS_PADRAO, anonimo = false) => {
     const body = cleanSecret(text);
     if (!me || triboId == null || !body)
       return { ok: false as const, error: "Escreva de 1 a 500 letras." };
-    const { error } = await novo
-      .from("posts")
-      .insert({ author_id: me, teia_id: triboId, body, secret: true, expires_at: expiresIn(dias) });
+    const { error } = await novo.from("posts").insert({
+      author_id: me,
+      teia_id: triboId,
+      body,
+      secret: true,
+      anonymous: anonimo,
+      expires_at: expiresIn(dias),
+    });
     if (error)
-      return { ok: false as const, error: "Não foi possível publicar. Você está nesta tribo?" };
+      return {
+        ok: false as const,
+        error: "Não foi possível publicar. Você está nesta tribo e pode falar nela?",
+      };
     await load();
     return { ok: true as const };
   };

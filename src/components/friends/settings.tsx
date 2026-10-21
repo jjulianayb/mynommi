@@ -728,6 +728,7 @@ export function CreateGroup() {
   const [place, setPlace] = useState("");
   const [startsAt, setStartsAt] = useState("");
   const [limited, setLimited] = useState(false);
+  const [soEu, setSoEu] = useState(false);
   const [capacity, setCapacity] = useState(6);
   const [busy, setBusy] = useState(false);
   const real = !!cloudUser && !demoMode;
@@ -779,7 +780,14 @@ export function CreateGroup() {
                     capacity: limited ? capacity : null,
                   })
                 : await createRealTeia(
-                    { kind: "teia", name, mode, city, place },
+                    {
+                      kind: "teia",
+                      name,
+                      mode,
+                      city,
+                      place,
+                      whoPosts: soEu ? "criadora" : "todos",
+                    },
                     cloudUser!.id,
                     state.nickname || "nommi",
                   );
@@ -880,6 +888,20 @@ export function CreateGroup() {
                 placeholder="Bairro, praça, bar…"
               />
             </label>
+          )}
+          {real && !isRole && (
+            <div className="setting-toggle">
+              <div>
+                <h2>Só eu posso falar</h2>
+                <p>Modo recado: as pessoas entram e leem, mas quem escreve é você.</p>
+              </div>
+              <input
+                aria-label="Só eu posso falar"
+                type="checkbox"
+                checked={soEu}
+                onChange={(e) => setSoEu(e.target.checked)}
+              />
+            </div>
           )}
           {real && isRole && (
             <>

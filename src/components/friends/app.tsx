@@ -1552,7 +1552,13 @@ export function GroupDetail({ id }: { id: number }) {
         }
         secrets={
           cloud && cloudUser ? (
-            <TribeSecrets me={cloudUser.id} triboId={id} isMember={member} />
+            <TribeSecrets
+              me={cloudUser.id}
+              triboId={id}
+              isMember={member}
+              nickname={state.nickname || "nommi"}
+              canPost={realTeia.row?.i_can_post !== false}
+            />
           ) : undefined
         }
         coverPath={covers.cover}

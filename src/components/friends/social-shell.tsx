@@ -6,6 +6,7 @@ import { Sheet, LoadingState, Brand } from "./surfaces";
 import { useDemoSession } from "./session";
 import { Welcome } from "./entry";
 import { isRealHost } from "@/lib/nommi-access";
+import rioPhoto from "@/assets/welcome-rio.jpg";
 import { useNaoLidas } from "@/lib/direct-messages";
 const entryPaths = ["/conta", "/cadastro", "/login", "/login-parceiro", "/recuperar-senha"];
 const legalPaths = ["/termos", "/privacidade", "/ajuda"];
@@ -29,7 +30,17 @@ export function SocialShell({ children }: { children: ReactNode }) {
       </div>
     );
   if (entryPaths.includes(pathname) || (!session && legalPaths.includes(pathname)))
-    return <div className="friends-app public-app">{children}</div>;
+    return (
+      <div className="friends-app public-app com-cenario">
+        <div
+          className="cenario-fundo"
+          aria-hidden="true"
+          style={{ backgroundImage: `url(${rioPhoto})` }}
+        />
+        <div className="cenario-veu" aria-hidden="true" />
+        <div className="cenario-conteudo">{children}</div>
+      </div>
+    );
   if (!session)
     return pathname === "/" ? (
       <div className="friends-app">
