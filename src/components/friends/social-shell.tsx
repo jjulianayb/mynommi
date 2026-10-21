@@ -6,10 +6,12 @@ import { Sheet, LoadingState, Brand } from "./surfaces";
 import { useDemoSession } from "./session";
 import { Welcome } from "./entry";
 import { isRealHost } from "@/lib/nommi-access";
+import { useNaoLidas } from "@/lib/direct-messages";
 const entryPaths = ["/conta", "/cadastro", "/login", "/login-parceiro", "/recuperar-senha"];
 const legalPaths = ["/termos", "/privacidade", "/ajuda"];
 export function SocialShell({ children }: { children: ReactNode }) {
   const { session, ready, signOut, cloudUser, demoMode } = useDemoSession();
+  const naoLidas = useNaoLidas(cloudUser && !demoMode ? cloudUser.id : null);
   const { pathname, searchStr } = useLocation();
   const [create, setCreate] = useState(false);
   const [drawer, setDrawer] = useState(false);
@@ -62,7 +64,7 @@ export function SocialShell({ children }: { children: ReactNode }) {
   const items = [
     { to: "/" as const, label: "Início", icon: "home" },
     { to: "/grupos" as const, label: "Tribos", icon: "teia" },
-    { to: "/clube" as const, label: "Clube", icon: "gift" },
+    { to: "/conversas" as const, label: "Conversas", icon: "chat" },
     { to: "/perfil" as const, label: "Meu nommi", icon: "users" },
   ];
   return (
@@ -131,8 +133,20 @@ export function SocialShell({ children }: { children: ReactNode }) {
               activeOptions={{ exact: true }}
               activeProps={{ className: "selected" }}
             >
-              <Icon name={n.icon} />
-              <span>{n.label}</span>
+              <span className="nav-icon">
+                <Icon name={n.icon} />
+                {n.to === "/conversas" && naoLidas > 0 && (
+                  <span className="nav-dot" aria-hidden="true">
+                    {naoLidas > 9 ? "9+" : naoLidas}
+                  </span>
+                )}
+              </span>
+              <span>
+                {n.label}
+                {n.to === "/conversas" && naoLidas > 0 && (
+                  <span className="sr-only">, {naoLidas} por ler</span>
+                )}
+              </span>
             </Link>
           </Button>
         ))}
@@ -144,6 +158,12 @@ export function SocialShell({ children }: { children: ReactNode }) {
               <Link to="/configuracoes" search={{ section: "perfil" }}>
                 <Icon name="settings" />
                 Configurações
+              </Link>
+            </Button>
+            <Button asChild variant="ghost" className="drawer-link">
+              <Link to="/clube">
+                <Icon name="gift" />
+                Clube
               </Link>
             </Button>
             <Button asChild variant="ghost" className="drawer-link">

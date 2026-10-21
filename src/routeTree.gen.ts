@@ -38,6 +38,7 @@ import { Route as ProRouteImport } from './routes/pro'
 import { Route as RadarRouteImport } from './routes/radar'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as TermosRouteImport } from './routes/termos'
+import { Route as ConversasIdRouteImport } from './routes/conversas_.$id'
 import { Route as EmpresaIdRouteImport } from './routes/empresa.$id'
 import { Route as GruposIdRouteImport } from './routes/grupos_.$id'
 import { Route as NommiIdRouteImport } from './routes/nommi.$id'
@@ -188,6 +189,11 @@ const TermosRoute = TermosRouteImport.update({
   path: '/termos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConversasIdRoute = ConversasIdRouteImport.update({
+  id: '/conversas_/$id',
+  path: '/conversas/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EmpresaIdRoute = EmpresaIdRouteImport.update({
   id: '/empresa/$id',
   path: '/empresa/$id',
@@ -240,6 +246,7 @@ export interface FileRoutesByFullPath {
   '/radar': typeof RadarRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/termos': typeof TermosRoute
+  '/conversas/$id': typeof ConversasIdRoute
   '/empresa/$id': typeof EmpresaIdRoute
   '/grupos/$id': typeof GruposIdRoute
   '/nommi/$id': typeof NommiIdRoute
@@ -275,6 +282,7 @@ export interface FileRoutesByTo {
   '/radar': typeof RadarRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/termos': typeof TermosRoute
+  '/conversas/$id': typeof ConversasIdRoute
   '/empresa/$id': typeof EmpresaIdRoute
   '/grupos/$id': typeof GruposIdRoute
   '/nommi/$id': typeof NommiIdRoute
@@ -311,6 +319,7 @@ export interface FileRoutesById {
   '/radar': typeof RadarRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/termos': typeof TermosRoute
+  '/conversas_/$id': typeof ConversasIdRoute
   '/empresa/$id': typeof EmpresaIdRoute
   '/grupos_/$id': typeof GruposIdRoute
   '/nommi/$id': typeof NommiIdRoute
@@ -348,6 +357,7 @@ export interface FileRouteTypes {
     | '/radar'
     | '/recuperar-senha'
     | '/termos'
+    | '/conversas/$id'
     | '/empresa/$id'
     | '/grupos/$id'
     | '/nommi/$id'
@@ -383,6 +393,7 @@ export interface FileRouteTypes {
     | '/radar'
     | '/recuperar-senha'
     | '/termos'
+    | '/conversas/$id'
     | '/empresa/$id'
     | '/grupos/$id'
     | '/nommi/$id'
@@ -418,6 +429,7 @@ export interface FileRouteTypes {
     | '/radar'
     | '/recuperar-senha'
     | '/termos'
+    | '/conversas_/$id'
     | '/empresa/$id'
     | '/grupos_/$id'
     | '/nommi/$id'
@@ -454,6 +466,7 @@ export interface RootRouteChildren {
   RadarRoute: typeof RadarRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
   TermosRoute: typeof TermosRoute
+  ConversasIdRoute: typeof ConversasIdRoute
   EmpresaIdRoute: typeof EmpresaIdRoute
   GruposIdRoute: typeof GruposIdRoute
   NommiIdRoute: typeof NommiIdRoute
@@ -665,6 +678,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/conversas_/$id': {
+      id: '/conversas_/$id'
+      path: '/conversas/$id'
+      fullPath: '/conversas/$id'
+      preLoaderRoute: typeof ConversasIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/empresa/$id': {
       id: '/empresa/$id'
       path: '/empresa/$id'
@@ -726,6 +746,7 @@ const rootRouteChildren: RootRouteChildren = {
   RadarRoute: RadarRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
   TermosRoute: TermosRoute,
+  ConversasIdRoute: ConversasIdRoute,
   EmpresaIdRoute: EmpresaIdRoute,
   GruposIdRoute: GruposIdRoute,
   NommiIdRoute: NommiIdRoute,

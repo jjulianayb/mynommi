@@ -48,3 +48,4 @@
 - A letra do logo é Baloo 2 800, embutida em public/fonts/baloo2-*.woff2 e declarada no fim de styles.css; não depende do Google Fonts e é pré-carregada em __root.tsx. Os ícones do app em public/icon-*.png são gerados com essa mesma letra.
 - O nome visível do grupo é "tribo"; no banco, no código interno e nas rotas tudo continua "teia" (tabelas teias/teia_members/teia_messages/teia_rsvps, rota /grupos, ícone teia, chave de visibilidade teia). Trocar esses nomes quebraria dados já gravados.
 - A assinatura da marca fica em TAGLINE, em surfaces.tsx: "Encontre sua tribo".
+- A conversa a sós entre contas reais vive em public.direct_messages (RLS: só entre amizades aceitas via sao_amigos, bloqueio corta; só quem recebe marca read_at) com Realtime; as funções minhas_conversas() e nao_lidas() alimentam a lista e o aviso da navegação. Código em src/lib/direct-messages.ts e nos componentes direct-chat.tsx e direct-chat-page.tsx; a rota é /conversas/$id.

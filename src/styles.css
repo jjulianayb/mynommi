@@ -504,3 +504,15 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 @font-face{font-family:'Baloo 2';font-style:normal;font-weight:700;font-display:swap;src:url('/fonts/baloo2-700.woff2') format('woff2')}
 @font-face{font-family:'Baloo 2';font-style:normal;font-weight:800;font-display:swap;src:url('/fonts/baloo2-800.woff2') format('woff2')}
 .wordmark .brand-tagline{margin-left:.72em}
+
+/* Conversa a sós */
+.conversation.unread h3{font-weight:800}
+.conversation.unread p{color:var(--foreground)}
+.unread-badge{min-width:22px;height:22px;border-radius:999px;background:var(--nommi-verde-ui);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 6px;flex:none}
+.direct-chat .chat-person{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none;flex:1;min-width:0}
+.direct-chat .chat-person h2{font-size:18px;margin:0}
+.direct-chat .chat-person small{font-size:11px;color:var(--muted-foreground)}
+.chat-day{text-align:center;font-size:11px;color:var(--muted-foreground);margin:14px 0 6px;text-transform:uppercase;letter-spacing:.08em}
+.chat-first{text-align:center;margin:28px 0}
+.nav-icon{position:relative;display:inline-flex}
+.nav-dot{position:absolute;top:-4px;right:-8px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--nommi-verde-ui);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center}

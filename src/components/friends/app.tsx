@@ -6,6 +6,7 @@ import { RadarSection } from "./radar-section";
 import { Feed, CreatePostForm, RolesList, RoleCard } from "./social-feed";
 import { InstallBanner } from "./install-banner";
 import { StoriesStrip } from "./stories-strip";
+import { DirectConversations } from "./direct-chat";
 import { CoverEditor } from "./cover-editor";
 import { useTeiaCovers } from "@/lib/covers";
 import { useRoles } from "@/lib/roles";
@@ -898,6 +899,17 @@ function Invite({ name, onClose }: { name: string; onClose: () => void }) {
   );
 }
 export function Conversations({ personId }: { personId?: number | undefined }) {
+  const { cloudUser, demoMode } = useDemoSession();
+  if (cloudUser && !demoMode)
+    return (
+      <>
+        <Title title="Conversas" kicker="AMIZADES QUE CONTINUAM" />
+        <DirectConversations me={cloudUser.id} />
+      </>
+    );
+  return <DemoConversations {...(personId !== undefined ? { personId } : {})} />;
+}
+function DemoConversations({ personId }: { personId?: number | undefined }) {
   const { state, setState } = useFriends();
   const [invite, setInvite] = useState(false);
   const p = people.find(
