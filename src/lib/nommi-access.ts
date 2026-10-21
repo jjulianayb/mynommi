@@ -13,6 +13,22 @@ export const SIGNUP_INTERESTS = [
   "viagens",
   "séries",
   "corrida",
+  "arte",
+  "dança",
+  "fotografia",
+  "yoga",
+  "pets",
+  "futebol",
+  "ciclismo",
+  "shows",
+  "teatro",
+  "natureza",
+  "churrasco",
+  "cerveja",
+  "jogos de mesa",
+  "idiomas",
+  "voluntariado",
+  "academia",
 ];
 
 export function signupDetails(
