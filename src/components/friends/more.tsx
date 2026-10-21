@@ -1,3 +1,4 @@
+import { MyNommi } from "./my-nommi";
 import { useDemoSession } from "./session";
 import { isRealHost } from "@/lib/nommi-access";
 import { ClubCatalog } from "./club-catalog";
@@ -39,6 +40,12 @@ function PartnerIcon({ index }: { index: number }) {
   );
 }
 export function Profile({ personId }: { personId?: number | undefined }) {
+  const sessao = useDemoSession();
+  if (sessao.cloudUser && !sessao.demoMode && personId === undefined)
+    return <MyNommi me={sessao.cloudUser.id} />;
+  return <DemoProfile {...(personId !== undefined ? { personId } : {})} />;
+}
+function DemoProfile({ personId }: { personId?: number | undefined }) {
   const { state, setState, notify } = useFriends();
   const { cloudUser, demoMode, isAdmin } = useDemoSession();
   const [tab, setTab] = useState("Tribo de amizades");

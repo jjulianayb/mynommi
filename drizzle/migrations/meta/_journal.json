@@ -134,6 +134,13 @@
       "when": 1792180000000,
       "tag": "0018_tribo_voz_e_anonimo",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1792190000000,
+      "tag": "0019_pagina_pessoal",
+      "breakpoints": true
     }
   ]
 }
