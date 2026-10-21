@@ -539,3 +539,4 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .tribo-about{font-size:13.5px;line-height:1.5;color:var(--muted-foreground);margin-top:10px}
 .group-card .small-note .friend-icon{width:13px;height:13px;vertical-align:-2px}
 .community-title-row h1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tribo-publico{display:inline-flex;align-items:center;background:var(--coral,#EF675A);color:#111;font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.06em}

@@ -20,6 +20,7 @@ export type RealTeiaRow = {
   member_count?: number;
   i_am_member?: boolean;
   cover_path?: string;
+  audience?: string;
 };
 
 /** Converte uma tribo salva no servidor para o formato usado pelas telas. */

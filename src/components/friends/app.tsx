@@ -1077,6 +1077,9 @@ function RealGroups({ userId }: { userId: string }) {
                         da nommi
                       </span>
                     )}
+                    {r.audience === "mulheres" && (
+                      <span className="tribo-publico">espaço de mulheres</span>
+                    )}
                   </h3>
                   <p>
                     {r.kind === "role" ? "Rolê aberto" : r.mode}
@@ -1148,6 +1151,9 @@ function RealGroups({ userId }: { userId: string }) {
                         <Icon name="check" />
                         da nommi
                       </span>
+                    )}
+                    {r.audience === "mulheres" && (
+                      <span className="tribo-publico">espaço de mulheres</span>
                     )}
                   </h3>
                   <p>

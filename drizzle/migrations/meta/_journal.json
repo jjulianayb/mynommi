@@ -120,6 +120,13 @@
       "when": 1792160000000,
       "tag": "0016_fofoca_e_tribos_oficiais",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1792170000000,
+      "tag": "0017_tribos_de_mulheres",
+      "breakpoints": true
     }
   ]
 }
