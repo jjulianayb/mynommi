@@ -34,9 +34,9 @@ export function RadarSection() {
   const { state, notify } = useFriends();
   const { cloudUser, demoMode } = useDemoSession();
   const [on, setOn] = useState(false);
-  const [place, setPlace] = useState<Place>(
-    PLACES[0] ?? { name: "Centro", area: "Centro", type: "Praça", lat: 0, lng: 0 },
-  );
+  // Sem lugar padrão: a pessoa escolhe onde está antes de entrar no radar,
+  // para o app nunca marcar um lugar errado por ela.
+  const [place, setPlace] = useState<Place | null>(null);
   const [custom, setCustom] = useState("");
   const [query, setQuery] = useState("");
   const [type, setType] = useState<PlaceType | "">("");
@@ -69,7 +69,7 @@ export function RadarSection() {
         "nommi-radar",
         JSON.stringify({
           on,
-          place: place.name,
+          place: place?.name ?? "",
           activity,
           mins,
           until: Date.now() + mins * 60000,
@@ -110,11 +110,12 @@ export function RadarSection() {
     );
   }
   const results = searchPlaces(query, type);
-  const nearby = demoMode
-    ? nearbyNommis(place, { matches: state.matches, blocked: state.blocked, activity: filter })
-    : [];
+  const nearby =
+    demoMode && place
+      ? nearbyNommis(place, { matches: state.matches, blocked: state.blocked, activity: filter })
+      : [];
   const sel = nearby.find((n) => n.id === pick);
-  const label = custom || place.name;
+  const label = custom || place?.name || "";
   return (
     <div className="radar-page">
       <header className="radar-head">
@@ -179,8 +180,8 @@ export function RadarSection() {
                 key={p.name}
                 type="button"
                 role="option"
-                aria-selected={p.name === place.name && !custom}
-                className={"radar-place" + (p.name === place.name && !custom ? " active" : "")}
+                aria-selected={p.name === place?.name && !custom}
+                className={"radar-place" + (p.name === place?.name && !custom ? " active" : "")}
                 onClick={() => {
                   setPlace(p);
                   setCustom("");
@@ -214,7 +215,13 @@ export function RadarSection() {
           )}
           <p className="radar-here">
             <Icon name="pin" />
-            Você está em: <b>{label}</b>
+            {label ? (
+              <>
+                Você está em: <b>{label}</b>
+              </>
+            ) : (
+              "Escolha um lugar da lista, use sua localização ou escreva onde você está."
+            )}
           </p>
           <div>
             <b>Topo agora</b>
@@ -253,12 +260,14 @@ export function RadarSection() {
           <Button
             type="button"
             className="wide"
+            disabled={!label}
             onClick={async () => {
+              if (!label) return;
               if (cloudUser) {
                 const row = presenceRow({
                   userId: cloudUser.id,
                   placeName: label,
-                  area: place.area,
+                  area: place?.area ?? "",
                   city,
                   activity,
                   minutes: mins,
