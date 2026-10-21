@@ -1,5 +1,5 @@
 import { useDemoSession } from "./session";
-import { hasSharedTeia, teiasFor } from "@/lib/teias";
+import { hasSharedTeia, teiasFor } from "@/lib/tribos";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { z } from "zod";
@@ -25,17 +25,17 @@ export function SocialPost({ kind }: { kind: "friend" | "moment" }) {
 function RealPost({ userId, nickname }: { userId: string; nickname: string }) {
   const real = useRealTeias(userId);
   const navigate = useNavigate();
-  const teias = real.rows
+  const tribos = real.rows
     .filter((r) => r.kind === "teia" && real.joined.includes(r.id))
     .map((r) => ({ id: r.id, name: r.name }));
   return (
     <div className="action-page">
       <h1>Contar como foi</h1>
-      <p className="intro">Escreva, escolha fotos ou um vídeo e, se quiser, uma teia.</p>
+      <p className="intro">Escreva, escolha fotos ou um vídeo e, se quiser, uma tribo.</p>
       <CreatePostForm
         me={userId}
         nickname={nickname}
-        teias={teias}
+        tribos={tribos}
         onDone={() => void navigate({ to: "/" })}
       />
     </div>
@@ -153,7 +153,7 @@ export function CheckIn() {
     <div className="action-page">
       <h1>Fazer check-in</h1>
       <label>
-        Sua teia
+        Sua tribo
         <select
           className="input"
           value={group ?? ""}
@@ -207,7 +207,7 @@ export function CheckIn() {
       {!state.challenges.some((c) => c.group === group) && (
         <>
           <Sticker id={5} size={96} />
-          <p className="small-note">Ainda não há desafios nesta teia.</p>
+          <p className="small-note">Ainda não há desafios nesta tribo.</p>
           <Button asChild>
             <Link to="/lancar-desafio">Lançar desafio</Link>
           </Button>

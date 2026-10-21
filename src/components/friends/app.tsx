@@ -26,7 +26,7 @@ import {
   isMember,
   joinTeia,
   leaveTeia,
-} from "@/lib/teias";
+} from "@/lib/tribos";
 import {
   awaitingReply,
   greeting,
@@ -61,7 +61,7 @@ const navigation = [
   { to: "/" as const, label: "Início", icon: "home" },
   { to: "/descobrir" as const, label: "Descobrir", icon: "spark" },
   { to: "/conversas" as const, label: "Conversas", icon: "chat" },
-  { to: "/grupos" as const, label: "Teias", icon: "users" },
+  { to: "/grupos" as const, label: "Tribos", icon: "users" },
   { to: "/clube" as const, label: "Clube", icon: "gift" },
   { to: "/perfil" as const, label: "Perfil", icon: "heart" },
 ];
@@ -214,7 +214,7 @@ function Safety({ person }: { person: number }) {
         onClick={() => {
           const reason = window.prompt("Qual é o motivo da denúncia?");
           if (reason?.trim())
-            notify("Denúncia registrada nesta demonstração. Valeu por cuidar da teia.");
+            notify("Denúncia registrada nesta demonstração. Valeu por cuidar da tribo.");
         }}
       >
         <Icon name="flag" />
@@ -246,15 +246,15 @@ function Match({ person, onClose }: { person: Person; onClose: () => void }) {
         className="match-modal"
         role="dialog"
         aria-modal="true"
-        aria-label="Vocês se encontraram na mesma teia!"
+        aria-label="Vocês se encontraram na mesma tribo!"
       >
         <Icon name="spark" />
-        <h2>Vocês se encontraram na mesma teia!</h2>
+        <h2>Vocês se encontraram na mesma tribo!</h2>
         <div className="match-pair">
           <Avatar id={3} size={112} />
           <Avatar id={person.id} size={112} />
         </div>
-        <h3>Teia em comum.</h3>
+        <h3>Tribo em comum.</h3>
         <p>
           Você e {person.name.split(" ")[0]} já compartilharam um encontro.
           <br />
@@ -291,7 +291,7 @@ function useInterest() {
       setMatch(p);
     } else {
       setState((s) => ({ ...s, sent: [...new Set([...s.sent, p.id])] }));
-      notify("Que tal combinar numa teia? A conversa direta abre depois de um encontro em comum.");
+      notify("Que tal combinar numa tribo? A conversa direta abre depois de um encontro em comum.");
     }
   }
   return {
@@ -299,7 +299,7 @@ function useInterest() {
     matchOverlay: match ? <Match person={match} onClose={() => setMatch(null)} /> : null,
   };
 }
-const HOME_FILTERS = ["Todas", "Amizade", "Teias", "Eventos"];
+const HOME_FILTERS = ["Todas", "Amizade", "Tribos", "Eventos"];
 const NEARBY_DISTANCES = ["a 5 min", "a 10 min", "a 15 min", "perto de você"];
 const MOVIMENTO_CARDS = [
   {
@@ -318,7 +318,7 @@ const MOVIMENTO_CARDS = [
   },
   {
     photo: momentPhoto.trilha,
-    alt: "Trilha ao ar livre com a teia",
+    alt: "Trilha ao ar livre com a tribo",
     title: "Trilha de domingo",
     meta: "Domingo · Mangabeiras",
     members: 6,
@@ -373,7 +373,7 @@ export function Home() {
         <img
           className="home-hero-photo"
           src={momentPhoto.pizza}
-          alt="Mesa cheia de pizza para compartilhar com a teia"
+          alt="Mesa cheia de pizza para compartilhar com a tribo"
         />
         <div className="home-hero-overlay">
           <button
@@ -457,10 +457,10 @@ export function Home() {
           )}
         </section>
       )}
-      {(filter === "Todas" || filter === "Teias") && (
+      {(filter === "Todas" || filter === "Tribos") && (
         <section className="home-section">
           <div className="section-heading">
-            <h2>Teias para você</h2>
+            <h2>Tribos para você</h2>
             <Link to="/grupos" hash="teias-abertas" className="section-link">
               Ver todas
               <Icon name="arrow" />
@@ -485,7 +485,7 @@ export function Home() {
                       onClick={() => {
                         if (!m) {
                           setState((s) => joinTeia(s, t.id));
-                          notify("Você entrou! Diga oi para a teia.");
+                          notify("Você entrou! Diga oi para a tribo.");
                         }
                         void navigate({ to: "/grupos/$id", params: { id: String(t.id) } });
                       }}
@@ -499,13 +499,13 @@ export function Home() {
             </div>
           ) : (
             <EmptyState
-              title="As primeiras teias chegam por aqui."
-              text="Quando houver teias abertas na sua cidade, elas vão aparecer nesta lista."
+              title="As primeiras tribos chegam por aqui."
+              text="Quando houver tribos abertas na sua cidade, elas vão aparecer nesta lista."
             >
               <Button asChild>
                 <Link to="/criar-grupo">
                   <Icon name="plus" />
-                  Criar minha teia
+                  Criar minha tribo
                 </Link>
               </Button>
             </EmptyState>
@@ -523,16 +523,16 @@ export function Home() {
               onClick={() => {
                 if (!member) {
                   setState((s) => joinTeia(s, recommended.id));
-                  notify("Você entrou na teia desta apresentação.");
+                  notify("Você entrou na tribo desta apresentação.");
                 }
                 void navigate({ to: "/grupos/$id", params: { id: String(recommended.id) } });
               }}
             >
               <Icon name={member ? "check" : "teia"} />
-              {member ? "Abrir minha teia" : "Quero ir"}
+              {member ? "Abrir minha tribo" : "Quero ir"}
             </Button>
             <div className="today-going">
-              <h3>Quem da sua teia vai</h3>
+              <h3>Quem da sua tribo vai</h3>
               {attending.length ? (
                 <>
                   <Stack ids={attending} />
@@ -563,7 +563,7 @@ export function Home() {
           <RolesList me={cloudUser!.id} nickname={state.nickname || "nommi"} />
         </section>
       )}
-      {realHome && (filter === "Todas" || filter === "Amizade" || filter === "Teias") && (
+      {realHome && (filter === "Todas" || filter === "Amizade" || filter === "Tribos") && (
         <section className="home-section">
           <div className="section-heading">
             <h2>Da sua rede</h2>
@@ -576,7 +576,7 @@ export function Home() {
             me={cloudUser!.id}
             nickname={state.nickname || "nommi"}
             emptyTitle="Seu início ainda está quieto."
-            emptyText="Siga pessoas, entre numa teia ou publique algo para começar."
+            emptyText="Siga pessoas, entre numa tribo ou publique algo para começar."
           />
         </section>
       )}
@@ -668,7 +668,7 @@ function DemoDiscover() {
       <Button asChild>
         <Link to="/grupos" hash="teias-abertas">
           <Icon name="users" />
-          Entrar numa teia
+          Entrar numa tribo
         </Link>
       </Button>
       <Button asChild variant="secondary">
@@ -688,7 +688,7 @@ function DemoDiscover() {
         </section>
       )}
       <Chips
-        items={["Online", "Por perto", "Teias"]}
+        items={["Online", "Por perto", "Tribos"]}
         selected={filters}
         onSelect={(f) => {
           setIndex(0);
@@ -870,7 +870,7 @@ function Invite({ name, onClose }: { name: string; onClose: () => void }) {
         className="simple-modal"
         role="dialog"
         aria-modal="true"
-        aria-label="Convidar para a teia"
+        aria-label="Convidar para a tribo"
       >
         <div className="section-heading">
           <h2>Convidar {name}</h2>
@@ -917,7 +917,7 @@ export function Conversations({ personId }: { personId?: number | undefined }) {
             <Avatar id={p.id} size={44} />
             <div>
               <h2>{p.name}</h2>
-              <span className="online-status">Teia em comum</span>
+              <span className="online-status">Tribo em comum</span>
             </div>
           </div>
           <Safety person={p.id} />
@@ -935,7 +935,7 @@ export function Conversations({ personId }: { personId?: number | undefined }) {
           />
           <Button variant="secondary" className="wide" onClick={() => setInvite(true)}>
             <Icon name="users" />
-            Convidar para a teia
+            Convidar para a tribo
           </Button>
           {invite && <Invite name={p.name} onClose={() => setInvite(false)} />}
         </section>
@@ -945,14 +945,14 @@ export function Conversations({ personId }: { personId?: number | undefined }) {
           {!people.some((p) => hasSharedTeia(state, p.id)) && (
             <EmptyState
               title="Seu primeiro oi está por vir"
-              text="Conversas abrem depois de vocês participarem de um encontro na mesma teia. Enquanto isso, um plano ou uma teia são ótimos começos."
+              text="Conversas abrem depois de vocês participarem de um encontro na mesma tribo. Enquanto isso, um plano ou uma tribo são ótimos começos."
             >
               <Button asChild>
                 <Link to="/convites">Ver planos de hoje</Link>
               </Button>
               <Button asChild variant="secondary">
                 <Link to="/grupos" hash="teias-abertas">
-                  Entrar numa teia
+                  Entrar numa tribo
                 </Link>
               </Button>
             </EmptyState>
@@ -969,7 +969,7 @@ export function Conversations({ personId }: { personId?: number | undefined }) {
                       {state.messages[p.id]?.at(-1)?.text ||
                         (state.messages[p.id]?.length
                           ? "Figurinha"
-                          : "Teia em comum. Bora dizer oi?")}
+                          : "Tribo em comum. Bora dizer oi?")}
                     </p>
                   </div>
                   <Icon name="arrow" />
@@ -977,7 +977,7 @@ export function Conversations({ personId }: { personId?: number | undefined }) {
               ))}
           </div>
           <p className="small-note">
-            A conversa direta fica disponível depois de um encontro na mesma teia.
+            A conversa direta fica disponível depois de um encontro na mesma tribo.
           </p>
         </>
       )}
@@ -1008,11 +1008,11 @@ function GroupCard({ id }: { id: number }) {
       </div>
       <div className="group-card-bottom">
         <span>
-          <b>{state.points[id] ?? 0}</b> / 50 pontos da teia
+          <b>{state.points[id] ?? 0}</b> / 50 pontos da tribo
         </span>
         <Button asChild variant="secondary">
           <Link to="/grupos/$id" params={{ id: String(id) }}>
-            Ver teia
+            Ver tribo
             <Icon name="arrow" />
           </Link>
         </Button>
@@ -1035,17 +1035,17 @@ function RealGroups({ userId }: { userId: string }) {
   );
   return (
     <>
-      <Title title="Suas teias" kicker="SUAS TEIAS">
+      <Title title="Suas tribos" kicker="SUAS TEIAS">
         <Button asChild variant="secondary">
           <Link to="/criar-grupo">
             <Icon name="plus" />
-            Criar teia
+            Criar tribo
           </Link>
         </Button>
       </Title>
       <p className="intro">Um assunto em comum. Muitos encontros pela frente.</p>
       {!real.ready ? (
-        <p className="small-note">Carregando suas teias…</p>
+        <p className="small-note">Carregando suas tribos…</p>
       ) : mine.length ? (
         <div className="group-grid">
           {mine.map((r) => (
@@ -1075,7 +1075,7 @@ function RealGroups({ userId }: { userId: string }) {
                   variant="ghost"
                   onClick={() => {
                     void real.leave(r.id);
-                    notify("Você saiu da teia. Pode voltar quando quiser.");
+                    notify("Você saiu da tribo. Pode voltar quando quiser.");
                   }}
                 >
                   Sair
@@ -1086,26 +1086,26 @@ function RealGroups({ userId }: { userId: string }) {
         </div>
       ) : (
         <EmptyState
-          title="Você ainda não está numa teia."
-          text="Entre numa teia aberta aqui embaixo ou crie a sua e chame quem você quiser."
+          title="Você ainda não está numa tribo."
+          text="Entre numa tribo aberta aqui embaixo ou crie a sua e chame quem você quiser."
         >
           <Button asChild>
             <Link to="/criar-grupo">
               <Icon name="plus" />
-              Criar minha teia
+              Criar minha tribo
             </Link>
           </Button>
         </EmptyState>
       )}
       <section id="teias-abertas" className="open-teias">
         <div className="section-heading">
-          <h2>Teias abertas para entrar</h2>
+          <h2>Tribos abertas para entrar</h2>
         </div>
         <p className="small-note">
           {open.length
             ? (state.city ? "As de " + state.city + " aparecem primeiro. " : "") +
               "Entre com um toque. Sair também é simples."
-            : "Ainda não há outras teias abertas. Que tal ser a primeira pessoa a criar uma?"}
+            : "Ainda não há outras tribos abertas. Que tal ser a primeira pessoa a criar uma?"}
         </p>
         <div className="group-grid">
           {open.map((r) => (
@@ -1130,7 +1130,7 @@ function RealGroups({ userId }: { userId: string }) {
                 <Button
                   onClick={async () => {
                     if (await real.join(r.id, state.nickname || "nommi")) {
-                      notify("Você entrou! Diga oi para a teia.");
+                      notify("Você entrou! Diga oi para a tribo.");
                       void navigate({ to: "/grupos/$id", params: { id: String(r.id) } });
                     } else notify("Não deu para entrar agora. Tente de novo.");
                   }}
@@ -1171,15 +1171,15 @@ function DemoGroups() {
   const mine = teiasFor(state);
   function join(id: number) {
     setState((s) => joinTeia(s, id));
-    notify("Você entrou! Diga oi para a teia.");
+    notify("Você entrou! Diga oi para a tribo.");
   }
   return (
     <>
-      <Title title="Suas teias" kicker="SUAS TEIAS">
+      <Title title="Suas tribos" kicker="SUAS TEIAS">
         <Button asChild variant="secondary">
           <Link to="/criar-grupo">
             <Icon name="plus" />
-            Criar teia
+            Criar tribo
           </Link>
         </Button>
       </Title>
@@ -1192,8 +1192,8 @@ function DemoGroups() {
         </div>
       ) : (
         <EmptyState
-          title="Você ainda não está numa teia."
-          text="Os encontros da sua cidade vão aparecer aqui quando as teias compartilhadas estiverem prontas."
+          title="Você ainda não está numa tribo."
+          text="Os encontros da sua cidade vão aparecer aqui quando as tribos compartilhadas estiverem prontas."
         />
       )}
       <section
@@ -1201,12 +1201,12 @@ function DemoGroups() {
         className={"open-teias" + (hash === "teias-abertas" ? " highlight" : "")}
       >
         <div className="section-heading">
-          <h2>Teias abertas para entrar</h2>
+          <h2>Tribos abertas para entrar</h2>
         </div>
         <p className="small-note">
           {demoMode
             ? "Entre com um toque. Sair também é simples."
-            : "Ainda não há teias abertas publicadas. As primeiras chegam por aqui."}
+            : "Ainda não há tribos abertas publicadas. As primeiras chegam por aqui."}
         </p>
         <div className="group-grid">
           {(demoMode ? openTeias : []).map((t) => {
@@ -1227,7 +1227,7 @@ function DemoGroups() {
                 {t.rule && (
                   <p className="privacy-badge">
                     <Icon name="heart" />
-                    Regra da teia: {t.rule}
+                    Regra da tribo: {t.rule}
                   </p>
                 )}
                 <div className="row group-members">
@@ -1247,10 +1247,10 @@ function DemoGroups() {
                         variant="ghost"
                         onClick={() => {
                           setState((s) => leaveTeia(s, t.id));
-                          notify("Você saiu da teia. Pode voltar quando quiser.");
+                          notify("Você saiu da tribo. Pode voltar quando quiser.");
                         }}
                       >
-                        Sair da teia
+                        Sair da tribo
                       </Button>
                     </>
                   ) : (
@@ -1284,18 +1284,18 @@ function DemoGroups() {
         <Button asChild variant="secondary">
           <Link to="/conversas">
             <Icon name="chat" />
-            Conversas da teia
+            Conversas da tribo
           </Link>
         </Button>
       </div>
       {demoMode && state.pro && (
         <Button
           onClick={() =>
-            notify("O teste Pro está ativo. A criação real de teias fica para a próxima etapa.")
+            notify("O teste Pro está ativo. A criação real de tribos fica para a próxima etapa.")
           }
         >
           <Icon name="plus" />
-          Nova teia Pro
+          Nova tribo Pro
         </Button>
       )}
     </>
@@ -1323,12 +1323,12 @@ export function GroupDetail({ id }: { id: number }) {
   const [points, setPoints] = useState(20);
   const [partner, setPartner] = useState(0);
   if (cloud && id >= 100000 && !realTeia.ready)
-    return <p className="small-note">Carregando a teia…</p>;
+    return <p className="small-note">Carregando a tribo…</p>;
   if (!g || (!demoMode && !cloud && !isMember(state, id)))
     return (
       <EmptyState
-        title="Esta teia não está disponível."
-        text="As teias da apresentação não são teias entre contas reais."
+        title="Esta tribo não está disponível."
+        text="As tribos da apresentação não são tribos entre contas reais."
       />
     );
   function checkIn(challengeId: number) {
@@ -1348,7 +1348,7 @@ export function GroupDetail({ id }: { id: number }) {
       try {
         const ok = await shared.join();
         notify(
-          ok ? "Você entrou! Diga oi para a teia." : "Não deu para entrar agora. Tente de novo.",
+          ok ? "Você entrou! Diga oi para a tribo." : "Não deu para entrar agora. Tente de novo.",
         );
       } finally {
         setJoining(false);
@@ -1356,18 +1356,18 @@ export function GroupDetail({ id }: { id: number }) {
       return;
     }
     setState((s) => joinTeia(s, id));
-    notify("Você entrou! Diga oi para a teia.");
+    notify("Você entrou! Diga oi para a tribo.");
   }
   return (
     <>
       <Button asChild variant="ghost" className="back-link">
         <Link to="/grupos">
           <Icon name="back" />
-          Suas teias
+          Suas tribos
         </Link>
       </Button>
       <CommunityDetail
-        teia={g}
+        tribo={g}
         member={member}
         demoMode={demoMode}
         nickname={state.nickname}
@@ -1386,15 +1386,15 @@ export function GroupDetail({ id }: { id: number }) {
               <progress max="50" value={state.points[id] ?? 0} />
               <p>
                 {(state.points[id] ?? 0) >= 50
-                  ? "Bônus liberado: day spa com a teia!"
+                  ? "Bônus liberado: day spa com a tribo!"
                   : "Mais " +
                     (50 - (state.points[id] ?? 0)) +
-                    " pontos para o dia de beleza com a teia."}
+                    " pontos para o dia de beleza com a tribo."}
               </p>
             </div>
             <section>
               <FirstMeetNotice />
-              <h2>Desafios da teia</h2>
+              <h2>Desafios da tribo</h2>
               {state.challenges
                 .filter((c) => c.group === id)
                 .map((c) => (
@@ -1438,14 +1438,14 @@ export function GroupDetail({ id }: { id: number }) {
                       {
                         id: Math.max(0, ...s.challenges.map((c) => c.id)) + 1,
                         group: id,
-                        name: kind + " da teia",
+                        name: kind + " da tribo",
                         points,
                         partner,
                         status: "open",
                       },
                     ],
                   }));
-                  notify("Desafio lançado! Já está na lista da teia.");
+                  notify("Desafio lançado! Já está na lista da tribo.");
                 }}
               >
                 <h3>Lançar novo desafio</h3>
@@ -1518,8 +1518,8 @@ export function GroupDetail({ id }: { id: number }) {
               me={cloudUser!.id}
               nickname={state.nickname || "nommi"}
               scope={{ teiaId: id }}
-              emptyTitle="Ainda não há posts nesta teia."
-              emptyText="Publique o primeiro e chame a teia para a conversa."
+              emptyTitle="Ainda não há posts nesta tribo."
+              emptyText="Publique o primeiro e chame a tribo para a conversa."
             />
           ) : undefined
         }
@@ -1527,12 +1527,12 @@ export function GroupDetail({ id }: { id: number }) {
           <>
             {member ? (
               <section className="group-chat">
-                <h2>Conversa da teia</h2>
+                <h2>Conversa da tribo</h2>
                 {cloud && (
                   <p className="intro">
                     {shared.members.length === 1
                       ? "Só você por enquanto. Chame alguém!"
-                      : shared.members.length + " nommi nesta teia, em qualquer celular."}
+                      : shared.members.length + " nommi nesta tribo, em qualquer celular."}
                   </p>
                 )}
                 <MessageList messages={cloud ? shared.messages : state.groupMessages[id] || []} />
@@ -1560,7 +1560,7 @@ export function GroupDetail({ id }: { id: number }) {
                 <div className="safety-actions">
                   <Button
                     variant="ghost"
-                    onClick={() => notify("Denúncia da teia registrada nesta demonstração.")}
+                    onClick={() => notify("Denúncia da tribo registrada nesta demonstração.")}
                   >
                     <Icon name="flag" />
                     Denunciar
@@ -1568,7 +1568,7 @@ export function GroupDetail({ id }: { id: number }) {
                   <Button
                     variant="ghost"
                     onClick={() =>
-                      notify("Notificações e convites desta teia bloqueados nesta demonstração.")
+                      notify("Notificações e convites desta tribo bloqueados nesta demonstração.")
                     }
                   >
                     <Icon name="block" />
@@ -1578,12 +1578,12 @@ export function GroupDetail({ id }: { id: number }) {
               </section>
             ) : (
               <section className="group-chat">
-                <h2>Conversa da teia</h2>
+                <h2>Conversa da tribo</h2>
                 <EmptyState
                   title="Entre para ver a conversa."
                   text={
                     "Entrar é um toque, sem aprovação." +
-                    (g.rule ? " Regra da teia: " + g.rule + "." : "")
+                    (g.rule ? " Regra da tribo: " + g.rule + "." : "")
                   }
                 >
                   <Button onClick={() => void enter()} disabled={joining}>

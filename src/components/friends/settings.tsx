@@ -1,7 +1,7 @@
 import { createRealTeia } from "@/lib/real-teias";
 import { createRole, MIN_CAPACITY, MAX_CAPACITY } from "@/lib/roles";
 import { saveCloudProfile } from "@/lib/real-profiles";
-import { hasSharedTeia, teiasFor } from "@/lib/teias";
+import { hasSharedTeia, teiasFor } from "@/lib/tribos";
 import { resizePhoto } from "@/lib/photo-resize";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -79,7 +79,7 @@ function ShowCountsToggle({ me }: { me: string }) {
     <div className="setting-toggle">
       <div>
         <h2>Mostrar meus números no perfil</h2>
-        <p>Seguidores, amigos, teias e posts. Você sempre vê os seus.</p>
+        <p>Seguidores, amigos, tribos e posts. Você sempre vê os seus.</p>
       </div>
       <input
         aria-label="Mostrar meus números no perfil"
@@ -327,7 +327,7 @@ export function Settings({ section }: { section: string }) {
                       setState((s) => ({ ...s, blocked: s.blocked.filter((id) => id !== p.id) }));
                       notify(
                         p.name +
-                          " não está mais na sua lista de bloqueios. A conversa exige um encontro na mesma teia.",
+                          " não está mais na sua lista de bloqueios. A conversa exige um encontro na mesma tribo.",
                       );
                     }}
                   >
@@ -432,7 +432,7 @@ export function Notifications() {
                 <Icon name="heart" />
               </span>
               <div>
-                <h3>Teia em comum com {p.name.split(" ")[0]}</h3>
+                <h3>Tribo em comum com {p.name.split(" ")[0]}</h3>
                 <p>A conversa já está aberta.</p>
               </div>
               <Icon name="arrow" />
@@ -527,7 +527,7 @@ export function Legal({ kind }: { kind: "terms" | "privacy" | "help" }) {
           </p>
           <h2>Encontros e benefícios</h2>
           <p>
-            Pontos pertencem à teia e só são liberados após a confirmação simulada de uma visita.
+            Pontos pertencem à tribo e só são liberados após a confirmação simulada de uma visita.
             Combine encontros em locais públicos e cuide da sua segurança.
           </p>
         </>
@@ -569,7 +569,7 @@ export function Legal({ kind }: { kind: "terms" | "privacy" | "help" }) {
           </p>
           <h2>Serviços externos</h2>
           <p>
-            Contas reais usam Lovable Cloud. Conversas e teias compartilhadas ainda aguardam
+            Contas reais usam Lovable Cloud. Conversas e tribos compartilhadas ainda aguardam
             integração; a apresentação guarda simulações neste aparelho.
           </p>
         </>
@@ -579,14 +579,14 @@ export function Legal({ kind }: { kind: "terms" | "privacy" | "help" }) {
             <summary>Como começa uma conversa?</summary>
             <p>
               A conversa direta abre depois de duas pessoas participarem de um encontro na mesma
-              teia.
+              tribo.
             </p>
           </details>
           <details>
-            <summary>Como a teia ganha pontos?</summary>
+            <summary>Como a tribo ganha pontos?</summary>
             <p>
               O check-in gera um código. Depois da confirmação pelo Anfitrião, os pontos vão para a
-              teia.
+              tribo.
             </p>
           </details>
           <details>
@@ -628,7 +628,7 @@ export function CreateChallenge() {
   return (
     <div className="action-page">
       <h1>Lançar desafio</h1>
-      <p className="intro">Um plano simples para juntar a teia.</p>
+      <p className="intro">Um plano simples para juntar a tribo.</p>
       <Sticker id={3} size={96} />
       <form
         onSubmit={(e) => {
@@ -641,7 +641,7 @@ export function CreateChallenge() {
               {
                 id: Math.max(0, ...s.challenges.map((c) => c.id)) + 1,
                 group,
-                name: type + " da teia",
+                name: type + " da tribo",
                 points,
                 partner,
                 status: "open",
@@ -653,7 +653,7 @@ export function CreateChallenge() {
         }}
       >
         <label>
-          Teia
+          Tribo
           <select
             className="input"
             value={group ?? ""}
@@ -682,7 +682,7 @@ export function CreateChallenge() {
           </div>
         </fieldset>
         <label>
-          Pontos da teia
+          Pontos da tribo
           <select
             className="input"
             value={points}
@@ -734,7 +734,7 @@ export function CreateGroup() {
   const isRole = kind === "role";
   return (
     <div className="action-page">
-      <h1>{isRole ? "Criar um rolê" : "Criar minha teia"}</h1>
+      <h1>{isRole ? "Criar um rolê" : "Criar minha tribo"}</h1>
       <p className="intro">
         {isRole
           ? "Marque dia, lugar e quantas pessoas cabem."
@@ -760,7 +760,7 @@ export function CreateGroup() {
             }
             if (real) {
               if (city.trim().length < 2) {
-                notify(isRole ? "Diga a cidade do rolê." : "Diga a cidade da teia.");
+                notify(isRole ? "Diga a cidade do rolê." : "Diga a cidade da tribo.");
                 return;
               }
               const when = startsAt ? new Date(startsAt) : null;
@@ -791,7 +791,7 @@ export function CreateGroup() {
               notify(
                 isRole
                   ? "Rolê criado! Agora é só chamar a galera."
-                  : "Teia criada! Agora chame sua turma.",
+                  : "Tribo criada! Agora chame sua turma.",
               );
               void navigate({ to: "/grupos/$id", params: { id: String(id) } });
               return;
@@ -827,7 +827,7 @@ export function CreateGroup() {
                 onClick={() => setKind("teia")}
               >
                 <Icon name="teia" />
-                Teia
+                Tribo
               </Button>
               <Button
                 type="button"
@@ -840,7 +840,7 @@ export function CreateGroup() {
             </div>
           )}
           <label>
-            {isRole ? "Nome do rolê" : "Nome da teia"}
+            {isRole ? "Nome do rolê" : "Nome da tribo"}
             <input
               className="input"
               value={name}
@@ -921,7 +921,7 @@ export function CreateGroup() {
           )}
           <Button className="wide" disabled={busy}>
             <Icon name={isRole ? "pin" : "teia"} />
-            {busy ? "Criando…" : isRole ? "Criar rolê" : "Criar teia"}
+            {busy ? "Criando…" : isRole ? "Criar rolê" : "Criar tribo"}
           </Button>
         </form>
       )}
@@ -958,7 +958,7 @@ export function InviteFriend() {
         <Icon name="link" />
         {copied ? "Convite copiado" : "Copiar convite"}
       </Button>
-      <h2 className="settings-subtitle">Convidar uma amizade para sua teia</h2>
+      <h2 className="settings-subtitle">Convidar uma amizade para sua tribo</h2>
       {teiasFor(state).map((g) => (
         <Button
           variant="secondary"

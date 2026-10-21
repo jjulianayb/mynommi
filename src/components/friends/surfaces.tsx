@@ -95,7 +95,7 @@ export function EmptyState({
     </div>
   );
 }
-export const TAGLINE = "Juntos é melhor";
+export const TAGLINE = "Encontre sua tribo";
 export function BrandMark({ tagline = true }: { tagline?: boolean }) {
   return (
     <>

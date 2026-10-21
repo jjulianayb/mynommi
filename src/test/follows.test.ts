@@ -14,7 +14,7 @@ describe("números do perfil", () => {
       followers: null,
       following: null,
       connections: null,
-      teias: null,
+      tribos: null,
       posts: null,
       visible: false,
     });
@@ -26,13 +26,13 @@ describe("números do perfil", () => {
       followers: 248,
       following: 512,
       connections: 30,
-      teias: 3,
+      tribos: 3,
       posts: 12,
       visible: true,
     });
     expect(s.visible).toBe(true);
     expect(s.followers).toBe(248);
-    expect(s.teias).toBe(3);
+    expect(s.tribos).toBe(3);
   });
   it("sem resposta do servidor, trata como escondido", () => {
     expect(toStats(null).visible).toBe(false);

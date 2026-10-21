@@ -1,49 +1,533 @@
-export type Person = {id:number;name:string;age:number;city:string;interests:string[];why:string;filters:string[];mutual:boolean;private?:boolean;area?:string;about?:string;availability?:string};
-export type ProfileMode='publico'|'privado';
-export const people:Person[]=[
-{id:7,area:'Savassi',about:'Eu canto errado, mas canto com convicção.',availability:'Topa um refrão no próximo rolê',name:'Bia Duarte',age:34,city:'Belo Horizonte',interests:['karaokê','vinho'],why:'Vocês gostam de karaokê e de conversas que continuam no dia seguinte.',filters:['Online','Por perto','Teias'],mutual:true},
-{id:4,area:'Funcionários',about:'Uma série boa e um vinho sem aula de enologia.',availability:'Combina rolês no fim da tarde',name:'Marina',age:36,city:'Belo Horizonte',interests:['vinho','séries'],why:'Vinho, boas histórias e vontade de conhecer gente por perto.',filters:['Por perto','Teias'],mutual:true},
-{id:11,area:'Vila Mariana',about:'Meu talento é perder no game e acertar o tempero.',availability:'Conversa depois do expediente',name:'Rafa',age:31,city:'São Paulo',interests:['games','culinária'],why:'Vocês querem bater papo online sem pressa.',filters:['Online'],mutual:false},
-{id:6,area:'Eldorado',about:'Levo o bolo. A playlist a gente decide junto.',availability:'Livre no fim de semana',name:'Tati',age:40,city:'Contagem',interests:['karaokê','culinária'],why:'Um refrão de karaokê é um ótimo começo para vocês.',filters:['Por perto','Teias'],mutual:true},
-{id:12,area:'Santa Tereza',about:'A trilha pode ser curta. A parada pro lanche, não.',availability:'Prefere sair cedinho',name:'Lucas',age:29,city:'Belo Horizonte',interests:['trilhas','viagens'],why:'Vocês querem conhecer lugares novos com a teia.',filters:['Por perto','Teias','Online'],mutual:false},
-{id:13,area:'Botafogo',about:'Coleciono destinos e teorias de séries. Sem spoiler.',availability:'Papo online à noite',name:'Helena',age:33,city:'Rio de Janeiro',interests:['séries','viagens'],why:'Vocês procuram uma amizade à distância.',filters:['Online'],mutual:false,private:true},
-{id:1,area:'Floresta',about:'Tenho uma música pra cada situação. Às vezes duas.',availability:'Organiza o karaokê de quinta',name:'Carla',age:38,city:'Belo Horizonte',interests:['karaokê','vinho'],why:'Música e encontros leves fazem parte dos interesses de vocês.',filters:['Por perto','Teias'],mutual:true},
-{id:2,area:'Pampulha',about:'Testo receitas. Procuro companhia pra dar o veredito.',availability:'Topa um café no domingo',name:'Léo',age:35,city:'Belo Horizonte',interests:['vinho','culinária'],why:'Vocês gostam de experimentar sabores e reunir a teia.',filters:['Por perto','Teias'],mutual:false},
-{id:8,area:'Água Verde',about:'Um livro na bolsa e tempo pra escutar.',availability:'Prefere conversas sem pressa',name:'Joana',age:42,city:'Curitiba',interests:['livros','trilhas'],why:'Vocês procuram conversas tranquilas e novas histórias.',filters:['Online','Teias'],mutual:false},
-{id:10,area:'Buritis',about:'Bora jogar uma partida e planejar uma viagem improvável?',availability:'Disponível aos sábados',name:'Pedro',age:30,city:'Belo Horizonte',interests:['games','viagens'],why:'Vocês querem trocar ideias e fazer novas amizades.',filters:['Online','Por perto'],mutual:true},
+export type Person = {
+  id: number;
+  name: string;
+  age: number;
+  city: string;
+  interests: string[];
+  why: string;
+  filters: string[];
+  mutual: boolean;
+  private?: boolean;
+  area?: string;
+  about?: string;
+  availability?: string;
+};
+export type ProfileMode = "publico" | "privado";
+export const people: Person[] = [
+  {
+    id: 7,
+    area: "Savassi",
+    about: "Eu canto errado, mas canto com convicção.",
+    availability: "Topa um refrão no próximo rolê",
+    name: "Bia Duarte",
+    age: 34,
+    city: "Belo Horizonte",
+    interests: ["karaokê", "vinho"],
+    why: "Vocês gostam de karaokê e de conversas que continuam no dia seguinte.",
+    filters: ["Online", "Por perto", "Tribos"],
+    mutual: true,
+  },
+  {
+    id: 4,
+    area: "Funcionários",
+    about: "Uma série boa e um vinho sem aula de enologia.",
+    availability: "Combina rolês no fim da tarde",
+    name: "Marina",
+    age: 36,
+    city: "Belo Horizonte",
+    interests: ["vinho", "séries"],
+    why: "Vinho, boas histórias e vontade de conhecer gente por perto.",
+    filters: ["Por perto", "Tribos"],
+    mutual: true,
+  },
+  {
+    id: 11,
+    area: "Vila Mariana",
+    about: "Meu talento é perder no game e acertar o tempero.",
+    availability: "Conversa depois do expediente",
+    name: "Rafa",
+    age: 31,
+    city: "São Paulo",
+    interests: ["games", "culinária"],
+    why: "Vocês querem bater papo online sem pressa.",
+    filters: ["Online"],
+    mutual: false,
+  },
+  {
+    id: 6,
+    area: "Eldorado",
+    about: "Levo o bolo. A playlist a gente decide junto.",
+    availability: "Livre no fim de semana",
+    name: "Tati",
+    age: 40,
+    city: "Contagem",
+    interests: ["karaokê", "culinária"],
+    why: "Um refrão de karaokê é um ótimo começo para vocês.",
+    filters: ["Por perto", "Tribos"],
+    mutual: true,
+  },
+  {
+    id: 12,
+    area: "Santa Tereza",
+    about: "A trilha pode ser curta. A parada pro lanche, não.",
+    availability: "Prefere sair cedinho",
+    name: "Lucas",
+    age: 29,
+    city: "Belo Horizonte",
+    interests: ["trilhas", "viagens"],
+    why: "Vocês querem conhecer lugares novos com a tribo.",
+    filters: ["Por perto", "Tribos", "Online"],
+    mutual: false,
+  },
+  {
+    id: 13,
+    area: "Botafogo",
+    about: "Coleciono destinos e teorias de séries. Sem spoiler.",
+    availability: "Papo online à noite",
+    name: "Helena",
+    age: 33,
+    city: "Rio de Janeiro",
+    interests: ["séries", "viagens"],
+    why: "Vocês procuram uma amizade à distância.",
+    filters: ["Online"],
+    mutual: false,
+    private: true,
+  },
+  {
+    id: 1,
+    area: "Floresta",
+    about: "Tenho uma música pra cada situação. Às vezes duas.",
+    availability: "Organiza o karaokê de quinta",
+    name: "Carla",
+    age: 38,
+    city: "Belo Horizonte",
+    interests: ["karaokê", "vinho"],
+    why: "Música e encontros leves fazem parte dos interesses de vocês.",
+    filters: ["Por perto", "Tribos"],
+    mutual: true,
+  },
+  {
+    id: 2,
+    area: "Pampulha",
+    about: "Testo receitas. Procuro companhia pra dar o veredito.",
+    availability: "Topa um café no domingo",
+    name: "Léo",
+    age: 35,
+    city: "Belo Horizonte",
+    interests: ["vinho", "culinária"],
+    why: "Vocês gostam de experimentar sabores e reunir a tribo.",
+    filters: ["Por perto", "Tribos"],
+    mutual: false,
+  },
+  {
+    id: 8,
+    area: "Água Verde",
+    about: "Um livro na bolsa e tempo pra escutar.",
+    availability: "Prefere conversas sem pressa",
+    name: "Joana",
+    age: 42,
+    city: "Curitiba",
+    interests: ["livros", "trilhas"],
+    why: "Vocês procuram conversas tranquilas e novas histórias.",
+    filters: ["Online", "Tribos"],
+    mutual: false,
+  },
+  {
+    id: 10,
+    area: "Buritis",
+    about: "Bora jogar uma partida e planejar uma viagem improvável?",
+    availability: "Disponível aos sábados",
+    name: "Pedro",
+    age: 30,
+    city: "Belo Horizonte",
+    interests: ["games", "viagens"],
+    why: "Vocês querem trocar ideias e fazer novas amizades.",
+    filters: ["Online", "Por perto"],
+    mutual: true,
+  },
 ];
-export const groups=[{id:0,name:'Amizades para sair',mode:'Presencial',members:5,icon:'mic',tone:'red',ids:[1,3,4,5,7]}, {id:1,name:'Clube do vinho',mode:'Híbrido',members:8,icon:'glass',tone:'blue',ids:[2,6,8,7]}, {id:2,name:'Conversas sem pressa',mode:'Online',members:12,icon:'chat',tone:'teal',ids:[0,9,10,3]}];
-export const partners=[{name:'Karaokê Bem-Te-Vi',icon:'mic',tone:'red',category:'Lazer',benefit:'6 rodadas de chope para a teia',points:40,visits:4},{name:'Bar do Vinho Azul',icon:'glass',tone:'blue',category:'Bares',benefit:'Taça de boas-vindas para todos',points:30,visits:2},{name:'Day Spa Folha',icon:'spa',tone:'teal',category:'Beleza',benefit:'Dia de beleza com a teia',points:50,visits:0},{name:'Pizzaria Forno Doce',icon:'star',tone:'yellow',category:'Bares',benefit:'Sobremesa grátis a cada 4 pessoas',points:30,visits:1},{name:'Cine Sofá',icon:'heart',tone:'red',category:'Lazer',benefit:'Combo de pipoca para 5',points:40,visits:1},{name:'Trilha Aberta',icon:'pin',tone:'teal',category:'Lazer',benefit:'Guia e lanche para a teia',points:30,visits:1}];
-export type Message={text?:string;sticker?:number;custom?:{src:string;caption:string};mine:boolean;author?:string;time?:string};
-export type Challenge={id:number;group:number;name:string;points:number;partner:number;status:'open'|'pending'|'done';code?:string};
-export type WallItem={id:number;author:string;status:'approved'|'pending'};
-export type Audience='todos'|'amizades'|'so-eu';
-export type When='Hoje'|'Amanhã'|'Esta semana'|'Fim de semana'|'Depois';
-export const WHEN_OPTIONS:When[]=['Hoje','Amanhã','Esta semana','Fim de semana','Depois'];
-export const REGION_OPTIONS=['Centro-Sul','Centro','Savassi','Pampulha','Leste','Oeste'];
-export type Invite={id:number;title:string;category:string;date:string;place:string;host:number;joined:number[];when?:When;region?:string;invitedMe?:boolean};
-export const demoInvites:Invite[]=[
-{id:1,title:'Academia com companhia',category:'Academia',date:'Sábado, 8h',place:'Perto do Parque Municipal',host:12,joined:[3],when:'Fim de semana',region:'Centro-Sul'},
-{id:2,title:'Vinho para novos começos',category:'Vinho',date:'Sexta, 20h',place:'Bar do Vinho Azul · Savassi',host:4,joined:[1,3],when:'Esta semana',region:'Savassi'},
-{id:3,title:'Natal em boa companhia',category:'Celebração',date:'25 de dez, 17h',place:'Região Centro-Sul',host:8,joined:[],when:'Depois',region:'Centro-Sul'},
-{id:4,title:'Café antes do expediente',category:'Outro',date:'Quinta, 7h30',place:'Praça da Liberdade',host:1,joined:[3],when:'Esta semana',region:'Centro'},
-{id:5,title:'Vinho com vista para a lagoa',category:'Vinho',date:'Hoje, 19h30',place:'Perto da Pampulha',host:2,joined:[4],when:'Hoje',region:'Pampulha'},
-{id:6,title:'Corrida no parque',category:'Trilha',date:'Domingo, 7h',place:'Perto das Mangabeiras',host:10,joined:[3],when:'Fim de semana',region:'Leste'},
-{id:7,title:'Bolo caseiro e série',category:'Cozinha',date:'Amanhã, 18h',place:'Região Oeste',host:6,joined:[],when:'Amanhã',region:'Oeste'}];
-const norm=(t:string)=>t.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
-const WHEN_HINTS:[RegExp,When][]=[[/\bhoje\b/i,'Hoje'],[/amanh/i,'Amanhã'],[/sabado|domingo/i,'Fim de semana'],[/sexta|segunda|terca|quarta|quinta/i,'Esta semana']];
-export function inviteWhen(i:Invite):When|''{if(i.when)return i.when;for(const[re,w]of WHEN_HINTS)if(re.test(i.date))return w;return ''}
-export function inviteRegion(i:Invite):string{if(i.region)return i.region;const t=norm(i.place);for(const r of [...REGION_OPTIONS].sort((a,b)=>b.length-a.length))if(t.includes(norm(r)))return r;return ''}
-export type DemoState={accountId?:string;createdTeias?:import("./teias").Teia[];attendedTeias?:number[];profileMode?:ProfileMode;joinedTeias?:number[];about?:string;todayMood?:{date:string;choice:'Conversar agora'|'Sair hoje'|'Só ver gente por aí'};dailyAnswers?:{date:string;text:string}[];visibility?:{fotos:Audience;roles:Audience;teia:Audience};mode?:'Presencial'|'Virtual'|'Híbrida';socialPosts?:{kind:'friend'|'moment';text:string;person?:number;author:string}[];invites?:Invite[];recentStickers?:number[];favoriteStickers?:number[];customStickers?:{id:string;src:string;caption:string}[];credits?:number;creditHistory?:{label:string;amount:number;at:string}[];boostUntil?:string;boostedInvites?:number[];partnerProfile?:{name:string;kind:string;area:string;hours:string;capacity:string;offer:string;interests:string[];note:string};city:string;birthday:string;photo:string;nickname:string;interests:string[];goals:string[];cityOnly:boolean;wallApproval:boolean;adult:boolean;pro:boolean;points:number[];matches:number[];sent:number[];blocked:number[];messages:Record<string,Message[]>;groupMessages:Record<string,Message[]>;challenges:Challenge[];wall:WallItem[];visits:{code:string;people:number;bill:number}[];campaigns:{name:string;points:number;active:boolean}[];rewards:{partner:number;group:number;code:string}[]};
-export const demoState:DemoState={profileMode:'publico',createdTeias:[],attendedTeias:[0,1],credits:12,joinedTeias:[0,1,2],dailyAnswers:[],recentStickers:[],favoriteStickers:[],invites:demoInvites,city:'Belo Horizonte',birthday:'',photo:'',nickname:'Dani',interests:['karaokê','vinho'],goals:['conversar online','teias'],cityOnly:true,wallApproval:true,adult:false,pro:false,points:[30,20,10],matches:[7,4,6],sent:[],blocked:[],messages:{'7':[{text:'Oi! Vi que você curte karaokê.',mine:false},{text:'Amo! Vamos marcar sábado?',mine:true}],'4':[{text:'Topa um vinho na sexta?',mine:false}],'6':[{text:'Teia em comum! Bora combinar o próximo rolê?',mine:false}]},groupMessages:{'0':[{text:'Sábado tem karaokê?',mine:false,author:'Carla'},{sticker:3,mine:false,author:'Bia'},{text:'Bora! Já lancei o desafio.',mine:true}], '1':[{text:'Uma taça e muita conversa na sexta?',mine:false,author:'Léo'}], '2':[{text:'Qual música marcou sua semana?',mine:false,author:'Joana'}]},challenges:[{id:1,group:0,name:'Noite de karaokê',points:20,partner:0,status:'open'},{id:2,group:1,name:'Vinho com a teia',points:10,partner:1,status:'open'}],wall:[{id:0,author:'Carla',status:'approved'},{id:1,author:'Léo',status:'approved'},{id:3,author:'Dani',status:'approved'}],visits:[],campaigns:[{name:'Chope em dobro às terças',points:40,active:true},{name:'Taça de boas-vindas',points:30,active:true}],rewards:[]};
+export const groups = [
+  {
+    id: 0,
+    name: "Amizades para sair",
+    mode: "Presencial",
+    members: 5,
+    icon: "mic",
+    tone: "red",
+    ids: [1, 3, 4, 5, 7],
+  },
+  {
+    id: 1,
+    name: "Clube do vinho",
+    mode: "Híbrido",
+    members: 8,
+    icon: "glass",
+    tone: "blue",
+    ids: [2, 6, 8, 7],
+  },
+  {
+    id: 2,
+    name: "Conversas sem pressa",
+    mode: "Online",
+    members: 12,
+    icon: "chat",
+    tone: "teal",
+    ids: [0, 9, 10, 3],
+  },
+];
+export const partners = [
+  {
+    name: "Karaokê Bem-Te-Vi",
+    icon: "mic",
+    tone: "red",
+    category: "Lazer",
+    benefit: "6 rodadas de chope para a tribo",
+    points: 40,
+    visits: 4,
+  },
+  {
+    name: "Bar do Vinho Azul",
+    icon: "glass",
+    tone: "blue",
+    category: "Bares",
+    benefit: "Taça de boas-vindas para todos",
+    points: 30,
+    visits: 2,
+  },
+  {
+    name: "Day Spa Folha",
+    icon: "spa",
+    tone: "teal",
+    category: "Beleza",
+    benefit: "Dia de beleza com a tribo",
+    points: 50,
+    visits: 0,
+  },
+  {
+    name: "Pizzaria Forno Doce",
+    icon: "star",
+    tone: "yellow",
+    category: "Bares",
+    benefit: "Sobremesa grátis a cada 4 pessoas",
+    points: 30,
+    visits: 1,
+  },
+  {
+    name: "Cine Sofá",
+    icon: "heart",
+    tone: "red",
+    category: "Lazer",
+    benefit: "Combo de pipoca para 5",
+    points: 40,
+    visits: 1,
+  },
+  {
+    name: "Trilha Aberta",
+    icon: "pin",
+    tone: "teal",
+    category: "Lazer",
+    benefit: "Guia e lanche para a tribo",
+    points: 30,
+    visits: 1,
+  },
+];
+export type Message = {
+  text?: string;
+  sticker?: number;
+  custom?: { src: string; caption: string };
+  mine: boolean;
+  author?: string;
+  time?: string;
+};
+export type Challenge = {
+  id: number;
+  group: number;
+  name: string;
+  points: number;
+  partner: number;
+  status: "open" | "pending" | "done";
+  code?: string;
+};
+export type WallItem = { id: number; author: string; status: "approved" | "pending" };
+export type Audience = "todos" | "amizades" | "so-eu";
+export type When = "Hoje" | "Amanhã" | "Esta semana" | "Fim de semana" | "Depois";
+export const WHEN_OPTIONS: When[] = ["Hoje", "Amanhã", "Esta semana", "Fim de semana", "Depois"];
+export const REGION_OPTIONS = ["Centro-Sul", "Centro", "Savassi", "Pampulha", "Leste", "Oeste"];
+export type Invite = {
+  id: number;
+  title: string;
+  category: string;
+  date: string;
+  place: string;
+  host: number;
+  joined: number[];
+  when?: When;
+  region?: string;
+  invitedMe?: boolean;
+};
+export const demoInvites: Invite[] = [
+  {
+    id: 1,
+    title: "Academia com companhia",
+    category: "Academia",
+    date: "Sábado, 8h",
+    place: "Perto do Parque Municipal",
+    host: 12,
+    joined: [3],
+    when: "Fim de semana",
+    region: "Centro-Sul",
+  },
+  {
+    id: 2,
+    title: "Vinho para novos começos",
+    category: "Vinho",
+    date: "Sexta, 20h",
+    place: "Bar do Vinho Azul · Savassi",
+    host: 4,
+    joined: [1, 3],
+    when: "Esta semana",
+    region: "Savassi",
+  },
+  {
+    id: 3,
+    title: "Natal em boa companhia",
+    category: "Celebração",
+    date: "25 de dez, 17h",
+    place: "Região Centro-Sul",
+    host: 8,
+    joined: [],
+    when: "Depois",
+    region: "Centro-Sul",
+  },
+  {
+    id: 4,
+    title: "Café antes do expediente",
+    category: "Outro",
+    date: "Quinta, 7h30",
+    place: "Praça da Liberdade",
+    host: 1,
+    joined: [3],
+    when: "Esta semana",
+    region: "Centro",
+  },
+  {
+    id: 5,
+    title: "Vinho com vista para a lagoa",
+    category: "Vinho",
+    date: "Hoje, 19h30",
+    place: "Perto da Pampulha",
+    host: 2,
+    joined: [4],
+    when: "Hoje",
+    region: "Pampulha",
+  },
+  {
+    id: 6,
+    title: "Corrida no parque",
+    category: "Trilha",
+    date: "Domingo, 7h",
+    place: "Perto das Mangabeiras",
+    host: 10,
+    joined: [3],
+    when: "Fim de semana",
+    region: "Leste",
+  },
+  {
+    id: 7,
+    title: "Bolo caseiro e série",
+    category: "Cozinha",
+    date: "Amanhã, 18h",
+    place: "Região Oeste",
+    host: 6,
+    joined: [],
+    when: "Amanhã",
+    region: "Oeste",
+  },
+];
+const norm = (t: string) =>
+  t
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+const WHEN_HINTS: [RegExp, When][] = [
+  [/\bhoje\b/i, "Hoje"],
+  [/amanh/i, "Amanhã"],
+  [/sabado|domingo/i, "Fim de semana"],
+  [/sexta|segunda|terca|quarta|quinta/i, "Esta semana"],
+];
+export function inviteWhen(i: Invite): When | "" {
+  if (i.when) return i.when;
+  for (const [re, w] of WHEN_HINTS) if (re.test(i.date)) return w;
+  return "";
+}
+export function inviteRegion(i: Invite): string {
+  if (i.region) return i.region;
+  const t = norm(i.place);
+  for (const r of [...REGION_OPTIONS].sort((a, b) => b.length - a.length))
+    if (t.includes(norm(r))) return r;
+  return "";
+}
+export type DemoState = {
+  accountId?: string;
+  createdTeias?: import("./tribos").Tribo[];
+  attendedTeias?: number[];
+  profileMode?: ProfileMode;
+  joinedTeias?: number[];
+  about?: string;
+  todayMood?: { date: string; choice: "Conversar agora" | "Sair hoje" | "Só ver gente por aí" };
+  dailyAnswers?: { date: string; text: string }[];
+  visibility?: { fotos: Audience; roles: Audience; teia: Audience };
+  mode?: "Presencial" | "Virtual" | "Híbrida";
+  socialPosts?: { kind: "friend" | "moment"; text: string; person?: number; author: string }[];
+  invites?: Invite[];
+  recentStickers?: number[];
+  favoriteStickers?: number[];
+  customStickers?: { id: string; src: string; caption: string }[];
+  credits?: number;
+  creditHistory?: { label: string; amount: number; at: string }[];
+  boostUntil?: string;
+  boostedInvites?: number[];
+  partnerProfile?: {
+    name: string;
+    kind: string;
+    area: string;
+    hours: string;
+    capacity: string;
+    offer: string;
+    interests: string[];
+    note: string;
+  };
+  city: string;
+  birthday: string;
+  photo: string;
+  nickname: string;
+  interests: string[];
+  goals: string[];
+  cityOnly: boolean;
+  wallApproval: boolean;
+  adult: boolean;
+  pro: boolean;
+  points: number[];
+  matches: number[];
+  sent: number[];
+  blocked: number[];
+  messages: Record<string, Message[]>;
+  groupMessages: Record<string, Message[]>;
+  challenges: Challenge[];
+  wall: WallItem[];
+  visits: { code: string; people: number; bill: number }[];
+  campaigns: { name: string; points: number; active: boolean }[];
+  rewards: { partner: number; group: number; code: string }[];
+};
+export const demoState: DemoState = {
+  profileMode: "publico",
+  createdTeias: [],
+  attendedTeias: [0, 1],
+  credits: 12,
+  joinedTeias: [0, 1, 2],
+  dailyAnswers: [],
+  recentStickers: [],
+  favoriteStickers: [],
+  invites: demoInvites,
+  city: "Belo Horizonte",
+  birthday: "",
+  photo: "",
+  nickname: "Dani",
+  interests: ["karaokê", "vinho"],
+  goals: ["conversar online", "teias"],
+  cityOnly: true,
+  wallApproval: true,
+  adult: false,
+  pro: false,
+  points: [30, 20, 10],
+  matches: [7, 4, 6],
+  sent: [],
+  blocked: [],
+  messages: {
+    "7": [
+      { text: "Oi! Vi que você curte karaokê.", mine: false },
+      { text: "Amo! Vamos marcar sábado?", mine: true },
+    ],
+    "4": [{ text: "Topa um vinho na sexta?", mine: false }],
+    "6": [{ text: "Tribo em comum! Bora combinar o próximo rolê?", mine: false }],
+  },
+  groupMessages: {
+    "0": [
+      { text: "Sábado tem karaokê?", mine: false, author: "Carla" },
+      { sticker: 3, mine: false, author: "Bia" },
+      { text: "Bora! Já lancei o desafio.", mine: true },
+    ],
+    "1": [{ text: "Uma taça e muita conversa na sexta?", mine: false, author: "Léo" }],
+    "2": [{ text: "Qual música marcou sua semana?", mine: false, author: "Joana" }],
+  },
+  challenges: [
+    { id: 1, group: 0, name: "Noite de karaokê", points: 20, partner: 0, status: "open" },
+    { id: 2, group: 1, name: "Vinho com a tribo", points: 10, partner: 1, status: "open" },
+  ],
+  wall: [
+    { id: 0, author: "Carla", status: "approved" },
+    { id: 1, author: "Léo", status: "approved" },
+    { id: 3, author: "Dani", status: "approved" },
+  ],
+  visits: [],
+  campaigns: [
+    { name: "Chope em dobro às terças", points: 40, active: true },
+    { name: "Taça de boas-vindas", points: 30, active: true },
+  ],
+  rewards: [],
+};
 /** Mantido por compatibilidade: o estado padrão é o da demonstração. */
-export const initialState=demoState;
+export const initialState = demoState;
 /** Conta nova: sem amizades, mensagens, pontos, desafios ou mural; só sugestões (pessoas e convites). */
-export const emptyState:DemoState={...demoState,createdTeias:[],attendedTeias:[],joinedTeias:[],about:'',points:[0,0,0],matches:[],sent:[],blocked:[],messages:{},groupMessages:{},challenges:[],wall:[],visits:[],rewards:[],dailyAnswers:[],socialPosts:[],recentStickers:[],favoriteStickers:[],customStickers:[],credits:0,creditHistory:[],boostUntil:'',boostedInvites:[],invites:demoInvites.map(i=>({...i,joined:i.joined.filter(id=>id!==3)})),nickname:'',photo:'',interests:[],goals:[],birthday:'',adult:false,pro:false};
-export const money=(n:number)=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+export const emptyState: DemoState = {
+  ...demoState,
+  createdTeias: [],
+  attendedTeias: [],
+  joinedTeias: [],
+  about: "",
+  points: [0, 0, 0],
+  matches: [],
+  sent: [],
+  blocked: [],
+  messages: {},
+  groupMessages: {},
+  challenges: [],
+  wall: [],
+  visits: [],
+  rewards: [],
+  dailyAnswers: [],
+  socialPosts: [],
+  recentStickers: [],
+  favoriteStickers: [],
+  customStickers: [],
+  credits: 0,
+  creditHistory: [],
+  boostUntil: "",
+  boostedInvites: [],
+  invites: demoInvites.map((i) => ({ ...i, joined: i.joined.filter((id) => id !== 3) })),
+  nickname: "",
+  photo: "",
+  interests: [],
+  goals: [],
+  birthday: "",
+  adult: false,
+  pro: false,
+};
+export const money = (n: number) =>
+  n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-export function getPartner(id:number){const value=partners[id]??partners[0];if(!value)throw new Error('Partner examples unavailable');return value}
-export function getGroup(id:number){const value=groups[id]??groups[0];if(!value)throw new Error('Group examples unavailable');return value}
+export function getPartner(id: number) {
+  const value = partners[id] ?? partners[0];
+  if (!value) throw new Error("Partner examples unavailable");
+  return value;
+}
+export function getGroup(id: number) {
+  const value = groups[id] ?? groups[0];
+  if (!value) throw new Error("Group examples unavailable");
+  return value;
+}
 
 /** Perfis privados só aparecem em listagens para quem já tem match/amizade. */
-export function visibleInListings(p:{id:number;private?:boolean},matches:number[]){return !p.private||matches.includes(p.id)}
+export function visibleInListings(p: { id: number; private?: boolean }, matches: number[]) {
+  return !p.private || matches.includes(p.id);
+}

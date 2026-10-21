@@ -5,7 +5,7 @@ export type ProfileStats = {
   followers: number;
   following: number;
   connections: number;
-  teias: number;
+  tribos: number;
   posts: number;
   visible: boolean;
 };
@@ -23,18 +23,19 @@ type StatsRow = {
   followers: number | null;
   following: number | null;
   connections: number | null;
-  teias: number | null;
+  tribos: number | null;
   posts: number | null;
   visible: boolean;
 };
 /** Resultado do servidor → números. Se a pessoa escondeu as contagens, devolve visible=false e zeros. */
 export function toStats(r: StatsRow | null | undefined): ProfileStats {
-  if (!r) return { followers: 0, following: 0, connections: 0, teias: 0, posts: 0, visible: false };
+  if (!r)
+    return { followers: 0, following: 0, connections: 0, tribos: 0, posts: 0, visible: false };
   return {
     followers: r.followers ?? 0,
     following: r.following ?? 0,
     connections: r.connections ?? 0,
-    teias: r.teias ?? 0,
+    tribos: r.tribos ?? 0,
     posts: r.posts ?? 0,
     visible: !!r.visible,
   };

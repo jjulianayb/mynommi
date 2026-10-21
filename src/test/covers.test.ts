@@ -7,7 +7,7 @@ describe("capas e planos de fundo", () => {
     expect(coverProblem({ type: "image/gif", size: 1000 })).toMatch(/JPG/);
     expect(coverProblem({ type: "image/png", size: 5e6 })).toMatch(/4 MB/);
   });
-  it("guarda na pasta de quem envia, separando perfil e teia", () => {
+  it("guarda na pasta de quem envia, separando perfil e tribo", () => {
     expect(
       coverPath("u1", "cover", "perfil", "image/jpeg", 10).startsWith("u1/perfil-cover-"),
     ).toBe(true);

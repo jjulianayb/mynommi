@@ -358,7 +358,7 @@ export function RadarSection() {
               {sent.includes(sel.id) ? (
                 <p className="radar-ok">
                   Convite enviado. Se {sel.person.name.split(" ")[0]} topar, vocês podem se
-                  encontrar numa teia primeiro.
+                  encontrar numa tribo primeiro.
                 </p>
               ) : (
                 <div className="radar-actions">
@@ -430,11 +430,11 @@ export function RadarSection() {
           ) : (
             <EmptyState
               title="Ninguém por perto com essa vontade agora."
-              text="Tente outra opção ou entre numa teia aberta."
+              text="Tente outra opção ou entre numa tribo aberta."
             >
               <Button asChild>
                 <Link to="/grupos" hash="teias-abertas">
-                  Ver teias abertas
+                  Ver tribos abertas
                 </Link>
               </Button>
             </EmptyState>
@@ -502,7 +502,7 @@ function RealNearby({ coords, me }: { coords: { lat: number; lng: number } | nul
                   size="sm"
                   onClick={() => {
                     setSent([...sent, r.user_id]);
-                    notify("Interesse enviado. Combine pelo perfil ou por uma teia em comum.");
+                    notify("Interesse enviado. Combine pelo perfil ou por uma tribo em comum.");
                   }}
                 >
                   Topo também

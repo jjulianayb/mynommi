@@ -114,7 +114,7 @@ export function PublicNommi({ id }: { id: string }) {
   const { state, notify } = useFriends();
   const { cloudUser, demoMode } = useDemoSession();
   const enabled = !!cloudUser && !demoMode;
-  const { ready, profile, teias } = usePublicProfile(id, enabled);
+  const { ready, profile, tribos } = usePublicProfile(id, enabled);
   const con = useConnections(enabled ? cloudUser!.id : null);
   if (!enabled)
     return (
@@ -266,10 +266,10 @@ export function PublicNommi({ id }: { id: string }) {
           emptyTitle={"Ainda sem posts."}
           emptyText={profile.nickname + " ainda não publicou nada que você possa ver."}
         />
-        <h2 className="settings-subtitle">Teias criadas</h2>
-        {teias.length ? (
+        <h2 className="settings-subtitle">Tribos criadas</h2>
+        {tribos.length ? (
           <div className="people-list">
-            {teias.map((t) => (
+            {tribos.map((t) => (
               <Link
                 key={t.id}
                 to="/grupos/$id"
@@ -279,7 +279,7 @@ export function PublicNommi({ id }: { id: string }) {
                 <div>
                   <h3>{t.name}</h3>
                   <p>
-                    {t.kind === "role" ? "Rolê aberto" : "Teia"}
+                    {t.kind === "role" ? "Rolê aberto" : "Tribo"}
                     {t.city ? " · " + t.city : ""}
                   </p>
                 </div>
@@ -288,7 +288,7 @@ export function PublicNommi({ id }: { id: string }) {
             ))}
           </div>
         ) : (
-          <p className="small-note">Ainda não criou teias.</p>
+          <p className="small-note">Ainda não criou tribos.</p>
         )}
       </div>
     </section>

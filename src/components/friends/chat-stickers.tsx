@@ -182,7 +182,7 @@ function StickerMaker({ onDone }: { onDone: () => void }) {
         </>
       )}
       <p className="small-note">
-        Suas figurinhas ficam neste aparelho e podem ser enviadas nas conversas e nas teias.
+        Suas figurinhas ficam neste aparelho e podem ser enviadas nas conversas e nas tribos.
       </p>
     </div>
   );
@@ -360,7 +360,7 @@ export function ChatStickerTray({
                   <Icon name="stickers" />
                 </span>
                 <div>
-                  <strong>Teia Nommi</strong>
+                  <strong>Tribo Nommi</strong>
                   <small>24 figurinhas · pacote original</small>
                 </div>
                 <Icon name="check" />

@@ -9,7 +9,7 @@ const BUCKET = "covers";
 
 /** Planos de fundo prontos da nommi, para quem não quer enviar foto. */
 export const PRESET_BACKGROUNDS = [
-  { id: "teia-verde", label: "Teia verde", css: "linear-gradient(160deg,#075E3B,#00A651)" },
+  { id: "teia-verde", label: "Tribo verde", css: "linear-gradient(160deg,#075E3B,#00A651)" },
   { id: "amanhecer", label: "Amanhecer", css: "linear-gradient(160deg,#FFDF00,#FF6B5B)" },
   { id: "papel", label: "Papel", css: "linear-gradient(160deg,#FAF9F6,#E8DDC4)" },
   { id: "noite", label: "Noite", css: "linear-gradient(160deg,#111111,#2E2E2E)" },
@@ -90,7 +90,7 @@ export async function saveTeiaCover(teiaId: number, slot: CoverSlot, value: stri
   return !error;
 }
 
-/** Capa e plano de fundo de uma teia, lidos do servidor. */
+/** Capa e plano de fundo de uma tribo, lidos do servidor. */
 export function useTeiaCovers(teiaId: number | null) {
   const [cover, setCover] = useState("");
   const [background, setBackground] = useState("");

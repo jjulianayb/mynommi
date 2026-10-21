@@ -46,7 +46,7 @@ export function Welcome() {
           <br />
           Novas histórias.
           <br />
-          Novas teias.
+          Novas tribos.
         </p>
         <div className="welcome-rio-buttons">
           <Link className="welcome-rio-primary" to="/conta" search={{ modo: "criar" }}>

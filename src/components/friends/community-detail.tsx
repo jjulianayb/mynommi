@@ -3,12 +3,12 @@ import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Avatar, Icon } from "./art";
 import { momentPhoto } from "@/lib/friends-photos";
-import type { Teia } from "@/lib/teias";
+import type { Tribo } from "@/lib/tribos";
 import { people } from "@/lib/friends-data";
 import { coverStyle } from "@/lib/covers";
 
-function communityPhoto(teia: Teia) {
-  const name = teia.name.toLowerCase();
+function communityPhoto(tribo: Tribo) {
+  const name = tribo.name.toLowerCase();
   if (/vinho/.test(name)) return momentPhoto.vinho;
   if (/karaokê|música|sair/.test(name)) return momentPhoto.karaoke;
   if (/corrida/.test(name)) return momentPhoto.corrida;
@@ -17,24 +17,24 @@ function communityPhoto(teia: Teia) {
 }
 
 function DemoPost({
-  teia,
+  tribo,
   text,
   nickname,
 }: {
-  teia: Teia;
+  tribo: Tribo;
   text?: string | undefined;
   nickname: string;
 }) {
   const [liked, setLiked] = useState(false);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState<string[]>([]);
-  const author = people.find((p) => p.id === teia.ids[0]);
+  const author = people.find((p) => p.id === tribo.ids[0]);
   return (
     <article className="community-post">
       <header>
         <Avatar id={author?.id ?? 3} size={40} />
         <div>
-          <h3>{author?.name ?? teia.host ?? "nommi"}</h3>
+          <h3>{author?.name ?? tribo.host ?? "nommi"}</h3>
           <span>Post da apresentação</span>
         </div>
         <Icon name="teia" />
@@ -43,7 +43,7 @@ function DemoPost({
         {text ?? "Uma boa companhia transforma qualquer passeio. Quem vem no próximo encontro?"}
       </p>
       <div className="community-post-gallery">
-        <img src={communityPhoto(teia)} alt="Encontro ilustrativo da teia" />
+        <img src={communityPhoto(tribo)} alt="Encontro ilustrativo da tribo" />
         <img src={momentPhoto.trilha} alt="Paisagem de uma trilha" />
         <img src={momentPhoto.pizza} alt="Mesa para compartilhar" />
       </div>
@@ -100,7 +100,7 @@ function DemoPost({
 }
 
 export function CommunityDetail({
-  teia,
+  tribo,
   member,
   demoMode,
   nickname,
@@ -114,7 +114,7 @@ export function CommunityDetail({
   coverPath,
   coverEditor,
 }: {
-  teia: Teia;
+  tribo: Tribo;
   member: boolean;
   demoMode: boolean;
   nickname: string;
@@ -129,11 +129,11 @@ export function CommunityDetail({
   coverEditor?: ReactNode;
 }) {
   const [tab, setTab] = useState("Posts");
-  const memberCount = demoMode ? teia.members : members.length;
+  const memberCount = demoMode ? tribo.members : members.length;
   return (
     <div className="community-detail">
       <div className="community-cover" style={coverPath ? coverStyle(coverPath) : undefined}>
-        {!coverPath && <img src={communityPhoto(teia)} alt="Capa ilustrativa da teia" />}
+        {!coverPath && <img src={communityPhoto(tribo)} alt="Capa ilustrativa da tribo" />}
         {!coverPath && (
           <span className="community-cover-caption">
             {demoMode ? "Apresentação" : "Imagem ilustrativa"}
@@ -143,44 +143,44 @@ export function CommunityDetail({
       </div>
       <section className="community-summary">
         <span className="community-avatar">
-          <Icon name={teia.icon} />
+          <Icon name={tribo.icon} />
         </span>
         <div className="community-title-row">
           <div>
-            <h1>{teia.name}</h1>
+            <h1>{tribo.name}</h1>
             <p>
               {memberCount} {memberCount === 1 ? "participante" : "participantes"}
               <span>·</span>
-              {teia.mode}
+              {tribo.mode}
             </p>
           </div>
           <Button onClick={member ? () => setTab("Posts") : onJoin} disabled={joining}>
             <Icon name={member ? "check" : "plus"} />
-            {joining ? "Entrando…" : member ? "Na teia" : "Entrar"}
+            {joining ? "Entrando…" : member ? "Na tribo" : "Entrar"}
           </Button>
         </div>
         <p className="community-description">
-          {teia.rule ||
+          {tribo.rule ||
             "Um assunto em comum, boas conversas e novos encontros. Aqui tem espaço para chegar do seu jeito."}
         </p>
-        {(teia.place || teia.time) && (
+        {(tribo.place || tribo.time) && (
           <div className="community-location">
-            {teia.place && (
+            {tribo.place && (
               <span>
                 <Icon name="pin" />
-                {teia.place}
+                {tribo.place}
               </span>
             )}
-            {teia.time && (
+            {tribo.time && (
               <span>
                 <Icon name="clock" />
-                {teia.time}
+                {tribo.time}
               </span>
             )}
           </div>
         )}
       </section>
-      <div role="tablist" aria-label="Conteúdo da teia" className="community-tabs">
+      <div role="tablist" aria-label="Conteúdo da tribo" className="community-tabs">
         {["Membros", "Posts", "Eventos"].map((t) => (
           <Button
             key={t}
@@ -205,12 +205,12 @@ export function CommunityDetail({
         {tab === "Posts" && (
           <>
             {demoMode ? (
-              <DemoPost teia={teia} text={firstMessage} nickname={nickname} />
+              <DemoPost tribo={tribo} text={firstMessage} nickname={nickname} />
             ) : (
               (posts ?? (
                 <div className="community-quiet">
                   <Icon name="image" />
-                  <h2>Ainda não há posts nesta teia.</h2>
+                  <h2>Ainda não há posts nesta tribo.</h2>
                 </div>
               ))
             )}
@@ -227,14 +227,14 @@ export function CommunityDetail({
             </div>
             <div className="community-members">
               {demoMode
-                ? teia.ids.map((id) => {
+                ? tribo.ids.map((id) => {
                     const p = people.find((p) => p.id === id);
                     return (
                       <div className="community-member" key={id}>
                         <Avatar id={id} size={48} />
                         <div>
                           <h3>{p?.name ?? "nommi"}</h3>
-                          <p>{p?.city ?? teia.mode}</p>
+                          <p>{p?.city ?? tribo.mode}</p>
                         </div>
                       </div>
                     );
@@ -256,7 +256,7 @@ export function CommunityDetail({
                   ))}
             </div>
             {!member && !demoMode && (
-              <p className="small-note">Entre na teia para conhecer os participantes.</p>
+              <p className="small-note">Entre na tribo para conhecer os participantes.</p>
             )}
           </>
         )}
