@@ -8,6 +8,8 @@ import { InstallBanner } from "./install-banner";
 import { StoriesStrip } from "./stories-strip";
 import { DirectConversations } from "./direct-chat";
 import { TribeSecrets } from "./tribe-secrets";
+import { Chegada } from "./chegada";
+import { useChegada, faseDaTribo } from "@/lib/chegada";
 import { CoverEditor } from "./cover-editor";
 import { useTeiaCovers } from "@/lib/covers";
 import { useRoles } from "@/lib/roles";
@@ -337,6 +339,11 @@ export function Home() {
   const { state, setState, notify } = useFriends();
   const { demoMode, cloudUser } = useDemoSession();
   const realHome = !!cloudUser && !demoMode;
+  const chegada = useChegada(realHome ? cloudUser!.id : null);
+  const minhasTribos = chegada.sugeridas.length
+    ? chegada.sugeridas.filter((t) => t.iAmMember).length
+    : 0;
+  const [verInicio, setVerInicio] = useState(false);
   const navigate = useNavigate();
   const [today, setToday] = useState("");
   const [answer, setAnswer] = useState("");
@@ -369,6 +376,18 @@ export function Home() {
         .slice(0, 6)
     : [];
   const suggested = (demoMode ? openTeias : []).slice(0, 3);
+  if (realHome && chegada.ready && !verInicio && minhasTribos < 1)
+    return (
+      <>
+        <section className="home-hero home-hero-curto">
+          <div className="home-hero-overlay">
+            <h1>{state.nickname ? "Oi, " + state.nickname + "." : "Chega mais."}</h1>
+            <p>Bem-vinda à nommi. Vamos achar a sua tribo.</p>
+          </div>
+        </section>
+        <Chegada me={cloudUser!.id} onPronto={() => setVerInicio(true)} />
+      </>
+    );
   return (
     <>
       <section className="home-hero">
@@ -1062,7 +1081,7 @@ function RealGroups({ userId }: { userId: string }) {
       ) : mine.length ? (
         <div className="group-grid">
           {mine.map((r) => (
-            <article className="group-card" key={r.id}>
+            <article className="group-card card-vivo" key={r.id}>
               <div className="row">
                 <ToneIcon
                   icon={r.kind === "role" ? "pin" : "teia"}
@@ -1137,7 +1156,7 @@ function RealGroups({ userId }: { userId: string }) {
         </p>
         <div className="group-grid">
           {open.map((r) => (
-            <article className="group-card" key={r.id}>
+            <article className="group-card card-vivo" key={r.id}>
               <div className="row">
                 <ToneIcon
                   icon={r.kind === "role" ? "pin" : "teia"}

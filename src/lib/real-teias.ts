@@ -25,6 +25,7 @@ export type RealTeiaRow = {
   who_posts?: string;
   i_can_post?: boolean;
   i_am_creator?: boolean;
+  goal?: number | null;
 };
 
 /** Converte uma tribo salva no servidor para o formato usado pelas telas. */

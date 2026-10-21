@@ -141,6 +141,13 @@
       "when": 1792190000000,
       "tag": "0019_pagina_pessoal",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1792200000000,
+      "tag": "0020_abertura_e_vida",
+      "breakpoints": true
     }
   ]
 }
