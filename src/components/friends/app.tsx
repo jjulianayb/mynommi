@@ -10,6 +10,7 @@ import { VitrineTop, MatchCards } from "./home-vitrine";
 import { DirectConversations } from "./direct-chat";
 import { TribeSecrets } from "./tribe-secrets";
 import { Chegada } from "./chegada";
+import { PresencaDoRole } from "./presenca";
 import { useChegada, faseDaTribo } from "@/lib/chegada";
 import { CoverEditor } from "./cover-editor";
 import { useTeiaCovers } from "@/lib/covers";
@@ -1423,6 +1424,15 @@ export function GroupDetail({ id }: { id: number }) {
         firstMessage={state.groupMessages[id]?.find((m) => m.text)?.text}
         events={
           <>
+            {cloud && cloudUser && realTeia.row?.kind === "role" && (
+              <PresencaDoRole
+                me={cloudUser.id}
+                roleId={id}
+                startsAt={realTeia.row?.starts_at ?? null}
+                souOrganizadora={realTeia.row?.i_am_creator === true}
+                euVou={realTeia.row?.i_am_going === true}
+              />
+            )}
             <div className="goal-band">
               <div className="row">
                 <Icon name="gift" />

@@ -6,6 +6,8 @@ import { EmptyState, Sheet } from "./surfaces";
 import { useFriends } from "./store";
 import { CoverEditor } from "./cover-editor";
 import { StatsLine, Feed, WallPanel } from "./social-feed";
+import { MinhasEstrelas } from "./presenca";
+import { useEstrelas } from "@/lib/presenca";
 import { coverStyle } from "@/lib/covers";
 import {
   usePaginaPessoal,
@@ -30,6 +32,7 @@ function Face({ avatar, size = 108 }: { avatar: string; size?: number }) {
 export function MyNommi({ me }: { me: string }) {
   const { pagina, ready, reload } = usePaginaPessoal(me);
   const [editando, setEditando] = useState(false);
+  const { estrelas } = useEstrelas(me);
   if (!ready) return <p className="small-note">Abrindo seu nommi…</p>;
   if (!pagina)
     return (
@@ -92,6 +95,11 @@ export function MyNommi({ me }: { me: string }) {
       )}
 
       <StatsLine userId={me} />
+      <MinhasEstrelas
+        saldo={estrelas.saldo}
+        ganhasSemana={estrelas.ganhasSemana}
+        presencas={estrelas.presencas}
+      />
 
       {pagina.lookingFor && (
         <p className="mynommi-procuro">

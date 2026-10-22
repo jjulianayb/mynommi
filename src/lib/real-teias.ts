@@ -25,6 +25,10 @@ export type RealTeiaRow = {
   i_can_post?: boolean;
   i_am_creator?: boolean;
   goal?: number | null;
+  starts_at?: string | null;
+  capacity?: number | null;
+  going_count?: number;
+  i_am_going?: boolean;
 };
 
 /** Converte uma tribo salva no servidor para o formato usado pelas telas. */
