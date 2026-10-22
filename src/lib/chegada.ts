@@ -1,5 +1,5 @@
+import { supabase } from "@/integrations/supabase/client";
 import { useCallback, useEffect, useState } from "react";
-import { novo } from "./cloud-novo";
 
 export type TriboSugerida = {
   id: number;
@@ -94,8 +94,8 @@ export function useChegada(me: string | null) {
   const load = useCallback(async () => {
     if (!me) return;
     const [{ data: t }, { data: p }] = await Promise.all([
-      novo.rpc("tribos_para_mim", { _limite: 6 }),
-      novo.rpc("pulso_da_nommi"),
+      supabase.rpc("tribos_para_mim", { _limite: 6 }),
+      supabase.rpc("pulso_da_nommi"),
     ]);
     setSugeridas(
       ((t as LinhaTribo[] | null) ?? []).map((r) => ({
@@ -132,7 +132,7 @@ export function useChegada(me: string | null) {
 
   const entrar = async (id: number, apelido: string) => {
     if (!me) return false;
-    const { error } = await novo
+    const { error } = await supabase
       .from("teia_members")
       .upsert({ teia_key: String(id), user_id: me, nickname: apelido.slice(0, 40) });
     await load();
@@ -144,7 +144,7 @@ export function useChegada(me: string | null) {
 
 /** Cria (ou reaproveita) o convite da pessoa. */
 export async function meuConvite(me: string, apelido: string): Promise<string | null> {
-  const { data } = await novo
+  const { data } = await supabase
     .from("invites")
     .select("code,used_by")
     .eq("owner_id", me)
@@ -153,6 +153,6 @@ export async function meuConvite(me: string, apelido: string): Promise<string | 
   const existente = ((data as { code: string }[] | null) ?? [])[0];
   if (existente) return existente.code;
   const code = novoCodigo(apelido);
-  const { error } = await novo.from("invites").insert({ code, owner_id: me });
+  const { error } = await supabase.from("invites").insert({ code, owner_id: me });
   return error ? null : code;
 }

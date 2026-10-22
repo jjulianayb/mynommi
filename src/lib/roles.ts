@@ -169,6 +169,9 @@ export async function loadGoing(roleId: number) {
   const { data } = await supabase.from("teia_rsvps").select("user_id").eq("teia_id", roleId);
   const ids = ((data as { user_id: string }[] | null) ?? []).map((x) => x.user_id);
   if (!ids.length) return [];
-  const { data: ps } = await supabase.from("profiles").select("id,nickname,avatar_url").in("id", ids);
+  const { data: ps } = await supabase
+    .from("profiles")
+    .select("id,nickname,avatar_url")
+    .in("id", ids);
   return (ps as { id: string; nickname: string; avatar_url: string }[] | null) ?? [];
 }

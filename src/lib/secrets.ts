@@ -1,5 +1,5 @@
+import { supabase } from "@/integrations/supabase/client";
 import { useCallback, useEffect, useState } from "react";
-import { novo } from "./cloud-novo";
 
 export type Secret = {
   id: string;
@@ -49,7 +49,7 @@ export function useSecrets(me: string | null, triboId: number | null) {
 
   const load = useCallback(async () => {
     if (!me || triboId == null) return;
-    const { data } = await novo.rpc("segredos_da_tribo", { _teia: triboId });
+    const { data } = await supabase.rpc("segredos_da_tribo", { _teia: triboId });
     type Linha = {
       id: string;
       body: string;
@@ -80,7 +80,7 @@ export function useSecrets(me: string | null, triboId: number | null) {
   useEffect(() => {
     if (!me || triboId == null) return;
     void load();
-    const ch = novo
+    const ch = supabase
       .channel(`secrets-${triboId}`)
       .on(
         "postgres_changes",
@@ -91,7 +91,7 @@ export function useSecrets(me: string | null, triboId: number | null) {
       )
       .subscribe();
     return () => {
-      void novo.removeChannel(ch);
+      void supabase.removeChannel(ch);
     };
   }, [me, triboId, load]);
 
@@ -99,7 +99,7 @@ export function useSecrets(me: string | null, triboId: number | null) {
     const body = cleanSecret(text);
     if (!me || triboId == null || !body)
       return { ok: false as const, error: "Escreva de 1 a 500 letras." };
-    const { error } = await novo.from("posts").insert({
+    const { error } = await supabase.from("posts").insert({
       author_id: me,
       teia_id: triboId,
       body,
@@ -117,7 +117,7 @@ export function useSecrets(me: string | null, triboId: number | null) {
   };
 
   const remove = async (id: string) => {
-    const { error } = await novo.from("posts").delete().eq("id", id);
+    const { error } = await supabase.from("posts").delete().eq("id", id);
     await load();
     return !error;
   };

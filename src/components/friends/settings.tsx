@@ -7,7 +7,6 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { setShowCounts } from "@/lib/follows";
 import { CoverEditor } from "./cover-editor";
-import { novo } from "@/lib/cloud-novo";
 import { coverStyle } from "@/lib/covers";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
@@ -22,7 +21,7 @@ function MyCovers({ me }: { me: string }) {
   const [cover, setCover] = useState("");
   const [bg, setBg] = useState("");
   useEffect(() => {
-    void novo
+    void supabase
       .from("profiles")
       .select("cover_path,background_path")
       .eq("id", me)
@@ -793,7 +792,7 @@ export function CreateGroup() {
                   );
               setBusy(false);
               if (!id) {
-                notify("Não deu para criar agora. Tente de novo.");
+                notify("Não deu para criar agora. Tente de supabase.");
                 return;
               }
               notify(

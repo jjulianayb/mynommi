@@ -1,5 +1,5 @@
+import { supabase } from "@/integrations/supabase/client";
 import { useCallback, useEffect, useState } from "react";
-import { novo } from "./cloud-novo";
 
 export type PaginaPessoal = {
   id: string;
@@ -124,7 +124,7 @@ export function usePaginaPessoal(userId: string | null) {
   const [ready, setReady] = useState(false);
   const load = useCallback(async () => {
     if (!userId) return;
-    const { data } = await novo.rpc("pagina_pessoal", { _user: userId });
+    const { data } = await supabase.rpc("pagina_pessoal", { _user: userId });
     const linha = ((data as Row[] | null) ?? [])[0];
     setPagina(linha ? toPagina(linha) : null);
     setReady(true);
@@ -140,12 +140,12 @@ export async function savePagina(
   userId: string,
   dados: { places?: string[]; lookingFor?: string; instagram?: string },
 ) {
-  const update: Record<string, unknown> = {};
-  if (dados.places) update["places"] = cleanPlaces(dados.places);
+  const update: { places?: string[]; looking_for?: string; instagram?: string } = {};
+  if (dados.places) update.places = cleanPlaces(dados.places);
   if (dados.lookingFor !== undefined)
-    update["looking_for"] = dados.lookingFor.trim().slice(0, MAX_LOOKING);
-  if (dados.instagram !== undefined) update["instagram"] = cleanInstagram(dados.instagram);
+    update.looking_for = dados.lookingFor.trim().slice(0, MAX_LOOKING);
+  if (dados.instagram !== undefined) update.instagram = cleanInstagram(dados.instagram);
   if (!Object.keys(update).length) return true;
-  const { error } = await novo.from("profiles").update(update).eq("id", userId);
+  const { error } = await supabase.from("profiles").update(update).eq("id", userId);
   return !error;
 }

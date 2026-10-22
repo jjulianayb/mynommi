@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { novo } from "./cloud-novo";
 import type { Tribo } from "./tribos";
 
 export type RealTeiaRow = {
@@ -105,7 +104,7 @@ export async function createRealTeia(
   userId: string,
   nickname: string,
 ) {
-  const { data, error } = await novo
+  const { data, error } = await supabase
     .from("teias")
     .insert({
       kind: input.kind,

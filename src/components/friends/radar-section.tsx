@@ -27,7 +27,6 @@ import {
   type Place,
   type PlaceType,
 } from "@/lib/radar";
-import { novo } from "@/lib/cloud-novo";
 
 type Saved = { on: boolean; place: string; activity: Activity; mins: number; until: number };
 export function RadarSection() {
@@ -274,9 +273,9 @@ export function RadarSection() {
                   lat: coords?.lat,
                   lng: coords?.lng,
                 });
-                const { error } = await novo.from("radar_presence").upsert(row);
+                const { error } = await supabase.from("radar_presence").upsert(row);
                 if (error) {
-                  notify("Não foi possível entrar no radar agora. Tente de novo.");
+                  notify("Não foi possível entrar no radar agora. Tente de supabase.");
                   return;
                 }
               }
@@ -343,7 +342,7 @@ export function RadarSection() {
                 setPick(null);
                 save({ on: false });
                 if (cloudUser)
-                  void novo.from("radar_presence").delete().eq("user_id", cloudUser.id);
+                  void supabase.from("radar_presence").delete().eq("user_id", cloudUser.id);
               }}
             >
               Sair do radar
@@ -466,7 +465,7 @@ function RealNearby({ coords, me }: { coords: { lat: number; lng: number } | nul
       return;
     }
     let alive = true;
-    void novo
+    void supabase
       .rpc("radar_nearby", { _lat: coords.lat, _lng: coords.lng, _km: 10 })
       .then(({ data }: { data: unknown }) => {
         if (alive) setList(((data as Real[] | null) ?? []).filter((r) => r.user_id !== me));

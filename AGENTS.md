@@ -44,7 +44,6 @@
 - Stories (public.stories/story_views, bucket privado stories) vivem em src/lib/stories.ts e aparecem na fita do Início via stories-strip.tsx; somem sozinhos em 24 h e a regra can_view_story segue amizades e seguidores.
 - Capas e planos de fundo (profiles.cover_path/background_path, teias.cover_path/background_path, bucket público covers) estão em src/lib/covers.ts e no componente cover-editor.tsx; há também fundos prontos sem upload.
 - O Radar nommi é global: a posição vai arredondada para ~1 km (coarse) e quem está por perto vem da função radar_nearby, que devolve distância e nunca coordenadas. A política de privacidade em settings.tsx descreve isso.
-- src/lib/cloud-novo.ts existe só enquanto types.ts não conhece as tabelas da migração 0014; depois de regenerar os tipos, troque `novo` por `supabase`.
 - A letra do logo é Baloo 2 800, embutida em public/fonts/baloo2-*.woff2 e declarada no fim de styles.css; não depende do Google Fonts e é pré-carregada em __root.tsx. Os ícones do app em public/icon-*.png são gerados com essa mesma letra.
 - O nome visível do grupo é "tribo"; no banco, no código interno e nas rotas tudo continua "teia" (tabelas teias/teia_members/teia_messages/teia_rsvps, rota /grupos, ícone teia, chave de visibilidade teia). Trocar esses nomes quebraria dados já gravados.
 - A assinatura da marca fica em TAGLINE, em surfaces.tsx: "Encontre sua tribo".

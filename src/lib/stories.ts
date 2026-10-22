@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { novo } from "./cloud-novo";
 
 export type StoryAudience = "todos" | "amizades";
 export type Story = {
@@ -107,7 +106,7 @@ export function useStories(me: string | null) {
 
   const load = useCallback(async () => {
     if (!me) return;
-    const { data } = await novo
+    const { data } = await supabase
       .from("stories")
       .select("id,author_id,kind,path,caption,audience,created_at,expires_at")
       .gt("expires_at", new Date().toISOString())
@@ -122,7 +121,7 @@ export function useStories(me: string | null) {
     const ids = [...new Set(rows.map((r) => r.author_id))];
     const [{ data: profs }, { data: views }, { data: urls }] = await Promise.all([
       supabase.from("profiles").select("id,nickname,avatar_url").in("id", ids),
-      novo.from("story_views").select("story_id").eq("viewer_id", me),
+      supabase.from("story_views").select("story_id").eq("viewer_id", me),
       supabase.storage.from(BUCKET).createSignedUrls(
         rows.map((r) => r.path),
         3600,
@@ -169,8 +168,8 @@ export function useStories(me: string | null) {
     if (problem) return { ok: false as const, error: problem };
     const path = storyPath(me, file.type);
     const up = await supabase.storage.from(BUCKET).upload(path, file, { contentType: file.type });
-    if (up.error) return { ok: false as const, error: "O arquivo não subiu. Tente de novo." };
-    const { error } = await novo.from("stories").insert({
+    if (up.error) return { ok: false as const, error: "O arquivo não subiu. Tente de supabase." };
+    const { error } = await supabase.from("stories").insert({
       author_id: me,
       kind: storyKind(file.type),
       path,
@@ -187,7 +186,7 @@ export function useStories(me: string | null) {
 
   const markSeen = async (story: Story) => {
     if (!me || story.mine || story.seen) return;
-    await novo.from("story_views").insert({ story_id: story.id, viewer_id: me });
+    await supabase.from("story_views").insert({ story_id: story.id, viewer_id: me });
     setGroups((gs) =>
       gs.map((g) => ({
         ...g,
@@ -200,7 +199,7 @@ export function useStories(me: string | null) {
   const remove = async (story: Story) => {
     if (!me || !story.mine) return false;
     await supabase.storage.from(BUCKET).remove([story.path]);
-    const { error } = await novo.from("stories").delete().eq("id", story.id);
+    const { error } = await supabase.from("stories").delete().eq("id", story.id);
     await load();
     return !error;
   };

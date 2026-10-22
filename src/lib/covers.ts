@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { novo } from "./cloud-novo";
 
 export type CoverSlot = "cover" | "background";
 export const MAX_COVER_BYTES = 4 * 1024 * 1024;
@@ -75,17 +74,17 @@ export async function uploadCover(
 }
 
 export async function saveProfileCover(userId: string, slot: CoverSlot, value: string) {
-  const { error } = await novo
+  const { error } = await supabase
     .from("profiles")
-    .update({ [slot === "cover" ? "cover_path" : "background_path"]: value })
+    .update(slot === "cover" ? { cover_path: value } : { background_path: value })
     .eq("id", userId);
   return !error;
 }
 
 export async function saveTeiaCover(teiaId: number, slot: CoverSlot, value: string) {
-  const { error } = await novo
+  const { error } = await supabase
     .from("teias")
-    .update({ [slot === "cover" ? "cover_path" : "background_path"]: value })
+    .update(slot === "cover" ? { cover_path: value } : { background_path: value })
     .eq("id", teiaId);
   return !error;
 }
@@ -96,7 +95,7 @@ export function useTeiaCovers(teiaId: number | null) {
   const [background, setBackground] = useState("");
   const load = useCallback(async () => {
     if (teiaId == null) return;
-    const { data } = await novo
+    const { data } = await supabase
       .from("teias")
       .select("cover_path,background_path")
       .eq("id", teiaId)

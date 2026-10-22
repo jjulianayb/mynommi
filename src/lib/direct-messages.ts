@@ -1,5 +1,5 @@
+import { supabase } from "@/integrations/supabase/client";
 import { useCallback, useEffect, useState } from "react";
-import { novo } from "./cloud-novo";
 
 export type DirectMessage = {
   id: string;
@@ -95,21 +95,21 @@ export function useConversas(me: string | null) {
   const [ready, setReady] = useState(false);
   const load = useCallback(async () => {
     if (!me) return;
-    const { data } = await novo.rpc("minhas_conversas");
+    const { data } = await supabase.rpc("minhas_conversas");
     setConversas(((data as ConversaRow[] | null) ?? []).map(toConversa));
     setReady(true);
   }, [me]);
   useEffect(() => {
     if (!me) return;
     void load();
-    const ch = novo
+    const ch = supabase
       .channel("dm-lista-" + me)
       .on("postgres_changes", { event: "*", schema: "public", table: "direct_messages" }, () => {
         void load();
       })
       .subscribe();
     return () => {
-      void novo.removeChannel(ch);
+      void supabase.removeChannel(ch);
     };
   }, [me, load]);
   const total = conversas.reduce((n, c) => n + c.naoLidas, 0);
@@ -123,7 +123,7 @@ export function useConversa(me: string | null, outroId: string | null) {
 
   const load = useCallback(async () => {
     if (!me || !outroId) return;
-    const { data } = await novo
+    const { data } = await supabase
       .from("direct_messages")
       .select("id,sender_id,recipient_id,body,sticker,created_at,read_at")
       .or(
@@ -137,7 +137,7 @@ export function useConversa(me: string | null, outroId: string | null) {
 
   const markRead = useCallback(async () => {
     if (!me || !outroId) return;
-    await novo
+    await supabase
       .from("direct_messages")
       .update({ read_at: new Date().toISOString() })
       .eq("sender_id", outroId)
@@ -148,7 +148,7 @@ export function useConversa(me: string | null, outroId: string | null) {
   useEffect(() => {
     if (!me || !outroId) return;
     void load().then(markRead);
-    const ch = novo
+    const ch = supabase
       .channel(`dm-${me}-${outroId}`)
       .on(
         "postgres_changes",
@@ -167,7 +167,7 @@ export function useConversa(me: string | null, outroId: string | null) {
       )
       .subscribe();
     return () => {
-      void novo.removeChannel(ch);
+      void supabase.removeChannel(ch);
     };
   }, [me, outroId, load, markRead]);
 
@@ -175,7 +175,7 @@ export function useConversa(me: string | null, outroId: string | null) {
     if (!me || !outroId) return false;
     const body = input.text ? cleanMessage(input.text) : null;
     if (!body && input.sticker == null) return false;
-    const { error } = await novo
+    const { error } = await supabase
       .from("direct_messages")
       .insert({ sender_id: me, recipient_id: outroId, body, sticker: input.sticker ?? null });
     if (!error) await load();
@@ -191,18 +191,18 @@ export function useNaoLidas(me: string | null) {
   useEffect(() => {
     if (!me) return;
     const ler = async () => {
-      const { data } = await novo.rpc("nao_lidas");
+      const { data } = await supabase.rpc("nao_lidas");
       setTotal(Number(data ?? 0));
     };
     void ler();
-    const ch = novo
+    const ch = supabase
       .channel("dm-sino-" + me)
       .on("postgres_changes", { event: "*", schema: "public", table: "direct_messages" }, () => {
         void ler();
       })
       .subscribe();
     return () => {
-      void novo.removeChannel(ch);
+      void supabase.removeChannel(ch);
     };
   }, [me]);
   return total;

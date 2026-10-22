@@ -59,7 +59,11 @@ export function VitrineTop({
       <div className="vitrine-veu">
         <div className="vitrine-linha">
           <Link to="/perfil" className="vitrine-avatar" aria-label="Abrir meu nommi">
-            {avatar ? <img src={avatar} alt="" width={64} height={64} /> : <Avatar id={3} size={64} />}
+            {avatar ? (
+              <img src={avatar} alt="" width={64} height={64} />
+            ) : (
+              <Avatar id={3} size={64} />
+            )}
           </Link>
           <div className="vitrine-quem">
             <h1>{nickname ? "Oi, " + nickname + "!" : "Chega mais!"}</h1>

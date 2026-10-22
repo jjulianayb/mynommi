@@ -1176,7 +1176,7 @@ function RealGroups({ userId }: { userId: string }) {
                     if (await real.join(r.id, state.nickname || "nommi")) {
                       notify("Você entrou! Diga oi para a tribo.");
                       void navigate({ to: "/grupos/$id", params: { id: String(r.id) } });
-                    } else notify("Não deu para entrar agora. Tente de novo.");
+                    } else notify("Não deu para entrar agora. Tente de supabase.");
                   }}
                 >
                   <Icon name="plus" />
@@ -1392,7 +1392,9 @@ export function GroupDetail({ id }: { id: number }) {
       try {
         const ok = await shared.join();
         notify(
-          ok ? "Você entrou! Diga oi para a tribo." : "Não deu para entrar agora. Tente de novo.",
+          ok
+            ? "Você entrou! Diga oi para a tribo."
+            : "Não deu para entrar agora. Tente de supabase.",
         );
       } finally {
         setJoining(false);
@@ -1599,7 +1601,8 @@ export function GroupDetail({ id }: { id: number }) {
                         return;
                       }
                       void shared.send(m).then((ok) => {
-                        if (!ok) notify("Não deu para enviar. Confira a internet e tente de novo.");
+                        if (!ok)
+                          notify("Não deu para enviar. Confira a internet e tente de supabase.");
                       });
                       return;
                     }

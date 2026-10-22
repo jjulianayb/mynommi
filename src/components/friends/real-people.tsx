@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import { coverStyle } from "@/lib/covers";
-import { novo } from "@/lib/cloud-novo";
 import { Button } from "@/components/ui/button";
 import { Avatar, Icon } from "./art";
 import { EmptyState } from "./surfaces";
@@ -98,7 +97,7 @@ export function PeopleSearch({ userId }: { userId: string }) {
 function ProfileCover({ userId }: { userId: string }) {
   const [cover, setCover] = useState("");
   useEffect(() => {
-    void novo
+    void supabase
       .from("profiles")
       .select("cover_path")
       .eq("id", userId)
@@ -371,7 +370,7 @@ export function MyFriends() {
           ))}
         </div>
       ) : (
-        <p className="small-note">Nenhum pedido novo.</p>
+        <p className="small-note">Nenhum pedido supabase.</p>
       )}
       <h2 className="settings-subtitle">Amigos ({friends.length})</h2>
       {friends.length ? (
