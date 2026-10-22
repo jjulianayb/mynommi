@@ -148,6 +148,13 @@
       "when": 1792200000000,
       "tag": "0020_abertura_e_vida",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1792240000000,
+      "tag": "0021_avisos",
+      "breakpoints": true
     }
   ]
 }

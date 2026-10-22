@@ -677,3 +677,17 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .match-pills span{font-size:12px;padding:4px 10px;border-radius:999px;background:color-mix(in oklab,var(--background) 22%,transparent)}
 .match-cta{display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;margin-top:4px;border-radius:999px;background:var(--primary);color:var(--primary-foreground);font-weight:700;font-size:14px}
 .match-cta .friend-icon{width:18px}
+
+/* Avisos */
+.avisos{display:grid;gap:6px}
+.avisos-topo{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;color:var(--muted-foreground);padding:4px 2px 8px}
+.aviso{display:flex;align-items:center;gap:6px;border-radius:16px;background:var(--card);border:1px solid var(--border);padding:4px 8px 4px 4px}
+.aviso.nao-lido{background:var(--butter);border-color:transparent}
+.aviso-link{display:flex;align-items:center;gap:12px;flex:1;min-width:0;padding:10px;color:inherit;text-decoration:none;min-height:44px}
+.aviso-link p{font-size:14px;line-height:1.45}
+.aviso-link small{font-size:11.5px;color:var(--muted-foreground)}
+.aviso-link>div{flex:1;min-width:0}
+.aviso-icone{width:38px;height:38px;border-radius:12px;background:var(--paper);display:flex;align-items:center;justify-content:center;flex:none;border:1px solid var(--border)}
+.aviso-icone.novo{background:var(--primary);border-color:transparent}
+.aviso-icone.novo .friend-icon{color:#fff}
+.aviso-icone .friend-icon{width:17px}

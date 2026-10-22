@@ -1,4 +1,22 @@
-import {createFileRoute} from '@tanstack/react-router';
-import {Notifications} from '@/components/friends/settings';
-export const Route=createFileRoute('/notificacoes')({head:()=>({meta:[{title:'Notificações — Nommi'},{name:'description',content:'Acompanhe novidades dos seus encontros e conversas no Nommi.'},{property:'og:title',content:'Notificações — Nommi'},{property:'og:description',content:'Acompanhe novidades dos seus encontros e conversas no Nommi.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]}),component:Page});
-function Page(){return <Notifications />}
+import { createFileRoute } from "@tanstack/react-router";
+import { AvisosPage } from "@/components/friends/avisos-page";
+export const Route = createFileRoute("/notificacoes")({
+  head: () => ({
+    meta: [
+      { title: "Avisos — Nommi" },
+      {
+        name: "description",
+        content:
+          "Veja o que aconteceu enquanto você estava fora: pedidos de amizade, comentários e quem entrou na sua tribo.",
+      },
+      { property: "og:title", content: "Avisos — Nommi" },
+      { property: "og:description", content: "Veja o que aconteceu enquanto você estava fora." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
+  component: Page,
+});
+function Page() {
+  return <AvisosPage />;
+}

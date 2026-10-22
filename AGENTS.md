@@ -62,3 +62,4 @@
 - Fontes: Baloo 2 (logo e títulos, embutida em public/fonts) e DM Sans (texto); Caveat só na assinatura do logo. Bricolage Grotesque foi removida.
 - Toque: nenhum botão abaixo de 44 px de altura.
 - Navegação: Início · Descobrir · + · Tribos · Meu nommi; Conversas fica no cabeçalho com o contador; Radar, Rolês, Meus amigos e Clube no menu lateral. Toda tela nova precisa de uma porta de entrada: rota sem link é funcionalidade invisível.
+- Avisos: public.notifications é escrita só por gatilhos no banco (função avisar(), SECURITY DEFINER, que respeita bloqueio e nunca avisa a própria pessoa). A pessoa só lê, marca como lida e apaga. Gatilhos em connections, post_comments, post_reactions, wall_items, teia_members e teia_rsvps. Código em src/lib/avisos.ts, tela em avisos.tsx, sino no cabeçalho, rota /notificacoes.

@@ -8,11 +8,13 @@ import { Welcome } from "./entry";
 import { isRealHost } from "@/lib/nommi-access";
 import rioPhoto from "@/assets/welcome-rio.jpg";
 import { useNaoLidas } from "@/lib/direct-messages";
+import { useAvisosNaoLidos } from "@/lib/avisos";
 const entryPaths = ["/conta", "/cadastro", "/login", "/login-parceiro", "/recuperar-senha"];
 const legalPaths = ["/termos", "/privacidade", "/ajuda"];
 export function SocialShell({ children }: { children: ReactNode }) {
   const { session, ready, signOut, cloudUser, demoMode } = useDemoSession();
   const naoLidas = useNaoLidas(cloudUser && !demoMode ? cloudUser.id : null);
+  const avisosNovos = useAvisosNaoLidos(cloudUser && !demoMode ? cloudUser.id : null);
   const { pathname, searchStr } = useLocation();
   const [create, setCreate] = useState(false);
   const [drawer, setDrawer] = useState(false);
