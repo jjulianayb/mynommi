@@ -77,3 +77,10 @@
 - Pedido de amizade pendente conta como sim do outro lado: dizer sim aceita o pedido e vira match.
 - `quem_tem_curiosidade()` devolve só o número de quem me escolheu e ainda não respondi. Número real, nunca o nome — é o que puxa a pessoa para o baralho sem expor ninguém.
 - Afinidade nunca vira porcentagem na tela: `porqueApareceu()` diz o motivo em palavras ou admite que a pessoa é nova.
+
+## Enquadrar foto e capa (0025)
+- O enquadramento é guardado como dois números (0 a 100) em `cover_x/cover_y` e `avatar_x/avatar_y`, nunca como texto de CSS: o que entra numa regra de estilo tem que ser número validado no banco.
+- `limite()` em `src/lib/enquadrar.ts` é o único lugar que converte para `%`. Nada mais escreve `background-position` ou `object-position` a partir de dado do banco.
+- Colunas novas em profiles precisam entrar no GRANT UPDATE por coluna de 0025, senão não salvam (a permissão por tabela abriria person_verified junto).
+- Capa com `position:relative` pinta por cima de bloco estático mesmo vindo antes no HTML: todo topo que sobe por cima de capa precisa de `position:relative;z-index:1`.
+- Os "primeiros passos" (Chegada) não tomam mais a tela inteira: viram cartão na página inicial e somem quando a pessoa fecha, lembrado por aparelho em `src/lib/chegada-vista.ts`.

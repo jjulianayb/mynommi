@@ -226,3 +226,43 @@ export function Combinar({ me }: { me: string }) {
     </section>
   );
 }
+
+/** A primeira coisa da página inicial: gente, e o que vocês têm em comum. */
+export function PessoasParaVoce({ me }: { me: string }) {
+  const { fila, curiosidade, ready } = useCombinar(Boolean(me));
+  if (!ready || fila.length === 0) return null;
+  return (
+    <section className="home-section pessoas-para-voce">
+      <div className="section-heading">
+        <h2>Gente para você conhecer</h2>
+        <Link to="/descobrir" className="section-link">
+          Ver todas
+          <Icon name="arrow" />
+        </Link>
+      </div>
+      {curiosidade > 0 && (
+        <p className="combinar-curiosidade">
+          <Icon name="eye" />
+          {curiosidade === 1
+            ? "1 pessoa já disse que quer te conhecer."
+            : `${curiosidade} pessoas já disseram que querem te conhecer.`}
+        </p>
+      )}
+      <div className="pessoas-strip">
+        {fila.slice(0, 8).map((c) => (
+          <Link className="pessoa-mini" to="/descobrir" key={c.userId}>
+            <Face c={c} size={84} />
+            <b>{c.nome.split(" ")[0]}</b>
+            <span>
+              {c.emComum.length > 0
+                ? `${c.emComum.length} em comum`
+                : c.mesmaCidade && c.cidade
+                  ? c.cidade
+                  : "Chegou agora"}
+            </span>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}

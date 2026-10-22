@@ -15,7 +15,8 @@ import { useChegada, faseDaTribo } from "@/lib/chegada";
 import { CoverEditor } from "./cover-editor";
 import { useTeiaCovers } from "@/lib/covers";
 import { useRoles } from "@/lib/roles";
-import { Combinar } from "./combinar";
+import { Combinar, PessoasParaVoce } from "./combinar";
+import { chegadaJaVista, esconderChegada } from "@/lib/chegada-vista";
 import { PeopleSearch } from "./real-people";
 import { momentPhoto } from "@/lib/friends-photos";
 import { OpenerSuggest } from "./opener-suggest";
@@ -346,7 +347,7 @@ export function Home() {
   const minhasTribos = chegada.sugeridas.length
     ? chegada.sugeridas.filter((t) => t.iAmMember).length
     : 0;
-  const [verInicio, setVerInicio] = useState(false);
+  const [verInicio, setVerInicio] = useState(() => chegadaJaVista(cloudUser?.id ?? null));
   const navigate = useNavigate();
   const [today, setToday] = useState("");
   const [answer, setAnswer] = useState("");
@@ -379,23 +380,29 @@ export function Home() {
         .slice(0, 6)
     : [];
   const suggested = (demoMode ? openTeias : []).slice(0, 3);
-  if (realHome && chegada.ready && !verInicio && minhasTribos < 1)
-    return (
-      <>
-        <section className="home-hero home-hero-curto">
-          <div className="home-hero-overlay">
-            <h1>{state.nickname ? "Oi, " + state.nickname + "." : "Chega mais."}</h1>
-            <p>Bem-vinda à nommi. Vamos achar a sua tribo.</p>
-          </div>
-        </section>
-        <Chegada me={cloudUser!.id} onPronto={() => setVerInicio(true)} />
-      </>
-    );
+  const mostrarChegada = realHome && chegada.ready && minhasTribos < 1 && !verInicio;
   return (
     <>
       <VitrineTop nickname={state.nickname} city={city} avatar={state.photo} />
       {realHome && <StoriesStrip me={cloudUser!.id} nickname={state.nickname || "nommi"} />}
-      {(filter === "Todas" || filter === "Amizade") && (
+      {realHome && (filter === "Todas" || filter === "Amizade") && (
+        <PessoasParaVoce me={cloudUser!.id} />
+      )}
+      {mostrarChegada && (
+        <section className="chegada-card">
+          <header>
+            <h2>Primeiros passos</h2>
+            <button type="button" onClick={() => esconderChegada(cloudUser!.id, setVerInicio)}>
+              Agora não
+            </button>
+          </header>
+          <Chegada
+            me={cloudUser!.id}
+            onPronto={() => esconderChegada(cloudUser!.id, setVerInicio)}
+          />
+        </section>
+      )}
+      {!realHome && (filter === "Todas" || filter === "Amizade") && (
         <MatchCards list={nearby} myInterests={state.interests} />
       )}
       <div className="home-filters" role="tablist" aria-label="Filtrar o início">

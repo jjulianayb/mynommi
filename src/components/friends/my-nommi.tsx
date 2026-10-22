@@ -9,6 +9,8 @@ import { StatsLine, Feed, WallPanel } from "./social-feed";
 import { MinhasEstrelas } from "./presenca";
 import { useEstrelas } from "@/lib/presenca";
 import { coverStyle } from "@/lib/covers";
+import { paraCss } from "@/lib/enquadrar";
+import { AjustarEnquadramento } from "./enquadrar";
 import {
   usePaginaPessoal,
   savePagina,
@@ -20,9 +22,24 @@ import {
   type PaginaPessoal,
 } from "@/lib/pagina-pessoal";
 
-function Face({ avatar, size = 108 }: { avatar: string; size?: number }) {
+function Face({
+  avatar,
+  size = 108,
+  foco,
+}: {
+  avatar: string;
+  size?: number;
+  foco?: { x: number; y: number };
+}) {
   return avatar ? (
-    <img className="story-face mynommi-foto" src={avatar} alt="" width={size} height={size} />
+    <img
+      className="story-face mynommi-foto"
+      src={avatar}
+      alt=""
+      width={size}
+      height={size}
+      style={foco ? { objectPosition: paraCss(foco) } : undefined}
+    />
   ) : (
     <Avatar id={3} size={size} />
   );
@@ -47,8 +64,18 @@ export function MyNommi({ me }: { me: string }) {
 
   return (
     <section className="mynommi">
-      <div className="mynommi-capa" style={coverStyle(pagina.cover)}>
+      <div
+        className="mynommi-capa"
+        style={{ ...coverStyle(pagina.cover), backgroundPosition: paraCss(pagina.capaFoco) }}
+      >
         <span className="mynommi-capa-edit">
+          <AjustarEnquadramento
+            me={me}
+            alvo="capa"
+            imagem={pagina.cover}
+            valor={pagina.capaFoco}
+            onSalvo={() => void reload()}
+          />
           <CoverEditor
             target={{ kind: "perfil", userId: me }}
             slot="cover"
@@ -60,7 +87,19 @@ export function MyNommi({ me }: { me: string }) {
       </div>
 
       <div className="mynommi-topo">
-        <Face avatar={pagina.avatar} />
+        <span className="mynommi-foto-wrap">
+          <Face avatar={pagina.avatar} foco={pagina.fotoFoco} />
+          {pagina.avatar && (
+            <AjustarEnquadramento
+              me={me}
+              alvo="foto"
+              imagem={pagina.avatar}
+              valor={pagina.fotoFoco}
+              onSalvo={() => void reload()}
+              compacto
+            />
+          )}
+        </span>
         <div className="mynommi-nome">
           <h1>{pagina.nickname}</h1>
           {pagina.city && (
