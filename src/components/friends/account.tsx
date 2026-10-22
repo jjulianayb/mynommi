@@ -38,10 +38,10 @@ export function Account({
       const r = await lovable.auth.signInWithOAuth(provider, {
         redirect_uri: window.location.origin,
       });
-      if (r.error) setError("Não foi possível entrar agora. Tente de supabase.");
+      if (r.error) setError("Não foi possível entrar agora. Tente de novo.");
       else if (!r.redirected) void navigate({ to: "/conta" });
     } catch {
-      setError("Não foi possível entrar agora. Tente de supabase.");
+      setError("Não foi possível entrar agora. Tente de novo.");
     } finally {
       setBusy(false);
     }
@@ -96,7 +96,7 @@ export function Account({
       }
       void navigate({ to: "/conta" });
     } catch {
-      setError("A conexão deu uma pausa. Tente de supabase.");
+      setError("A conexão deu uma pausa. Tente de novo.");
     } finally {
       setBusy(false);
     }
@@ -386,7 +386,7 @@ function CompleteAccount() {
             .update({ nickname: r.data.nickname, city: r.data.city, interests: r.data.interests })
             .eq("id", cloudUser.id);
           if (err) {
-            setError("Não foi possível salvar. Tente de supabase.");
+            setError("Não foi possível salvar. Tente de novo.");
             setBusy(false);
             return;
           }
@@ -395,7 +395,7 @@ function CompleteAccount() {
           });
           setBusy(false);
           if (authError) {
-            setError("Não foi possível concluir. Tente de supabase.");
+            setError("Não foi possível concluir. Tente de novo.");
             return;
           }
           void navigate({ to: cloudUser.isBusiness ? "/parceiro" : "/" });

@@ -162,6 +162,13 @@
       "when": 1792250000000,
       "tag": "0022_estive_la_e_estrela",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1792270000000,
+      "tag": "0023_moderacao",
+      "breakpoints": true
     }
   ]
 }

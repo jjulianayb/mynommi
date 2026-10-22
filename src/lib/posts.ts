@@ -207,7 +207,7 @@ export async function createPost(me: string, input: NewPost): Promise<CreateResu
     })
     .select("id")
     .single();
-  if (error || !data) return { ok: false, error: "Não foi possível publicar. Tente de supabase." };
+  if (error || !data) return { ok: false, error: "Não foi possível publicar. Tente de novo." };
   const id = (data as { id: string }).id;
   for (let i = 0; i < files.length; i++) {
     const file = files[i]!;

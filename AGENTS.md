@@ -64,3 +64,9 @@
 - Navegação: Início · Descobrir · + · Tribos · Meu nommi; Conversas fica no cabeçalho com o contador; Radar, Rolês, Meus amigos e Clube no menu lateral. Toda tela nova precisa de uma porta de entrada: rota sem link é funcionalidade invisível.
 - Avisos: public.notifications é escrita só por gatilhos no banco (função avisar(), SECURITY DEFINER, que respeita bloqueio e nunca avisa a própria pessoa). A pessoa só lê, marca como lida e apaga. Gatilhos em connections, post_comments, post_reactions, wall_items, teia_members e teia_rsvps. Código em src/lib/avisos.ts, tela em avisos.tsx, sino no cabeçalho, rota /notificacoes.
 - Ciclo da estrela: attendances (declaro que estive) + confirmar_presenca() (quem organizou, ou quem já teve presença confirmada, confirma outra pessoa) + creditar_estrela() escrevem star_accounts e star_ledger. O navegador NUNCA escreve saldo nem histórico: só lê. Teto de 3 estrelas por semana (pode_ganhar_estrela) e conta precisa ter 3 dias. Janela de 7 dias depois do rolê. Código em src/lib/presenca.ts e no componente presenca.tsx, dentro da aba Eventos do rolê.
+
+## Moderação (0023)
+- `fila_de_moderacao(_status)`, `resumo_da_moderacao()` e `moderar_post(_post, _remover)` só respondem para `has_role(auth.uid(),'admin')`; a fila vem com `denuncias_contra` (quantas denúncias já existem contra a mesma pessoa).
+- A ordem da fila é decidida no cliente por `urgencia()` em `src/lib/moderacao.ts`: assédio e encontro inseguro são sempre altos, reincidência sobe o grau. Mexer na regra é mexer nessa função, não na SQL.
+- Anonimato em "Só entre nós" esconde o autor da tribo, nunca da moderação: `posts.author_id` continua gravado e aparece aqui.
+- A fila mora na aba "Denúncias" do painel `/admin` (primeira aba, porque é a que não pode esperar).

@@ -275,7 +275,7 @@ export function RadarSection() {
                 });
                 const { error } = await supabase.from("radar_presence").upsert(row);
                 if (error) {
-                  notify("Não foi possível entrar no radar agora. Tente de supabase.");
+                  notify("Não foi possível entrar no radar agora. Tente de novo.");
                   return;
                 }
               }

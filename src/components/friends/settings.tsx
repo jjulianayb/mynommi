@@ -792,7 +792,7 @@ export function CreateGroup() {
                   );
               setBusy(false);
               if (!id) {
-                notify("Não deu para criar agora. Tente de supabase.");
+                notify("Não deu para criar agora. Tente de novo.");
                 return;
               }
               notify(

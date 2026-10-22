@@ -106,6 +106,6 @@ export const suggestOpeners = createServerFn({ method: "POST" })
       const out = JSON.parse(text) as { openers: string[] };
       return { openers: out.openers.slice(0, 3) };
     } catch {
-      return { openers: [], error: "A resposta veio vazia. Tente de supabase." };
+      return { openers: [], error: "A resposta veio vazia. Tente de novo." };
     }
   });

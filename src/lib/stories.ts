@@ -168,7 +168,7 @@ export function useStories(me: string | null) {
     if (problem) return { ok: false as const, error: problem };
     const path = storyPath(me, file.type);
     const up = await supabase.storage.from(BUCKET).upload(path, file, { contentType: file.type });
-    if (up.error) return { ok: false as const, error: "O arquivo não subiu. Tente de supabase." };
+    if (up.error) return { ok: false as const, error: "O arquivo não subiu. Tente de novo." };
     const { error } = await supabase.from("stories").insert({
       author_id: me,
       kind: storyKind(file.type),

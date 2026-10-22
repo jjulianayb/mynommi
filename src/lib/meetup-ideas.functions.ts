@@ -144,6 +144,6 @@ export const suggestMeetupIdeas = createServerFn({ method: "POST" })
         })),
       };
     } catch {
-      return { ideas: [], error: "A resposta veio vazia. Tente de supabase." };
+      return { ideas: [], error: "A resposta veio vazia. Tente de novo." };
     }
   });

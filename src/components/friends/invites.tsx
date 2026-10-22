@@ -260,7 +260,7 @@ export function Invites({ initialCreating = false }: { initialCreating?: boolean
       ).then((id) => {
         setBusy(false);
         if (!id) {
-          setError("Não deu para publicar agora. Tente de supabase.");
+          setError("Não deu para publicar agora. Tente de novo.");
           return;
         }
         notify("Rolê publicado! A conversa dele já está aberta.");
