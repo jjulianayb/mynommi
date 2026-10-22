@@ -74,8 +74,8 @@ export function SocialShell({ children }: { children: ReactNode }) {
     );
   const items = [
     { to: "/" as const, label: "Início", icon: "home" },
+    { to: "/descobrir" as const, label: "Descobrir", icon: "spark" },
     { to: "/grupos" as const, label: "Tribos", icon: "teia" },
-    { to: "/conversas" as const, label: "Conversas", icon: "chat" },
     { to: "/perfil" as const, label: "Meu nommi", icon: "users" },
   ];
   return (
@@ -85,6 +85,23 @@ export function SocialShell({ children }: { children: ReactNode }) {
           <Brand />
         </Link>
         <div className="top-actions">
+          <Button
+            asChild
+            variant="ghost"
+            size="icon"
+            aria-label={"Conversas" + (naoLidas > 0 ? ", " + naoLidas + " por ler" : "")}
+          >
+            <Link to="/conversas">
+              <span className="nav-icon">
+                <Icon name="chat" />
+                {naoLidas > 0 && (
+                  <span className="nav-dot" aria-hidden="true">
+                    {naoLidas > 9 ? "9+" : naoLidas}
+                  </span>
+                )}
+              </span>
+            </Link>
+          </Button>
           <Button
             variant="ghost"
             size="icon"
@@ -144,20 +161,8 @@ export function SocialShell({ children }: { children: ReactNode }) {
               activeOptions={{ exact: true }}
               activeProps={{ className: "selected" }}
             >
-              <span className="nav-icon">
-                <Icon name={n.icon} />
-                {n.to === "/conversas" && naoLidas > 0 && (
-                  <span className="nav-dot" aria-hidden="true">
-                    {naoLidas > 9 ? "9+" : naoLidas}
-                  </span>
-                )}
-              </span>
-              <span>
-                {n.label}
-                {n.to === "/conversas" && naoLidas > 0 && (
-                  <span className="sr-only">, {naoLidas} por ler</span>
-                )}
-              </span>
+              <Icon name={n.icon} />
+              <span>{n.label}</span>
             </Link>
           </Button>
         ))}
@@ -169,6 +174,24 @@ export function SocialShell({ children }: { children: ReactNode }) {
               <Link to="/configuracoes" search={{ section: "perfil" }}>
                 <Icon name="settings" />
                 Configurações
+              </Link>
+            </Button>
+            <Button asChild variant="ghost" className="drawer-link">
+              <Link to="/radar">
+                <Icon name="pin" />
+                Radar nommi
+              </Link>
+            </Button>
+            <Button asChild variant="ghost" className="drawer-link">
+              <Link to="/convites">
+                <Icon name="spark" />
+                Rolês abertos
+              </Link>
+            </Button>
+            <Button asChild variant="ghost" className="drawer-link">
+              <Link to="/amigos">
+                <Icon name="users" />
+                Meus amigos
               </Link>
             </Button>
             <Button asChild variant="ghost" className="drawer-link">

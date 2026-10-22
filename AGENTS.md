@@ -59,3 +59,7 @@
 - A chegada (src/components/friends/chegada.tsx) é o que o Início mostra para quem ainda não entrou em nenhuma tribo: explica a nommi em três passos, sugere tribos por interesse (função tribos_para_mim) e dá o convite para WhatsApp. Números na tela vêm de pulso_da_nommi e são reais; nunca inventar gente, tribo cheia ou atividade.
 - teias.goal é a meta de abertura da tribo ("faltam X para a primeira roda"): barra e frase saem de faseDaTribo em src/lib/chegada.ts.
 - Convites ficam em public.invites; usar um convite passa pela função usar_convite(), porque ninguém deve enxergar código alheio.
+- Paleta: as variáveis em styles.css apontam para a marca — --primary #007E46, --teal/--blue #075E3B, --sunshine #FFB400, --butter #F7F0DE, --background #FAF9F6, --foreground #2E2E2E, --coral #EF675A só para alerta e --erro #B3261E para erro. Não introduzir cor nova fora dessa lista.
+- Fontes: Baloo 2 (logo e títulos, embutida em public/fonts) e DM Sans (texto); Caveat só na assinatura do logo. Bricolage Grotesque foi removida.
+- Toque: nenhum botão abaixo de 44 px de altura.
+- Navegação: Início · Descobrir · + · Tribos · Meu nommi; Conversas fica no cabeçalho com o contador; Radar, Rolês, Meus amigos e Clube no menu lateral. Toda tela nova precisa de uma porta de entrada: rota sem link é funcionalidade invisível.

@@ -655,6 +655,20 @@ export function Home() {
     </>
   );
 }
+function RadarPorta() {
+  return (
+    <Link to="/radar" className="radar-porta">
+      <span className="radar-porta-icone">
+        <Icon name="pin" />
+      </span>
+      <div>
+        <b>Radar nommi</b>
+        <p>Diga onde você está agora e veja quem topa um café por perto.</p>
+      </div>
+      <Icon name="arrow" />
+    </Link>
+  );
+}
 export function Discover() {
   const { cloudUser, demoMode: dm } = useDemoSession();
   if (cloudUser && !dm)
@@ -662,6 +676,7 @@ export function Discover() {
       <>
         <Title title="Encontre nommi" kicker="PESSOAS DE VERDADE" />
         <p className="intro">Procure pelo apelido ou pela cidade.</p>
+        <RadarPorta />
         <PeopleSearch userId={cloudUser.id} />
       </>
     );
