@@ -169,6 +169,34 @@
       "when": 1792270000000,
       "tag": "0023_moderacao",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1792290000000,
+      "tag": "0024_combinar",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1792300000000,
+      "tag": "0025_ajustar_foto_e_capa",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1792310000000,
+      "tag": "0026_contas_de_teste_invisiveis",
+      "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1792320000000,
+      "tag": "0027_interesse_sem_maiuscula",
+      "breakpoints": true
     }
   ]
 }

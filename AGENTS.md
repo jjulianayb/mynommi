@@ -90,3 +90,8 @@
 - O tour só começa na página inicial (é onde os alvos existem) e só para conta real, 900ms depois de abrir.
 - "Fazer o tour do app" no menu lateral reinicia quando a pessoa quiser; Esc, "Pular" e tocar fora encerram.
 - Fica lembrado por aparelho (localStorage), não na conta: é preferência de tela.
+
+## Contas de teste (0026) e interesse sem maiúscula (0027)
+- `is_test` em profiles e teias marca o que existe só para a equipe ver tela cheia. Toda função nova que liste gente ou tribo precisa repetir `(NOT is_test OR public.ve_contas_de_teste())` — a trava é no banco, não na tela. Detalhes em `scripts/contas-de-teste.md`.
+- Isso não é prova social falsa: pessoa real nunca vê conta de teste, e `pulso_da_nommi()` não conta quem é de teste.
+- Interesse em comum compara com `lower()`: "música" e "Música" são o mesmo interesse. A tela mostra a grafia de quem escreveu.
