@@ -191,6 +191,36 @@ export type Database = {
         }
         Relationships: []
       }
+      direct_messages: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          read_at: string | null
+          recipient_id: string
+          sender_id: string
+          sticker: number | null
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          recipient_id: string
+          sender_id: string
+          sticker?: number | null
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          recipient_id?: string
+          sender_id?: string
+          sticker?: number | null
+        }
+        Relationships: []
+      }
       follows: {
         Row: {
           created_at: string
@@ -227,6 +257,30 @@ export type Database = {
           id?: string
           invite_ref?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      invites: {
+        Row: {
+          code: string
+          created_at: string
+          owner_id: string
+          used_at: string | null
+          used_by: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          owner_id: string
+          used_at?: string | null
+          used_by?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          owner_id?: string
+          used_at?: string | null
+          used_by?: string | null
         }
         Relationships: []
       }
@@ -381,29 +435,38 @@ export type Database = {
       }
       posts: {
         Row: {
+          anonymous: boolean
           author_id: string
           body: string
           created_at: string
+          expires_at: string | null
           id: string
           location: string
+          secret: boolean
           status: string
           teia_id: number | null
         }
         Insert: {
+          anonymous?: boolean
           author_id: string
           body: string
           created_at?: string
+          expires_at?: string | null
           id?: string
           location?: string
+          secret?: boolean
           status?: string
           teia_id?: number | null
         }
         Update: {
+          anonymous?: boolean
           author_id?: string
           body?: string
           created_at?: string
+          expires_at?: string | null
           id?: string
           location?: string
+          secret?: boolean
           status?: string
           teia_id?: number | null
         }
@@ -421,13 +484,20 @@ export type Database = {
         Row: {
           about: string
           avatar_url: string
+          background_path: string
           city: string
+          cover_path: string
           created_at: string
           goals: string[]
           id: string
+          instagram: string
           interests: string[]
           is_business: boolean
+          is_test: boolean
+          looking_for: string
           nickname: string
+          person_verified: boolean
+          places: string[]
           profile_mode: string
           show_counts: boolean
           updated_at: string
@@ -437,13 +507,20 @@ export type Database = {
         Insert: {
           about?: string
           avatar_url?: string
+          background_path?: string
           city?: string
+          cover_path?: string
           created_at?: string
           goals?: string[]
           id: string
+          instagram?: string
           interests?: string[]
           is_business?: boolean
+          is_test?: boolean
+          looking_for?: string
           nickname?: string
+          person_verified?: boolean
+          places?: string[]
           profile_mode?: string
           show_counts?: boolean
           updated_at?: string
@@ -453,13 +530,20 @@ export type Database = {
         Update: {
           about?: string
           avatar_url?: string
+          background_path?: string
           city?: string
+          cover_path?: string
           created_at?: string
           goals?: string[]
           id?: string
+          instagram?: string
           interests?: string[]
           is_business?: boolean
+          is_test?: boolean
+          looking_for?: string
           nickname?: string
+          person_verified?: boolean
+          places?: string[]
           profile_mode?: string
           show_counts?: boolean
           updated_at?: string
@@ -472,6 +556,9 @@ export type Database = {
         Row: {
           activity: string
           area: string
+          city: string
+          lat: number | null
+          lng: number | null
           place_name: string
           until: string
           updated_at: string
@@ -480,6 +567,9 @@ export type Database = {
         Insert: {
           activity: string
           area?: string
+          city?: string
+          lat?: number | null
+          lng?: number | null
           place_name: string
           until: string
           updated_at?: string
@@ -488,6 +578,9 @@ export type Database = {
         Update: {
           activity?: string
           area?: string
+          city?: string
+          lat?: number | null
+          lng?: number | null
           place_name?: string
           until?: string
           updated_at?: string
@@ -527,6 +620,101 @@ export type Database = {
           target_user?: string | null
         }
         Relationships: []
+      }
+      saved_stickers: {
+        Row: {
+          caption: string
+          favorite: boolean
+          id: string
+          path: string | null
+          source: string
+          sticker_id: number | null
+          tags: string[]
+          used_at: string
+          user_id: string
+        }
+        Insert: {
+          caption?: string
+          favorite?: boolean
+          id?: string
+          path?: string | null
+          source: string
+          sticker_id?: number | null
+          tags?: string[]
+          used_at?: string
+          user_id: string
+        }
+        Update: {
+          caption?: string
+          favorite?: boolean
+          id?: string
+          path?: string | null
+          source?: string
+          sticker_id?: number | null
+          tags?: string[]
+          used_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      stories: {
+        Row: {
+          audience: string
+          author_id: string
+          caption: string
+          created_at: string
+          expires_at: string
+          id: string
+          kind: string
+          path: string
+        }
+        Insert: {
+          audience?: string
+          author_id: string
+          caption?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          kind: string
+          path: string
+        }
+        Update: {
+          audience?: string
+          author_id?: string
+          caption?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          kind?: string
+          path?: string
+        }
+        Relationships: []
+      }
+      story_views: {
+        Row: {
+          seen_at: string
+          story_id: string
+          viewer_id: string
+        }
+        Insert: {
+          seen_at?: string
+          story_id: string
+          viewer_id: string
+        }
+        Update: {
+          seen_at?: string
+          story_id?: string
+          viewer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_views_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "stories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       teia_members: {
         Row: {
@@ -579,6 +767,38 @@ export type Database = {
         }
         Relationships: []
       }
+      teia_removals: {
+        Row: {
+          created_at: string
+          reason: string
+          removed_by: string
+          teia_id: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          reason?: string
+          removed_by: string
+          teia_id: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          reason?: string
+          removed_by?: string
+          teia_id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teia_removals_teia_id_fkey"
+            columns: ["teia_id"]
+            isOneToOne: false
+            referencedRelation: "teias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       teia_rsvps: {
         Row: {
           created_at: string
@@ -607,49 +827,73 @@ export type Database = {
       }
       teias: {
         Row: {
+          about: string
+          audience: string
+          background_path: string
           capacity: number | null
           category: string | null
           city: string
+          cover_path: string
           created_at: string
           created_by: string
           creator_nickname: string
+          goal: number | null
           id: number
           kind: string
           mode: string
           name: string
+          official: boolean
           place: string
+          rule: string
           starts_at: string | null
           when_text: string
+          who_posts: string
         }
         Insert: {
+          about?: string
+          audience?: string
+          background_path?: string
           capacity?: number | null
           category?: string | null
           city?: string
+          cover_path?: string
           created_at?: string
           created_by: string
           creator_nickname?: string
+          goal?: number | null
           id?: never
           kind?: string
           mode?: string
           name: string
+          official?: boolean
           place?: string
+          rule?: string
           starts_at?: string | null
           when_text?: string
+          who_posts?: string
         }
         Update: {
+          about?: string
+          audience?: string
+          background_path?: string
           capacity?: number | null
           category?: string | null
           city?: string
+          cover_path?: string
           created_at?: string
           created_by?: string
           creator_nickname?: string
+          goal?: number | null
           id?: never
           kind?: string
           mode?: string
           name?: string
+          official?: boolean
           place?: string
+          rule?: string
           starts_at?: string | null
           when_text?: string
+          who_posts?: string
         }
         Relationships: []
       }
@@ -714,6 +958,10 @@ export type Database = {
         Returns: number
       }
       can_view_post: { Args: { _post: string }; Returns: boolean }
+      can_view_story: {
+        Args: { _audience: string; _author: string }
+        Returns: boolean
+      }
       grant_purchased_credits: {
         Args: {
           _amount: number
@@ -745,21 +993,69 @@ export type Database = {
       list_teias: {
         Args: { _creator?: string; _id?: number }
         Returns: {
+          about: string
+          audience: string
           capacity: number
           category: string
           city: string
+          cover_path: string
           created_at: string
           creator_nickname: string
           going_count: number
+          i_am_creator: boolean
           i_am_going: boolean
+          i_am_member: boolean
+          i_can_post: boolean
           id: number
           kind: string
+          member_count: number
           mode: string
           name: string
+          official: boolean
           place: string
+          rule: string
           starts_at: string
           when_text: string
+          who_posts: string
         }[]
+      }
+      minhas_conversas: {
+        Args: never
+        Returns: {
+          avatar_url: string
+          nao_lidas: number
+          nickname: string
+          outro_id: string
+          ultima: string
+          ultima_em: string
+          ultima_minha: boolean
+          ultima_sticker: number
+        }[]
+      }
+      nao_lidas: { Args: never; Returns: number }
+      pagina_pessoal: {
+        Args: { _user: string }
+        Returns: {
+          about: string
+          avatar_url: string
+          background_path: string
+          city: string
+          cover_path: string
+          desde: string
+          id: string
+          instagram: string
+          interests: string[]
+          looking_for: string
+          nickname: string
+          person_verified: boolean
+          places: string[]
+          profile_mode: string
+          tribos_em_comum: string[]
+        }[]
+      }
+      pode_falar_na_tribo: {
+        Args: { _teia: number; _user: string }
+        Returns: boolean
       }
       profile_stats: {
         Args: { _user: string }
@@ -772,9 +1068,64 @@ export type Database = {
           visible: boolean
         }[]
       }
+      pulso_da_nommi: {
+        Args: never
+        Returns: {
+          encontros_marcados: number
+          entraram_semana: number
+          mensagens_semana: number
+          pessoas: number
+          roles_abertos: number
+          tribos: number
+        }[]
+      }
+      purge_expired_stories: { Args: never; Returns: number }
+      radar_nearby: {
+        Args: { _km?: number; _lat: number; _lng: number }
+        Returns: {
+          activity: string
+          area: string
+          avatar_url: string
+          city: string
+          km: number
+          nickname: string
+          place_name: string
+          user_id: string
+        }[]
+      }
+      sao_amigos: { Args: { _a: string; _b: string }; Returns: boolean }
+      segredos_da_tribo: {
+        Args: { _teia: number }
+        Returns: {
+          anonymous: boolean
+          author_id: string
+          avatar_url: string
+          body: string
+          created_at: string
+          expires_at: string
+          id: string
+          mine: boolean
+          nickname: string
+        }[]
+      }
       spend_boost: { Args: never; Returns: string }
       spend_invite_boost: { Args: { _invite_ref: string }; Returns: number }
       teia_has_room: { Args: { _teia: number }; Returns: boolean }
+      tribos_para_mim: {
+        Args: { _limite?: number }
+        Returns: {
+          about: string
+          category: string
+          city: string
+          em_comum: number
+          goal: number
+          i_am_member: boolean
+          id: number
+          member_count: number
+          name: string
+        }[]
+      }
+      usar_convite: { Args: { _code: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "user"
