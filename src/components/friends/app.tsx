@@ -390,6 +390,12 @@ export function Home() {
     );
   return (
     <>
+      <VitrineTop nickname={state.nickname} city={city} avatar={state.photo} />
+      {realHome && <StoriesStrip me={cloudUser!.id} nickname={state.nickname || "nommi"} />}
+      {(filter === "Todas" || filter === "Amizade") && (
+        <MatchCards list={nearby} myInterests={state.interests} />
+      )}
+      <section className="home-hero" hidden>
       <section className="home-hero">
         <img
           className="home-hero-photo"
