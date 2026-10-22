@@ -6,6 +6,7 @@ import { RadarSection } from "./radar-section";
 import { Feed, CreatePostForm, RolesList, RoleCard } from "./social-feed";
 import { InstallBanner } from "./install-banner";
 import { StoriesStrip } from "./stories-strip";
+import { VitrineTop, MatchCards } from "./home-vitrine";
 import { DirectConversations } from "./direct-chat";
 import { TribeSecrets } from "./tribe-secrets";
 import { Chegada } from "./chegada";
@@ -395,28 +396,6 @@ export function Home() {
       {(filter === "Todas" || filter === "Amizade") && (
         <MatchCards list={nearby} myInterests={state.interests} />
       )}
-      <section className="home-hero" hidden>
-      <section className="home-hero">
-        <img
-          className="home-hero-photo"
-          src={momentPhoto.pizza}
-          alt="Mesa cheia de pizza para compartilhar com a tribo"
-        />
-        <div className="home-hero-overlay">
-          <button
-            type="button"
-            className="location-chip"
-            onClick={() => void navigate({ to: "/configuracoes", search: { section: "perfil" } })}
-            aria-label="Mudar sua cidade"
-          >
-            <Icon name="pin" />
-            <span>{city}</span>
-            <Icon name="arrow" />
-          </button>
-          <h1>{state.nickname ? "Oi, " + state.nickname + "." : "Chega mais."}</h1>
-          <p>Do seu bairro, da sua cidade, de todo o Brasil.</p>
-        </div>
-      </section>
       <div className="home-filters" role="tablist" aria-label="Filtrar o início">
         {HOME_FILTERS.map((f) => (
           <button
@@ -431,30 +410,6 @@ export function Home() {
           </button>
         ))}
       </div>
-      {nearby.length > 0 && (filter === "Todas" || filter === "Amizade") && (
-        <section className="home-section">
-          <div className="section-heading">
-            <h2>Pessoas por perto</h2>
-            <Link to="/descobrir" className="section-link">
-              Ver todas
-              <Icon name="arrow" />
-            </Link>
-          </div>
-          <div className="people-strip">
-            {nearby.map((p, i) => (
-              <Link to="/descobrir" className="people-strip-card" key={p.id}>
-                <Avatar id={p.id} size={72} />
-                <b>{p.name.split(" ")[0]}</b>
-                <span>
-                  <Icon name="pin" />
-                  {NEARBY_DISTANCES[i % NEARBY_DISTANCES.length]}
-                </span>
-              </Link>
-            ))}
-          </div>
-          <p className="small-note">Distâncias aproximadas. Apresentação com perfis fictícios.</p>
-        </section>
-      )}
       {(filter === "Todas" || filter === "Eventos") && (
         <section className="home-section">
           <div className="section-heading">
@@ -577,7 +532,6 @@ export function Home() {
           </div>
         </section>
       )}
-      {realHome && <StoriesStrip me={cloudUser!.id} nickname={state.nickname || "nommi"} />}
       {realHome && (filter === "Todas" || filter === "Eventos") && (
         <section className="home-section">
           <div className="section-heading">
