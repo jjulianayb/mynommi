@@ -232,7 +232,7 @@ export function PessoasParaVoce({ me }: { me: string }) {
   const { fila, curiosidade, ready } = useCombinar(Boolean(me));
   if (!ready || fila.length === 0) return null;
   return (
-    <section className="home-section pessoas-para-voce">
+    <section className="home-section pessoas-para-voce" data-tour="pessoas">
       <div className="section-heading">
         <h2>Gente para você conhecer</h2>
         <Link to="/descobrir" className="section-link">

@@ -84,3 +84,9 @@
 - Colunas novas em profiles precisam entrar no GRANT UPDATE por coluna de 0025, senão não salvam (a permissão por tabela abriria person_verified junto).
 - Capa com `position:relative` pinta por cima de bloco estático mesmo vindo antes no HTML: todo topo que sobe por cima de capa precisa de `position:relative;z-index:1`.
 - Os "primeiros passos" (Chegada) não tomam mais a tela inteira: viram cartão na página inicial e somem quando a pessoa fecha, lembrado por aparelho em `src/lib/chegada-vista.ts`.
+
+## Tour guiado (sem migração)
+- Os passos ficam em `PASSOS_DO_TOUR` (`src/lib/tour.ts`) e apontam para `[data-tour="..."]`. Para incluir uma tela no tour, basta pôr o `data-tour` no elemento — passo cujo alvo não está na tela é pulado sozinho, nunca mostra balão vazio.
+- O tour só começa na página inicial (é onde os alvos existem) e só para conta real, 900ms depois de abrir.
+- "Fazer o tour do app" no menu lateral reinicia quando a pessoa quiser; Esc, "Pular" e tocar fora encerram.
+- Fica lembrado por aparelho (localStorage), não na conta: é preferência de tela.

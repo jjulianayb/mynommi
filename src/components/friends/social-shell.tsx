@@ -9,6 +9,13 @@ import { isRealHost } from "@/lib/nommi-access";
 import rioPhoto from "@/assets/welcome-rio.jpg";
 import { useNaoLidas } from "@/lib/direct-messages";
 import { useAvisosNaoLidos } from "@/lib/avisos";
+import { Tour } from "./tour";
+import { esquecerTour, tourJaVisto } from "@/lib/tour";
+
+/** Cada item da navegação vira um alvo do tour. */
+const alvoDoItem = (to: string) =>
+  ({ "/": "inicio", "/descobrir": "descobrir", "/grupos": "tribos", "/perfil": "meu-nommi" })[to] ??
+  undefined;
 const entryPaths = ["/conta", "/cadastro", "/login", "/login-parceiro", "/recuperar-senha"];
 const legalPaths = ["/termos", "/privacidade", "/ajuda"];
 export function SocialShell({ children }: { children: ReactNode }) {
@@ -18,6 +25,14 @@ export function SocialShell({ children }: { children: ReactNode }) {
   const { pathname, searchStr } = useLocation();
   const [create, setCreate] = useState(false);
   const [drawer, setDrawer] = useState(false);
+  const [tourAberto, setTourAberto] = useState(false);
+  const real = !!cloudUser && !demoMode;
+  // O tour só começa na página inicial, onde estão as coisas que ele aponta.
+  useEffect(() => {
+    if (!real || pathname !== "/" || tourJaVisto(cloudUser?.id ?? null)) return;
+    const t = setTimeout(() => setTourAberto(true), 900);
+    return () => clearTimeout(t);
+  }, [real, pathname, cloudUser?.id]);
   useEffect(() => {
     setCreate(false);
     setDrawer(false);
@@ -93,7 +108,7 @@ export function SocialShell({ children }: { children: ReactNode }) {
             size="icon"
             aria-label={"Conversas" + (naoLidas > 0 ? ", " + naoLidas + " por ler" : "")}
           >
-            <Link to="/conversas">
+            <Link to="/conversas" data-tour="conversas">
               <span className="nav-icon">
                 <Icon name="chat" />
                 {naoLidas > 0 && (
@@ -138,7 +153,7 @@ export function SocialShell({ children }: { children: ReactNode }) {
       </main>
       <nav className="bottom-nav nommi-bottom" aria-label="Navegação principal">
         {items.slice(0, 2).map((n) => (
-          <Button key={n.to} asChild variant="ghost">
+          <Button key={n.to} asChild variant="ghost" data-tour={alvoDoItem(n.to)}>
             <Link to={n.to} activeOptions={{ exact: true }} activeProps={{ className: "selected" }}>
               <Icon name={n.icon} />
               <span>{n.label}</span>
@@ -149,6 +164,7 @@ export function SocialShell({ children }: { children: ReactNode }) {
           variant="default"
           size="icon"
           className="bottom-create"
+          data-tour="criar"
           aria-label="Criar"
           aria-expanded={create}
           onClick={() => setCreate(true)}
@@ -156,7 +172,7 @@ export function SocialShell({ children }: { children: ReactNode }) {
           <Icon name="plus" />
         </Button>
         {items.slice(2).map((n) => (
-          <Button key={n.to} asChild variant="ghost">
+          <Button key={n.to} asChild variant="ghost" data-tour={alvoDoItem(n.to)}>
             <Link
               to={n.to}
               search={{}}
@@ -169,6 +185,7 @@ export function SocialShell({ children }: { children: ReactNode }) {
           </Button>
         ))}
       </nav>
+      {tourAberto && cloudUser && <Tour me={cloudUser.id} onFim={() => setTourAberto(false)} />}
       {drawer && (
         <Sheet title="Seu nommi" side="right" onClose={() => setDrawer(false)}>
           <nav aria-label="Menu secundário" className="drawer-navigation">
@@ -202,6 +219,20 @@ export function SocialShell({ children }: { children: ReactNode }) {
                 Clube
               </Link>
             </Button>
+            {real && (
+              <Button
+                variant="ghost"
+                className="drawer-link"
+                onClick={() => {
+                  esquecerTour(cloudUser!.id);
+                  setDrawer(false);
+                  setTourAberto(true);
+                }}
+              >
+                <Icon name="spark" />
+                Fazer o tour do app
+              </Button>
+            )}
             <Button asChild variant="ghost" className="drawer-link">
               <Link to="/ajuda">
                 <Icon name="help" />
