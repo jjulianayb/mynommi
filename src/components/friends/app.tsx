@@ -15,6 +15,7 @@ import { useChegada, faseDaTribo } from "@/lib/chegada";
 import { CoverEditor } from "./cover-editor";
 import { useTeiaCovers } from "@/lib/covers";
 import { useRoles } from "@/lib/roles";
+import { Combinar } from "./combinar";
 import { PeopleSearch } from "./real-people";
 import { momentPhoto } from "@/lib/friends-photos";
 import { OpenerSuggest } from "./opener-suggest";
@@ -635,10 +636,16 @@ export function Discover() {
   if (cloudUser && !dm)
     return (
       <>
-        <Title title="Encontre nommi" kicker="PESSOAS DE VERDADE" />
-        <p className="intro">Procure pelo apelido ou pela cidade.</p>
-        <RadarPorta />
-        <PeopleSearch userId={cloudUser.id} />
+        <Title title="Encontre sua tribo" kicker="GENTE DE VERDADE" />
+        <p className="intro">
+          Veja do que a pessoa gosta. Se vocês dois quiserem se conhecer, já são amizade.
+        </p>
+        <Combinar me={cloudUser.id} />
+        <details className="descobrir-busca">
+          <summary>Procurar alguém pelo apelido ou pela cidade</summary>
+          <RadarPorta />
+          <PeopleSearch userId={cloudUser.id} />
+        </details>
       </>
     );
   return <DemoDiscover />;
@@ -1393,9 +1400,7 @@ export function GroupDetail({ id }: { id: number }) {
       try {
         const ok = await shared.join();
         notify(
-          ok
-            ? "Você entrou! Diga oi para a tribo."
-            : "Não deu para entrar agora. Tente de novo.",
+          ok ? "Você entrou! Diga oi para a tribo." : "Não deu para entrar agora. Tente de novo.",
         );
       } finally {
         setJoining(false);

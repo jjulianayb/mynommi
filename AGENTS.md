@@ -70,3 +70,10 @@
 - A ordem da fila é decidida no cliente por `urgencia()` em `src/lib/moderacao.ts`: assédio e encontro inseguro são sempre altos, reincidência sobe o grau. Mexer na regra é mexer nessa função, não na SQL.
 - Anonimato em "Só entre nós" esconde o autor da tribo, nunca da moderação: `posts.author_id` continua gravado e aparece aqui.
 - A fila mora na aba "Denúncias" do painel `/admin` (primeira aba, porque é a que não pode esperar).
+
+## Combinar / match (0024)
+- `pessoas_para_combinar()` monta o baralho; a ordem é: quem já me curtiu primeiro, depois afinidade (interesse em comum vale 2, objetivo 1, mesma cidade 1). Perfil privado, empresa e quem já é amizade ficam fora.
+- `responder_pessoa(_para, _sim)` devolve 'match', 'guardado', 'passou' ou 'erro'. A resposta é privada: só o match avisa alguém. Não existe GRANT de INSERT em `curtidas` — tudo passa pela função.
+- Pedido de amizade pendente conta como sim do outro lado: dizer sim aceita o pedido e vira match.
+- `quem_tem_curiosidade()` devolve só o número de quem me escolheu e ainda não respondi. Número real, nunca o nome — é o que puxa a pessoa para o baralho sem expor ninguém.
+- Afinidade nunca vira porcentagem na tela: `porqueApareceu()` diz o motivo em palavras ou admite que a pessoa é nova.

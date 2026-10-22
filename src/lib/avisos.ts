@@ -13,7 +13,8 @@ export type AvisoKind =
   | "mural"
   | "entrou_na_tribo"
   | "quero_ir"
-  | "recado_tribo";
+  | "recado_tribo"
+  | "match";
 export type Aviso = {
   id: string;
   kind: AvisoKind;
@@ -34,11 +35,14 @@ const ICONES: Record<AvisoKind, string> = {
   entrou_na_tribo: "teia",
   quero_ir: "pin",
   recado_tribo: "teia",
+  match: "heart",
 };
 export const iconeDoAviso = (k: AvisoKind) => ICONES[k] ?? "spark";
 
 /** Para onde o aviso leva quando a pessoa toca nele. */
 export function destinoDoAviso(a: Aviso): { to: string; params?: Record<string, string> } {
+  if (a.kind === "match")
+    return a.actorId ? { to: "/conversas/$id", params: { id: a.actorId } } : { to: "/amigos" };
   if (a.kind === "amizade_pedida" || a.kind === "amizade_aceita") {
     return a.actorId ? { to: "/nommi/$id", params: { id: a.actorId } } : { to: "/amigos" };
   }

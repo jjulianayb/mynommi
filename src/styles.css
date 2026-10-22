@@ -731,3 +731,52 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .denuncia-reincidente{font-size:11px;background:var(--erro);color:#fff;padding:2px 8px;border-radius:999px}
 .denuncia-nota{font-size:14px;line-height:1.5;background:var(--paper);border-radius:12px;padding:10px 12px}
 .denuncia-acoes{display:flex;gap:8px;flex-wrap:wrap}
+
+/* Combinar: o baralho de pessoas */
+.combinar{display:grid;gap:12px}
+.combinar-curiosidade{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;background:var(--butter);border-radius:14px;padding:10px 12px}
+.combinar-curiosidade svg{width:18px;height:18px;flex:none}
+.combinar-card{background:var(--card);border:1px solid var(--border);border-radius:24px;overflow:hidden;touch-action:pan-y;cursor:grab;transition:transform .18s ease;will-change:transform}
+.combinar-card:active{cursor:grabbing}
+.combinar-card.saindo-sim{transform:translateX(120%) rotate(12deg);opacity:0}
+.combinar-card.saindo-nao{transform:translateX(-120%) rotate(-12deg);opacity:0}
+.combinar-capa{height:120px;background:linear-gradient(135deg,var(--primary),var(--teal));position:relative}
+.combinar-marca{position:absolute;top:14px;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:8px 14px;border-radius:999px;border:3px solid currentColor;background:#fff}
+.combinar-marca.sim{left:14px;color:var(--primary);transform:rotate(-8deg)}
+.combinar-marca.nao{right:14px;color:var(--erro);transform:rotate(8deg)}
+.combinar-topo{display:grid;justify-items:center;gap:6px;padding:0 18px;margin-top:-48px;text-align:center}
+.combinar-topo .real-face,.combinar-topo .avatar{border-radius:50%;border:4px solid var(--card);object-fit:cover;background:var(--card)}
+.combinar-topo h2{font-size:22px;display:flex;align-items:center;gap:6px;margin:4px 0 0}
+.selo-verificada{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--primary);color:#fff}
+.selo-verificada svg{width:13px;height:13px;stroke-width:3}
+.combinar-cidade{display:flex;align-items:center;gap:4px;font-size:13.5px;color:var(--muted-foreground)}
+.combinar-cidade svg,.combinar-porque svg{width:16px;height:16px;flex:none}
+.combinar-porque{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--primary);background:var(--paper);border-radius:999px;padding:8px 14px;margin-top:4px}
+.combinar-corpo{display:grid;gap:14px;padding:16px 18px 18px}
+.combinar-bloco{display:grid;gap:7px}
+.combinar-bloco h3{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted-foreground)}
+.combinar-bloco p{font-size:14.5px;line-height:1.55}
+.combinar-tags{display:flex;flex-wrap:wrap;gap:7px}
+.combinar-tags span{display:inline-flex;align-items:center;gap:4px;font-size:13px;padding:7px 12px;border-radius:999px;background:var(--paper);border:1px solid var(--border)}
+.combinar-tags span.comum{background:var(--primary);color:#fff;border-color:var(--primary);font-weight:600}
+.combinar-tags span.comum svg{width:13px;height:13px;stroke-width:3}
+.combinar-perfil{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;font-weight:600;color:var(--primary);min-height:44px}
+.combinar-perfil svg{width:18px;height:18px}
+.combinar-acoes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.combinar-acoes button{min-height:52px;font-size:15.5px}
+.combinar-aviso{text-align:center}
+.descobrir-busca{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:12px 14px;margin-top:6px}
+.descobrir-busca summary{font-size:14px;font-weight:600;cursor:pointer;min-height:24px}
+.descobrir-busca[open] summary{margin-bottom:10px}
+
+/* Deu match */
+.match-feito{display:grid;justify-items:center;gap:12px;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:28px 20px}
+.match-feito-selo{display:grid;place-items:center;width:64px;height:64px;border-radius:50%;background:var(--coral);color:#fff}
+.match-feito-selo svg{width:34px;height:34px}
+.match-feito h2{font-size:26px}
+.match-feito p{font-size:15px;line-height:1.55;max-width:34ch}
+.match-feito .real-face,.match-feito .avatar{border-radius:50%;object-fit:cover;border:4px solid var(--butter)}
+.match-feito-comum{font-size:14px;font-weight:600;color:var(--primary)}
+.match-feito-acoes{display:grid;gap:8px;width:100%;max-width:300px;margin-top:4px}
+.match-feito-acoes button{min-height:48px}
+@media (prefers-reduced-motion:reduce){.combinar-card{transition:none}}
