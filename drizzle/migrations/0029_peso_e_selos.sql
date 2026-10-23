@@ -33,7 +33,8 @@ CREATE POLICY "Ver selos de quem eu posso ver" ON public.selos FOR SELECT TO aut
   USING (dono = auth.uid() OR de = auth.uid()
          OR EXISTS (SELECT 1 FROM public.profiles p
                      WHERE p.id = dono AND p.profile_mode = 'publico'
-                       AND NOT public.is_blocked_between(auth.uid(), p.id)));
+                       AND NOT public.is_blocked_between(auth.uid(), p.id)
+                       AND (NOT p.is_test OR public.ve_contas_de_teste())));
 CREATE POLICY "Carimbar uma amizade" ON public.selos FOR INSERT TO authenticated
   WITH CHECK (public.pode_selar(dono, de));
 -- Quem deu pode tirar; e o dono da página também, porque a página é dele.
@@ -48,6 +49,10 @@ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $$
   FROM public.selos s
   WHERE s.dono = _user AND auth.uid() IS NOT NULL
     AND NOT public.is_blocked_between(auth.uid(), _user)
+    AND (s.dono = auth.uid()
+         OR EXISTS (SELECT 1 FROM public.profiles p
+                     WHERE p.id = s.dono AND p.profile_mode = 'publico'
+                       AND (NOT p.is_test OR public.ve_contas_de_teste())))
   GROUP BY s.selo
   ORDER BY 2 DESC, 1
   LIMIT 20
