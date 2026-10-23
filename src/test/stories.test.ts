@@ -29,7 +29,11 @@ describe("stories", () => {
     expect(storyProblem({ type: "video/mp4", size: 1000 })).toBeNull();
     expect(storyProblem({ type: "image/png", size: 6e6 })).toMatch(/5 MB/);
     expect(storyProblem({ type: "video/mp4", size: 60e6 })).toMatch(/50 MB/);
-    expect(storyProblem({ type: "application/pdf", size: 10 })).toMatch(/JPG/);
+    expect(storyProblem({ type: "application/pdf", size: 10 })).toMatch(/foto ou um vídeo/);
+    // foto de iPhone chega em HEIC: não pode mais ser recusada
+    expect(storyProblem({ type: "image/heic", size: 1000 })).toBeNull();
+    expect(storyProblem({ type: "image/heif", size: 1000 })).toBeNull();
+    expect(storyProblem({ type: "image/avif", size: 1000 })).toBeNull();
   });
   it("separa foto de vídeo e põe o caminho dentro da pasta da pessoa", () => {
     expect(storyKind("video/mp4")).toBe("video");
@@ -40,7 +44,7 @@ describe("stories", () => {
   it("diz quanto falta para sumir", () => {
     const now = Date.parse("2026-10-20T12:00:00Z");
     expect(timeLeft("2026-10-20T12:30:00Z", now)).toBe("some em 30 min");
-    expect(timeLeft("2026-10-20T15:00:00Z", now)).toBe("some em 3 h");
+    expect(timeLeft("2026-10-20T13:00:00Z", now)).toBe("some em 1 h");
     expect(timeLeft("2026-10-20T11:00:00Z", now)).toBe("acabou");
   });
   it("agrupa por pessoa: eu primeiro, depois quem tem novidade", () => {

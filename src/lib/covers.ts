@@ -37,6 +37,16 @@ export function isPreset(value: string): boolean {
 }
 
 /** Estilo pronto para aplicar: gradiente da nommi ou a foto enviada. */
+/**
+ * Um endereço pronto (http, data, blob) se usa como está. Só caminho de
+ * arquivo do armazenamento passa por publicUrl — senão um id vira URL quebrada.
+ */
+export function enderecoDaImagem(valor: string): string {
+  if (!valor) return "";
+  if (/^(https?:|data:|blob:)/.test(valor)) return valor;
+  return valor.includes("/") ? publicUrl(valor) : "";
+}
+
 export function coverStyle(value: string): {
   background?: string;
   backgroundImage?: string;
@@ -46,8 +56,10 @@ export function coverStyle(value: string): {
   if (!value) return {};
   const preset = PRESET_BACKGROUNDS.find((p) => p.id === value);
   if (preset) return { background: preset.css };
+  const src = enderecoDaImagem(value);
+  if (!src) return {};
   return {
-    backgroundImage: `url(${publicUrl(value)})`,
+    backgroundImage: `url(${src})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
   };

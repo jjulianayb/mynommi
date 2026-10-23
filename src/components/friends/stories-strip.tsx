@@ -2,15 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, Icon } from "./art";
 import { Sheet } from "./surfaces";
-import {
-  useStories,
-  storyProblem,
-  timeLeft,
-  MAX_CAPTION,
-  type Story,
-  type StoryAudience,
-  type StoryGroup,
-} from "@/lib/stories";
+import { CameraStory } from "./camera-story";
+import { useStories, timeLeft, type Story, type StoryGroup } from "@/lib/stories";
 
 function Face({ name, avatar, size = 56 }: { name: string; avatar: string; size?: number }) {
   if (avatar) return <img className="story-face" src={avatar} alt="" width={size} height={size} />;
@@ -72,7 +65,7 @@ export function StoriesStrip({ me, nickname }: { me: string; nickname: string })
           }}
         />
       )}
-      {posting && <StoryComposer onClose={() => setPosting(false)} onPublish={publish} />}
+      {posting && <CameraStory onClose={() => setPosting(false)} onPublish={publish} />}
     </>
   );
 }
@@ -170,135 +163,5 @@ function StoryViewer({
         onClick={next}
       />
     </div>
-  );
-}
-
-/** Publicar: escolher foto ou vídeo, escrever algo e decidir quem vê. */
-function StoryComposer({
-  onClose,
-  onPublish,
-}: {
-  onClose: () => void;
-  onPublish: (
-    f: File,
-    caption: string,
-    a: StoryAudience,
-  ) => Promise<{ ok: boolean; error?: string }>;
-}) {
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState("");
-  const [caption, setCaption] = useState("");
-  const [audience, setAudience] = useState<StoryAudience>("todos");
-  const [error, setError] = useState("");
-  const [busy, setBusy] = useState(false);
-
-  useEffect(
-    () => () => {
-      if (preview) URL.revokeObjectURL(preview);
-    },
-    [preview],
-  );
-
-  return (
-    <Sheet title="Publicar um story" onClose={onClose}>
-      {!file ? (
-        <label className="sticker-pick-photo">
-          <Icon name="image" />
-          <b>Escolher foto ou vídeo</b>
-          <small>Some sozinho em 24 horas.</small>
-          <input
-            type="file"
-            accept="image/jpeg,image/png,image/webp,video/mp4,video/webm"
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (!f) return;
-              const problem = storyProblem(f);
-              if (problem) {
-                setError(problem);
-                return;
-              }
-              setError("");
-              setFile(f);
-              setPreview(URL.createObjectURL(f));
-            }}
-          />
-        </label>
-      ) : (
-        <>
-          <div className="story-preview">
-            {file.type.startsWith("video") ? (
-              <video src={preview} controls playsInline />
-            ) : (
-              <img src={preview} alt="" />
-            )}
-          </div>
-          <label>
-            Escrever algo <small>opcional</small>
-            <input
-              className="input"
-              maxLength={MAX_CAPTION}
-              value={caption}
-              onChange={(e) => setCaption(e.target.value)}
-              placeholder="Conte em poucas palavras"
-            />
-          </label>
-          <p className="small-note">
-            {caption.length}/{MAX_CAPTION}
-          </p>
-          <div>
-            <b>Quem pode ver</b>
-            <div className="chips">
-              {(
-                [
-                  ["todos", "Amigos e quem me segue"],
-                  ["amizades", "Só amigos"],
-                ] as const
-              ).map(([v, label]) => (
-                <Button
-                  variant="ghost"
-                  type="button"
-                  key={v}
-                  className={"chip" + (audience === v ? " active" : "")}
-                  aria-pressed={audience === v}
-                  onClick={() => setAudience(v)}
-                >
-                  {label}
-                </Button>
-              ))}
-            </div>
-          </div>
-          <div className="sticker-maker-actions">
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => {
-                setFile(null);
-                setPreview("");
-              }}
-            >
-              Trocar
-            </Button>
-            <Button
-              type="button"
-              disabled={busy}
-              onClick={async () => {
-                setBusy(true);
-                const r = await onPublish(file, caption, audience);
-                setBusy(false);
-                if (r.ok) onClose();
-                else setError(r.error ?? "Não foi possível publicar.");
-              }}
-            >
-              {busy ? "Publicando…" : "Publicar story"}
-            </Button>
-          </div>
-        </>
-      )}
-      {error && (
-        <p role="alert" className="form-error">
-          {error}
-        </p>
-      )}
-    </Sheet>
   );
 }

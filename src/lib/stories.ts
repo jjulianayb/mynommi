@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { venceEm, quantoFalta } from "./camera";
 
 export type StoryAudience = "todos" | "amizades";
 export type Story = {
@@ -29,7 +30,7 @@ export type StoryGroup = {
 export const MAX_CAPTION = 140;
 export const MAX_STORY_PHOTO = 5 * 1024 * 1024;
 export const MAX_STORY_VIDEO = 50 * 1024 * 1024;
-const PHOTOS = ["image/jpeg", "image/png", "image/webp"];
+const PHOTOS = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
 const VIDEOS = ["video/mp4", "video/webm"];
 const BUCKET = "stories";
 
@@ -39,7 +40,9 @@ export function storyProblem(file: { type: string; size: number }): string | nul
     return file.size > MAX_STORY_PHOTO ? "A foto passa de 5 MB." : null;
   if (VIDEOS.includes(file.type))
     return file.size > MAX_STORY_VIDEO ? "O vídeo passa de 50 MB." : null;
-  return "Use foto JPG, PNG ou WebP, ou vídeo MP4 ou WebM.";
+  if (file.type.startsWith("image/"))
+    return file.size > MAX_STORY_PHOTO ? "A foto passa de 5 MB." : null;
+  return "Use uma foto ou um vídeo MP4 ou WebM.";
 }
 export const storyKind = (type: string): "foto" | "video" =>
   VIDEOS.includes(type) ? "video" : "foto";
@@ -58,12 +61,7 @@ export function storyPath(userId: string, type: string, now = Date.now()) {
 }
 
 /** Quanto falta para o story sumir. */
-export function timeLeft(expiresAt: string, now = Date.now()): string {
-  const min = Math.floor((new Date(expiresAt).getTime() - now) / 60000);
-  if (min <= 0) return "acabou";
-  if (min < 60) return `some em ${min} min`;
-  return `some em ${Math.floor(min / 60)} h`;
-}
+export const timeLeft = quantoFalta;
 
 type Row = {
   id: string;
@@ -175,6 +173,7 @@ export function useStories(me: string | null) {
       path,
       caption: caption.trim().slice(0, MAX_CAPTION),
       audience,
+      expires_at: venceEm(),
     });
     if (error) {
       await supabase.storage.from(BUCKET).remove([path]);

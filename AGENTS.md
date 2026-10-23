@@ -109,3 +109,13 @@
 - A afinidade do baralho é: soma dos pesos dos interesses em comum ×10, objetivo ×3, mesma cidade ×4, cada tribo junta ×6, cada selo em comum ×5. `em_comum` sai ordenado do mais raro para o mais comum, porque é o raro que explica o encontro.
 - `selos` é o que os amigos dizem de alguém. Só amizade aceita carimba (`pode_selar`), e `selos_do_perfil()` devolve só o selo e quantos deram — **nunca quem deu**. Quem deu pode tirar; o dono da página também, porque a página é dele.
 - Selo é sobre como a pessoa é, nunca sobre aparência: o catálogo em `src/lib/selos.ts` é fechado e tem teste que barra palavra de aparência.
+
+## Story é agora (câmera, 1 hora, filtros)
+- Story se tira na câmera do app (`camera-story.tsx`), não se escolhe da galeria. Isso também resolveu o bug do iPhone: foto de iPhone chega em HEIC e era recusada; a câmera entrega JPEG do canvas, sempre.
+- Vale 1 hora (`venceEm()` em `src/lib/camera.ts`), gravado no insert. A política do banco aceita até 24h, então o prazo é decidido aqui.
+- Filtro é id conferido contra `FILTROS`; o CSS nunca vem de fora. Tem teste que barra filtro com `url(` ou `;` entrar na lista.
+- Câmera da frente aparece espelhada para quem está tirando e sai desespelhada para quem vê — é o que todo app faz, e o contrário assusta.
+- Filtro de rosto (orelhinha, deformar o rosto) **não** existe: precisa de rastreamento facial, é outra ordem de trabalho.
+
+## Endereço de imagem (bug de 23/10)
+- `enderecoDaImagem()` em `covers.ts` é o único lugar que decide se um valor é endereço pronto (`http`, `data:`, `blob:`) ou caminho no armazenamento. Valor sem `/` nunca vira URL — era o que quebrava a moldura de ajuste (foto salva como `data:`) e o fundo (id antigo `teia-verde` virando URL).

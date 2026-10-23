@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { publicUrl } from "@/lib/covers";
+import { enderecoDaImagem } from "@/lib/covers";
 import {
   CENTRO,
   moverFoco,
@@ -36,7 +36,7 @@ export function AjustarEnquadramento({
   const [foco, setFoco] = useState<Enquadramento>(valor ?? CENTRO);
   const [salvando, setSalvando] = useState(false);
   const arrasto = useRef<{ x: number; y: number; w: number; h: number } | null>(null);
-  const src = imagem.startsWith("http") ? imagem : publicUrl(imagem);
+  const src = enderecoDaImagem(imagem);
 
   if (!imagem) return null;
 

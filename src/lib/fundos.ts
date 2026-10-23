@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { publicUrl } from "./covers";
+import { PRESET_BACKGROUNDS, enderecoDaImagem } from "./covers";
 
 /**
  * O fundo de teia: é a identidade da nommi e é o que a pessoa escolhe para a
@@ -141,8 +141,13 @@ export function estiloDoFundo(valor: string): CSSProperties {
       backgroundAttachment: "fixed",
     };
   if (!valor) return {};
+  // ids antigos de gradiente continuam funcionando para quem já escolheu um
+  const antigo = PRESET_BACKGROUNDS.find((p) => p.id === valor);
+  if (antigo) return { background: antigo.css };
+  const src = enderecoDaImagem(valor);
+  if (!src) return {};
   return {
-    backgroundImage: `url(${publicUrl(valor)})`,
+    backgroundImage: `url(${src})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
   };
@@ -165,5 +170,8 @@ export function miniaturaDoFundo(f: Fundo): CSSProperties {
 export function tomDoFundo(valor: string): "claro" | "escuro" {
   const f = fundoPorId(valor);
   if (f) return f.tom;
-  return valor ? "escuro" : "claro";
+  if (!valor) return "claro";
+  const antigo = PRESET_BACKGROUNDS.find((p) => p.id === valor);
+  if (antigo) return antigo.id === "papel" ? "claro" : "escuro";
+  return enderecoDaImagem(valor) ? "escuro" : "claro";
 }
