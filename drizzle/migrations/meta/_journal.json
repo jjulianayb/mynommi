@@ -204,6 +204,13 @@
       "when": 1792330000000,
       "tag": "0028_fundo_e_tribo_no_match",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1792400000000,
+      "tag": "0029_peso_e_selos",
+      "breakpoints": true
     }
   ]
 }

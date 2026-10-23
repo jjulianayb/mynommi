@@ -24,6 +24,8 @@ export type Candidata = {
   fundo: string;
   tribosEmComum: number;
   fotoFoco: { x: number; y: number };
+  selosEmComum: string[];
+  selosDoPovo: string[];
 };
 export type Resposta = "match" | "guardado" | "passou" | "erro";
 
@@ -45,6 +47,8 @@ type Linha = {
   ja_me_curtiu: boolean | null;
   background_path?: string | null;
   tribos_em_comum?: number | null;
+  selos_em_comum?: string[] | null;
+  selos_do_povo?: string[] | null;
   avatar_x?: number | null;
   avatar_y?: number | null;
 };
@@ -68,6 +72,8 @@ export const toCandidata = (r: Linha): Candidata => ({
   fundo: r.background_path || "",
   tribosEmComum: r.tribos_em_comum ?? 0,
   fotoFoco: { x: r.avatar_x ?? 50, y: r.avatar_y ?? 50 },
+  selosEmComum: r.selos_em_comum ?? [],
+  selosDoPovo: r.selos_do_povo ?? [],
 });
 
 /**
@@ -79,6 +85,7 @@ export function porqueApareceu(c: Candidata): string {
   if (n >= 3) return `Vocês gostam das mesmas coisas: ${c.emComum.slice(0, 3).join(", ")}`;
   if (n === 2) return `Vocês dois gostam de ${c.emComum[0]} e ${c.emComum[1]}`;
   if (n === 1) return `Vocês dois gostam de ${c.emComum[0]}`;
+  if (c.selosEmComum.length > 0) return `Os amigos de vocês dois dizem: ${c.selosEmComum[0]}`;
   if (c.tribosEmComum > 0)
     return c.tribosEmComum === 1
       ? "Vocês estão na mesma tribo"

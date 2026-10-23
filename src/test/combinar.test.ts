@@ -27,6 +27,8 @@ const base: Candidata = {
   fundo: "",
   tribosEmComum: 0,
   fotoFoco: { x: 50, y: 50 },
+  selosEmComum: [],
+  selosDoPovo: [],
 };
 
 describe("porque apareceu", () => {
@@ -98,6 +100,8 @@ describe("conversão do banco", () => {
       ja_me_curtiu: null,
       background_path: null,
       tribos_em_comum: null,
+      selos_em_comum: null,
+      selos_do_povo: null,
     });
     expect(c.nome).toBe("Alguém da nommi");
     expect(c.interesses).toEqual([]);

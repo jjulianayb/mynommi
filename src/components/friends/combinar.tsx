@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { paraCss } from "@/lib/enquadrar";
 import { estiloDoFundo, tomDoFundo } from "@/lib/fundos";
 import { figurinhaDe } from "@/lib/figurinhas";
+import { figuraDoSelo } from "@/lib/selos";
 import {
   decisaoDoArrasto,
   interessesOrdenados,
@@ -183,6 +184,19 @@ export function Combinar({ me }: { me: string }) {
           {c.tribosEmComum > 0 &&
             ` · ${c.tribosEmComum} ${c.tribosEmComum === 1 ? "tribo" : "tribos"} em comum`}
         </p>
+
+        {c.selosDoPovo.length > 0 && (
+          <div className="combinar-selos">
+            <p>Os amigos dizem</p>
+            <div>
+              {c.selosDoPovo.slice(0, 3).map((x) => (
+                <span key={x}>
+                  {figuraDoSelo(x)} {x}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="combinar-resto">
           {c.procurando && (

@@ -14,6 +14,7 @@ import { estiloDoFundo, tomDoFundo } from "@/lib/fundos";
 import { figurinhaDe } from "@/lib/figurinhas";
 import { EscolherFundo } from "./escolher-fundo";
 import { EscolherInteresses } from "./escolher-interesses";
+import { Selos } from "./selos";
 import { AjustarEnquadramento } from "./enquadrar";
 import {
   usePaginaPessoal,
@@ -218,7 +219,9 @@ export function MyNommi({ me }: { me: string }) {
         />
       </details>
 
-      <h2 className="settings-subtitle">Meus amigos dizem</h2>
+      <Selos me={me} dono={me} nome={pagina.nickname} souAmiga={false} />
+
+      <h2 className="settings-subtitle">Recados dos amigos</h2>
       <WallPanel me={me} ownerId={me} nickname={pagina.nickname} canWrite={false} />
 
       <h2 className="settings-subtitle">O que eu publiquei</h2>

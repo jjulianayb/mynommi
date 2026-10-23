@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useConnections, connectionState, otherId } from "@/lib/connections";
 import { usePeopleSearch, usePublicProfile, type PublicProfile } from "@/lib/real-profiles";
 import { StatsLine, FollowButton, WallPanel, Feed, SafetyMenu } from "./social-feed";
+import { Selos } from "./selos";
 import { connectionState as _cs } from "@/lib/connections";
 
 function Face({ p, size }: { p: PublicProfile; size: number }) {
@@ -178,6 +179,21 @@ export function PublicNommi({ id }: { id: string }) {
               </span>
             ))}
           </div>
+        )}
+        {cloudUser && (
+          <Selos
+            me={cloudUser.id}
+            dono={profile.id}
+            nome={profile.nickname}
+            souAmiga={
+              !own &&
+              con.ready &&
+              connectionState(
+                con.rows.find((r) => otherId(r, cloudUser.id) === profile.id),
+                cloudUser.id,
+              ) === "amigos"
+            }
+          />
         )}
         {!own &&
           con.ready &&

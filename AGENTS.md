@@ -103,3 +103,9 @@
 - Interesse vira figurinha por `figurinhaDe()` (`src/lib/figurinhas.ts`), que sempre devolve algo: catálogo, depois pistas por palavra, depois ✨. O dado guardado continua sendo o nome, então interesse escrito à mão continua combinando.
 - Interesses agora se editam em Meu nommi, até 12 — o limite de 3 é só do cadastro. Quanto mais interesses, melhor a fila.
 - Estar na mesma tribo conta afinidade no baralho (`tribos_em_comum`).
+
+## Peso por raridade e selos (0029)
+- `peso_dos_interesses()` dá a cada interesse `ln(1 + total de pessoas / quantas marcaram)`: comum pesa pouco, raro pesa muito, nada zera. Conta só gente real — conta de teste não mexe na régua.
+- A afinidade do baralho é: soma dos pesos dos interesses em comum ×10, objetivo ×3, mesma cidade ×4, cada tribo junta ×6, cada selo em comum ×5. `em_comum` sai ordenado do mais raro para o mais comum, porque é o raro que explica o encontro.
+- `selos` é o que os amigos dizem de alguém. Só amizade aceita carimba (`pode_selar`), e `selos_do_perfil()` devolve só o selo e quantos deram — **nunca quem deu**. Quem deu pode tirar; o dono da página também, porque a página é dele.
+- Selo é sobre como a pessoa é, nunca sobre aparência: o catálogo em `src/lib/selos.ts` é fechado e tem teste que barra palavra de aparência.
