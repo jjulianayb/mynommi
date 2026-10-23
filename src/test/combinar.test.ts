@@ -24,6 +24,9 @@ const base: Candidata = {
   afinidade: 5,
   mesmaCidade: true,
   jaMeCurtiu: false,
+  fundo: "",
+  tribosEmComum: 0,
+  fotoFoco: { x: 50, y: 50 },
 };
 
 describe("porque apareceu", () => {
@@ -93,6 +96,8 @@ describe("conversão do banco", () => {
       afinidade: null,
       mesma_cidade: null,
       ja_me_curtiu: null,
+      background_path: null,
+      tribos_em_comum: null,
     });
     expect(c.nome).toBe("Alguém da nommi");
     expect(c.interesses).toEqual([]);

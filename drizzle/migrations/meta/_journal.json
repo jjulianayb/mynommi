@@ -197,6 +197,13 @@
       "when": 1792320000000,
       "tag": "0027_interesse_sem_maiuscula",
       "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1792330000000,
+      "tag": "0028_fundo_e_tribo_no_match",
+      "breakpoints": true
     }
   ]
 }

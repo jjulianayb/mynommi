@@ -21,6 +21,9 @@ export type Candidata = {
   afinidade: number;
   mesmaCidade: boolean;
   jaMeCurtiu: boolean;
+  fundo: string;
+  tribosEmComum: number;
+  fotoFoco: { x: number; y: number };
 };
 export type Resposta = "match" | "guardado" | "passou" | "erro";
 
@@ -40,6 +43,10 @@ type Linha = {
   afinidade: number | null;
   mesma_cidade: boolean | null;
   ja_me_curtiu: boolean | null;
+  background_path?: string | null;
+  tribos_em_comum?: number | null;
+  avatar_x?: number | null;
+  avatar_y?: number | null;
 };
 
 export const toCandidata = (r: Linha): Candidata => ({
@@ -58,6 +65,9 @@ export const toCandidata = (r: Linha): Candidata => ({
   afinidade: r.afinidade ?? 0,
   mesmaCidade: r.mesma_cidade === true,
   jaMeCurtiu: r.ja_me_curtiu === true,
+  fundo: r.background_path || "",
+  tribosEmComum: r.tribos_em_comum ?? 0,
+  fotoFoco: { x: r.avatar_x ?? 50, y: r.avatar_y ?? 50 },
 });
 
 /**
@@ -69,6 +79,10 @@ export function porqueApareceu(c: Candidata): string {
   if (n >= 3) return `Vocês gostam das mesmas coisas: ${c.emComum.slice(0, 3).join(", ")}`;
   if (n === 2) return `Vocês dois gostam de ${c.emComum[0]} e ${c.emComum[1]}`;
   if (n === 1) return `Vocês dois gostam de ${c.emComum[0]}`;
+  if (c.tribosEmComum > 0)
+    return c.tribosEmComum === 1
+      ? "Vocês estão na mesma tribo"
+      : `Vocês estão em ${c.tribosEmComum} tribos juntas`;
   if (c.mesmaCidade && c.cidade) return `Está em ${c.cidade}, como você`;
   return "Chegou agora na nommi";
 }

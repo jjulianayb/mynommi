@@ -1,7 +1,9 @@
 import { useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { coverStyle } from "@/lib/covers";
+import { paraCss } from "@/lib/enquadrar";
+import { estiloDoFundo, tomDoFundo } from "@/lib/fundos";
+import { figurinhaDe } from "@/lib/figurinhas";
 import {
   decisaoDoArrasto,
   interessesOrdenados,
@@ -22,7 +24,7 @@ function Face({ c, size }: { c: Candidata; size: number }) {
       src={c.avatar}
       width={size}
       height={size}
-      style={{ width: size, height: size }}
+      style={{ width: size, height: size, objectPosition: paraCss(c.fotoFoco) }}
       alt={"Foto de " + c.nome}
     />
   ) : (
@@ -30,7 +32,7 @@ function Face({ c, size }: { c: Candidata; size: number }) {
   );
 }
 
-/** O match: ver os interesses de alguém e, se os dois quiserem, já são amizade. */
+/** O match: o que vocês têm em comum vem antes do rosto. */
 export function Combinar({ me }: { me: string }) {
   const { notify } = useFriends();
   const { fila, curiosidade, ready, responder, recarregar } = useCombinar(Boolean(me));
@@ -59,13 +61,15 @@ export function Combinar({ me }: { me: string }) {
           <Icon name="heart" />
         </span>
         <h2>Deu match!</h2>
-        <p>
-          Você e {deuMatch.nome} se escolheram. Já são amizade na nommi e a conversa está aberta.
-        </p>
+        <p>Você e {deuMatch.nome} se escolheram. Já são amizade e a conversa está aberta.</p>
         <Face c={deuMatch} size={120} />
         {deuMatch.emComum.length > 0 && (
           <p className="match-feito-comum">
-            Comecem por aí: vocês dois gostam de {deuMatch.emComum.slice(0, 2).join(" e ")}.
+            {deuMatch.emComum.slice(0, 3).map((i) => (
+              <span key={i}>
+                {figurinhaDe(i)} {i}
+              </span>
+            ))}
           </p>
         )}
         <div className="match-feito-acoes">
@@ -101,22 +105,29 @@ export function Combinar({ me }: { me: string }) {
     );
 
   const lista = interessesOrdenados(c);
-  const girar = dx / 18;
+  const outros = lista.filter((i) => !i.comum);
+  const tom = tomDoFundo(c.fundo);
 
   return (
-    <section className="combinar">
+    <section className={"combinar tom-" + tom}>
+      <div
+        className="combinar-fundo"
+        style={estiloDoFundo(c.fundo || "teia-mata")}
+        aria-hidden="true"
+      />
+
       {curiosidade > 0 && (
         <p className="combinar-curiosidade">
           <Icon name="eye" />
           {curiosidade === 1
-            ? "1 pessoa já disse que quer te conhecer. Ela está nesta fila."
-            : `${curiosidade} pessoas já disseram que querem te conhecer. Elas estão nesta fila.`}
+            ? "1 pessoa já disse que quer te conhecer"
+            : `${curiosidade} pessoas já disseram que querem te conhecer`}
         </p>
       )}
 
       <article
         className={"combinar-card" + (saindo ? " saindo-" + saindo : "")}
-        style={saindo ? undefined : { transform: `translateX(${dx}px) rotate(${girar}deg)` }}
+        style={saindo ? undefined : { transform: `translateX(${dx}px) rotate(${dx / 22}deg)` }}
         onPointerDown={(e) => {
           arrasto.current = { x0: e.clientX, largura: e.currentTarget.clientWidth };
           e.currentTarget.setPointerCapture(e.pointerId);
@@ -136,93 +147,88 @@ export function Combinar({ me }: { me: string }) {
           setDx(0);
         }}
       >
-        <div className="combinar-capa" style={coverStyle(c.capa)}>
-          {dx > 60 && <span className="combinar-marca sim">Quero conhecer</span>}
-          {dx < -60 && <span className="combinar-marca nao">Agora não</span>}
-        </div>
+        {dx > 60 && <span className="combinar-marca sim">✓</span>}
+        {dx < -60 && <span className="combinar-marca nao">✕</span>}
 
-        <div className="combinar-topo">
-          <Face c={c} size={96} />
-          <h2>
-            {c.nome}
-            {c.verificada && (
-              <span className="selo-verificada" title="Perfil conferido pela nommi">
-                <Icon name="check" />
-              </span>
-            )}
-          </h2>
-          {c.cidade && (
-            <p className="combinar-cidade">
-              <Icon name="pin" />
-              {c.cidade}
-            </p>
-          )}
-          <p className="combinar-porque">
-            <Icon name="spark" />
-            {porqueApareceu(c)}
-          </p>
-        </div>
-
-        <div className="combinar-corpo">
-          {lista.length > 0 && (
-            <div className="combinar-bloco">
-              <h3>Interesses</h3>
-              <div className="combinar-tags">
-                {lista.map((i) => (
-                  <span key={i.nome} className={i.comum ? "comum" : ""}>
-                    {i.comum && <Icon name="check" />}
-                    {i.nome}
-                  </span>
-                ))}
-              </div>
-              {c.emComum.length > 0 && (
-                <p className="small-note">O que está marcado é o que vocês dois gostam.</p>
-              )}
+        {c.emComum.length > 0 ? (
+          <>
+            <p className="combinar-chamada">Vocês dois gostam de</p>
+            <div className="combinar-nos">
+              {c.emComum.slice(0, 4).map((i) => (
+                <span key={i}>
+                  <b>{figurinhaDe(i)}</b>
+                  {i}
+                </span>
+              ))}
             </div>
+          </>
+        ) : (
+          <p className="combinar-chamada solta">{porqueApareceu(c)}</p>
+        )}
+
+        <div className="combinar-anel">
+          <Face c={c} size={150} />
+        </div>
+
+        <h2>
+          {c.nome}
+          {c.verificada && (
+            <span className="selo-verificada" title="Perfil conferido pela nommi">
+              <Icon name="check" />
+            </span>
           )}
+        </h2>
+        <p className="combinar-cidade">
+          {c.cidade || "Brasil"}
+          {c.tribosEmComum > 0 &&
+            ` · ${c.tribosEmComum} ${c.tribosEmComum === 1 ? "tribo" : "tribos"} em comum`}
+        </p>
+
+        <div className="combinar-resto">
           {c.procurando && (
-            <div className="combinar-bloco">
+            <>
               <h3>O que está procurando</h3>
               <p>{c.procurando}</p>
-            </div>
+            </>
           )}
-          {c.sobre && (
-            <div className="combinar-bloco">
-              <h3>Sobre</h3>
-              <p>{c.sobre}</p>
-            </div>
-          )}
-          {c.lugares.length > 0 && (
-            <div className="combinar-bloco">
-              <h3>Lugares que gosta</h3>
-              <div className="combinar-tags">
-                {c.lugares.slice(0, 6).map((l) => (
-                  <span key={l}>{l}</span>
-                ))}
-              </div>
+          {outros.length > 0 && (
+            <div className="combinar-outros">
+              {outros.slice(0, 6).map((i) => (
+                <span key={i.nome}>
+                  {figurinhaDe(i.nome)} {i.nome}
+                </span>
+              ))}
             </div>
           )}
           <Link className="combinar-perfil" to="/nommi/$id" params={{ id: c.userId }}>
-            Ver o perfil inteiro de {c.nome.split(" ")[0]}
+            Ver o perfil inteiro
             <Icon name="arrow" />
           </Link>
         </div>
       </article>
 
       <div className="combinar-acoes">
-        <Button variant="secondary" onClick={() => void decidir(c, false)}>
-          <Icon name="close" />
-          Agora não
-        </Button>
-        <Button onClick={() => void decidir(c, true)}>
-          <Icon name="heart" />
-          Quero conhecer
-        </Button>
+        <button
+          type="button"
+          className="decidir nao"
+          aria-label={"Agora não, " + c.nome}
+          onClick={() => void decidir(c, false)}
+        >
+          ✕
+        </button>
+        <button
+          type="button"
+          className="decidir sim"
+          aria-label={"Quero conhecer " + c.nome}
+          onClick={() => void decidir(c, true)}
+        >
+          ✓
+        </button>
       </div>
-      <p className="small-note combinar-aviso">
-        Sua resposta é sua. A pessoa só fica sabendo se ela também quiser te conhecer.
-      </p>
-      <SafetyMenu me={me} targetUserId={c.userId} targetUserName={c.nome} />
+
+      <div className="combinar-rodape">
+        <SafetyMenu me={me} targetUserId={c.userId} targetUserName={c.nome} />
+      </div>
     </section>
   );
 }
@@ -255,10 +261,12 @@ export function PessoasParaVoce({ me }: { me: string }) {
             <b>{c.nome.split(" ")[0]}</b>
             <span>
               {c.emComum.length > 0
-                ? `${c.emComum.length} em comum`
-                : c.mesmaCidade && c.cidade
-                  ? c.cidade
-                  : "Chegou agora"}
+                ? c.emComum.slice(0, 2).map(figurinhaDe).join(" ")
+                : c.tribosEmComum > 0
+                  ? "mesma tribo"
+                  : c.mesmaCidade && c.cidade
+                    ? c.cidade
+                    : "Chegou agora"}
             </span>
           </Link>
         ))}

@@ -10,6 +10,10 @@ import { MinhasEstrelas } from "./presenca";
 import { useEstrelas } from "@/lib/presenca";
 import { coverStyle } from "@/lib/covers";
 import { paraCss } from "@/lib/enquadrar";
+import { estiloDoFundo, tomDoFundo } from "@/lib/fundos";
+import { figurinhaDe } from "@/lib/figurinhas";
+import { EscolherFundo } from "./escolher-fundo";
+import { EscolherInteresses } from "./escolher-interesses";
 import { AjustarEnquadramento } from "./enquadrar";
 import {
   usePaginaPessoal,
@@ -49,6 +53,7 @@ function Face({
 export function MyNommi({ me }: { me: string }) {
   const { pagina, ready, reload } = usePaginaPessoal(me);
   const [editando, setEditando] = useState(false);
+  const [mexendoInteresses, setMexendoInteresses] = useState(false);
   const { estrelas } = useEstrelas(me);
   if (!ready) return <p className="small-note">Abrindo seu nommi…</p>;
   if (!pagina)
@@ -63,7 +68,8 @@ export function MyNommi({ me }: { me: string }) {
   const pronto = completeness(pagina);
 
   return (
-    <section className="mynommi">
+    <section className={"mynommi tom-" + tomDoFundo(pagina.background)}>
+      <div className="mynommi-fundo" style={estiloDoFundo(pagina.background)} aria-hidden="true" />
       <div
         className="mynommi-capa"
         style={{ ...coverStyle(pagina.cover), backgroundPosition: paraCss(pagina.capaFoco) }}
@@ -148,15 +154,34 @@ export function MyNommi({ me }: { me: string }) {
       )}
       {pagina.about && <p className="mynommi-sobre">{pagina.about}</p>}
 
-      {pagina.interests.length > 0 && (
-        <>
-          <h2 className="settings-subtitle">Meus interesses</h2>
-          <div className="interest-tags">
-            {pagina.interests.map((i) => (
-              <span key={i}>{i}</span>
-            ))}
-          </div>
-        </>
+      <div className="section-heading">
+        <h2>Meus interesses</h2>
+        <Button variant="ghost" size="sm" onClick={() => setMexendoInteresses((v) => !v)}>
+          <Icon name={mexendoInteresses ? "close" : "plus"} />
+          {mexendoInteresses ? "Fechar" : "Mexer"}
+        </Button>
+      </div>
+      {mexendoInteresses ? (
+        <EscolherInteresses
+          me={me}
+          atuais={pagina.interests}
+          onSalvo={() => {
+            setMexendoInteresses(false);
+            void reload();
+          }}
+        />
+      ) : pagina.interests.length > 0 ? (
+        <div className="meus-interesses">
+          {pagina.interests.map((i) => (
+            <span key={i}>
+              {figurinhaDe(i)} {i}
+            </span>
+          ))}
+        </div>
+      ) : (
+        <p className="small-note">
+          Você ainda não marcou nenhum interesse. É por eles que o match acontece.
+        </p>
       )}
 
       <div className="section-heading">
@@ -181,16 +206,17 @@ export function MyNommi({ me }: { me: string }) {
         </p>
       )}
 
-      <h2 className="settings-subtitle">Meu plano de fundo</h2>
-      <div className="cover-preview" style={coverStyle(pagina.background)}>
-        {!pagina.background && <span>Fundo padrão da nommi</span>}
-      </div>
-      <CoverEditor
-        target={{ kind: "perfil", userId: me }}
-        slot="background"
-        current={pagina.background}
-        onSaved={() => void reload()}
-      />
+      <h2 className="settings-subtitle">Meu fundo</h2>
+      <EscolherFundo me={me} atual={pagina.background} onSalvo={() => void reload()} />
+      <details className="descobrir-busca">
+        <summary>Prefiro usar uma foto minha de fundo</summary>
+        <CoverEditor
+          target={{ kind: "perfil", userId: me }}
+          slot="background"
+          current={pagina.background}
+          onSaved={() => void reload()}
+        />
+      </details>
 
       <h2 className="settings-subtitle">Meus amigos dizem</h2>
       <WallPanel me={me} ownerId={me} nickname={pagina.nickname} canWrite={false} />

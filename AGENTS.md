@@ -95,3 +95,11 @@
 - `is_test` em profiles e teias marca o que existe só para a equipe ver tela cheia. Toda função nova que liste gente ou tribo precisa repetir `(NOT is_test OR public.ve_contas_de_teste())` — a trava é no banco, não na tela. Detalhes em `scripts/contas-de-teste.md`.
 - Isso não é prova social falsa: pessoa real nunca vê conta de teste, e `pulso_da_nommi()` não conta quem é de teste.
 - Interesse em comum compara com `lower()`: "música" e "Música" são o mesmo interesse. A tela mostra a grafia de quem escreveu.
+
+## Fundo de teia, figurinhas e o match por afinidade (0028)
+- `background_path` guardava o fundo mas **nada o desenhava** — era um ajuste que não fazia nada. Agora pinta a página da pessoa e viaja no baralho: é o fundo dela que aparece atrás dela no match.
+- O fundo nunca é texto de CSS vindo do banco: o banco guarda um id (`teia-mata`, `teia-papel`…), conferido contra `FUNDOS` em `src/lib/fundos.ts`. Id desconhecido não vira estilo nenhum.
+- `tomDoFundo()` decide se o texto é claro ou escuro. Fundo novo precisa declarar o tom, senão o texto some.
+- Interesse vira figurinha por `figurinhaDe()` (`src/lib/figurinhas.ts`), que sempre devolve algo: catálogo, depois pistas por palavra, depois ✨. O dado guardado continua sendo o nome, então interesse escrito à mão continua combinando.
+- Interesses agora se editam em Meu nommi, até 12 — o limite de 3 é só do cadastro. Quanto mais interesses, melhor a fila.
+- Estar na mesma tribo conta afinidade no baralho (`tribos_em_comum`).
