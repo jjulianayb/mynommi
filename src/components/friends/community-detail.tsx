@@ -113,6 +113,7 @@ export function CommunityDetail({
   posts,
   coverPath,
   coverEditor,
+  pedidos,
   secrets,
 }: {
   tribo: Tribo;
@@ -128,6 +129,7 @@ export function CommunityDetail({
   posts?: ReactNode;
   coverPath?: string;
   coverEditor?: ReactNode;
+  pedidos?: ReactNode;
   secrets?: ReactNode;
 }) {
   const [tab, setTab] = useState("Posts");
@@ -143,6 +145,7 @@ export function CommunityDetail({
         )}
         {coverEditor && <span className="community-cover-edit">{coverEditor}</span>}
       </div>
+      {pedidos}
       <section className="community-summary">
         <span className="community-avatar">
           <Icon name={tribo.icon} />

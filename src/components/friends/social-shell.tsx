@@ -10,6 +10,7 @@ import rioPhoto from "@/assets/welcome-rio.jpg";
 import { useNaoLidas } from "@/lib/direct-messages";
 import { useAvisosNaoLidos } from "@/lib/avisos";
 import { Tour } from "./tour";
+import { VersaoNova } from "./versao-nova";
 import { esquecerTour, tourJaVisto } from "@/lib/tour";
 
 /** Cada item da navegação vira um alvo do tour. */
@@ -185,6 +186,7 @@ export function SocialShell({ children }: { children: ReactNode }) {
           </Button>
         ))}
       </nav>
+      <VersaoNova />
       {tourAberto && cloudUser && <Tour me={cloudUser.id} onFim={() => setTourAberto(false)} />}
       {drawer && (
         <Sheet title="Seu nommi" side="right" onClose={() => setDrawer(false)}>

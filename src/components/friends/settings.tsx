@@ -180,13 +180,19 @@ export function Settings({ section }: { section: string }) {
               Trocar foto
               <input
                 type="file"
-                accept="image/jpeg,image/png,image/webp"
+                accept="image/*"
                 aria-label="Trocar foto de perfil"
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (!file) return;
-                  if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size > 2097152) {
-                    setError("Escolha uma foto JPG, PNG ou WebP de até 2 MB.");
+                  // Foto de iPhone chega em HEIC e as novas passam de 2 MB.
+                  // O canvas resolve as duas coisas: lê e devolve JPEG pequeno.
+                  if (!file.type.startsWith("image/")) {
+                    setError("Esse arquivo não é uma foto.");
+                    return;
+                  }
+                  if (file.size > 25 * 1024 * 1024) {
+                    setError("Essa foto é enorme. Escolha uma de até 25 MB.");
                     return;
                   }
                   resizePhoto(file)
@@ -204,7 +210,9 @@ export function Settings({ section }: { section: string }) {
                           : "Foto atualizada neste navegador.",
                       );
                     })
-                    .catch(() => setError("Não foi possível ler essa foto."));
+                    .catch(() =>
+                      setError("Não consegui abrir essa foto. Tente outra, ou tire uma na hora."),
+                    );
                 }}
               />
             </label>
@@ -728,6 +736,7 @@ export function CreateGroup() {
   const [startsAt, setStartsAt] = useState("");
   const [limited, setLimited] = useState(false);
   const [soEu, setSoEu] = useState(false);
+  const [fechada, setFechada] = useState(false);
   const [capacity, setCapacity] = useState(6);
   const [busy, setBusy] = useState(false);
   const real = !!cloudUser && !demoMode;
@@ -786,6 +795,7 @@ export function CreateGroup() {
                       city,
                       place,
                       whoPosts: soEu ? "criadora" : "todos",
+                      entrada: fechada ? "fechada" : "aberta",
                     },
                     cloudUser!.id,
                     state.nickname || "nommi",
@@ -899,6 +909,24 @@ export function CreateGroup() {
                 type="checkbox"
                 checked={soEu}
                 onChange={(e) => setSoEu(e.target.checked)}
+              />
+            </div>
+          )}
+          {real && !isRole && (
+            <div className="setting-toggle">
+              <div>
+                <h2>Tribo fechada</h2>
+                <p>
+                  {fechada
+                    ? "Quem quiser entrar manda um pedido e você decide."
+                    : "Qualquer pessoa entra na hora, sem pedir."}
+                </p>
+              </div>
+              <input
+                aria-label="Tribo fechada"
+                type="checkbox"
+                checked={fechada}
+                onChange={(e) => setFechada(e.target.checked)}
               />
             </div>
           )}

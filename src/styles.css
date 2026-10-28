@@ -908,3 +908,27 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .feed-list>*{animation:sobe-suave .45s cubic-bezier(.2,.8,.2,1) both}
 .feed-list>*:nth-child(2){animation-delay:.06s}.feed-list>*:nth-child(3){animation-delay:.12s}.feed-list>*:nth-child(n+4){animation-delay:.18s}
 @media (prefers-reduced-motion:reduce){.welcome-fluida .welcome-rio-content>*,.screen,.feed-list>*{animation:none}.friends-app a:active,.friends-app button:active,.social-app a:active,.social-app button:active{transform:none}}
+/* Aviso de versão nova */
+.versao-nova{position:fixed;left:12px;right:12px;bottom:84px;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--foreground);color:var(--background);border-radius:16px;padding:11px 12px 11px 14px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.versao-nova span{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600}
+.versao-nova svg{width:17px;height:17px;flex:none}
+.versao-nova button{border:0;border-radius:999px;background:var(--sunshine);color:#1b1500;font-weight:800;font-size:13.5px;padding:0 14px;min-height:38px;cursor:pointer}
+
+/* Gravar vídeo no story */
+.camera-acoes{position:relative;align-items:center;gap:16px}
+.camera-gravar{position:absolute;right:0;border:1.5px solid var(--border);background:var(--card);border-radius:999px;font-size:13.5px;font-weight:700;min-height:44px;padding:0 16px;cursor:pointer}
+.camera-gravar.gravando{background:var(--erro);color:#fff;border-color:var(--erro)}
+.camera-gravando{position:absolute;left:12px;top:12px;background:rgba(179,38,30,.92);color:#fff;font-size:12.5px;font-weight:800;padding:6px 11px;border-radius:999px;letter-spacing:.04em}
+
+/* Porta da tribo: pedidos para entrar */
+.porta-espera{display:grid;gap:7px;justify-items:start}
+.pedidos{display:grid;gap:10px;margin:12px 0}
+.pedidos-conta{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--coral);color:#fff;font-size:12px;font-weight:800;margin-left:7px}
+.pedido{display:flex;gap:11px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:12px}
+.pedido .story-face,.pedido .avatar{border-radius:50%;object-fit:cover;flex:none}
+.pedido-quem{flex:1;min-width:0;display:grid;gap:3px}
+.pedido-quem b{font-size:15px}
+.pedido-quem small{font-size:12px;color:var(--muted-foreground)}
+.pedido-quem p{font-size:13.5px;line-height:1.45;background:var(--paper);border-radius:10px;padding:7px 10px;margin-top:3px}
+.pedido-acoes{display:grid;gap:6px;flex:none}
+.pedido-acoes button{min-height:40px}

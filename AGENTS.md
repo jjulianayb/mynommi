@@ -119,3 +119,16 @@
 
 ## Endereço de imagem (bug de 23/10)
 - `enderecoDaImagem()` em `covers.ts` é o único lugar que decide se um valor é endereço pronto (`http`, `data:`, `blob:`) ou caminho no armazenamento. Valor sem `/` nunca vira URL — era o que quebrava a moldura de ajuste (foto salva como `data:`) e o fundo (id antigo `teia-verde` virando URL).
+
+## Versão nova (bug da Ana, 26/10)
+- O app é uma página só e não tem service worker. Quem põe a nommi na tela de início fica com ela aberta por dias: a Ana testou uma correção que já estava publicada e viu a tela velha.
+- `vite.config.ts` carimba cada build em `__NOMMI_VERSAO__` e grava `public/versao.json`. `useVersaoNova()` compara ao abrir, ao voltar para o app e a cada 10 min, e a barra oferece atualizar. Build novo = carimbo novo; não mexer num sem o outro.
+
+## Foto e vídeo que o celular manda (26/10)
+- Foto de iPhone chega em HEIC e as novas passam de 2 MB. A tela de perfil aceitava só JPG/PNG/WebP até 2 MB e recusava — `resizePhoto()` já resolvia os dois casos pelo canvas, o que barrava era a conferência antes dela. Regra: conferir só se é imagem e um teto generoso; o canvas decide o resto.
+- Vídeo da galeria de iPhone é .mov e não toca no Android. Por isso o story grava o vídeo na própria câmera (`MediaRecorder` com o formato que `formatoDeGravacao()` encontra): o formato que o navegador grava é o que ele sabe tocar.
+
+## Tribo aberta ou fechada (0030)
+- `teias.entrada` é 'aberta' ou 'fechada'. A política de INSERT em `teia_members` confere `tribo_e_aberta()`: em tribo fechada ninguém entra sozinho, nem pelo cliente.
+- Pedido vira participação só por `responder_pedido()`, que confere se quem responde é a criadora.
+- `portaDaTribo()` em `src/lib/porta-da-tribo.ts` é o único lugar que decide o que o botão diz. Tela nova que mostre tribo usa essa função, não um `if` próprio.

@@ -2,10 +2,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   FILTRO_PADRAO,
+  SEGUNDOS_DE_VIDEO,
+  contagemDaGravacao,
+  desenharQuadro,
+  extensaoDoVideo,
   filtroCss,
   filtrosDoGrupo,
+  formatoDeGravacao,
   gruposDeFiltro,
-  desenharQuadro,
   tamanhoDoStory,
 } from "@/lib/camera";
 import { MAX_CAPTION, type StoryAudience } from "@/lib/stories";
@@ -31,6 +35,11 @@ export function CameraStory({ onClose, onPublish }: { onClose: () => void; onPub
   const [audience, setAudience] = useState<StoryAudience>("todos");
   const [erro, setErro] = useState("");
   const [enviando, setEnviando] = useState(false);
+  const [video2, setVideo2] = useState<{ url: string; file: File } | null>(null);
+  const [gravando, setGravando] = useState(false);
+  const [contagem, setContagem] = useState("0:00");
+  const gravador = useRef<MediaRecorder | null>(null);
+  const relogio = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const desligar = useCallback(() => {
     stream.current?.getTracks().forEach((t) => t.stop());
@@ -58,15 +67,56 @@ export function CameraStory({ onClose, onPublish }: { onClose: () => void; onPub
   }, [frente, desligar]);
 
   useEffect(() => {
-    if (!foto) void ligar();
+    if (!foto && !video2) void ligar();
     return desligar;
-  }, [ligar, desligar, foto]);
+  }, [ligar, desligar, foto, video2]);
 
   useEffect(
     () => () => {
       if (foto) URL.revokeObjectURL(foto.url);
     },
     [foto],
+  );
+
+  function pararVideo() {
+    if (gravador.current?.state === "recording") gravador.current.stop();
+  }
+
+  function gravarVideo() {
+    const s = stream.current;
+    const tipo = formatoDeGravacao();
+    if (!s || !tipo) {
+      setErro("Seu navegador não grava vídeo. Dá para tirar foto normalmente.");
+      return;
+    }
+    const pedacos: Blob[] = [];
+    const rec = new MediaRecorder(s, { mimeType: tipo });
+    gravador.current = rec;
+    rec.ondataavailable = (e) => e.data.size && pedacos.push(e.data);
+    rec.onstop = () => {
+      if (relogio.current) clearInterval(relogio.current);
+      setGravando(false);
+      desligar();
+      const blob = new Blob(pedacos, { type: tipo });
+      const file = new File([blob], `story.${extensaoDoVideo(tipo)}`, { type: tipo });
+      setVideo2({ url: URL.createObjectURL(blob), file });
+    };
+    const inicio = Date.now();
+    rec.start();
+    setGravando(true);
+    setContagem("0:00");
+    relogio.current = setInterval(() => {
+      const { texto, acabou } = contagemDaGravacao(Date.now() - inicio);
+      setContagem(texto);
+      if (acabou) pararVideo();
+    }, 250);
+  }
+
+  useEffect(
+    () => () => {
+      if (relogio.current) clearInterval(relogio.current);
+    },
+    [],
   );
 
   async function tirar() {
@@ -101,7 +151,9 @@ export function CameraStory({ onClose, onPublish }: { onClose: () => void; onPub
       {erro && <p className="form-error">{erro}</p>}
 
       <div className="camera-palco">
-        {foto ? (
+        {video2 ? (
+          <video src={video2.url} className="camera-previa" controls playsInline />
+        ) : foto ? (
           <img src={foto.url} alt="Prévia do seu story" className="camera-previa" />
         ) : (
           <video
@@ -116,7 +168,8 @@ export function CameraStory({ onClose, onPublish }: { onClose: () => void; onPub
             autoPlay
           />
         )}
-        {!foto && !erro && (
+        {gravando && <span className="camera-gravando">● {contagem}</span>}
+        {!foto && !video2 && !erro && (
           <button
             type="button"
             className="camera-virar"
@@ -128,7 +181,7 @@ export function CameraStory({ onClose, onPublish }: { onClose: () => void; onPub
         )}
       </div>
 
-      {!foto ? (
+      {!foto && !video2 ? (
         <>
           <div className="filtros">
             {gruposDeFiltro().map((g) => (
@@ -159,7 +212,10 @@ export function CameraStory({ onClose, onPublish }: { onClose: () => void; onPub
               onClick={() => void tirar()}
             />
           </div>
-          <p className="small-note">Some em 1 hora. É o agora, não o álbum da semana.</p>
+          <p className="small-note">
+            Foto ou vídeo de até {SEGUNDOS_DE_VIDEO} segundos. Some em 1 hora — é o agora, não o
+            álbum da semana.
+          </p>
         </>
       ) : (
         <>
@@ -194,8 +250,10 @@ export function CameraStory({ onClose, onPublish }: { onClose: () => void; onPub
               type="button"
               variant="secondary"
               onClick={() => {
-                URL.revokeObjectURL(foto.url);
+                if (foto) URL.revokeObjectURL(foto.url);
+                if (video2) URL.revokeObjectURL(video2.url);
                 setFoto(null);
+                setVideo2(null);
               }}
             >
               Tirar outra
@@ -205,7 +263,9 @@ export function CameraStory({ onClose, onPublish }: { onClose: () => void; onPub
               disabled={enviando}
               onClick={async () => {
                 setEnviando(true);
-                const r = await onPublish(foto.file, caption, audience);
+                const escolhido = video2 ?? foto;
+                if (!escolhido) return;
+                const r = await onPublish(escolhido.file, caption, audience);
                 setEnviando(false);
                 if (r.ok) {
                   notify("Story no ar. Some em 1 hora.");

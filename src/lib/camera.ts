@@ -114,3 +114,28 @@ export function tamanhoDoStory(
   const escala = Math.min(1, max / Math.max(l, a));
   return { w: Math.round(l * escala), h: Math.round(a * escala) };
 }
+
+/** Quanto tempo o story de vídeo pode ter. Mais que isso ninguém assiste. */
+export const SEGUNDOS_DE_VIDEO = 20;
+
+/**
+ * O formato que o próprio navegador grava é o formato que ele sabe tocar.
+ * Por isso o vídeo do story é gravado aqui, e não trazido da galeria:
+ * vídeo de iPhone vem em .mov e não abre no Android.
+ */
+export function formatoDeGravacao(
+  suportado: (t: string) => boolean = (t) =>
+    typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(t),
+): string | null {
+  for (const t of ["video/mp4", "video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"])
+    if (suportado(t)) return t;
+  return null;
+}
+
+export const extensaoDoVideo = (tipo: string) => (tipo.startsWith("video/mp4") ? "mp4" : "webm");
+
+/** O quanto já gravou, em palavras, e se já deu o tempo. */
+export function contagemDaGravacao(ms: number, limite = SEGUNDOS_DE_VIDEO) {
+  const seg = Math.min(limite, Math.floor(ms / 1000));
+  return { texto: `0:${String(seg).padStart(2, "0")}`, acabou: seg >= limite };
+}

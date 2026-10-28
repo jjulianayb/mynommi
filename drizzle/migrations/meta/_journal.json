@@ -211,6 +211,13 @@
       "when": 1792400000000,
       "tag": "0029_peso_e_selos",
       "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1793100000000,
+      "tag": "0030_tribo_fechada",
+      "breakpoints": true
     }
   ]
 }

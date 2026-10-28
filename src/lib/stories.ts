@@ -31,30 +31,30 @@ export const MAX_CAPTION = 140;
 export const MAX_STORY_PHOTO = 5 * 1024 * 1024;
 export const MAX_STORY_VIDEO = 50 * 1024 * 1024;
 const PHOTOS = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
-const VIDEOS = ["video/mp4", "video/webm"];
+const VIDEOS = ["video/mp4", "video/webm", "video/quicktime", "video/x-m4v", "video/3gpp"];
 const BUCKET = "stories";
 
 /** Confere o arquivo do story. Devolve o erro em português ou null. */
 export function storyProblem(file: { type: string; size: number }): string | null {
   if (PHOTOS.includes(file.type))
     return file.size > MAX_STORY_PHOTO ? "A foto passa de 5 MB." : null;
-  if (VIDEOS.includes(file.type))
+  if (VIDEOS.includes(file.type) || file.type.startsWith("video/"))
     return file.size > MAX_STORY_VIDEO ? "O vídeo passa de 50 MB." : null;
   if (file.type.startsWith("image/"))
     return file.size > MAX_STORY_PHOTO ? "A foto passa de 5 MB." : null;
   return "Use uma foto ou um vídeo MP4 ou WebM.";
 }
 export const storyKind = (type: string): "foto" | "video" =>
-  VIDEOS.includes(type) ? "video" : "foto";
+  type.startsWith("video/") ? "video" : "foto";
 export function storyPath(userId: string, type: string, now = Date.now()) {
   const ext =
     type === "image/png"
       ? "png"
       : type === "image/webp"
         ? "webp"
-        : type === "video/mp4"
+        : type.startsWith("video/mp4")
           ? "mp4"
-          : type === "video/webm"
+          : type.startsWith("video/")
             ? "webm"
             : "jpg";
   return `${userId}/${now}-${Math.random().toString(36).slice(2, 8)}.${ext}`;

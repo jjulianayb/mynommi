@@ -16,6 +16,8 @@ import { CoverEditor } from "./cover-editor";
 import { useTeiaCovers } from "@/lib/covers";
 import { useRoles } from "@/lib/roles";
 import { Combinar, PessoasParaVoce } from "./combinar";
+import { BotaoDaPorta, PedidosDaTribo } from "./porta-da-tribo";
+import type { MeuPedido } from "@/lib/porta-da-tribo";
 import { chegadaJaVista, esconderChegada } from "@/lib/chegada-vista";
 import { PeopleSearch } from "./real-people";
 import { momentPhoto } from "@/lib/friends-photos";
@@ -1186,17 +1188,21 @@ function RealGroups({ userId }: { userId: string }) {
                 <p className="small-note">Criada por {r.creator_nickname}</p>
               )}
               <div className="group-card-bottom">
-                <Button
-                  onClick={async () => {
+                <BotaoDaPorta
+                  me={userId}
+                  teiaId={r.id}
+                  entrada={r.entrada === "fechada" ? "fechada" : "aberta"}
+                  meuPedido={(r.meu_pedido as MeuPedido) ?? null}
+                  souMembro={!!r.i_am_member}
+                  souCriadora={!!r.i_am_creator}
+                  aoPedir={() => void real.reload()}
+                  aoEntrar={async () => {
                     if (await real.join(r.id, state.nickname || "nommi")) {
                       notify("Você entrou! Diga oi para a tribo.");
                       void navigate({ to: "/grupos/$id", params: { id: String(r.id) } });
                     } else notify("Não deu para entrar agora. Tente de novo.");
                   }}
-                >
-                  <Icon name="plus" />
-                  Entrar
-                </Button>
+                />
               </div>
             </article>
           ))}
@@ -1577,6 +1583,11 @@ export function GroupDetail({ id }: { id: number }) {
               nickname={state.nickname || "nommi"}
               canPost={realTeia.row?.i_can_post !== false}
             />
+          ) : undefined
+        }
+        pedidos={
+          amCreator && cloudUser ? (
+            <PedidosDaTribo teiaId={id} souCriadora={amCreator} />
           ) : undefined
         }
         coverPath={covers.cover}

@@ -29,6 +29,9 @@ export type RealTeiaRow = {
   capacity?: number | null;
   going_count?: number;
   i_am_going?: boolean;
+  entrada?: string;
+  meu_pedido?: string | null;
+  pedidos_abertos?: number;
 };
 
 /** Converte uma tribo salva no servidor para o formato usado pelas telas. */
@@ -104,12 +107,13 @@ export async function createRealTeia(
     when?: string;
     about?: string;
     whoPosts?: "todos" | "criadora";
+    entrada?: "aberta" | "fechada";
   },
   userId: string,
   nickname: string,
 ) {
-  const { data, error } = await supabase
-    .from("teias")
+  // entrada ainda não está em types.ts
+  const { data, error } = await (supabase.from("teias") as ReturnType<typeof supabase.from>)
     .insert({
       kind: input.kind,
       name: input.name.trim().slice(0, 60),
@@ -122,6 +126,7 @@ export async function createRealTeia(
       creator_nickname: nickname.slice(0, 40),
       about: (input.about ?? "").trim().slice(0, 280),
       who_posts: input.whoPosts ?? "todos",
+      entrada: input.entrada ?? "aberta",
     })
     .select("id")
     .single();
