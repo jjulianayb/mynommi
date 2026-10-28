@@ -15,7 +15,7 @@ import { OtherProfileMenu } from "./social-actions";
 import { ageOn } from "@/lib/nomi-validation";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Avatar, Icon, Sticker, StickerPicker } from "./art";
+import { SemFoto, Avatar, Icon, Sticker, StickerPicker } from "./art";
 import { useFriends } from "./store";
 import { PartnerCommunity } from "./business";
 import { PartnerIdeas } from "./meetup-ideas";
@@ -533,7 +533,7 @@ export function Signup() {
     <div className="signup-wrap">
       <Heading title="Vamos montar seu perfil" label="AMIZADES COMEÇAM COM UM OI" />
       <div className="signup-avatar">
-        <Avatar id={3} size={96} />
+        <SemFoto size={96} />
         <Sticker id={0} size={66} />
       </div>
       <form

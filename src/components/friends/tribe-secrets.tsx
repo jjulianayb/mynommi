@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Avatar, Icon } from "./art";
+import { SemFoto, Avatar, Icon } from "./art";
 import { EmptyState } from "./surfaces";
 import { SafetyMenu } from "./social-feed";
 import { useSecrets, timeLeft, PRAZOS, MAX_SECRET, DIAS_PADRAO } from "@/lib/secrets";
@@ -10,7 +10,7 @@ function Face({ avatar, size = 36 }: { avatar: string; size?: number }) {
   return avatar ? (
     <img className="story-face" src={avatar} alt="" width={size} height={size} />
   ) : (
-    <Avatar id={3} size={size} />
+    <SemFoto size={size} />
   );
 }
 

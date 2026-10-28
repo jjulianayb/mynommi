@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Avatar, Icon } from "./art";
+import { SemFoto, Avatar, Icon } from "./art";
 import { ChatSticker, ChatStickerTray } from "./chat-stickers";
 import { Esqueleto, EmptyState } from "./surfaces";
 import {
@@ -18,7 +18,7 @@ function Face({ avatar, size = 48 }: { avatar: string; size?: number }) {
   return avatar ? (
     <img className="story-face" src={avatar} alt="" width={size} height={size} />
   ) : (
-    <Avatar id={3} size={size} />
+    <SemFoto size={size} />
   );
 }
 

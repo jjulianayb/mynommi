@@ -13,7 +13,7 @@ import {
   useCombinar,
   type Candidata,
 } from "@/lib/combinar";
-import { Avatar, Icon } from "./art";
+import { SemFoto, Avatar, Icon } from "./art";
 import { Esqueleto, EmptyState } from "./surfaces";
 import { SafetyMenu } from "./social-feed";
 import { useFriends } from "./store";
@@ -29,7 +29,7 @@ function Face({ c, size }: { c: Candidata; size: number }) {
       alt={"Foto de " + c.nome}
     />
   ) : (
-    <Avatar id={3} size={size} />
+    <SemFoto nome={c.nome} size={size} />
   );
 }
 

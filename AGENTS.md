@@ -142,3 +142,8 @@
 - Decisão da Ju: muita gente entra numa tribo só para conversar e fazer amizade; marcar rolê é opcional. O match é o outro caminho da amizade, e vale sozinho.
 - Por isso `faseDaTribo()` diz quem está lá ("5 pessoas aqui"), nunca o que falta para marcar. A meta da tribo, quando existe, entra como convite, nunca como pendência. Tem teste que barra as palavras "roda", "encontro" e "marcar" voltarem para essa frase.
 - A chegada explica os dois caminhos — match e conversa na tribo — e põe o rolê como "quando der vontade".
+
+## Sem foto não é foto de outra pessoa (Felipe, 26/10)
+- O padrão de quem não tem foto era `<Avatar id={3} />`, que desenha a **dani**, uma pessoa real do conjunto da apresentação. O Felipe criou conta e viu o rosto de uma desconhecida no perfil dele.
+- Agora é `<SemFoto nome={...} />`: inicial da pessoa, cor sempre a mesma para o mesmo nome, e um desenho neutro quando não há nome. `personPhoto` só pode ser usado para gente da apresentação, nunca como padrão de conta real.
+- Contraste: dentro de `.cenario-conteudo` (cadastro sobre a foto do Rio), chip branco herdava texto claro e sumia. As regras de chip agora são explícitas ali.

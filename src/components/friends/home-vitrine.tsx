@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Avatar, Icon } from "./art";
+import { SemFoto, Avatar, Icon } from "./art";
 import { personPhoto } from "@/lib/friends-photos";
 import welcomeRio from "@/assets/welcome-rio.jpg";
 import type { Person } from "@/lib/friends-data";
@@ -59,11 +59,7 @@ export function VitrineTop({
       <div className="vitrine-veu">
         <div className="vitrine-linha">
           <Link to="/perfil" className="vitrine-avatar" aria-label="Abrir meu nommi">
-            {avatar ? (
-              <img src={avatar} alt="" width={64} height={64} />
-            ) : (
-              <Avatar id={3} size={64} />
-            )}
+            {avatar ? <img src={avatar} alt="" width={64} height={64} /> : <SemFoto size={64} />}
           </Link>
           <div className="vitrine-quem">
             <h1>{nickname ? "Oi, " + nickname + "!" : "Chega mais!"}</h1>

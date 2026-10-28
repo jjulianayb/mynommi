@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Avatar, Icon } from "./art";
+import { SemFoto, Avatar, Icon } from "./art";
 import { momentPhoto } from "@/lib/friends-photos";
 import type { Tribo } from "@/lib/tribos";
 import { people } from "@/lib/friends-data";
@@ -65,7 +65,7 @@ function DemoPost({
       </div>
       {comments.map((c, i) => (
         <div className="community-comment" key={i}>
-          <Avatar id={3} size={28} />
+          <SemFoto size={28} />
           <p>
             <b>{nickname || "Você"}</b>
             <br />
@@ -82,7 +82,7 @@ function DemoPost({
           setComment("");
         }}
       >
-        <Avatar id={3} size={28} />
+        <SemFoto size={28} />
         <input
           className="input"
           aria-label="Comentário na publicação"

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Avatar, Icon } from "./art";
+import { SemFoto, Avatar, Icon } from "./art";
 import { Esqueleto, EmptyState, Sheet } from "./surfaces";
 import { useFriends } from "./store";
 import { CoverEditor } from "./cover-editor";
@@ -29,10 +29,12 @@ import {
 
 function Face({
   avatar,
+  nome = "",
   size = 108,
   foco,
 }: {
   avatar: string;
+  nome?: string;
   size?: number;
   foco?: { x: number; y: number };
 }) {
@@ -46,7 +48,7 @@ function Face({
       style={foco ? { objectPosition: paraCss(foco) } : undefined}
     />
   ) : (
-    <Avatar id={3} size={size} />
+    <SemFoto nome={nome} size={size} />
   );
 }
 
@@ -95,7 +97,7 @@ export function MyNommi({ me }: { me: string }) {
 
       <div className="mynommi-topo">
         <span className="mynommi-foto-wrap">
-          <Face avatar={pagina.avatar} foco={pagina.fotoFoco} />
+          <Face avatar={pagina.avatar} nome={pagina.nickname} foco={pagina.fotoFoco} />
           {pagina.avatar && (
             <AjustarEnquadramento
               me={me}

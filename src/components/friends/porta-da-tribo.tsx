@@ -10,7 +10,7 @@ import {
   type Entrada,
   type MeuPedido,
 } from "@/lib/porta-da-tribo";
-import { Avatar, Icon } from "./art";
+import { SemFoto, Avatar, Icon } from "./art";
 import { Sheet } from "./surfaces";
 import { useFriends } from "./store";
 
@@ -146,7 +146,7 @@ export function PedidosDaTribo({
               height={48}
             />
           ) : (
-            <Avatar id={3} size={48} />
+            <SemFoto nome={p.nome} size={48} />
           )}
           <div className="pedido-quem">
             <b>{p.nome}</b>

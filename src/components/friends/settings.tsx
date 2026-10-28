@@ -10,7 +10,7 @@ import { CoverEditor } from "./cover-editor";
 import { coverStyle } from "@/lib/covers";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Avatar, Icon, Sticker } from "./art";
+import { SemFoto, Avatar, Icon, Sticker } from "./art";
 import { Sheet, EmptyState } from "./surfaces";
 import { useFriends } from "./store";
 import { useDemoSession } from "./session";
@@ -177,7 +177,7 @@ export function Settings({ section }: { section: string }) {
             {state.photo ? (
               <img src={state.photo} alt="Sua foto de perfil" />
             ) : (
-              <Avatar id={3} size={96} />
+              <SemFoto size={96} />
             )}
             <FotoInstantanea
               onPronta={async (jpeg) => {
@@ -731,7 +731,7 @@ export function CreateGroup() {
       </p>
       <div className="action-art">
         <Avatar id={7} size={80} />
-        <Avatar id={3} size={104} />
+        <SemFoto size={104} />
         <Avatar id={4} size={80} />
       </div>
       {!demoMode && !cloudUser ? (

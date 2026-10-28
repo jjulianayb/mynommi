@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import { coverStyle } from "@/lib/covers";
 import { Button } from "@/components/ui/button";
-import { Avatar, Icon } from "./art";
+import { SemFoto, Avatar, Icon } from "./art";
 import { Esqueleto, EmptyState } from "./surfaces";
 import { useFriends } from "./store";
 import { useDemoSession } from "./session";
@@ -24,7 +24,7 @@ function Face({ p, size }: { p: PublicProfile; size: number }) {
       alt={"Foto de " + p.nickname}
     />
   ) : (
-    <Avatar id={3} size={size} />
+    <SemFoto nome={p.nickname} size={size} />
   );
 }
 
@@ -353,7 +353,7 @@ export function MyFriends() {
   if (!con.ready) return <p className="small-note">Carregando…</p>;
   const name = (id: string) => people[id]?.nickname || "Um nommi";
   const face = (id: string) =>
-    people[id] ? <Face p={people[id]} size={48} /> : <Avatar id={3} size={48} />;
+    people[id] ? <Face p={people[id]} size={48} /> : <SemFoto size={48} />;
   const received = con.rows.filter((r) => r.status === "pendente" && r.addressee_id === me);
   const sent = con.rows.filter((r) => r.status === "pendente" && r.requester_id === me);
   const friends = con.rows.filter((r) => r.status === "aceita");

@@ -16,6 +16,7 @@ import {
   type RadarNearby,
 } from "@/lib/radar";
 import { SAMPLE_BOOSTED_PEOPLE } from "@/lib/credits";
+import { SemFoto } from "./art";
 import {
   ACTIVITIES,
   PLACES,
@@ -303,7 +304,7 @@ export function RadarSection() {
             <span className="radar-ring r2" />
             <span className="radar-ring r3" />
             <div className="radar-me">
-              <Avatar id={3} size={56} />
+              <SemFoto size={56} />
               <small>Você</small>
             </div>
             {nearby.slice(0, 6).map((n, i) => {
@@ -490,7 +491,7 @@ function RealNearby({ coords, me }: { coords: { lat: number; lng: number } | nul
               {r.avatar_url ? (
                 <img className="story-face" src={r.avatar_url} alt="" width={48} height={48} />
               ) : (
-                <Avatar id={3} size={48} />
+                <SemFoto size={48} />
               )}
               <div>
                 <h3>{r.nickname || "nommi"}</h3>

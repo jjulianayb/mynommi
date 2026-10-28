@@ -47,7 +47,7 @@ import {
   type ConnectChoice,
 } from "@/lib/today";
 import { Button } from "@/components/ui/button";
-import { Avatar, Icon, Sticker, Cover } from "./art";
+import { SemFoto, Avatar, Icon, Sticker, Cover } from "./art";
 import { useFriends } from "./store";
 import { ChatSticker, ChatStickerTray, SaveStickerButton } from "./chat-stickers";
 import {
@@ -261,7 +261,7 @@ function Match({ person, onClose }: { person: Person; onClose: () => void }) {
         <Icon name="spark" />
         <h2>Vocês se encontraram na mesma tribo!</h2>
         <div className="match-pair">
-          <Avatar id={3} size={112} />
+          <SemFoto size={112} />
           <Avatar id={person.id} size={112} />
         </div>
         <h3>Tribo em comum.</h3>
@@ -1387,8 +1387,7 @@ export function GroupDetail({ id }: { id: number }) {
   const [kind, setKind] = useState("Karaokê");
   const [points, setPoints] = useState(20);
   const [partner, setPartner] = useState(0);
-  if (cloud && id >= 100000 && !realTeia.ready)
-    return <Esqueleto tipo="perfil" />;
+  if (cloud && id >= 100000 && !realTeia.ready) return <Esqueleto tipo="perfil" />;
   if (!g || (!demoMode && !cloud && !isMember(state, id)))
     return (
       <EmptyState

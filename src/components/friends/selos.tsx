@@ -59,7 +59,9 @@ export function Selos({
                     type="button"
                     aria-label={"Tirar o selo " + s.selo}
                     onClick={async () =>
-                      notify((await tirar(me, s.selo)) ? "Selo tirado." : "Não deu para tirar agora.")
+                      notify(
+                        (await tirar(me, s.selo)) ? "Selo tirado." : "Não deu para tirar agora.",
+                      )
                     }
                   >
                     ✕

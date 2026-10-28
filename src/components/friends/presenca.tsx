@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Avatar, Icon } from "./art";
+import { SemFoto, Avatar, Icon } from "./art";
 import { useFriends } from "./store";
 import { usePresencas, janelaAberta, fraseDaPresenca, recadoDaConfirmacao } from "@/lib/presenca";
 
@@ -8,7 +8,7 @@ function Face({ avatar, size = 38 }: { avatar: string; size?: number }) {
   return avatar ? (
     <img className="story-face" src={avatar} alt="" width={size} height={size} />
   ) : (
-    <Avatar id={3} size={size} />
+    <SemFoto size={size} />
   );
 }
 

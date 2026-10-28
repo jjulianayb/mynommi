@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Avatar, Icon } from "./art";
+import { SemFoto, Avatar, Icon } from "./art";
 import { Sheet } from "./surfaces";
 import { CameraStory } from "./camera-story";
 import { useStories, timeLeft, type Story, type StoryGroup } from "@/lib/stories";
 
 function Face({ name, avatar, size = 56 }: { name: string; avatar: string; size?: number }) {
   if (avatar) return <img className="story-face" src={avatar} alt="" width={size} height={size} />;
-  return <Avatar id={3} size={size} />;
+  return <SemFoto nome={name} size={size} />;
 }
 
 /** Fita de stories no topo do Início: o seu primeiro, depois quem tem novidade. */

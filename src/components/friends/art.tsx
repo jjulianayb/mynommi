@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { personPhoto } from "@/lib/friends-photos";
+import { corDoNome, iniciais } from "@/lib/sem-foto";
 const SK = ["var(--skin-1)", "var(--skin-2)", "var(--skin-3)", "var(--skin-4)", "var(--skin-5)"],
   HR = ["var(--foreground)", "var(--hair-1)", "var(--hair-2)", "var(--hair-3)", "var(--primary)"],
   BG = ["var(--sunshine)", "var(--teal)", "var(--primary)", "var(--blue)", "var(--butter)"],
@@ -130,6 +131,38 @@ export function Avatar({ id = 3, size = 48 }: { id?: number; size?: number }) {
     );
   return <span className="friend-avatar" dangerouslySetInnerHTML={{ __html: av(id, size) }} />;
 }
+/**
+ * Quem ainda não pôs foto. Nunca usa rosto de outra pessoa:
+ * ou é a inicial de quem está ali, ou é um desenho neutro.
+ */
+export function SemFoto({ nome = "", size = 48 }: { nome?: string; size?: number }) {
+  const letras = iniciais(nome);
+  const cor = corDoNome(nome || "nommi");
+  return (
+    <span
+      className="sem-foto"
+      style={{ width: size, height: size, background: cor.fundo, color: cor.letra }}
+      aria-hidden="true"
+    >
+      {letras ? (
+        <b style={{ fontSize: Math.round(size * 0.4) }}>{letras}</b>
+      ) : (
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          width={Math.round(size * 0.55)}
+          height={Math.round(size * 0.55)}
+        >
+          <circle cx="12" cy="8.5" r="3.6" />
+          <path d="M4.5 20c0-3.6 3.4-6 7.5-6s7.5 2.4 7.5 6" />
+        </svg>
+      )}
+    </span>
+  );
+}
+
 export const captions = CAP;
 export function Sticker({ id, size = 76, author }: { id: number; size?: number; author?: string }) {
   return (

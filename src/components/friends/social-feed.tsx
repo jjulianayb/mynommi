@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Avatar, Icon, Sticker, StickerPicker } from "./art";
+import { SemFoto, Avatar, Icon, Sticker, StickerPicker } from "./art";
 import { Sheet, EmptyState } from "./surfaces";
 import { useFriends } from "./store";
 import {
@@ -35,7 +35,7 @@ function Face({ url, name, size = 40 }: { url: string; name: string; size?: numb
       alt={"Foto de " + name}
     />
   ) : (
-    <Avatar id={3} size={size} />
+    <SemFoto size={size} />
   );
 }
 
@@ -218,7 +218,7 @@ function CommentsSheet({
       <div className="message-list">
         {items.map((c) => (
           <div className={"message-row " + (c.mine ? "mine" : "")} key={c.id}>
-            {!c.mine && <Avatar id={3} size={28} />}
+            {!c.mine && <SemFoto size={28} />}
             <div className="message-content">
               <small>{c.author}</small>
               <p className="bubble">{c.body}</p>
