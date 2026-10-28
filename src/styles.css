@@ -891,3 +891,20 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .camera-disparo:active{transform:scale(.94)}
 .camera-acoes-finais{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 .camera-acoes-finais button{min-height:48px}
+
+/* Fluidez: entrada viva e toques com resposta */
+.welcome-fluida .welcome-rio-scenes .welcome-rio-photo{animation-name:cena-fluida,aproxima-fluida;animation-timing-function:linear,ease-in-out;animation-iteration-count:infinite}
+@keyframes cena-fluida{0%{opacity:0}4%{opacity:1}17%{opacity:1}22%{opacity:0}100%{opacity:0}}
+@keyframes aproxima-fluida{0%{transform:scale(1.03) translate3d(0,0,0)}22%{transform:scale(1.18) translate3d(-2%,-2%,0)}100%{transform:scale(1.18) translate3d(-2%,-2%,0)}}
+.welcome-fluida .welcome-rio-content>*{animation:sobe-suave .7s cubic-bezier(.2,.8,.2,1) both}
+.welcome-fluida .welcome-rio-content>*:nth-child(2){animation-delay:.15s}
+.welcome-fluida .welcome-rio-content>*:nth-child(3){animation-delay:.3s}
+.welcome-fluida .welcome-rio-content>*:nth-child(4){animation-delay:.45s}
+@keyframes sobe-suave{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.welcome-fluida .welcome-rio-primary{transition:transform .2s ease,box-shadow .2s ease;box-shadow:0 10px 30px -10px var(--primary)}
+.friends-app a,.friends-app button,.social-app a,.social-app button{transition:transform .15s ease,opacity .15s ease,background-color .2s ease}
+.friends-app a:active,.friends-app button:active,.social-app a:active,.social-app button:active{transform:scale(.96)}
+.screen{animation:sobe-suave .35s cubic-bezier(.2,.8,.2,1) both}
+.feed-list>*{animation:sobe-suave .45s cubic-bezier(.2,.8,.2,1) both}
+.feed-list>*:nth-child(2){animation-delay:.06s}.feed-list>*:nth-child(3){animation-delay:.12s}.feed-list>*:nth-child(n+4){animation-delay:.18s}
+@media (prefers-reduced-motion:reduce){.welcome-fluida .welcome-rio-content>*,.screen,.feed-list>*{animation:none}.friends-app a:active,.friends-app button:active,.social-app a:active,.social-app button:active{transform:none}}

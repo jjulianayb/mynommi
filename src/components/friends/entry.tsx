@@ -7,13 +7,20 @@ import { presentationDemo } from "@/lib/nommi-access";
 import rioPhoto from "@/assets/welcome-rio.jpg";
 import trilhaPhoto from "@/assets/moments/trilha.jpg";
 import karaokePhoto from "@/assets/moments/karaoke.jpg";
+import vinhoPhoto from "@/assets/moments/vinho.jpg";
+import corridaPhoto from "@/assets/moments/corrida.jpg";
+import pizzaPhoto from "@/assets/moments/pizza.jpg";
 
 /** Cenas do fundo da entrada. A primeira é a que abre; as outras entram em sequência. */
 const SCENES = [
   { src: rioPhoto, alt: "Rio de Janeiro ao entardecer" },
+  { src: vinhoPhoto, alt: "Amigos brindando" },
   { src: trilhaPhoto, alt: "Grupo numa trilha" },
   { src: karaokePhoto, alt: "Noite de karaokê entre amigos" },
+  { src: corridaPhoto, alt: "Corrida em grupo" },
+  { src: pizzaPhoto, alt: "Pizza entre amigos" },
 ];
+const PER_SCENE = 5;
 
 export function Welcome() {
   const { startDemo } = useDemoSession();
@@ -23,7 +30,7 @@ export function Welcome() {
   }, []);
 
   return (
-    <div className="welcome-rio">
+    <div className="welcome-rio welcome-fluida">
       <div className="welcome-rio-scenes" aria-hidden="true">
         {SCENES.map((s, i) => (
           <img
@@ -31,7 +38,10 @@ export function Welcome() {
             className="welcome-rio-photo"
             src={s.src}
             alt=""
-            style={{ animationDelay: `${i * 6}s` }}
+            style={{
+              animationDelay: `${i * PER_SCENE}s`,
+              animationDuration: `${SCENES.length * PER_SCENE}s`,
+            }}
             loading={i === 0 ? "eager" : "lazy"}
           />
         ))}

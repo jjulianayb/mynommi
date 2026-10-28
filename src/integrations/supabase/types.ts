@@ -14,6 +14,41 @@ export type Database = {
   }
   public: {
     Tables: {
+      attendances: {
+        Row: {
+          confirmed_at: string | null
+          confirmed_by: string | null
+          declared_at: string
+          rewarded: boolean
+          teia_id: number
+          user_id: string
+        }
+        Insert: {
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          declared_at?: string
+          rewarded?: boolean
+          teia_id: number
+          user_id: string
+        }
+        Update: {
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          declared_at?: string
+          rewarded?: boolean
+          teia_id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendances_teia_id_fkey"
+            columns: ["teia_id"]
+            isOneToOne: false
+            referencedRelation: "teias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       blocks: {
         Row: {
           blocked_id: string
@@ -191,6 +226,27 @@ export type Database = {
         }
         Relationships: []
       }
+      curtidas: {
+        Row: {
+          created_at: string
+          de: string
+          para: string
+          resposta: string
+        }
+        Insert: {
+          created_at?: string
+          de: string
+          para: string
+          resposta: string
+        }
+        Update: {
+          created_at?: string
+          de?: string
+          para?: string
+          resposta?: string
+        }
+        Relationships: []
+      }
       direct_messages: {
         Row: {
           body: string | null
@@ -333,6 +389,74 @@ export type Database = {
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          actor_id: string | null
+          body: string
+          created_at: string
+          id: string
+          kind: string
+          post_id: string | null
+          read_at: string | null
+          teia_id: number | null
+          user_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+          kind: string
+          post_id?: string | null
+          read_at?: string | null
+          teia_id?: number | null
+          user_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          post_id?: string | null
+          read_at?: string | null
+          teia_id?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      pedidos_de_tribo: {
+        Row: {
+          created_at: string
+          recado: string
+          status: string
+          teia_id: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          recado?: string
+          status?: string
+          teia_id: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          recado?: string
+          status?: string
+          teia_id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pedidos_de_tribo_teia_id_fkey"
+            columns: ["teia_id"]
+            isOneToOne: false
+            referencedRelation: "teias"
             referencedColumns: ["id"]
           },
         ]
@@ -484,9 +608,13 @@ export type Database = {
         Row: {
           about: string
           avatar_url: string
+          avatar_x: number
+          avatar_y: number
           background_path: string
           city: string
           cover_path: string
+          cover_x: number
+          cover_y: number
           created_at: string
           goals: string[]
           id: string
@@ -507,9 +635,13 @@ export type Database = {
         Insert: {
           about?: string
           avatar_url?: string
+          avatar_x?: number
+          avatar_y?: number
           background_path?: string
           city?: string
           cover_path?: string
+          cover_x?: number
+          cover_y?: number
           created_at?: string
           goals?: string[]
           id: string
@@ -530,9 +662,13 @@ export type Database = {
         Update: {
           about?: string
           avatar_url?: string
+          avatar_x?: number
+          avatar_y?: number
           background_path?: string
           city?: string
           cover_path?: string
+          cover_x?: number
+          cover_y?: number
           created_at?: string
           goals?: string[]
           id?: string
@@ -653,6 +789,72 @@ export type Database = {
           sticker_id?: number | null
           tags?: string[]
           used_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      selos: {
+        Row: {
+          created_at: string
+          de: string
+          dono: string
+          selo: string
+        }
+        Insert: {
+          created_at?: string
+          de: string
+          dono: string
+          selo: string
+        }
+        Update: {
+          created_at?: string
+          de?: string
+          dono?: string
+          selo?: string
+        }
+        Relationships: []
+      }
+      star_accounts: {
+        Row: {
+          balance: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      star_ledger: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          reason: string
+          teia_id: number | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          reason: string
+          teia_id?: number | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          reason?: string
+          teia_id?: number | null
           user_id?: string
         }
         Relationships: []
@@ -834,11 +1036,15 @@ export type Database = {
           category: string | null
           city: string
           cover_path: string
+          cover_x: number
+          cover_y: number
           created_at: string
           created_by: string
           creator_nickname: string
+          entrada: string
           goal: number | null
           id: number
+          is_test: boolean
           kind: string
           mode: string
           name: string
@@ -857,11 +1063,15 @@ export type Database = {
           category?: string | null
           city?: string
           cover_path?: string
+          cover_x?: number
+          cover_y?: number
           created_at?: string
           created_by: string
           creator_nickname?: string
+          entrada?: string
           goal?: number | null
           id?: never
+          is_test?: boolean
           kind?: string
           mode?: string
           name: string
@@ -880,11 +1090,15 @@ export type Database = {
           category?: string | null
           city?: string
           cover_path?: string
+          cover_x?: number
+          cover_y?: number
           created_at?: string
           created_by?: string
           creator_nickname?: string
+          entrada?: string
           goal?: number | null
           id?: never
+          is_test?: boolean
           kind?: string
           mode?: string
           name?: string
@@ -957,10 +1171,51 @@ export type Database = {
         Args: { _amount: number; _reason: string; _user_id: string }
         Returns: number
       }
+      avisar: {
+        Args: {
+          _actor: string
+          _body: string
+          _kind: string
+          _post: string
+          _teia: number
+          _user: string
+        }
+        Returns: undefined
+      }
+      avisos_nao_lidos: { Args: never; Returns: number }
       can_view_post: { Args: { _post: string }; Returns: boolean }
       can_view_story: {
         Args: { _audience: string; _author: string }
         Returns: boolean
+      }
+      confirmar_presenca: {
+        Args: { _quem: string; _teia: number }
+        Returns: string
+      }
+      creditar_estrela: {
+        Args: { _amount: number; _reason: string; _teia: number; _user: string }
+        Returns: undefined
+      }
+      estive_no_role: {
+        Args: { _teia: number; _user: string }
+        Returns: boolean
+      }
+      fila_de_moderacao: {
+        Args: { _status?: string }
+        Returns: {
+          created_at: string
+          denuncias_contra: number
+          id: string
+          note: string
+          reason: string
+          reporter: string
+          reporter_id: string
+          status: string
+          target_nome: string
+          target_teia: number
+          target_user: string
+          teia_nome: string
+        }[]
       }
       grant_purchased_credits: {
         Args: {
@@ -1032,15 +1287,31 @@ export type Database = {
           ultima_sticker: number
         }[]
       }
+      minhas_estrelas: {
+        Args: never
+        Returns: {
+          ganhas_semana: number
+          presencas: number
+          saldo: number
+        }[]
+      }
+      moderar_post: {
+        Args: { _post: string; _remover: boolean }
+        Returns: boolean
+      }
       nao_lidas: { Args: never; Returns: number }
       pagina_pessoal: {
         Args: { _user: string }
         Returns: {
           about: string
           avatar_url: string
+          avatar_x: number
+          avatar_y: number
           background_path: string
           city: string
           cover_path: string
+          cover_x: number
+          cover_y: number
           desde: string
           id: string
           instagram: string
@@ -1053,10 +1324,63 @@ export type Database = {
           tribos_em_comum: string[]
         }[]
       }
+      pedidos_da_tribo: {
+        Args: { _teia: number }
+        Returns: {
+          avatar_url: string
+          city: string
+          nickname: string
+          quando: string
+          recado: string
+          user_id: string
+        }[]
+      }
+      peso_dos_interesses: {
+        Args: never
+        Returns: {
+          interesse: string
+          peso: number
+        }[]
+      }
+      pessoas_para_combinar: {
+        Args: { _limite?: number }
+        Returns: {
+          about: string
+          afinidade: number
+          avatar_url: string
+          avatar_x: number
+          avatar_y: number
+          background_path: string
+          city: string
+          cover_path: string
+          cover_x: number
+          cover_y: number
+          em_comum: string[]
+          goals: string[]
+          interests: string[]
+          ja_me_curtiu: boolean
+          looking_for: string
+          mesma_cidade: boolean
+          nickname: string
+          person_verified: boolean
+          places: string[]
+          selos_do_povo: string[]
+          selos_em_comum: string[]
+          tribos_em_comum: number
+          user_id: string
+        }[]
+      }
+      pode_declarar_presenca: {
+        Args: { _teia: number; _user: string }
+        Returns: boolean
+      }
       pode_falar_na_tribo: {
         Args: { _teia: number; _user: string }
         Returns: boolean
       }
+      pode_ganhar_estrela: { Args: { _user: string }; Returns: boolean }
+      pode_selar: { Args: { _de: string; _dono: string }; Returns: boolean }
+      presenca_do_anfitriao: { Args: { _teia: number }; Returns: string }
       profile_stats: {
         Args: { _user: string }
         Returns: {
@@ -1080,6 +1404,7 @@ export type Database = {
         }[]
       }
       purge_expired_stories: { Args: never; Returns: number }
+      quem_tem_curiosidade: { Args: never; Returns: number }
       radar_nearby: {
         Args: { _km?: number; _lat: number; _lng: number }
         Returns: {
@@ -1091,6 +1416,23 @@ export type Database = {
           nickname: string
           place_name: string
           user_id: string
+        }[]
+      }
+      responder_pedido: {
+        Args: { _aceitar: boolean; _quem: string; _teia: number }
+        Returns: string
+      }
+      responder_pessoa: {
+        Args: { _para: string; _sim: boolean }
+        Returns: string
+      }
+      resumo_da_moderacao: {
+        Args: never
+        Returns: {
+          abertas: number
+          analisadas: number
+          arquivadas: number
+          pessoas_denunciadas: number
         }[]
       }
       sao_amigos: { Args: { _a: string; _b: string }; Returns: boolean }
@@ -1108,9 +1450,18 @@ export type Database = {
           nickname: string
         }[]
       }
+      selos_do_perfil: {
+        Args: { _user: string }
+        Returns: {
+          eu_dei: boolean
+          quantos: number
+          selo: string
+        }[]
+      }
       spend_boost: { Args: never; Returns: string }
       spend_invite_boost: { Args: { _invite_ref: string }; Returns: number }
       teia_has_room: { Args: { _teia: number }; Returns: boolean }
+      tribo_e_aberta: { Args: { _teia: number }; Returns: boolean }
       tribos_para_mim: {
         Args: { _limite?: number }
         Returns: {
@@ -1126,6 +1477,7 @@ export type Database = {
         }[]
       }
       usar_convite: { Args: { _code: string }; Returns: boolean }
+      ve_contas_de_teste: { Args: never; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "user"
