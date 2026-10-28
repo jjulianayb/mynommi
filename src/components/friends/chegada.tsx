@@ -20,9 +20,15 @@ const PASSOS = [
     texto: "Café, trilha, jogos, maternidade. Você entra pelo interesse, não por estar sozinha.",
   },
   {
+    icon: "heart",
+    titulo: "Amizade acontece de dois jeitos",
+    texto:
+      "No match, quando vocês dois querem se conhecer. E na tribo, conversando — sem precisar marcar nada.",
+  },
+  {
     icon: "pin",
-    titulo: "O encontro é o ponto",
-    texto: "Dentro da tribo alguém marca um rolê com dia, lugar e vagas. Você diz “Quero ir”.",
+    titulo: "Quando der vontade, marque",
+    texto: "Alguém abre um rolê com dia, lugar e vagas, e quem quiser diz “Quero ir”. É opcional.",
   },
   {
     icon: "lock",
@@ -128,11 +134,7 @@ export function Chegada({ me, onPronto }: { me: string; onPronto?: () => void })
                         const ok = await entrar(t.id, state.nickname || "nommi");
                         setEntrando(null);
                         notify(
-                          ok
-                            ? faltam && faltam > 1
-                              ? `Você entrou. Faltam ${faltam - 1} para a primeira roda.`
-                              : "Você entrou! Diga oi para a tribo."
-                            : "Não deu para entrar agora.",
+                          ok ? "Você entrou! Diga oi para a tribo." : "Não deu para entrar agora.",
                         );
                       }}
                     >

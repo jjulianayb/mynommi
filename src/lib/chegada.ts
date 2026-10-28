@@ -21,19 +21,23 @@ export type Pulso = {
   entraramSemana: number;
 };
 
-/** Quantas faltam para a tribo abrir a primeira roda. */
+/** Quantas faltam para a tribo bater a meta que a criadora pôs, quando pôs uma. */
 export function faltamPara(members: number, goal: number | null): number | null {
   if (goal == null) return null;
   return Math.max(0, goal - members);
 }
 
-/** A frase honesta da tribo: ou está aberta, ou falta gente, e isso vira convite. */
+/**
+ * A frase da tribo diz quem está lá, não o que falta.
+ * Tribo não é encontro esperando acontecer: muita gente só quer conversa.
+ * A meta, quando existe, entra como convite — nunca como pendência.
+ */
 export function faseDaTribo(members: number, goal: number | null): string {
+  const quantos = members === 1 ? "1 pessoa aqui" : `${members} pessoas aqui`;
+  if (members === 0) return "Ninguém aqui ainda. Seja a primeira";
   const faltam = faltamPara(members, goal);
-  if (faltam === null) return members === 1 ? "1 pessoa aqui" : `${members} pessoas aqui`;
-  if (faltam === 0) return "Roda completa. Já dá para marcar";
-  if (members === 0) return `Seja a primeira. Faltam ${faltam} para a primeira roda`;
-  return `${members} ${members === 1 ? "pessoa" : "pessoas"} · faltam ${faltam} para a primeira roda`;
+  if (faltam === null || faltam === 0) return quantos;
+  return `${quantos} · ${faltam} para a meta da tribo`;
 }
 
 /** O que a nommi tem de verdade agora, em uma frase. Nada inventado. */
@@ -42,7 +46,9 @@ export function fraseDoPulso(p: Pulso): string {
     return `${p.entraramSemana} ${p.entraramSemana === 1 ? "pessoa entrou" : "pessoas entraram"} numa tribo esta semana`;
   if (p.rolesAbertos > 0)
     return `${p.rolesAbertos} ${p.rolesAbertos === 1 ? "rolê aberto" : "rolês abertos"} esperando gente`;
-  return `${p.tribos} tribos abertas, esperando as primeiras rodas`;
+  if (p.tribos > 0)
+    return `${p.tribos} ${p.tribos === 1 ? "tribo aberta" : "tribos abertas"} para entrar e conversar`;
+  return `${p.pessoas} ${p.pessoas === 1 ? "pessoa" : "pessoas"} na nommi`;
 }
 
 /** Gera um código de convite curto e legível. */

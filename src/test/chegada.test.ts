@@ -14,11 +14,17 @@ describe("chegada de quem acabou de entrar", () => {
     expect(faltamPara(15, 12)).toBe(0);
     expect(faltamPara(3, null)).toBeNull();
   });
-  it("conta a fase da tribo sem inventar gente", () => {
-    expect(faseDaTribo(0, 12)).toBe("Seja a primeira. Faltam 12 para a primeira roda");
-    expect(faseDaTribo(5, 12)).toBe("5 pessoas · faltam 7 para a primeira roda");
-    expect(faseDaTribo(12, 12)).toBe("Roda completa. Já dá para marcar");
+  it("a frase da tribo diz quem está lá, não o que falta", () => {
+    expect(faseDaTribo(0, 12)).toBe("Ninguém aqui ainda. Seja a primeira");
     expect(faseDaTribo(1, null)).toBe("1 pessoa aqui");
+    expect(faseDaTribo(5, null)).toBe("5 pessoas aqui");
+  });
+  it("tribo cheia ou sem meta não vira cobrança de encontro", () => {
+    expect(faseDaTribo(12, 12)).toBe("12 pessoas aqui");
+    expect(faseDaTribo(5, 12)).toBe("5 pessoas aqui · 7 para a meta da tribo");
+    for (const n of [0, 1, 5, 12, 30])
+      for (const meta of [null, 3, 12])
+        expect(faseDaTribo(n, meta)).not.toMatch(/roda|encontro|marcar/i);
   });
   it("resume o movimento real da semana", () => {
     expect(
@@ -50,7 +56,7 @@ describe("chegada de quem acabou de entrar", () => {
         mensagensSemana: 0,
         entraramSemana: 0,
       }),
-    ).toBe("14 tribos abertas, esperando as primeiras rodas");
+    ).toBe("14 tribos abertas para entrar e conversar");
   });
   it("gera código de convite legível, sem acento", () => {
     const c = novoCodigo("Juliana");

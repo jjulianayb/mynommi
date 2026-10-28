@@ -137,3 +137,8 @@
 - Foto se escolhe e **aparece na hora**: `FotoInstantanea` abre a imagem com `URL.createObjectURL` (o navegador já tem o arquivo, não precisa de servidor), deixa enquadrar ali e só depois envia, em segundo plano. Nunca mais "escolhe, espera, descobre que não deu".
 - A conta do recorte vive em `src/lib/foto.ts`: `prenderNaMoldura()` impede buraco na moldura e `pedacoDaFoto()` devolve o recorte em coordenadas da imagem. Tela nova que recorte foto usa essas funções.
 - Espera é `<Esqueleto>` com a forma do que vem, nunca "Carregando…" escrito. Texto cinza no meio da tela é o que mais faz o app parecer máquina.
+
+## Tribo não é encontro esperando acontecer (28/10)
+- Decisão da Ju: muita gente entra numa tribo só para conversar e fazer amizade; marcar rolê é opcional. O match é o outro caminho da amizade, e vale sozinho.
+- Por isso `faseDaTribo()` diz quem está lá ("5 pessoas aqui"), nunca o que falta para marcar. A meta da tribo, quando existe, entra como convite, nunca como pendência. Tem teste que barra as palavras "roda", "encontro" e "marcar" voltarem para essa frase.
+- A chegada explica os dois caminhos — match e conversa na tribo — e põe o rolê como "quando der vontade".
