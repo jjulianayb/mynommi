@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Avatar, Icon } from "./art";
-import { EmptyState, Sheet } from "./surfaces";
+import { Esqueleto, EmptyState, Sheet } from "./surfaces";
 import { useFriends } from "./store";
 import { CoverEditor } from "./cover-editor";
 import { StatsLine, Feed, WallPanel } from "./social-feed";
@@ -56,7 +56,7 @@ export function MyNommi({ me }: { me: string }) {
   const [editando, setEditando] = useState(false);
   const [mexendoInteresses, setMexendoInteresses] = useState(false);
   const { estrelas } = useEstrelas(me);
-  if (!ready) return <p className="small-note">Abrindo seu nommi…</p>;
+  if (!ready) return <Esqueleto tipo="perfil" />;
   if (!pagina)
     return (
       <EmptyState

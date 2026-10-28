@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Avatar, Icon } from "./art";
 import { ChatSticker, ChatStickerTray } from "./chat-stickers";
-import { EmptyState } from "./surfaces";
+import { Esqueleto, EmptyState } from "./surfaces";
 import {
   useConversas,
   useConversa,
@@ -25,7 +25,7 @@ function Face({ avatar, size = 48 }: { avatar: string; size?: number }) {
 /** Lista das conversas a sós: uma por amizade, com a última mensagem e o que falta ler. */
 export function DirectConversations({ me }: { me: string }) {
   const { conversas, ready } = useConversas(me);
-  if (!ready) return <p className="small-note">Carregando…</p>;
+  if (!ready) return <Esqueleto tipo="conversa" />;
   if (!conversas.length)
     return (
       <EmptyState
@@ -116,7 +116,7 @@ export function DirectChat({
       </div>
 
       {!ready ? (
-        <p className="small-note">Carregando a conversa…</p>
+        <Esqueleto tipo="conversa" />
       ) : (
         <div className="message-list">
           {messages.length === 0 && (

@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Icon } from "./art";
-import { EmptyState } from "./surfaces";
+import { Esqueleto, EmptyState } from "./surfaces";
 import { useAvisos, iconeDoAviso, diaDoAviso, destinoDoAviso, type Aviso } from "@/lib/avisos";
 import { timeAgo } from "@/lib/posts";
 
@@ -39,7 +39,7 @@ function Linha({ a, onTocar, onApagar }: { a: Aviso; onTocar: () => void; onApag
 /** Tudo que aconteceu com você enquanto o app estava fechado. */
 export function Avisos({ me }: { me: string }) {
   const { avisos, ready, naoLidos, marcar, marcarTodos, apagar } = useAvisos(me);
-  if (!ready) return <p className="small-note">Carregando…</p>;
+  if (!ready) return <Esqueleto tipo="conversa" />;
   if (!avisos.length)
     return (
       <EmptyState

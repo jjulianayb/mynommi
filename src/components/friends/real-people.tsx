@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { coverStyle } from "@/lib/covers";
 import { Button } from "@/components/ui/button";
 import { Avatar, Icon } from "./art";
-import { EmptyState } from "./surfaces";
+import { Esqueleto, EmptyState } from "./surfaces";
 import { useFriends } from "./store";
 import { useDemoSession } from "./session";
 import { supabase } from "@/integrations/supabase/client";
@@ -127,7 +127,7 @@ export function PublicNommi({ id }: { id: string }) {
         </Button>
       </EmptyState>
     );
-  if (!ready) return <p className="small-note">Carregando perfil…</p>;
+  if (!ready) return <Esqueleto tipo="perfil" />;
   if (!profile)
     return (
       <EmptyState

@@ -14,7 +14,7 @@ import {
   type Candidata,
 } from "@/lib/combinar";
 import { Avatar, Icon } from "./art";
-import { EmptyState } from "./surfaces";
+import { Esqueleto, EmptyState } from "./surfaces";
 import { SafetyMenu } from "./social-feed";
 import { useFriends } from "./store";
 
@@ -53,7 +53,7 @@ export function Combinar({ me }: { me: string }) {
     if (fila.length <= 2) void recarregar();
   }
 
-  if (!ready) return <p className="small-note">Procurando gente com a sua cara…</p>;
+  if (!ready) return <Esqueleto tipo="cartoes" />;
 
   if (deuMatch)
     return (

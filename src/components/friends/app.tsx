@@ -24,7 +24,7 @@ import { momentPhoto } from "@/lib/friends-photos";
 import { OpenerSuggest } from "./opener-suggest";
 import { ProfileModeBadge, FirstMeetNotice } from "./privacy";
 import { useState, useEffect, useRef, type ReactNode } from "react";
-import { EmptyState, BrandMark } from "./surfaces";
+import { Esqueleto, EmptyState, BrandMark } from "./surfaces";
 import { Link, useNavigate, useLocation } from "@tanstack/react-router";
 import {
   hasSharedTeia,
@@ -1069,7 +1069,7 @@ function RealGroups({ userId }: { userId: string }) {
       </Title>
       <p className="intro">Um assunto em comum. Muitos encontros pela frente.</p>
       {!real.ready ? (
-        <p className="small-note">Carregando suas tribos…</p>
+        <Esqueleto tipo="cartoes" />
       ) : mine.length ? (
         <div className="group-grid">
           {mine.map((r) => (
@@ -1388,7 +1388,7 @@ export function GroupDetail({ id }: { id: number }) {
   const [points, setPoints] = useState(20);
   const [partner, setPartner] = useState(0);
   if (cloud && id >= 100000 && !realTeia.ready)
-    return <p className="small-note">Carregando a tribo…</p>;
+    return <Esqueleto tipo="perfil" />;
   if (!g || (!demoMode && !cloud && !isMember(state, id)))
     return (
       <EmptyState

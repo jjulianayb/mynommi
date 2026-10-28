@@ -17,6 +17,8 @@ import { useDemoSession } from "./session";
 import { PrivacyControls, ProfileModeSetting } from "./privacy";
 import { emptyState, people, groups, partners } from "@/lib/friends-data";
 import { ageOn, profileSchema } from "@/lib/nomi-validation";
+import { FotoInstantanea } from "./foto-instantanea";
+import { recadoDoEnvio } from "@/lib/foto";
 function MyCovers({ me }: { me: string }) {
   const [cover, setCover] = useState("");
   const [bg, setBg] = useState("");
@@ -113,6 +115,7 @@ export function Settings({ section }: { section: string }) {
   const [confirm, setConfirm] = useState(false);
   const [confirmation, setConfirmation] = useState("");
   const [error, setError] = useState("");
+  const [enviandoFoto, setEnviandoFoto] = useState(false);
   return (
     <div className="settings-page">
       <Button asChild variant="ghost" className="back-link">
@@ -170,52 +173,29 @@ export function Settings({ section }: { section: string }) {
             setError("");
           }}
         >
-          <div className="photo-upload">
+          <div className={"photo-upload" + (enviandoFoto ? " enviando" : "")}>
             {state.photo ? (
               <img src={state.photo} alt="Sua foto de perfil" />
             ) : (
               <Avatar id={3} size={96} />
             )}
-            <label className="photo-label">
-              Trocar foto
-              <input
-                type="file"
-                accept="image/*"
-                aria-label="Trocar foto de perfil"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  // Foto de iPhone chega em HEIC e as novas passam de 2 MB.
-                  // O canvas resolve as duas coisas: lê e devolve JPEG pequeno.
-                  if (!file.type.startsWith("image/")) {
-                    setError("Esse arquivo não é uma foto.");
-                    return;
-                  }
-                  if (file.size > 25 * 1024 * 1024) {
-                    setError("Essa foto é enorme. Escolha uma de até 25 MB.");
-                    return;
-                  }
-                  resizePhoto(file)
-                    .then(async (photo) => {
-                      if (cloud) {
-                        if (!(await saveCloudProfile(cloudUser!.id, { avatar_url: photo }))) {
-                          setError("Não deu para salvar a foto. Tente outra menor.");
-                          return;
-                        }
-                      }
-                      setState((s) => ({ ...s, photo }));
-                      notify(
-                        cloud
-                          ? "Foto salva em todos os seus aparelhos."
-                          : "Foto atualizada neste navegador.",
-                      );
-                    })
-                    .catch(() =>
-                      setError("Não consegui abrir essa foto. Tente outra, ou tire uma na hora."),
-                    );
-                }}
-              />
-            </label>
+            <FotoInstantanea
+              onPronta={async (jpeg) => {
+                // A foto aparece já; o envio acontece atrás, e só fala se falhar.
+                setState((s) => ({ ...s, photo: jpeg }));
+                setError("");
+                if (!cloud) {
+                  notify("Foto atualizada neste navegador.");
+                  return;
+                }
+                setEnviandoFoto(true);
+                const ok = await saveCloudProfile(cloudUser!.id, { avatar_url: jpeg });
+                setEnviandoFoto(false);
+                if (ok) notify("Foto trocada em todos os seus aparelhos.");
+                else setError(recadoDoEnvio("erro"));
+              }}
+            />
+            {enviandoFoto && <p className="small-note">{recadoDoEnvio("indo")}</p>}
             {state.photo && (
               <Button
                 type="button"

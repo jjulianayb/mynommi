@@ -132,3 +132,8 @@
 - `teias.entrada` é 'aberta' ou 'fechada'. A política de INSERT em `teia_members` confere `tribo_e_aberta()`: em tribo fechada ninguém entra sozinho, nem pelo cliente.
 - Pedido vira participação só por `responder_pedido()`, que confere se quem responde é a criadora.
 - `portaDaTribo()` em `src/lib/porta-da-tribo.ts` é o único lugar que decide o que o botão diz. Tela nova que mostre tribo usa essa função, não um `if` próprio.
+
+## Instantâneo, não robotizado (28/10)
+- Foto se escolhe e **aparece na hora**: `FotoInstantanea` abre a imagem com `URL.createObjectURL` (o navegador já tem o arquivo, não precisa de servidor), deixa enquadrar ali e só depois envia, em segundo plano. Nunca mais "escolhe, espera, descobre que não deu".
+- A conta do recorte vive em `src/lib/foto.ts`: `prenderNaMoldura()` impede buraco na moldura e `pedacoDaFoto()` devolve o recorte em coordenadas da imagem. Tela nova que recorte foto usa essas funções.
+- Espera é `<Esqueleto>` com a forma do que vem, nunca "Carregando…" escrito. Texto cinza no meio da tela é o que mais faz o app parecer máquina.

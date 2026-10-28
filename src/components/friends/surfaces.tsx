@@ -120,3 +120,56 @@ export function Brand({ tagline = true }: { tagline?: boolean }) {
     </span>
   );
 }
+
+/**
+ * Espera com a cara do que vem depois. "Carregando…" escrito em cinza é o que
+ * mais faz um app parecer máquina: a pessoa olha para uma frase, não para o app.
+ */
+export function Esqueleto({ tipo }: { tipo: "fila" | "cartoes" | "perfil" | "conversa" }) {
+  if (tipo === "perfil")
+    return (
+      <div className="esqueleto" aria-hidden="true">
+        <span className="e-capa" />
+        <div className="e-linha">
+          <span className="e-foto" />
+          <div>
+            <span className="e-texto larga" />
+            <span className="e-texto curta" />
+          </div>
+        </div>
+        <span className="e-bloco" />
+        <span className="e-bloco baixo" />
+      </div>
+    );
+  if (tipo === "conversa")
+    return (
+      <div className="esqueleto" aria-hidden="true">
+        {[0, 1, 2].map((i) => (
+          <div className="e-linha" key={i}>
+            <span className="e-foto pequena" />
+            <div>
+              <span className="e-texto larga" />
+              <span className="e-texto curta" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  if (tipo === "cartoes")
+    return (
+      <div className="esqueleto" aria-hidden="true">
+        <span className="e-bloco alto" />
+        <span className="e-bloco" />
+      </div>
+    );
+  return (
+    <div className="esqueleto" aria-hidden="true">
+      <div className="e-fila">
+        {[0, 1, 2, 3].map((i) => (
+          <span className="e-foto" key={i} />
+        ))}
+      </div>
+      <span className="e-bloco" />
+    </div>
+  );
+}
