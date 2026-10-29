@@ -90,7 +90,7 @@ describe("o story também aceita foto da galeria", () => {
       drawImage(f: unknown) { chamadas.push(f); },
     } as unknown as CanvasRenderingContext2D;
     const falsaImagem = { nome: "foto da galeria" } as unknown as CanvasImageSource;
-    desenharFonte(ctx, falsaImagem, 100, 200, FILTRO_PADRAO, false);
+    desenharFonte(ctx, falsaImagem, 100, 200, filtroCss(FILTRO_PADRAO), false);
     expect(chamadas[0]).toBe(falsaImagem);
   });
 });

@@ -5,15 +5,25 @@ import {
   SEGUNDOS_DE_VIDEO,
   contagemDaGravacao,
   desenharFonte,
-  desenharQuadro,
   extensaoDoVideo,
   filtroCss,
   filtrosDoGrupo,
   formatoDeGravacao,
   gruposDeFiltro,
   nomeDoStory,
+  suavidadeDoFiltro,
   tamanhoDoStory,
 } from "@/lib/camera";
+import {
+  AJUSTES_PADRAO,
+  LIMITES,
+  ajustesParaCss,
+  guardarMeuFiltro,
+  lerMeuFiltro,
+  nomeDoMeuFiltro,
+  suavizarNoCanvas,
+  type Ajustes,
+} from "@/lib/beleza";
 import { MAX_CAPTION, type StoryAudience } from "@/lib/stories";
 import { Icon } from "./art";
 import { Sheet } from "./surfaces";
@@ -32,6 +42,8 @@ export function CameraStory({ onClose, onPublish }: { onClose: () => void; onPub
   const stream = useRef<MediaStream | null>(null);
   const [frente, setFrente] = useState(true);
   const [filtro, setFiltro] = useState(FILTRO_PADRAO);
+  const [ajustes, setAjustes] = useState<Ajustes>(() => lerMeuFiltro() ?? AJUSTES_PADRAO);
+  const [abrindoMeu, setAbrindoMeu] = useState(false);
   const [foto, setFoto] = useState<{ url: string; file: File } | null>(null);
   const [caption, setCaption] = useState("");
   const [audience, setAudience] = useState<StoryAudience>("todos");
@@ -42,6 +54,10 @@ export function CameraStory({ onClose, onPublish }: { onClose: () => void; onPub
   const [contagem, setContagem] = useState("0:00");
   const gravador = useRef<MediaRecorder | null>(null);
   const relogio = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // O filtro de agora, seja do catálogo ou o que a pessoa montou.
+  const cssAgora = filtro === "meu" ? ajustesParaCss(ajustes) : filtroCss(filtro);
+  const suavidadeAgora = filtro === "meu" ? ajustes.suavidade : suavidadeDoFiltro(filtro);
 
   const desligar = useCallback(() => {
     stream.current?.getTracks().forEach((t) => t.stop());
@@ -130,13 +146,16 @@ export function CameraStory({ onClose, onPublish }: { onClose: () => void; onPub
     canvas.height = v.videoHeight;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    desenharQuadro(ctx, v, filtro, frente);
+    desenharFonte(ctx, v, v.videoWidth, v.videoHeight, cssAgora, frente);
 
     // reduz para o tamanho de publicação
     const saida = document.createElement("canvas");
     saida.width = w;
     saida.height = h;
     saida.getContext("2d")?.drawImage(canvas, 0, 0, w, h);
+    // A pele suave vem depois do corte: o custo é sobre a foto final, não sobre
+    // a imagem gigante que a câmera entrega.
+    suavizarNoCanvas(saida, suavidadeAgora);
 
     const blob = await new Promise<Blob | null>((r) => saida.toBlob(r, "image/jpeg", 0.88));
     if (!blob) {
@@ -170,7 +189,8 @@ export function CameraStory({ onClose, onPublish }: { onClose: () => void; onPub
       canvas.height = h;
       const ctx = canvas.getContext("2d");
       if (!ctx) throw new Error("sem canvas");
-      desenharFonte(ctx, img, w, h, filtro, false);
+      desenharFonte(ctx, img, w, h, cssAgora, false);
+      suavizarNoCanvas(canvas, suavidadeAgora);
       const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, "image/jpeg", 0.88));
       if (!blob) throw new Error("sem blob");
       desligar();
@@ -207,7 +227,7 @@ export function CameraStory({ onClose, onPublish }: { onClose: () => void; onPub
             ref={video}
             className="camera-previa"
             style={{
-              filter: filtroCss(filtro),
+              filter: cssAgora,
               transform: frente ? "scaleX(-1)" : undefined,
             }}
             playsInline
@@ -250,7 +270,77 @@ export function CameraStory({ onClose, onPublish }: { onClose: () => void; onPub
                 </div>
               </div>
             ))}
+            <div className="filtros-grupo">
+              <h3>Meu filtro</h3>
+              <div className="meu-filtro">
+                <button
+                  type="button"
+                  className={"filtro" + (filtro === "meu" ? " marcado" : "")}
+                  aria-pressed={filtro === "meu"}
+                  onClick={() => {
+                    setFiltro("meu");
+                    setAbrindoMeu(true);
+                  }}
+                >
+                  <span style={{ filter: ajustesParaCss(ajustes) }} />
+                  {nomeDoMeuFiltro(ajustes)}
+                </button>
+                <p className="small-note">
+                  Monte o seu do jeito que você gosta. Fica guardado neste celular.
+                </p>
+              </div>
+            </div>
           </div>
+          {abrindoMeu && (
+            <div className="controles">
+              {(
+                [
+                  ["suavidade", "Pele suave"],
+                  ["luz", "Luz"],
+                  ["calor", "Calor"],
+                  ["contraste", "Contraste"],
+                  ["vico", "Viço"],
+                ] as [keyof Ajustes, string][]
+              ).map(([chave, rotulo]) => (
+                <label className="controle" key={chave}>
+                  <span>
+                    {rotulo} <b>{ajustes[chave]}</b>
+                  </span>
+                  <input
+                    type="range"
+                    min={LIMITES[chave].min}
+                    max={LIMITES[chave].max}
+                    value={ajustes[chave]}
+                    onChange={(e) => {
+                      const v = Number(e.target.value);
+                      setAjustes((a) => ({ ...a, [chave]: v }));
+                      setFiltro("meu");
+                    }}
+                  />
+                </label>
+              ))}
+              <div className="controles-acoes">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => setAjustes(AJUSTES_PADRAO)}
+                >
+                  Do zero
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => {
+                    guardarMeuFiltro(ajustes);
+                    setAbrindoMeu(false);
+                    notify("Seu filtro ficou guardado.");
+                  }}
+                >
+                  <Icon name="check" />
+                  Guardar meu filtro
+                </Button>
+              </div>
+            </div>
+          )}
           <div className="camera-acoes">
             <label className="camera-galeria">
               <Icon name="gift" />

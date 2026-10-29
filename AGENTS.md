@@ -197,3 +197,12 @@
 - Ao escrever uma regra escopada em `.tom-escuro`, lembrar do estado selecionado: `.tom-escuro .fig` tem a mesma força de `.fig.marcada` e, vindo depois, apagava o branco da escolhida. Por isso `.tom-escuro .fig.marcada` existe logo em seguida.
 - `.friends-app button` zera `box-shadow` com força maior que uma classe sozinha. Contorno de botão precisa vir como `.friends-app .camera-disparo`, senão some.
 - Para tirar prova em tamanho de celular sem o app autenticado: `npx vite dev --host 127.0.0.1 --port 8080` e uma página de harness que carrega `http://127.0.0.1:8080/src/styles.css` com o próprio reset de `box-sizing`, renderizada pelo chromium do sistema (`/opt/npm-tools/node_modules/playwright`). O container não alcança o site publicado: a rede sai por lista de permissão.
+
+## Filtros de beleza: cor é CSS, pele é canvas (29/10)
+- Dois mecanismos, de propósito. **Cor e luz** saem de `filter` de CSS: instantâneo, serve para a prévia ao vivo. **Pele suave** não tem como sair de CSS: `blur()` borra olho, cílio e boca junto, que é o que dá cara de filtro ruim.
+- A conta da pele está em `src/lib/beleza.ts`. `misturarSuavidade()` compara a foto nítida com a borrada ponto a ponto e **só troca pelo borrado onde os dois já estavam perto** — onde há detalhe de verdade, o original fica. Tem rampa perto do limiar, senão aparece borda dura em volta dos olhos.
+- `forcaDaSuavidade()` nunca chega a 1: mistura 100% vira plástico.
+- A suavidade roda **depois** do corte para o tamanho de publicação, não sobre o quadro gigante da câmera: é onde o custo é aceitável no celular.
+- `FILTROS` ganhou `suavidade` por filtro. Filtro de beleza pede pele; filtro divertido não. Teste barra `blur(` voltar para o CSS de qualquer filtro.
+- "Meu filtro" é montado com controles e guardado no aparelho (`localStorage`), porque é preferência de tela. O CSS dele é montado **só com números conferidos** por `ajustesParaCss()`; tem teste que tenta injetar `url(` e `;` pelos controles.
+- O que **não** existe: afinar rosto, mudar nariz. Isso precisa de rastreamento de pontos do rosto (MediaPipe ou equivalente), que é outra ordem de trabalho: modelo para baixar, orçamento de desempenho no celular e teste em aparelho de verdade.

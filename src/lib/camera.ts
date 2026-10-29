@@ -3,30 +3,97 @@
  * filtra ao vivo, tira e publica. Nada de procurar foto antiga na galeria.
  */
 
-export type Filtro = { id: string; nome: string; css: string; grupo: "Beleza" | "Divertido" };
+/**
+ * `suavidade` é a parte que o CSS não faz: entra no canvas, na hora de tirar,
+ * pela conta de `src/lib/beleza.ts`. Desfoque de CSS borraria olho e boca
+ * junto, que é exatamente o que dá cara de filtro ruim.
+ */
+export type Filtro = {
+  id: string;
+  nome: string;
+  css: string;
+  grupo: "Beleza" | "Divertido";
+  suavidade?: number;
+};
 
 export const FILTROS: Filtro[] = [
   { id: "natural", nome: "Natural", css: "none", grupo: "Beleza" },
   {
     id: "suave",
     nome: "Suave",
-    css: "brightness(1.06) saturate(1.05) contrast(1.02) blur(0.4px)",
+    css: "brightness(1.05) saturate(1.04) contrast(1.02)",
     grupo: "Beleza",
+    suavidade: 45,
   },
-  { id: "luz", nome: "Luz", css: "brightness(1.14) contrast(1.06)", grupo: "Beleza" },
+  {
+    id: "luz",
+    nome: "Luz",
+    css: "brightness(1.14) contrast(1.05)",
+    grupo: "Beleza",
+    suavidade: 25,
+  },
   {
     id: "pessego",
     nome: "Pêssego",
-    css: "sepia(0.18) saturate(1.25) brightness(1.08)",
+    css: "sepia(0.16) saturate(1.22) brightness(1.07)",
     grupo: "Beleza",
+    suavidade: 40,
   },
   {
     id: "vico",
     nome: "Viço",
-    css: "saturate(1.4) contrast(1.05) brightness(1.03)",
+    css: "saturate(1.35) contrast(1.05) brightness(1.03)",
     grupo: "Beleza",
+    suavidade: 20,
+  },
+  {
+    id: "porcelana",
+    nome: "Porcelana",
+    css: "brightness(1.08) contrast(0.97) saturate(0.97)",
+    grupo: "Beleza",
+    suavidade: 78,
+  },
+  {
+    id: "dourado",
+    nome: "Fim de tarde",
+    css: "sepia(0.28) saturate(1.3) brightness(1.06) contrast(1.03)",
+    grupo: "Beleza",
+    suavidade: 35,
+  },
+  {
+    id: "rose",
+    nome: "Rosé",
+    css: "sepia(0.12) saturate(1.3) hue-rotate(-8deg) brightness(1.06)",
+    grupo: "Beleza",
+    suavidade: 42,
+  },
+  {
+    id: "bronze",
+    nome: "Bronze",
+    css: "sepia(0.3) saturate(1.35) contrast(1.06) brightness(1.02)",
+    grupo: "Beleza",
+    suavidade: 30,
+  },
+  {
+    id: "noite",
+    nome: "Noite",
+    css: "brightness(1.2) contrast(1.12) saturate(1.1)",
+    grupo: "Beleza",
+    suavidade: 55,
   },
   { id: "pb", nome: "Preto e branco", css: "grayscale(1) contrast(1.12)", grupo: "Divertido" },
+  {
+    id: "filme",
+    nome: "Filme",
+    css: "sepia(0.22) contrast(1.16) saturate(0.9)",
+    grupo: "Divertido",
+  },
+  {
+    id: "neon",
+    nome: "Neon",
+    css: "saturate(2) contrast(1.2) hue-rotate(15deg)",
+    grupo: "Divertido",
+  },
   {
     id: "vhs",
     nome: "VHS",
@@ -62,6 +129,9 @@ export const filtroPorId = (id: string): Filtro => FILTROS.find((f) => f.id === 
 /** O que vai para o estilo da prévia e para o canvas. Nunca texto solto. */
 export const filtroCss = (id: string): string => filtroPorId(id).css;
 
+/** Quanta pele suave o filtro pede. Zero para os divertidos. */
+export const suavidadeDoFiltro = (id: string): number => filtroPorId(id).suavidade ?? 0;
+
 export const gruposDeFiltro = (): ("Beleza" | "Divertido")[] => ["Beleza", "Divertido"];
 export const filtrosDoGrupo = (g: "Beleza" | "Divertido") => FILTROS.filter((f) => f.grupo === g);
 
@@ -90,7 +160,14 @@ export function desenharQuadro(
   filtro: string,
   espelhar: boolean,
 ): void {
-  desenharFonte(ctx, video as unknown as CanvasImageSource, video.videoWidth, video.videoHeight, filtro, espelhar);
+  desenharFonte(
+    ctx,
+    video as unknown as CanvasImageSource,
+    video.videoWidth,
+    video.videoHeight,
+    filtroCss(filtro),
+    espelhar,
+  );
 }
 
 /**
@@ -102,7 +179,7 @@ export function desenharFonte(
   fonte: CanvasImageSource,
   w: number,
   h: number,
-  filtro: string,
+  css: string,
   espelhar: boolean,
 ): void {
   ctx.save();
@@ -110,8 +187,7 @@ export function desenharFonte(
     ctx.translate(w, 0);
     ctx.scale(-1, 1);
   }
-  const css = filtroCss(filtro);
-  if (css !== "none" && "filter" in ctx) ctx.filter = css;
+  if (css && css !== "none" && "filter" in ctx) ctx.filter = css;
   ctx.drawImage(fonte, 0, 0, w, h);
   ctx.restore();
 }
