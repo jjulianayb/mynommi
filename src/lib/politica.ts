@@ -14,7 +14,7 @@ export const RESPONSAVEL = {
   nome: "",
   documento: "",
   endereco: "",
-  email: "privacidade@nommi.app",
+  email: "contato@nommibr.com.br",
 };
 
 /** Muda quando o texto muda. É o que fica gravado no aceite de cada pessoa. */
