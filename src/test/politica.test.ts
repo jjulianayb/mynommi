@@ -18,7 +18,14 @@ describe("a política não pode mentir", () => {
   it("informa, não se desculpa: nada de confessar o texto antigo para quem nunca o viu", () => {
     const aviso = readFileSync("src/components/friends/aceite.tsx", "utf8");
     expect(/não é verdade|mentira|erro nosso|a gente errou|reescrev/i.test(aviso)).toBe(false);
-    expect(aviso).toContain("Atualizamos os Termos");
+    expect(aviso).toContain("Atualizamos os termos");
+  });
+  it("não usa travessão: texto cheio de travessão tem cara de escrito por máquina", () => {
+    const aviso = readFileSync("src/components/friends/aceite.tsx", "utf8");
+    expect(privacidade).not.toContain("—");
+    expect(aviso).not.toContain("—");
+    for (const p of PRAZOS) expect(p.quanto).not.toContain("—");
+    expect(quemResponde()).not.toContain("—");
   });
   it("não chama a nommi de demonstração em nenhum texto legal", () => {
     expect(/demonstra[çc]/i.test(privacidade)).toBe(false);

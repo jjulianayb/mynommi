@@ -6,7 +6,7 @@
  * O texto da política e dos termos se ajusta sozinho.
  *
  * A LGPD aceita pessoa natural como controlador (art. 5º, VI), então a nommi
- * pode circular antes de o CNPJ sair — desde que o texto diga a verdade sobre
+ * pode circular antes de o CNPJ sair, desde que o texto diga a verdade sobre
  * quem está respondendo.
  */
 export const RESPONSAVEL = {
@@ -30,7 +30,7 @@ export function quemResponde(r = RESPONSAVEL) {
     return `A nommi é tocada por ${r.nome}${
       r.endereco ? `, em ${r.endereco}` : ""
     }, enquanto o registro da empresa não sai. É ela quem decide o que a nommi guarda e por quê, e é ela quem responde por isso.`;
-  return "A nommi está com o registro da empresa em andamento. Até sair, quem responde por tudo o que está escrito aqui é a pessoa que toca a nommi, pelo contato abaixo — e assim que o registro sair, o nome e o CNPJ aparecem nesta mesma linha, com aviso dentro do app.";
+  return "A nommi está com o registro da empresa em andamento. Até sair, quem responde por tudo o que está escrito aqui é a pessoa que toca a nommi, pelo contato abaixo. Assim que o registro sair, o nome e o CNPJ aparecem nesta mesma linha, com aviso dentro do app.";
 }
 
 /** Quanto tempo a nommi guarda cada coisa. Prazo que a gente cumpre de verdade. */

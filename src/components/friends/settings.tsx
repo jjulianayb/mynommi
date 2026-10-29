@@ -579,7 +579,7 @@ export function Legal({ kind }: { kind: "terms" | "privacy" | "help" }) {
             ninguém aqui consegue ler) ou sua conta Google; apelido, cidade, interesses, o texto
             sobre você, o que você procura, seu Instagram se você colocar, suas fotos e seus vídeos;
             quem você disse que quer conhecer; o que você escreve nas conversas, nas tribos e no
-            mural; e o dia em que você abriu o app — só o dia, nada de tela, clique ou caminho.
+            mural; e o dia em que você abriu o app. Só o dia, nada de tela, clique ou caminho.
           </p>
           <p>
             A nommi não pede CPF, não pede documento, não pede cartão e não lê sua agenda de
@@ -596,7 +596,7 @@ export function Legal({ kind }: { kind: "terms" | "privacy" | "help" }) {
             Entrar numa tribo política, religiosa ou LGBT diz muito sobre você. A lei chama isso de
             dado sensível, e a gente trata assim: antes de você entrar numa tribo dessas, a nommi
             avisa e pergunta se você concorda. Você pode sair quando quiser, e sair apaga sua
-            participação. Esse dado nunca sai da nommi — não vira anúncio, não vira lista, não é
+            participação. Esse dado nunca sai da nommi: não vira anúncio, não vira lista, não é
             vendido e não é compartilhado com ninguém.
           </p>
           <h2>Radar nommi</h2>
@@ -621,8 +621,8 @@ export function Legal({ kind }: { kind: "terms" | "privacy" | "help" }) {
             Fora da nommi, seus dados vão para dois lugares, e só porque o app não roda sem eles: a
             empresa que hospeda o banco e os arquivos, e a Google, se você entrar pela conta Google.
             A nommi não vende seus dados, não troca seus dados e não entrega seus dados para quem
-            quer te vender coisa. Se um juiz ou a polícia pedir algo por ordem legal, a gente cumpre
-            — e avisa você, quando a lei deixar.
+            quer te vender coisa. Se um juiz ou a polícia pedir algo por ordem legal, a gente cumpre,
+            e avisa você quando a lei deixar.
           </p>
           <h2>Quanto tempo a gente guarda</h2>
           <ul className="legal-prazos">

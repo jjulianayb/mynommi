@@ -18,11 +18,7 @@ export function AvisoDeAceite({ onAceitar }: { onAceitar: () => Promise<void> })
         <span className="aceite-selo" aria-hidden="true">
           <Icon name="lock" />
         </span>
-        <h2 id="aceite-titulo">Atualizamos os Termos e a Política de Privacidade.</h2>
-        <p>
-          A nova versão conta onde seus dados ficam, por quanto tempo, e o que você pode pedir a
-          qualquer momento — inclusive baixar tudo o que é seu ou apagar sua conta.
-        </p>
+        <h2 id="aceite-titulo">Atualizamos os termos e a política.</h2>
         <div className="aceite-links">
           <Link to="/privacidade">Ler a política</Link>
           <Link to="/termos">Ler os termos</Link>
@@ -38,9 +34,7 @@ export function AvisoDeAceite({ onAceitar }: { onAceitar: () => Promise<void> })
           {indo ? "Um instante…" : "Li e concordo"}
           <Icon name="arrow" />
         </Button>
-        <p className="aceite-rodape">
-          Os dois textos ficam sempre à mão em Meu nommi, em Privacidade.
-        </p>
+        <p className="aceite-rodape">Os dois textos ficam em Meu nommi, em Privacidade.</p>
       </div>
     </div>
   );
