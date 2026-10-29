@@ -184,3 +184,9 @@
 - `.mynommi>*{position:relative;z-index:1}` vinha **depois** de `.mynommi-fundo{position:absolute}` com a mesma força, então devolvia a camada do fundo para o fluxo. Div vazio relativo tem altura zero: o fundo era salvo, lido e desenhado, e não aparecia.
 - Agora a regra é `.mynommi>*:not(.mynommi-fundo)`, e tem teste que lê o CSS e barra a volta.
 - `background-attachment: fixed` saiu de `estiloDoFundo`: o Safari do iPhone não desenha, e o fundo some justamente no aparelho onde a nommi mais é usada.
+
+## Galeria, salvar e o disparo que sumia (Ana, 29/10)
+- O disparo era branco com anel coral sobre a folha branca da gaveta: lia como "botão sumindo". Agora é branco com anel verde da marca **mais** um anel escuro de contorno. Botão redondo claro sobre fundo claro precisa de contorno próprio, não só de cor.
+- O story aceita foto da galeria, pelo mesmo canvas da câmera: é o canvas que converte o HEIC do iPhone e aplica o filtro escolhido. **Vídeo da galeria continua de fora de propósito** — o .mov do iPhone não toca no Android, e gravar aqui garante o formato.
+- Foto da galeria nunca é espelhada: espelho é coisa de câmera frontal, não de arquivo.
+- "Salvar no celular" baixa o resultado com filtro aplicado (`nomeDoStory()`), para usar em outra rede.

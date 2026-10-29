@@ -90,8 +90,21 @@ export function desenharQuadro(
   filtro: string,
   espelhar: boolean,
 ): void {
-  const w = video.videoWidth;
-  const h = video.videoHeight;
+  desenharFonte(ctx, video as unknown as CanvasImageSource, video.videoWidth, video.videoHeight, filtro, espelhar);
+}
+
+/**
+ * O mesmo desenho, para qualquer origem: a câmera ao vivo ou uma foto da
+ * galeria. Quem vem da galeria nunca é espelhado, porque não é um reflexo.
+ */
+export function desenharFonte(
+  ctx: CanvasRenderingContext2D,
+  fonte: CanvasImageSource,
+  w: number,
+  h: number,
+  filtro: string,
+  espelhar: boolean,
+): void {
   ctx.save();
   if (espelhar) {
     ctx.translate(w, 0);
@@ -99,8 +112,14 @@ export function desenharQuadro(
   }
   const css = filtroCss(filtro);
   if (css !== "none" && "filter" in ctx) ctx.filter = css;
-  ctx.drawImage(video as unknown as CanvasImageSource, 0, 0, w, h);
+  ctx.drawImage(fonte, 0, 0, w, h);
   ctx.restore();
+}
+
+/** O nome do arquivo quando a pessoa baixa o story para usar em outra rede. */
+export function nomeDoStory(agora = new Date()): string {
+  const d = agora.toISOString().slice(0, 16).replace("T", "-").replace(":", "h");
+  return `nommi-${d}.jpg`;
 }
 
 /** Recorte em pé, como o story é visto. Devolve o tamanho do canvas. */

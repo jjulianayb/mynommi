@@ -880,7 +880,7 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .filtro span{width:46px;height:46px;border-radius:50%;display:block;border:2px solid var(--border);background:linear-gradient(135deg,#E8B88A,#8D5B3F 45%,#2F7B54)}
 .filtro.marcado span{border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,126,70,.25)}
 .camera-acoes{display:flex;justify-content:center;margin:14px 0 6px}
-.camera-disparo{width:74px;height:74px;border-radius:50%;background:#fff;border:5px solid var(--coral);cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.camera-disparo{width:74px;height:74px;border-radius:50%;background:#fff;border:5px solid var(--primary);cursor:pointer;box-shadow:0 0 0 3px rgba(0,0,0,.14),0 4px 14px rgba(0,0,0,.2)}
 .camera-disparo:active{transform:scale(.94)}
 .camera-acoes-finais{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 .camera-acoes-finais button{min-height:48px}
@@ -908,7 +908,7 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .versao-nova button{border:0;border-radius:999px;background:var(--sunshine);color:#1b1500;font-weight:800;font-size:13.5px;padding:0 14px;min-height:38px;cursor:pointer}
 
 /* Gravar vídeo no story */
-.camera-acoes{position:relative;align-items:center;gap:16px}
+.camera-acoes{position:relative;align-items:center;justify-content:space-between;gap:16px;padding:0 8px}
 .camera-gravar{position:absolute;right:0;border:1.5px solid var(--border);background:var(--card);border-radius:999px;font-size:13.5px;font-weight:700;min-height:44px;padding:0 16px;cursor:pointer}
 .camera-gravar.gravando{background:var(--erro);color:#fff;border-color:var(--erro)}
 .camera-gravando{position:absolute;left:12px;top:12px;background:rgba(179,38,30,.92);color:#fff;font-size:12.5px;font-weight:800;padding:6px 11px;border-radius:999px;letter-spacing:.04em}
@@ -1036,3 +1036,10 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .meus-direitos .sheet-option{background:var(--card);border:1px solid var(--border)}
 .consentimento-texto{font-size:13.5px;line-height:1.7;color:var(--muted-foreground);background:var(--butter);border-radius:16px;padding:14px;margin:12px 0}
 .tribo-sensivel{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;background:var(--butter);color:var(--foreground);border-radius:999px;padding:5px 10px}
+/* Galeria ao lado do disparo. O vazio do outro lado mantém o disparo no meio. */
+.camera-galeria{display:grid;justify-items:center;gap:4px;font-size:11.5px;font-weight:700;color:var(--muted-foreground);cursor:pointer;min-height:44px;min-width:64px;align-content:center;position:relative;overflow:hidden;margin:0}
+.camera-galeria .friend-icon{width:24px;height:24px;color:var(--primary)}
+.camera-galeria input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+.camera-vazio{min-width:64px}
+.camera-acoes-finais{grid-template-columns:repeat(3,1fr)}
+@media(max-width:420px){.camera-acoes-finais{grid-template-columns:1fr 1fr}.camera-acoes-finais button:last-child{grid-column:1/-1}}

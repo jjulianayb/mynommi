@@ -9,6 +9,8 @@ import {
   tamanhoDoStory,
   venceEm,
   HORAS_NO_AR,
+  desenharFonte,
+  nomeDoStory,
 } from "@/lib/camera";
 import { enderecoDaImagem } from "@/lib/covers";
 import { estiloDoFundo, tomDoFundo } from "@/lib/fundos";
@@ -74,5 +76,21 @@ describe("fundo antigo", () => {
   it("e o texto continua legível", () => {
     expect(tomDoFundo("teia-verde")).toBe("escuro");
     expect(tomDoFundo("papel")).toBe("claro");
+  });
+});
+
+describe("o story também aceita foto da galeria", () => {
+  it("o nome do arquivo baixado diz que é da nommi e quando foi", () => {
+    expect(nomeDoStory(new Date("2026-10-29T14:08:00Z"))).toMatch(/^nommi-2026-10-29-\d\d h?\d\d\.jpg$|^nommi-2026-10-29-\d\dh\d\d\.jpg$/);
+  });
+  it("desenhar aceita qualquer origem, não só a câmera", () => {
+    const chamadas: unknown[] = [];
+    const ctx = {
+      save() {}, restore() {}, translate() {}, scale() {},
+      drawImage(f: unknown) { chamadas.push(f); },
+    } as unknown as CanvasRenderingContext2D;
+    const falsaImagem = { nome: "foto da galeria" } as unknown as CanvasImageSource;
+    desenharFonte(ctx, falsaImagem, 100, 200, FILTRO_PADRAO, false);
+    expect(chamadas[0]).toBe(falsaImagem);
   });
 });

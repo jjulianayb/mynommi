@@ -4,12 +4,14 @@ import {
   FILTRO_PADRAO,
   SEGUNDOS_DE_VIDEO,
   contagemDaGravacao,
+  desenharFonte,
   desenharQuadro,
   extensaoDoVideo,
   filtroCss,
   filtrosDoGrupo,
   formatoDeGravacao,
   gruposDeFiltro,
+  nomeDoStory,
   tamanhoDoStory,
 } from "@/lib/camera";
 import { MAX_CAPTION, type StoryAudience } from "@/lib/stories";
@@ -146,6 +148,51 @@ export function CameraStory({ onClose, onPublish }: { onClose: () => void; onPub
     setFoto({ url: URL.createObjectURL(blob), file });
   }
 
+  /**
+   * Foto da galeria. Passa pelo mesmo canvas da câmera: é o que converte o
+   * HEIC do iPhone em JPEG e o que aplica o filtro escolhido. Vídeo da galeria
+   * continua de fora de propósito: o .mov do iPhone não toca no Android.
+   */
+  async function daGaleria(arquivo: File) {
+    setErro("");
+    if (!arquivo.type.startsWith("image/")) {
+      setErro("Por enquanto a galeria aceita foto. Vídeo é melhor gravar aqui, para tocar em todo celular.");
+      return;
+    }
+    const url = URL.createObjectURL(arquivo);
+    try {
+      const img = new Image();
+      img.src = url;
+      await img.decode();
+      const { w, h } = tamanhoDoStory(img.naturalWidth, img.naturalHeight);
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("sem canvas");
+      desenharFonte(ctx, img, w, h, filtro, false);
+      const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, "image/jpeg", 0.88));
+      if (!blob) throw new Error("sem blob");
+      desligar();
+      setFoto({ url: URL.createObjectURL(blob), file: new File([blob], "story.jpg", { type: "image/jpeg" }) });
+    } catch {
+      setErro("Não consegui abrir essa foto. Tente outra.");
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  }
+
+  /** Baixar para o rolo da câmera, para usar em outra rede se quiser. */
+  function salvarNoCelular() {
+    const alvo = foto ?? video2;
+    if (!alvo) return;
+    const a = document.createElement("a");
+    a.href = alvo.url;
+    a.download = foto ? nomeDoStory() : "nommi.webm";
+    a.click();
+    notify("Salvo no seu celular.");
+  }
+
   return (
     <Sheet title="Story de agora" onClose={onClose}>
       {erro && <p className="form-error">{erro}</p>}
@@ -205,12 +252,26 @@ export function CameraStory({ onClose, onPublish }: { onClose: () => void; onPub
             ))}
           </div>
           <div className="camera-acoes">
+            <label className="camera-galeria">
+              <Icon name="gift" />
+              Galeria
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  e.target.value = "";
+                  if (f) void daGaleria(f);
+                }}
+              />
+            </label>
             <button
               type="button"
               className="camera-disparo"
               aria-label="Tirar a foto"
               onClick={() => void tirar()}
             />
+            <span className="camera-vazio" aria-hidden="true" />
           </div>
           <p className="small-note">
             Foto ou vídeo de até {SEGUNDOS_DE_VIDEO} segundos. Some em 1 hora — é o agora, não o
@@ -257,6 +318,10 @@ export function CameraStory({ onClose, onPublish }: { onClose: () => void; onPub
               }}
             >
               Tirar outra
+            </Button>
+            <Button type="button" variant="secondary" onClick={salvarNoCelular}>
+              <Icon name="send" />
+              Salvar no celular
             </Button>
             <Button
               type="button"
