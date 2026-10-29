@@ -8,8 +8,10 @@ export type PublicProfile = {
   about: string;
   interests: string[];
   avatar_url: string;
+  video_path?: string;
+  avatar_figura?: string;
 };
-const COLS = "id,nickname,city,about,interests,avatar_url";
+const COLS = "id,nickname,city,about,interests,avatar_url,video_path,avatar_figura";
 
 /** Limpa o termo de busca: sem caracteres que quebram o filtro, até 40 letras. */
 export function cleanQuery(q: string) {

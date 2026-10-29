@@ -17,6 +17,8 @@ export type PaginaPessoal = {
   mode: string;
   tribosEmComum: string[];
   desde: string;
+  video: string;
+  figura: string;
   capaFoco: { x: number; y: number };
   fotoFoco: { x: number; y: number };
 };
@@ -102,6 +104,8 @@ type Row = {
   profile_mode: string;
   tribos_em_comum: string[] | null;
   desde: string;
+  video_path?: string | null;
+  avatar_figura?: string | null;
   cover_x?: number | null;
   cover_y?: number | null;
   avatar_x?: number | null;
@@ -123,6 +127,8 @@ export const toPagina = (r: Row): PaginaPessoal => ({
   mode: r.profile_mode ?? "publico",
   tribosEmComum: r.tribos_em_comum ?? [],
   desde: r.desde,
+  video: r.video_path ?? "",
+  figura: r.avatar_figura ?? "",
   capaFoco: { x: r.cover_x ?? 50, y: r.cover_y ?? 50 },
   fotoFoco: { x: r.avatar_x ?? 50, y: r.avatar_y ?? 50 },
 });

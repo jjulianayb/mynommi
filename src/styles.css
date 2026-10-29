@@ -1005,3 +1005,14 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .numeros-barras{display:flex;align-items:flex-end;gap:3px;height:92px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px}
 .numeros-barras span{flex:1;display:flex;align-items:flex-end;height:100%}
 .numeros-barras i{display:block;width:100%;background:var(--primary);border-radius:3px;min-height:3px}
+
+/* Vídeo no perfil */
+.videos-perfil{display:grid;gap:9px;margin-top:6px}
+.videos-fila{display:grid;gap:10px}
+.video-cartao{margin:0;display:grid;gap:7px;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:10px;justify-items:start}
+.video-cartao video{width:100%;border-radius:14px;background:#111;display:block;max-height:360px}
+.video-cartao figcaption{font-size:13.5px;font-weight:700}
+.video-acoes{display:flex;gap:8px;flex-wrap:wrap}
+.videos-esperando{display:grid;gap:9px;background:var(--butter);border-radius:16px;padding:12px;margin-top:4px}
+.videos-esperando h3{font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted-foreground)}
+.camera-disparo.gravando{background:var(--erro);border-color:#fff}

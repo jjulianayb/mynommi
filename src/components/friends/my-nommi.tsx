@@ -15,6 +15,7 @@ import { figurinhaDe } from "@/lib/figurinhas";
 import { EscolherFundo } from "./escolher-fundo";
 import { EscolherInteresses } from "./escolher-interesses";
 import { Selos } from "./selos";
+import { MeuVideo, VideosDeAmigos } from "./videos-do-perfil";
 import { AjustarEnquadramento } from "./enquadrar";
 import {
   usePaginaPessoal,
@@ -220,6 +221,16 @@ export function MyNommi({ me }: { me: string }) {
           onSaved={() => void reload()}
         />
       </details>
+
+      <MeuVideo
+        me={me}
+        path={pagina.video ?? ""}
+        souDono
+        nome={pagina.nickname}
+        onMudou={() => void reload()}
+      />
+
+      <VideosDeAmigos me={me} dono={me} nome={pagina.nickname} souAmiga={false} />
 
       <Selos me={me} dono={me} nome={pagina.nickname} souAmiga={false} />
 

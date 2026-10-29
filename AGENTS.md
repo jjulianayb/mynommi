@@ -157,3 +157,9 @@
 ## Bonequinho (0032)
 - Quem não põe foto escolhe um bonequinho: mulher, homem ou prefiro não dizer. É **escolha de desenho**, guardada em `avatar_figura` — não é cadastro de gênero e não entra em filtro nem no match. Se um dia precisar de gênero para regra de tribo, é outro campo e outra conversa.
 - Sem bonequinho escolhido, aparece a inicial. Em nenhum caso aparece foto de outra pessoa.
+
+## Vídeo no perfil (0033)
+- Dois vídeos: o da própria pessoa (`profiles.video_path`) e os dos amigos falando dela (`videos_amigos`).
+- Regra que não se mexe: **vídeo de alguém sobre você não entra na sua página sem você deixar**. Só amizade aceita grava (`sao_amigos`), entra como `pendente`, e só o dono muda para `no_ar`. Quem gravou pode tirar o seu; o dono pode tirar qualquer um.
+- O balde `videos` é fechado: o endereço é assinado por 1 hora (`enderecoDoVideo`).
+- O vídeo é gravado na câmera do app, no formato que `formatoDeGravacao()` encontra — mesmo motivo do story: o que o navegador grava é o que ele toca.
