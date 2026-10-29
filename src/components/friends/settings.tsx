@@ -566,13 +566,12 @@ export function Legal({ kind }: { kind: "terms" | "privacy" | "help" }) {
             Dúvida, pedido ou reclamação sobre seus dados: <b>{RESPONSAVEL.email}</b>. A gente
             responde em até 15 dias.
           </p>
-          <h2>Onde seus dados ficam de verdade</h2>
+          <h2>Onde seus dados ficam</h2>
           <p>
-            Não ficam no seu aparelho. Seu perfil, suas conversas, suas tribos e suas fotos ficam em
-            um banco de dados num servidor, protegido por regras que conferem, a cada leitura, se
-            quem está pedindo tem direito de ver aquilo. Esse servidor fica fora do Brasil, e por
-            isso a gente exige por contrato da empresa que hospeda as mesmas proteções que a lei
-            brasileira exige da nommi.
+            Seu perfil, suas conversas, suas tribos e suas fotos ficam num servidor, não no seu
+            aparelho, protegidos por regras que conferem, a cada leitura, se quem está pedindo tem
+            direito de ver aquilo. Esse servidor fica fora do Brasil, e por isso a gente exige por
+            contrato da empresa que hospeda as mesmas proteções que a lei brasileira exige da nommi.
           </p>
           <h2>O que a gente guarda</h2>
           <p>

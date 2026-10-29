@@ -18,11 +18,10 @@ export function AvisoDeAceite({ onAceitar }: { onAceitar: () => Promise<void> })
         <span className="aceite-selo" aria-hidden="true">
           <Icon name="lock" />
         </span>
-        <h2 id="aceite-titulo">A gente reescreveu a política de privacidade.</h2>
+        <h2 id="aceite-titulo">Atualizamos os Termos e a Política de Privacidade.</h2>
         <p>
-          O texto antigo dizia que seus dados ficavam no seu navegador. Não é verdade, e a gente não
-          quer começar assim. O novo diz onde eles ficam de fato, por quanto tempo, e o que você
-          pode exigir da nommi a qualquer hora — inclusive apagar tudo.
+          A nova versão conta onde seus dados ficam, por quanto tempo, e o que você pode pedir a
+          qualquer momento — inclusive baixar tudo o que é seu ou apagar sua conta.
         </p>
         <div className="aceite-links">
           <Link to="/privacidade">Ler a política</Link>
@@ -40,7 +39,7 @@ export function AvisoDeAceite({ onAceitar }: { onAceitar: () => Promise<void> })
           <Icon name="arrow" />
         </Button>
         <p className="aceite-rodape">
-          Se não concordar, você pode apagar sua conta em Meu nommi. Some tudo, na hora.
+          Os dois textos ficam sempre à mão em Meu nommi, em Privacidade.
         </p>
       </div>
     </div>

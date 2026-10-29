@@ -11,9 +11,14 @@ describe("a política não pode mentir", () => {
   it("nunca afirma que os dados ficam no aparelho", () => {
     expect(prometeDemais(privacidade)).toBe(false);
   });
-  it("diz onde os dados ficam de verdade", () => {
-    expect(privacidade).toContain("Não ficam no seu aparelho");
+  it("diz onde os dados ficam", () => {
+    expect(privacidade).toContain("não no seu");
     expect(privacidade).toContain("fora do Brasil");
+  });
+  it("informa, não se desculpa: nada de confessar o texto antigo para quem nunca o viu", () => {
+    const aviso = readFileSync("src/components/friends/aceite.tsx", "utf8");
+    expect(/não é verdade|mentira|erro nosso|a gente errou|reescrev/i.test(aviso)).toBe(false);
+    expect(aviso).toContain("Atualizamos os Termos");
   });
   it("não chama a nommi de demonstração em nenhum texto legal", () => {
     expect(/demonstra[çc]/i.test(privacidade)).toBe(false);
