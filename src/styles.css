@@ -835,7 +835,7 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .figurinhas{display:grid;gap:14px}
 .figurinhas-grupo h3{font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted-foreground);margin-bottom:8px}
 .figurinhas-grade{display:flex;flex-wrap:wrap;gap:8px}
-.fig{display:inline-flex;align-items:center;gap:7px;font-size:14px;padding:9px 13px;border-radius:999px;background:var(--card);border:1.5px solid var(--border);cursor:pointer;min-height:44px}
+.fig{display:inline-flex;align-items:center;gap:7px;font-size:14px;padding:9px 13px;border-radius:999px;background:var(--card);color:var(--foreground);border:1.5px solid var(--border);cursor:pointer;min-height:44px}
 .fig b{font-size:19px;line-height:1}
 .fig.marcada{background:var(--primary);color:#fff;border-color:var(--primary);font-weight:700}
 .fig:disabled{opacity:.45;cursor:default}
@@ -1043,3 +1043,14 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .camera-vazio{min-width:64px}
 .camera-acoes-finais{grid-template-columns:repeat(3,1fr)}
 @media(max-width:420px){.camera-acoes-finais{grid-template-columns:1fr 1fr}.camera-acoes-finais button:last-child{grid-column:1/-1}}
+/* Superfície clara dentro de página de fundo escuro precisa dizer a própria cor
+   de texto: senão herda o claro do .tom-escuro e some no branco. */
+.tom-escuro .fig,.tom-escuro .secret-card,.tom-escuro .presenca,.tom-escuro .selo-opcao,
+.tom-escuro .figura-opcao,.tom-escuro .video-cartao,.tom-escuro .chegada-tribo{color:var(--foreground)}
+/* A escolhida continua branca sobre o verde: a regra acima tem a mesma força
+   que .fig.marcada e vinha depois, então apagava o branco dela. */
+.tom-escuro .fig.marcada{color:#fff}
+/* `.friends-app button` zera box-shadow com força maior: o contorno do disparo
+   precisa vir com a mesma força, senão o botão volta a ser branco sobre branco. */
+.friends-app .camera-disparo{width:74px;height:74px;min-width:74px;flex:none;padding:0;
+  box-shadow:0 0 0 3px rgba(0,0,0,.16),0 4px 14px rgba(0,0,0,.2)}
