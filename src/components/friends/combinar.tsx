@@ -13,10 +13,21 @@ import {
   useCombinar,
   type Candidata,
 } from "@/lib/combinar";
-import { SemFoto, Avatar, Icon } from "./art";
+import { Icon, SemFoto } from "./art";
 import { Esqueleto, EmptyState } from "./surfaces";
 import { SafetyMenu } from "./social-feed";
 import { useFriends } from "./store";
+
+const CONFETE = [
+  { left: "6%", cor: "#FFB400", atraso: "0s" },
+  { left: "18%", cor: "#EF675A", atraso: ".12s" },
+  { left: "30%", cor: "#8FD3B0", atraso: ".05s" },
+  { left: "42%", cor: "#FFB400", atraso: ".2s" },
+  { left: "54%", cor: "#EF675A", atraso: ".08s" },
+  { left: "66%", cor: "#8FD3B0", atraso: ".26s" },
+  { left: "78%", cor: "#FFB400", atraso: ".15s" },
+  { left: "90%", cor: "#EF675A", atraso: ".3s" },
+];
 
 function Face({ c, size }: { c: Candidata; size: number }) {
   return c.avatar ? (
@@ -57,30 +68,44 @@ export function Combinar({ me }: { me: string }) {
 
   if (deuMatch)
     return (
-      <section className="match-feito">
-        <span className="match-feito-selo">
-          <Icon name="heart" />
-        </span>
-        <h2>Deu match!</h2>
-        <p>Você e {deuMatch.nome} se escolheram. Já são amizade e a conversa está aberta.</p>
-        <Face c={deuMatch} size={120} />
-        {deuMatch.emComum.length > 0 && (
-          <p className="match-feito-comum">
+      <section className="deu-match">
+        <div className="deu-match-ceu" aria-hidden="true">
+          {CONFETE.map((c, i) => (
+            <span key={i} style={{ left: c.left, background: c.cor, animationDelay: c.atraso }} />
+          ))}
+        </div>
+        <p className="deu-match-grito">Vocês deram match!</p>
+        <div className="deu-match-rostos">
+          <span className="deu-match-eu">
+            <SemFoto nome="você" size={104} />
+          </span>
+          <span className="deu-match-coracao">
+            <Icon name="heart" />
+          </span>
+          <span className="deu-match-ela">
+            <Face c={deuMatch} size={104} />
+          </span>
+        </div>
+        <h2>Você e {deuMatch.nome.split(" ")[0]} querem se conhecer</h2>
+        {deuMatch.emComum.length > 0 ? (
+          <p className="deu-match-comum">
             {deuMatch.emComum.slice(0, 3).map((i) => (
               <span key={i}>
                 {figurinhaDe(i)} {i}
               </span>
             ))}
           </p>
+        ) : (
+          <p className="deu-match-sub">Já são amizade. A conversa está aberta.</p>
         )}
-        <div className="match-feito-acoes">
+        <div className="deu-match-acoes">
           <Button asChild>
             <Link to="/conversas/$id" params={{ id: deuMatch.userId }}>
               <Icon name="chat" />
-              Falar com {deuMatch.nome.split(" ")[0]}
+              Falar agora
             </Link>
           </Button>
-          <Button variant="secondary" onClick={() => setDeuMatch(null)}>
+          <Button variant="ghost" onClick={() => setDeuMatch(null)}>
             Ver mais pessoas
           </Button>
         </div>

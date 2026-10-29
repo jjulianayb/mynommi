@@ -218,6 +218,20 @@
       "when": 1793100000000,
       "tag": "0030_tribo_fechada",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1793400000000,
+      "tag": "0031_numeros",
+      "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1793410000000,
+      "tag": "0032_bonequinho",
+      "breakpoints": true
     }
   ]
 }

@@ -147,3 +147,13 @@
 - O padrão de quem não tem foto era `<Avatar id={3} />`, que desenha a **dani**, uma pessoa real do conjunto da apresentação. O Felipe criou conta e viu o rosto de uma desconhecida no perfil dele.
 - Agora é `<SemFoto nome={...} />`: inicial da pessoa, cor sempre a mesma para o mesmo nome, e um desenho neutro quando não há nome. `personPhoto` só pode ser usado para gente da apresentação, nunca como padrão de conta real.
 - Contraste: dentro de `.cenario-conteudo` (cadastro sobre a foto do Rio), chip branco herdava texto claro e sumia. As regras de chip agora são explícitas ali.
+
+## Painel de números (0031)
+- `acessos` guarda **uma linha por pessoa por dia**, e só isso: nada de tela, clique ou lugar. É o mínimo para responder "quantas voltaram". `registrar_acesso()` é chamada quando conta real abre o app.
+- `painel_de_numeros()` e `acessos_por_dia()` só respondem para admin, e **nenhuma conta de teste entra na contagem**.
+- `oQueOsNumerosDizem()` em `src/lib/numeros.ts` lê os números e diz qual é o gargalo. Tem teste que barra a frase virar elogio: cadastro não é sucesso.
+- A privacidade do app precisa dizer que o dia de acesso é guardado — ainda é texto de demonstração.
+
+## Bonequinho (0032)
+- Quem não põe foto escolhe um bonequinho: mulher, homem ou prefiro não dizer. É **escolha de desenho**, guardada em `avatar_figura` — não é cadastro de gênero e não entra em filtro nem no match. Se um dia precisar de gênero para regra de tribo, é outro campo e outra conversa.
+- Sem bonequinho escolhido, aparece a inicial. Em nenhum caso aparece foto de outra pessoa.

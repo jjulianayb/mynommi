@@ -19,6 +19,7 @@ import { emptyState, people, groups, partners } from "@/lib/friends-data";
 import { ageOn, profileSchema } from "@/lib/nomi-validation";
 import { FotoInstantanea } from "./foto-instantanea";
 import { recadoDoEnvio } from "@/lib/foto";
+import { FIGURAS, type Figura } from "@/lib/sem-foto";
 function MyCovers({ me }: { me: string }) {
   const [cover, setCover] = useState("");
   const [bg, setBg] = useState("");
@@ -116,6 +117,7 @@ export function Settings({ section }: { section: string }) {
   const [confirmation, setConfirmation] = useState("");
   const [error, setError] = useState("");
   const [enviandoFoto, setEnviandoFoto] = useState(false);
+  const [figura, setFigura] = useState<Figura>("neutro");
   return (
     <div className="settings-page">
       <Button asChild variant="ghost" className="back-link">
@@ -196,6 +198,29 @@ export function Settings({ section }: { section: string }) {
               }}
             />
             {enviandoFoto && <p className="small-note">{recadoDoEnvio("indo")}</p>}
+            {!state.photo && cloud && (
+              <>
+                <p className="small-note">Sem foto? Escolha seu bonequinho.</p>
+                <div className="figuras">
+                  {FIGURAS.map((f) => (
+                    <button
+                      type="button"
+                      key={f.id}
+                      className="figura-opcao"
+                      aria-pressed={figura === f.id}
+                      onClick={async () => {
+                        setFigura(f.id);
+                        await saveCloudProfile(cloudUser!.id, { avatar_figura: f.id });
+                        notify("Pronto. É assim que você aparece enquanto não põe foto.");
+                      }}
+                    >
+                      <SemFoto nome={state.nickname} figura={f.id} size={64} />
+                      {f.nome}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
             {state.photo && (
               <Button
                 type="button"

@@ -6,6 +6,7 @@ import { Icon } from "./art";
 import { EmptyState } from "./surfaces";
 import { useDemoSession } from "./session";
 import { Moderacao } from "./moderacao";
+import { Numeros } from "./numeros";
 import { useFriends } from "./store";
 
 type Profile = {
@@ -35,13 +36,13 @@ type Idea = {
   created_at: string;
 };
 type Credit = { user_id: string; balance: number; boost_until: string | null };
-const TABS = ["Denúncias", "Empresas", "Ideias", "Créditos", "Pessoas"] as const;
+const TABS = ["Números", "Denúncias", "Empresas", "Ideias", "Créditos", "Pessoas"] as const;
 
 /** Painel de administração: os dados vêm do servidor e as permissões são conferidas lá. */
 export function Admin() {
   const { cloudUser, isAdmin } = useDemoSession();
   const { notify } = useFriends();
-  const [tab, setTab] = useState<(typeof TABS)[number]>("Denúncias");
+  const [tab, setTab] = useState<(typeof TABS)[number]>("Números");
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [ideas, setIdeas] = useState<Idea[]>([]);
@@ -197,7 +198,9 @@ export function Admin() {
           Atualizar
         </Button>
       </div>
-      {tab === "Denúncias" ? (
+      {tab === "Números" ? (
+        <Numeros souAdmin={isAdmin} />
+      ) : tab === "Denúncias" ? (
         <Moderacao souAdmin={isAdmin} />
       ) : loading ? (
         <p className="small-note">Carregando…</p>

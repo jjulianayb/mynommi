@@ -12,6 +12,7 @@ import { useAvisosNaoLidos } from "@/lib/avisos";
 import { Tour } from "./tour";
 import { VersaoNova } from "./versao-nova";
 import { esquecerTour, tourJaVisto } from "@/lib/tour";
+import { registrarAcesso } from "@/lib/numeros";
 
 /** Cada item da navegação vira um alvo do tour. */
 const alvoDoItem = (to: string) =>
@@ -28,6 +29,10 @@ export function SocialShell({ children }: { children: ReactNode }) {
   const [drawer, setDrawer] = useState(false);
   const [tourAberto, setTourAberto] = useState(false);
   const real = !!cloudUser && !demoMode;
+  // Uma linha por pessoa por dia: é o que responde "quantas voltaram".
+  useEffect(() => {
+    if (real) void registrarAcesso();
+  }, [real, cloudUser?.id]);
   // O tour só começa na página inicial, onde estão as coisas que ele aponta.
   useEffect(() => {
     if (!real || pathname !== "/" || tourJaVisto(cloudUser?.id ?? null)) return;

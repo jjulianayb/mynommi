@@ -23,9 +23,18 @@ export function cleanQuery(q: string) {
 /** Salva apelido, cidade, bio e (opcional) foto na nuvem. */
 export async function saveCloudProfile(
   userId: string,
-  data: { nickname?: string; city?: string; about?: string; avatar_url?: string },
+  data: {
+    nickname?: string;
+    city?: string;
+    about?: string;
+    avatar_url?: string;
+    avatar_figura?: string;
+  },
 ) {
-  const { error } = await supabase.from("profiles").update(data).eq("id", userId);
+  // avatar_figura ainda não está em types.ts
+  const { error } = await (supabase.from("profiles") as ReturnType<typeof supabase.from>)
+    .update(data)
+    .eq("id", userId);
   return !error;
 }
 

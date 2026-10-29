@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { personPhoto } from "@/lib/friends-photos";
-import { corDoNome, iniciais } from "@/lib/sem-foto";
+import { corDoNome, desenhoDaFigura, figuraValida, iniciais, type Figura } from "@/lib/sem-foto";
 const SK = ["var(--skin-1)", "var(--skin-2)", "var(--skin-3)", "var(--skin-4)", "var(--skin-5)"],
   HR = ["var(--foreground)", "var(--hair-1)", "var(--hair-2)", "var(--hair-3)", "var(--primary)"],
   BG = ["var(--sunshine)", "var(--teal)", "var(--primary)", "var(--blue)", "var(--butter)"],
@@ -135,9 +135,29 @@ export function Avatar({ id = 3, size = 48 }: { id?: number; size?: number }) {
  * Quem ainda não pôs foto. Nunca usa rosto de outra pessoa:
  * ou é a inicial de quem está ali, ou é um desenho neutro.
  */
-export function SemFoto({ nome = "", size = 48 }: { nome?: string; size?: number }) {
+export function SemFoto({
+  nome = "",
+  size = 48,
+  figura,
+}: {
+  nome?: string;
+  size?: number;
+  figura?: Figura | string | null;
+}) {
   const letras = iniciais(nome);
   const cor = corDoNome(nome || "nommi");
+  // Quem escolheu bonequinho vê o bonequinho; quem não escolheu vê a inicial.
+  if (figura)
+    return (
+      <span
+        className="sem-foto bonequinho"
+        style={{ width: size, height: size, background: cor.fundo }}
+        aria-hidden="true"
+        dangerouslySetInnerHTML={{
+          __html: desenhoDaFigura(figuraValida(figura), "#2E2A26", "#E9C4A4"),
+        }}
+      />
+    );
   return (
     <span
       className="sem-foto"
