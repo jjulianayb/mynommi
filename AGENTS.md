@@ -173,3 +173,14 @@
 - Tribo sensível (`teias.sensivel`): política, religião, orientação. A política de INSERT em `teia_members` confere `posso_entrar_na_tribo()`, então **a trava é do banco** — não adianta a tela esquecer. `portaDaTribo()` ganhou o estado `"consentir"`, que vem antes de aberta/fechada.
 - `apagar_minha_conta()` apaga de verdade, na hora, sem período de arrependimento — menos dado guardado é menos risco, e o texto promete isso. Fica de pé só a denúncia feita **contra** quem saiu, porque ela protege quem denunciou.
 - `meus_dados()` devolve tudo num JSON. Tabela nova com dado de pessoa precisa entrar nas duas funções: a que apaga e a que exporta. Esquecer uma delas é descumprir o texto que está no ar.
+
+## Seguir, quem viu, e senha (0035)
+- `follows` ficou sem gatilho desde que nasceu: seguir alguém **não avisava ninguém**. Agora `aviso_seguidor` avisa, e `notifications.kind` ganhou `'seguidor'`. Gatilho novo em tabela de relacionamento é fácil de esquecer: a lista de gatilhos está em AGENTS, conferir ao criar tabela.
+- `quem_eu_sigo()`, `quem_me_segue()` e `quem_viu_meu_story()` são do dono e de mais ninguém: seguidor alheio não é vitrine, e quem viu um story só aparece para quem postou.
+- `meus_dados()` esquecia `follows`. Regra que vale para sempre: tabela nova com dado de pessoa entra nas duas funções, a que apaga e a que exporta, no mesmo commit.
+- Recuperação de senha existe de verdade (`/recuperar-senha`, `src/lib/senha.ts`). Antes a rota só mostrava o login de novo e quem esquecia a senha ficava trancado para fora. O recado de "mandamos o link" é **o mesmo com e-mail cadastrado ou não**, de propósito: dizer "esse e-mail não existe" entrega quem tem conta na nommi.
+
+## O fundo que não pintava (29/10)
+- `.mynommi>*{position:relative;z-index:1}` vinha **depois** de `.mynommi-fundo{position:absolute}` com a mesma força, então devolvia a camada do fundo para o fluxo. Div vazio relativo tem altura zero: o fundo era salvo, lido e desenhado, e não aparecia.
+- Agora a regra é `.mynommi>*:not(.mynommi-fundo)`, e tem teste que lê o CSS e barra a volta.
+- `background-attachment: fixed` saiu de `estiloDoFundo`: o Safari do iPhone não desenha, e o fundo some justamente no aparelho onde a nommi mais é usada.

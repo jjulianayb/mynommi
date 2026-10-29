@@ -194,6 +194,11 @@ export function Account({
             required
           />
         </label>
+        {mode === "entrar" && (
+          <Link className="forgot-link" to="/recuperar-senha">
+            Esqueci minha senha
+          </Link>
+        )}
         {mode === "criar" && (
           <ul
             className="small-note"

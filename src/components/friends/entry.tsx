@@ -87,6 +87,3 @@ export function Registration() {
 export function Login({ partner = false }: { partner?: boolean }) {
   return <Account initialBusiness={partner} />;
 }
-export function RecoverPassword() {
-  return <Account />;
-}

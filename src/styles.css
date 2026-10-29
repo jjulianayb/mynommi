@@ -846,7 +846,7 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 /* O fundo escolhido pinta a página inteira */
 .mynommi{position:relative;margin:-14px -16px 0;padding:16px 16px 10px;min-height:calc(100vh - 150px)}
 .mynommi-fundo{position:absolute;inset:0;z-index:0}
-.mynommi>*{position:relative;z-index:1}
+.mynommi>*:not(.mynommi-fundo){position:relative;z-index:1}
 .mynommi.tom-escuro{color:#F7F0DE}
 .mynommi.tom-escuro .settings-subtitle,.mynommi.tom-escuro h1,.mynommi.tom-escuro h2{color:#fff}
 .mynommi.tom-escuro .small-note,.mynommi.tom-escuro .mynommi-cidade{color:#C9DACF}

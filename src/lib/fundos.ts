@@ -138,7 +138,6 @@ export function estiloDoFundo(valor: string): CSSProperties {
       backgroundImage: comoUrl(teiaSvg(f)),
       backgroundSize: "cover",
       backgroundPosition: "center",
-      backgroundAttachment: "fixed",
     };
   if (!valor) return {};
   // ids antigos de gradiente continuam funcionando para quem já escolheu um
