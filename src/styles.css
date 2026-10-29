@@ -1064,3 +1064,16 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .controle input[type=range]{width:100%;height:28px;accent-color:var(--primary);background:none}
 .controles-acoes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
 .controles-acoes button{min-height:46px}
+/* As tribos da pessoa no Início: lista de conversa, não vitrine. */
+.tribo-linhas{display:grid;gap:8px}
+.tribo-linha{display:flex;align-items:center;gap:12px;background:var(--card);color:var(--foreground);border:1px solid var(--border);border-radius:16px;padding:10px 12px;min-height:72px}
+.tribo-linha.nova{background:var(--butter);border-color:var(--sunshine)}
+.tribo-capa{flex:none;width:52px;height:52px;border-radius:14px;overflow:hidden;background:var(--secondary);display:grid;place-items:center;color:var(--primary)}
+.tribo-capa img{width:52px;height:52px;object-fit:cover}
+.tribo-meio{flex:1;min-width:0;display:grid;gap:3px}
+.tribo-meio b{font-size:15px;line-height:1.25}
+.tribo-meio small{font-size:12.5px;color:var(--muted-foreground);line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tribo-linha.nova .tribo-meio small{color:var(--foreground);font-weight:600}
+.tribo-fim{flex:none;display:grid;justify-items:end;gap:6px}
+.tribo-fim em{font-style:normal;font-size:11px;color:var(--muted-foreground)}
+.tribo-conta{background:var(--primary);color:#fff;font-size:11px;font-weight:800;border-radius:999px;min-width:22px;height:22px;display:grid;place-items:center;padding:0 6px}

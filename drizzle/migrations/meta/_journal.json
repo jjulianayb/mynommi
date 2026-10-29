@@ -253,6 +253,13 @@
       "when": 1793440000000,
       "tag": "0035_seguir_e_quem_viu",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1793450000000,
+      "tag": "0036_minhas_tribos",
+      "breakpoints": true
     }
   ]
 }

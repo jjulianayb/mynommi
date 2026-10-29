@@ -17,6 +17,8 @@ import { useTeiaCovers } from "@/lib/covers";
 import { useRoles } from "@/lib/roles";
 import { Combinar, PessoasParaVoce } from "./combinar";
 import { BotaoDaPorta, PedidosDaTribo } from "./porta-da-tribo";
+import { MinhasTribos } from "./minhas-tribos";
+import { marcarTriboVista } from "@/lib/minhas-tribos";
 import type { MeuPedido } from "@/lib/porta-da-tribo";
 import { chegadaJaVista, esconderChegada } from "@/lib/chegada-vista";
 import { PeopleSearch } from "./real-people";
@@ -450,10 +452,11 @@ export function Home() {
           )}
         </section>
       )}
+      {(filter === "Todas" || filter === "Tribos") && <MinhasTribos ativo={realHome} />}
       {(filter === "Todas" || filter === "Tribos") && (
         <section className="home-section">
           <div className="section-heading">
-            <h2>Tribos para você</h2>
+            <h2>Para você conhecer</h2>
             <Link to="/grupos" hash="teias-abertas" className="section-link">
               Ver todas
               <Icon name="arrow" />
@@ -1379,6 +1382,10 @@ export function GroupDetail({ id }: { id: number }) {
   );
   const realTeia = useRealTeia(id, cloud && id >= 100000);
   const covers = useTeiaCovers(cloud && id >= 100000 ? id : null);
+  // Entrou na tribo: daqui para trás está tudo lido, e o Início para de marcar novo.
+  useEffect(() => {
+    if (cloud && id >= 100000) void marcarTriboVista(id);
+  }, [cloud, id]);
   const amCreator = !!cloudUser && realTeia.row?.created_by === cloudUser.id;
   const g =
     (cloud && realTeia.row

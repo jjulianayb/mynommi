@@ -206,3 +206,9 @@
 - `FILTROS` ganhou `suavidade` por filtro. Filtro de beleza pede pele; filtro divertido não. Teste barra `blur(` voltar para o CSS de qualquer filtro.
 - "Meu filtro" é montado com controles e guardado no aparelho (`localStorage`), porque é preferência de tela. O CSS dele é montado **só com números conferidos** por `ajustesParaCss()`; tem teste que tenta injetar `url(` e `;` pelos controles.
 - O que **não** existe: afinar rosto, mudar nariz. Isso precisa de rastreamento de pontos do rosto (MediaPipe ou equivalente), que é outra ordem de trabalho: modelo para baixar, orçamento de desempenho no celular e teste em aparelho de verdade.
+
+## Suas tribos no Início (0036)
+- O Início mostrava "Tribos para você", que é descoberta. Quem já está dentro quer o contrário: ver as suas, saber onde tem recado novo e entrar. Agora `MinhasTribos` vem primeiro e a descoberta virou "Para você conhecer", embaixo.
+- `tribo_vista` guarda **uma linha por pessoa por tribo** com a hora da última visita. É o mínimo para responder "o que é novo". `marcar_tribo_vista()` é chamada ao abrir a tribo.
+- `minhas_tribos()` devolve a última fala, quem falou, quando e quantas não lidas. **A própria fala da pessoa nunca conta como não lida.** Tribo com recado novo vem primeiro na ordem.
+- `recadoDaTribo()` é o único lugar que decide a frase da linha, e tem teste barrando "marcar", "roda" e "encontro": tribo não é encontro esperando acontecer, aqui também não.
