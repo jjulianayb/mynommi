@@ -21,15 +21,27 @@ export function StoriesStrip({ me, nickname }: { me: string; nickname: string })
   return (
     <>
       <section className="stories-strip" aria-label="Stories">
-        <button type="button" className="story-bubble add" onClick={() => setPosting(true)}>
-          <span className="story-ring new">
-            <Face name={nickname} avatar={mine?.authorAvatar ?? ""} />
-            <span className="story-plus">
-              <Icon name="plus" />
+        <div className={"story-bubble add" + (mine ? " tem" : "")}>
+          <button
+            type="button"
+            className="story-abre"
+            aria-label={mine ? "Ver o seu story" : "Publicar um story"}
+            onClick={() => (mine ? setOpen(mine) : setPosting(true))}
+          >
+            <span className={"story-ring" + (mine ? " viva" : " new")}>
+              <Face name={nickname} avatar={mine?.authorAvatar ?? ""} />
             </span>
-          </span>
-          <small>{mine ? "Seu story" : "Adicionar"}</small>
-        </button>
+            <small>{mine ? "Seu story" : "Adicionar"}</small>
+          </button>
+          <button
+            type="button"
+            className="story-plus"
+            aria-label="Publicar um story"
+            onClick={() => setPosting(true)}
+          >
+            <Icon name="plus" />
+          </button>
+        </div>
         {groups
           .filter((g) => !g.mine)
           .map((g) => (
@@ -39,7 +51,7 @@ export function StoriesStrip({ me, nickname }: { me: string; nickname: string })
               className="story-bubble"
               onClick={() => setOpen(g)}
             >
-              <span className={"story-ring" + (g.allSeen ? " seen" : "")}>
+              <span className={"story-ring" + (g.allSeen ? " seen" : " viva")}>
                 <Face name={g.authorName} avatar={g.authorAvatar} />
               </span>
               <small>{g.authorName.split(" ")[0]}</small>
@@ -49,11 +61,6 @@ export function StoriesStrip({ me, nickname }: { me: string; nickname: string })
           <p className="small-note stories-empty">Ninguém publicou story ainda. Comece você.</p>
         )}
       </section>
-      {mine && (
-        <button type="button" className="stories-mine-link" onClick={() => setOpen(mine)}>
-          Ver o meu story
-        </button>
-      )}
       {open && (
         <StoryViewer
           group={open}

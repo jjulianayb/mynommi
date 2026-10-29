@@ -212,3 +212,20 @@
 - `tribo_vista` guarda **uma linha por pessoa por tribo** com a hora da última visita. É o mínimo para responder "o que é novo". `marcar_tribo_vista()` é chamada ao abrir a tribo.
 - `minhas_tribos()` devolve a última fala, quem falou, quando e quantas não lidas. **A própria fala da pessoa nunca conta como não lida.** Tribo com recado novo vem primeiro na ordem.
 - `recadoDaTribo()` é o único lugar que decide a frase da linha, e tem teste barrando "marcar", "roda" e "encontro": tribo não é encontro esperando acontecer, aqui também não.
+
+## Lembranças: o álbum no lugar do exemplo (0037)
+- O Início mostrava rolês de exemplo da apresentação para conta real, no lugar mais nobre da tela. Decisão da Ju: ali é o álbum da pessoa.
+- `meus_roles_vividos()` devolve os rolês em que a pessoa declarou presença, ou disse "quero ir" num rolê que já passou, com a última foto publicada naquele rolê e com quem ela foi (de `attendances`).
+- `lembrancas` guarda a escolha da pessoa: a foto fixada e uma frase dela ("fui com a tribo do karaokê"). A frase vence a foto automática.
+- A apresentação continua com os cartões de exemplo; conta real nunca mais vê exemplo nessa faixa.
+- `tribo_vista` e `lembrancas` entraram em `meus_dados()` e em `apagar_minha_conta()` no mesmo commit, como manda a regra.
+
+## Story no ar aparece (29/10)
+- A bolinha do próprio story não dizia nada quando havia story no ar. Agora o anel ganha `viva`: gira devagar e pulsa, e tocar abre o story em vez de abrir a câmera. O `+` virou botão separado, no canto.
+- Story de outra pessoa ainda não visto também pulsa; visto fica cinza.
+- A animação respeita `prefers-reduced-motion`.
+
+## Explicação na hora certa (sem migração)
+- O tour mostra **onde** ficam as coisas. `src/lib/primeira-vez.ts` explica **o que faz e por quê**, no momento em que a pessoa abre cada tela, e some depois de lida.
+- Fica por aparelho (`localStorage`), igual ao tour: é preferência de tela, não dado de conta.
+- Texto novo entra em `EXPLICACOES` com uma chave; a tela só chama pela chave.

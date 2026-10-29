@@ -18,6 +18,7 @@ import { useRoles } from "@/lib/roles";
 import { Combinar, PessoasParaVoce } from "./combinar";
 import { BotaoDaPorta, PedidosDaTribo } from "./porta-da-tribo";
 import { MinhasTribos } from "./minhas-tribos";
+import { Lembrancas } from "./lembrancas";
 import { marcarTriboVista } from "@/lib/minhas-tribos";
 import type { MeuPedido } from "@/lib/porta-da-tribo";
 import { chegadaJaVista, esconderChegada } from "@/lib/chegada-vista";
@@ -423,35 +424,33 @@ export function Home() {
           </button>
         ))}
       </div>
-      {(filter === "Todas" || filter === "Eventos") && (
-        <section className="home-section">
-          <div className="section-heading">
-            <h2>Movimento por aí</h2>
-            <Link to="/convites" className="section-link">
-              Ver planos
-              <Icon name="arrow" />
-            </Link>
-          </div>
-          <div className="movimento-carousel">
-            {MOVIMENTO_CARDS.map((c) => (
-              <Link to="/convites" className="movimento-card" key={c.title}>
-                <img src={c.photo} alt={c.alt} />
-                <div className="movimento-card-info">
-                  <h3>{c.title}</h3>
-                  <p>
-                    {c.meta} · {c.members} pessoas
-                  </p>
-                </div>
+      {(filter === "Todas" || filter === "Eventos") &&
+        (realHome ? (
+          <Lembrancas ativo={realHome} />
+        ) : (
+          <section className="home-section">
+            <div className="section-heading">
+              <h2>Movimento por aí</h2>
+              <Link to="/convites" className="section-link">
+                Ver planos
+                <Icon name="arrow" />
               </Link>
-            ))}
-          </div>
-          {!demoMode && (
-            <p className="small-note">
-              Exemplos visuais da apresentação. Os planos reais da sua cidade aparecem em Rolês.
-            </p>
-          )}
-        </section>
-      )}
+            </div>
+            <div className="movimento-carousel">
+              {MOVIMENTO_CARDS.map((c) => (
+                <Link to="/convites" className="movimento-card" key={c.title}>
+                  <img src={c.photo} alt={c.alt} />
+                  <div className="movimento-card-info">
+                    <h3>{c.title}</h3>
+                    <p>
+                      {c.meta} · {c.members} pessoas
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        ))}
       {(filter === "Todas" || filter === "Tribos") && <MinhasTribos ativo={realHome} />}
       {(filter === "Todas" || filter === "Tribos") && (
         <section className="home-section">
