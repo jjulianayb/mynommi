@@ -1195,6 +1195,8 @@ function RealGroups({ userId }: { userId: string }) {
                   meuPedido={(r.meu_pedido as MeuPedido) ?? null}
                   souMembro={!!r.i_am_member}
                   souCriadora={!!r.i_am_creator}
+                  sensivel={!!r.sensivel}
+                  jaConsenti={!!r.ja_consenti}
                   aoPedir={() => void real.reload()}
                   aoEntrar={async () => {
                     if (await real.join(r.id, state.nickname || "nommi")) {

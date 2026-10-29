@@ -10,6 +10,7 @@ import {
   type Entrada,
   type MeuPedido,
 } from "@/lib/porta-da-tribo";
+import { registrarAceiteDeTribo } from "@/lib/aceite";
 import { SemFoto, Avatar, Icon } from "./art";
 import { Sheet } from "./surfaces";
 import { useFriends } from "./store";
@@ -22,6 +23,8 @@ export function BotaoDaPorta({
   meuPedido,
   souMembro,
   souCriadora,
+  sensivel,
+  jaConsenti,
   aoEntrar,
   aoPedir,
 }: {
@@ -31,16 +34,59 @@ export function BotaoDaPorta({
   meuPedido: MeuPedido;
   souMembro: boolean;
   souCriadora: boolean;
+  sensivel?: boolean;
+  jaConsenti?: boolean;
   aoEntrar: () => void | Promise<void>;
   aoPedir?: () => void;
 }) {
   const { notify } = useFriends();
   const { pedir, desistir, pedindo } = useMinhaPorta(teiaId, me);
   const [abrindo, setAbrindo] = useState(false);
+  const [consentindo, setConsentindo] = useState(false);
   const [recado, setRecado] = useState("");
-  const estado = portaDaTribo({ souMembro, souCriadora, entrada, meuPedido });
+  const estado = portaDaTribo({ souMembro, souCriadora, entrada, meuPedido, sensivel, jaConsenti });
 
   if (estado === "dentro") return null;
+
+  if (estado === "consentir")
+    return (
+      <>
+        <Button variant="secondary" onClick={() => setConsentindo(true)}>
+          <Icon name="lock" />
+          Entrar nesta tribo
+        </Button>
+        {consentindo && (
+          <Sheet title="Antes de entrar" onClose={() => setConsentindo(false)}>
+            <p className="small-note">{recadoDaPorta("consentir")}</p>
+            <p className="consentimento-texto">
+              Participar desta tribo fica guardado na sua conta e aparece para quem está dentro
+              dela. A nommi nunca usa isso para outra coisa: não vira anúncio, não vira lista, não é
+              vendido e não é compartilhado com ninguém. Você pode sair quando quiser, e sair apaga
+              sua participação.
+            </p>
+            <Button
+              disabled={pedindo}
+              onClick={async () => {
+                const ok = await registrarAceiteDeTribo(teiaId);
+                if (!ok) {
+                  notify("Não deu para registrar agora. Tente de novo.");
+                  return;
+                }
+                setConsentindo(false);
+                notify("Combinado. Agora é com você.");
+                aoPedir?.();
+              }}
+            >
+              <Icon name="check" />
+              Concordo e quero entrar
+            </Button>
+            <Button variant="ghost" onClick={() => setConsentindo(false)}>
+              Agora não
+            </Button>
+          </Sheet>
+        )}
+      </>
+    );
 
   if (estado === "entrar")
     return (

@@ -27,9 +27,14 @@ export function portaDaTribo(opcoes: {
   souCriadora: boolean;
   entrada: Entrada;
   meuPedido: MeuPedido;
-}): "dentro" | "entrar" | "pedir" | "esperando" | "recusado" {
+  sensivel?: boolean | undefined;
+  jaConsenti?: boolean | undefined;
+}): "dentro" | "entrar" | "pedir" | "esperando" | "recusado" | "consentir" {
   const { souMembro, souCriadora, entrada, meuPedido } = opcoes;
   if (souMembro || souCriadora) return "dentro";
+  // Tribo de política, religião ou orientação guarda dado sensível: a pessoa
+  // precisa dizer sim a isso antes, e não junto com o aceite geral do cadastro.
+  if (opcoes.sensivel && !opcoes.jaConsenti) return "consentir";
   if (entrada === "aberta") return "entrar";
   if (meuPedido === "pendente") return "esperando";
   if (meuPedido === "recusado") return "recusado";
@@ -37,6 +42,8 @@ export function portaDaTribo(opcoes: {
 }
 
 export function recadoDaPorta(estado: ReturnType<typeof portaDaTribo>): string {
+  if (estado === "consentir")
+    return "Esta tribo diz algo sobre você que a lei trata com mais cuidado. Entrar é escolha sua, e só sua.";
   if (estado === "esperando") return "Seu pedido está com quem cuida da tribo.";
   if (estado === "recusado") return "Desta vez não deu. Você pode procurar outra tribo.";
   if (estado === "pedir") return "Esta tribo é fechada: quem cuida dela precisa aceitar.";

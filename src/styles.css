@@ -1016,3 +1016,23 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .videos-esperando{display:grid;gap:9px;background:var(--butter);border-radius:16px;padding:12px;margin-top:4px}
 .videos-esperando h3{font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted-foreground)}
 .camera-disparo.gravando{background:var(--erro);border-color:#fff}
+
+/* O aviso de que a política mudou. Não é banner: tapa a tela, porque o texto
+   antigo mentia e ninguém deve continuar usando sem ler o certo. */
+.aceite-veu{position:fixed;inset:0;z-index:60;background:var(--overlay);display:grid;place-items:center;padding:24px;overflow-y:auto}
+.aceite-cartao{background:var(--card);border-radius:28px;padding:28px 24px;max-width:460px;width:100%;box-shadow:var(--shadow-toast);animation:card-in .3s ease both}
+.aceite-selo{width:56px;height:56px;border-radius:50%;background:var(--butter);color:var(--primary);display:grid;place-items:center;margin-bottom:16px}
+.aceite-selo .friend-icon{width:28px;height:28px}
+.aceite-cartao h2{font-size:23px;line-height:1.25;margin-bottom:12px}
+.aceite-cartao>p{font-size:14px;line-height:1.7;color:var(--muted-foreground)}
+.aceite-links{display:flex;gap:16px;margin:20px 0}
+.aceite-links a{font-size:13px;font-weight:700;color:var(--primary);text-decoration:underline;text-underline-offset:3px;min-height:44px;display:flex;align-items:center}
+.aceite-rodape{font-size:11.5px;color:var(--muted-foreground);margin-top:16px;line-height:1.6}
+.legal-prazos{display:grid;gap:10px;margin:16px 0;padding:0;list-style:none}
+.legal-prazos li{font-size:13.5px;line-height:1.6;background:var(--butter);border-radius:14px;padding:12px 14px}
+.legal-prazos b{font-weight:700}
+/* Apagar a conta e baixar os dados: separados do resto, porque são definitivos. */
+.meus-direitos{display:grid;gap:10px;margin:24px 0}
+.meus-direitos .sheet-option{background:var(--card);border:1px solid var(--border)}
+.consentimento-texto{font-size:13.5px;line-height:1.7;color:var(--muted-foreground);background:var(--butter);border-radius:16px;padding:14px;margin:12px 0}
+.tribo-sensivel{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;background:var(--butter);color:var(--foreground);border-radius:999px;padding:5px 10px}

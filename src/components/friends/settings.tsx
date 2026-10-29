@@ -17,6 +17,8 @@ import { useDemoSession } from "./session";
 import { PrivacyControls, ProfileModeSetting } from "./privacy";
 import { emptyState, people, groups, partners } from "@/lib/friends-data";
 import { ageOn, profileSchema } from "@/lib/nomi-validation";
+import { PRAZOS, RESPONSAVEL, VERSAO_DOS_TEXTOS, quemResponde } from "@/lib/politica";
+import { MeusDireitos } from "./meus-dados";
 import { FotoInstantanea } from "./foto-instantanea";
 import { recadoDoEnvio } from "@/lib/foto";
 import { FIGURAS, type Figura } from "@/lib/sem-foto";
@@ -313,7 +315,11 @@ export function Settings({ section }: { section: string }) {
           </div>
           <div className="entry-tip">
             <Icon name="lock" />
-            <p>Seus dados de demonstração ficam neste navegador. Nenhuma localização é coletada.</p>
+            <p>
+              {cloud
+                ? "Seu perfil e suas conversas ficam num servidor, não no seu aparelho. A política conta onde, por quanto tempo e o que você pode exigir."
+                : "Os dados desta apresentação ficam neste navegador. Conta real guarda no servidor."}
+            </p>
           </div>
           <Button asChild variant="secondary" className="wide">
             <Link to="/privacidade">
@@ -321,6 +327,7 @@ export function Settings({ section }: { section: string }) {
               <Icon name="arrow" />
             </Link>
           </Button>
+          {cloud && <MeusDireitos />}
         </>
       )}
       {section === "seguranca" && (
@@ -517,72 +524,133 @@ export function Legal({ kind }: { kind: "terms" | "privacy" | "help" }) {
       <p className="legal-disclaimer">
         {kind === "help"
           ? "Cuidar das amizades também é cuidar de você."
-          : "Texto demonstrativo. A versão final precisa de revisão jurídica antes do lançamento."}
+          : `Em vigor desde ${VERSAO_DOS_TEXTOS.split("-").reverse().join("/")}.`}
       </p>
       {kind === "terms" ? (
         <>
           <h2>Um espaço para amizade</h2>
           <p>
-            O Nommi é destinado a pessoas com 18 anos ou mais. Respeito, consentimento e cuidado
-            devem fazer parte de todos os encontros.
+            A nommi é para quem tem 18 anos ou mais. Aqui as pessoas se encontram por interesse e
+            por tribo, não por aparência. Respeito e consentimento valem em toda conversa e em todo
+            encontro.
           </p>
-          <h2>Esta demonstração</h2>
+          <h2>O que a gente espera de você</h2>
           <p>
-            Perfis, Anfitriões, conversas e benefícios são exemplos. Os exemplos pertencem à
-            apresentação. Contas reais usam confirmação por e-mail. Recompensas com estrelas ainda
-            não permitem resgates.
+            Seja você mesma: foto sua, nome pelo qual você atende. Não publique conteúdo ofensivo
+            nem dado de outra pessoa sem a permissão dela. Não use a nommi para vender, cobrar ou
+            arrastar gente para fora do app.
           </p>
-          <h2>Convivência e segurança</h2>
+          <h2>O que a gente faz quando alguém passa do ponto</h2>
           <p>
-            Não publique conteúdo ofensivo ou dados sensíveis de outras pessoas. Você pode denunciar
-            e bloquear contatos nas conversas e em Descobrir.
+            Ameaça, assédio e conteúdo envolvendo menor de idade derrubam a conta na hora, antes de
+            qualquer análise. O resto entra na fila de denúncias e é respondido em até 72 horas.
+            Quem denuncia nunca é identificado para quem foi denunciado.
           </p>
-          <h2>Encontros e benefícios</h2>
+          <h2>Encontros</h2>
           <p>
-            Pontos pertencem à tribo e só são liberados após a confirmação simulada de uma visita.
-            Combine encontros em locais públicos e cuide da sua segurança.
+            Rolê é combinado entre as pessoas, não pela nommi. Combine em lugar público, avise
+            alguém de confiança e saia se não estiver à vontade. Estrelas e pontos são
+            reconhecimento dentro do app e não podem ser comprados.
+          </p>
+          <h2>Sua conta é sua</h2>
+          <p>
+            Você pode apagar sua conta a qualquer momento, em Meu nommi, sem pedir nada a ninguém.
+            Some tudo: perfil, conversas, fotos e tribos.
           </p>
         </>
       ) : kind === "privacy" ? (
         <>
-          <h2>O que fica neste navegador</h2>
+          <h2>Quem cuida dos seus dados</h2>
+          <p>{quemResponde()}</p>
           <p>
-            Apelido, cidade, data de nascimento, preferências, foto opcional, conversas simuladas e
-            uma sessão de demonstração podem ser salvos localmente. Senhas não são salvas.
+            Dúvida, pedido ou reclamação sobre seus dados: <b>{RESPONSAVEL.email}</b>. A gente
+            responde em até 15 dias.
           </p>
-          <h2>Localização aproximada</h2>
+          <h2>Onde seus dados ficam de verdade</h2>
           <p>
-            O perfil mostra somente a cidade informada por você, ou oculta a cidade quando você
-            desativa essa preferência.
+            Não ficam no seu aparelho. Seu perfil, suas conversas, suas tribos e suas fotos ficam em
+            um banco de dados num servidor, protegido por regras que conferem, a cada leitura, se
+            quem está pedindo tem direito de ver aquilo. Esse servidor fica fora do Brasil, e por
+            isso a gente exige por contrato da empresa que hospeda as mesmas proteções que a lei
+            brasileira exige da nommi.
+          </p>
+          <h2>O que a gente guarda</h2>
+          <p>
+            Só o que o app precisa para funcionar: seu e-mail e sua senha (guardada embaralhada,
+            ninguém aqui consegue ler) ou sua conta Google; apelido, cidade, interesses, o texto
+            sobre você, o que você procura, seu Instagram se você colocar, suas fotos e seus vídeos;
+            quem você disse que quer conhecer; o que você escreve nas conversas, nas tribos e no
+            mural; e o dia em que você abriu o app — só o dia, nada de tela, clique ou caminho.
+          </p>
+          <p>
+            A nommi não pede CPF, não pede documento, não pede cartão e não lê sua agenda de
+            contatos.
+          </p>
+          <h2>O match não é sobre sua cara</h2>
+          <p>
+            A fila de pessoas é montada pelos interesses em comum, pelas tribos em comum e pela
+            cidade. Interesse raro pesa mais do que interesse comum. Quem você recusou nunca fica
+            sabendo, e a nommi nunca mostra um número de compatibilidade.
+          </p>
+          <h2>Os dados delicados</h2>
+          <p>
+            Entrar numa tribo política, religiosa ou LGBT diz muito sobre você. A lei chama isso de
+            dado sensível, e a gente trata assim: antes de você entrar numa tribo dessas, a nommi
+            avisa e pergunta se você concorda. Você pode sair quando quiser, e sair apaga sua
+            participação. Esse dado nunca sai da nommi — não vira anúncio, não vira lista, não é
+            vendido e não é compartilhado com ninguém.
           </p>
           <h2>Radar nommi</h2>
           <p>
-            O Radar nommi só funciona quando você o liga, e só depois de você autorizar a
-            localização no aparelho. Nesse momento guardamos uma posição arredondada para cerca de 1
-            km, o nome do lugar que você escreveu e a cidade, para calcular quem está por perto. Sua
-            localização exata nunca é salva nem mostrada: outras pessoas veem apenas a distância
-            aproximada, nunca o ponto onde você está.
+            O Radar só funciona quando você o liga, e só depois de você autorizar a localização no
+            aparelho. Nesse momento guardamos uma posição arredondada para cerca de 1 km, o nome do
+            lugar que você escreveu e a cidade. Sua localização exata nunca é mostrada: as outras
+            pessoas veem apenas uma distância aproximada.
           </p>
           <p>
             Esses dados valem pelo tempo que você escolher, de 15 minutos a 4 horas, e são apagados
             quando esse tempo acaba ou quando você sai do radar. Quem bloqueou você, ou foi
-            bloqueado por você, nunca aparece no radar. Perfis privados também ficam de fora.
+            bloqueado por você, nunca aparece no radar.
           </p>
-          <h2>Fotos, vídeos e stories</h2>
+          <h2>Quem mais vê</h2>
           <p>
-            Fotos e vídeos de posts e stories ficam em um espaço privado e só são servidos a quem
-            tem permissão para ver aquele conteúdo. Stories somem sozinhos em 24 horas. Capas e
-            planos de fundo ficam em um espaço público, porque aparecem no seu perfil.
+            Dentro da nommi, quem vê o quê é você que decide: perfil público ou fechado, tribo
+            aberta ou fechada, mural com ou sem aprovação, e vídeo de amigo só entra na sua página
+            se você deixar.
           </p>
-          <h2>Seu controle</h2>
           <p>
-            Você pode editar o perfil, escolher a aprovação de figurinhas, bloquear pessoas ou
-            apagar todos os dados locais em Segurança e bloqueios.
+            Fora da nommi, seus dados vão para dois lugares, e só porque o app não roda sem eles: a
+            empresa que hospeda o banco e os arquivos, e a Google, se você entrar pela conta Google.
+            A nommi não vende seus dados, não troca seus dados e não entrega seus dados para quem
+            quer te vender coisa. Se um juiz ou a polícia pedir algo por ordem legal, a gente cumpre
+            — e avisa você, quando a lei deixar.
           </p>
-          <h2>Serviços externos</h2>
+          <h2>Quanto tempo a gente guarda</h2>
+          <ul className="legal-prazos">
+            {PRAZOS.map((p) => (
+              <li key={p.o}>
+                <b>{p.o}:</b> {p.quanto}
+              </li>
+            ))}
+          </ul>
+          <h2>O que você pode exigir da gente</h2>
           <p>
-            Contas reais usam Lovable Cloud. Conversas e tribos compartilhadas ainda aguardam
-            integração; a apresentação guarda simulações neste aparelho.
+            A qualquer hora, de graça: saber tudo o que a nommi tem sobre você, corrigir o que
+            estiver errado, levar seus dados embora num arquivo, apagar sua conta inteira, tirar o
+            consentimento que você deu para uma tribo sensível, e reclamar da gente na ANPD, a
+            autoridade brasileira de proteção de dados. Baixar seus dados e apagar sua conta estão
+            em Meu nommi, sem precisar falar com ninguém.
+          </p>
+          <h2>Idade</h2>
+          <p>
+            A nommi é para quem tem 18 anos ou mais, e a data de nascimento é conferida no cadastro.
+            Se a gente descobrir uma conta de menor de idade, a conta é apagada. Se você vir uma,
+            denuncie dentro do app.
+          </p>
+          <h2>Quando isto mudar</h2>
+          <p>
+            Se a gente mudar alguma coisa que importa, avisa dentro do app antes de valer. A data
+            desta versão está no começo da página.
           </p>
         </>
       ) : (
@@ -742,6 +810,7 @@ export function CreateGroup() {
   const [limited, setLimited] = useState(false);
   const [soEu, setSoEu] = useState(false);
   const [fechada, setFechada] = useState(false);
+  const [sensivel, setSensivel] = useState(false);
   const [capacity, setCapacity] = useState(6);
   const [busy, setBusy] = useState(false);
   const real = !!cloudUser && !demoMode;
@@ -801,6 +870,7 @@ export function CreateGroup() {
                       place,
                       whoPosts: soEu ? "criadora" : "todos",
                       entrada: fechada ? "fechada" : "aberta",
+                      sensivel,
                     },
                     cloudUser!.id,
                     state.nickname || "nommi",
@@ -932,6 +1002,24 @@ export function CreateGroup() {
                 type="checkbox"
                 checked={fechada}
                 onChange={(e) => setFechada(e.target.checked)}
+              />
+            </div>
+          )}
+          {real && !isRole && (
+            <div className="setting-toggle">
+              <div>
+                <h2>Tribo de política, religião ou orientação</h2>
+                <p>
+                  {sensivel
+                    ? "Quem quiser entrar vai ser avisada antes e vai dizer se concorda. É o que a lei pede para esse tipo de tribo."
+                    : "Marque se a tribo é sobre política, religião, orientação sexual, saúde ou origem."}
+                </p>
+              </div>
+              <input
+                aria-label="Tribo de política, religião ou orientação"
+                type="checkbox"
+                checked={sensivel}
+                onChange={(e) => setSensivel(e.target.checked)}
               />
             </div>
           )}

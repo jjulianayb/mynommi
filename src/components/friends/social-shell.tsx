@@ -13,6 +13,8 @@ import { Tour } from "./tour";
 import { VersaoNova } from "./versao-nova";
 import { esquecerTour, tourJaVisto } from "@/lib/tour";
 import { registrarAcesso } from "@/lib/numeros";
+import { useAceite } from "@/lib/aceite";
+import { AvisoDeAceite } from "./aceite";
 
 /** Cada item da navegação vira um alvo do tour. */
 const alvoDoItem = (to: string) =>
@@ -33,6 +35,9 @@ export function SocialShell({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (real) void registrarAcesso();
   }, [real, cloudUser?.id]);
+  // Ninguém usa a nommi sem ter lido o texto que está no ar. As telas de termos
+  // e privacidade ficam livres, senão a pessoa não consegue ler o que vai aceitar.
+  const aceite = useAceite(real, cloudUser && !demoMode ? cloudUser.id : null);
   // O tour só começa na página inicial, onde estão as coisas que ele aponta.
   useEffect(() => {
     if (!real || pathname !== "/" || tourJaVisto(cloudUser?.id ?? null)) return;
@@ -103,6 +108,9 @@ export function SocialShell({ children }: { children: ReactNode }) {
   ];
   return (
     <div className="friends-app social-app drawer-app nommi-refresh">
+      {aceite.pronto && aceite.pendente && !legalPaths.includes(pathname) && (
+        <AvisoDeAceite onAceitar={aceite.aceitar} />
+      )}
       <header className="app-header">
         <Link to="/" aria-label="Nommi, início">
           <Brand />

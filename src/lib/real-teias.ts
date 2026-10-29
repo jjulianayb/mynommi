@@ -32,6 +32,8 @@ export type RealTeiaRow = {
   entrada?: string;
   meu_pedido?: string | null;
   pedidos_abertos?: number;
+  sensivel?: boolean;
+  ja_consenti?: boolean;
 };
 
 /** Converte uma tribo salva no servidor para o formato usado pelas telas. */
@@ -108,6 +110,7 @@ export async function createRealTeia(
     about?: string;
     whoPosts?: "todos" | "criadora";
     entrada?: "aberta" | "fechada";
+    sensivel?: boolean;
   },
   userId: string,
   nickname: string,
@@ -127,6 +130,7 @@ export async function createRealTeia(
       about: (input.about ?? "").trim().slice(0, 280),
       who_posts: input.whoPosts ?? "todos",
       entrada: input.entrada ?? "aberta",
+      sensivel: input.sensivel ?? false,
     })
     .select("id")
     .single();

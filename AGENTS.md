@@ -163,3 +163,13 @@
 - Regra que não se mexe: **vídeo de alguém sobre você não entra na sua página sem você deixar**. Só amizade aceita grava (`sao_amigos`), entra como `pendente`, e só o dono muda para `no_ar`. Quem gravou pode tirar o seu; o dono pode tirar qualquer um.
 - O balde `videos` é fechado: o endereço é assinado por 1 hora (`enderecoDoVideo`).
 - O vídeo é gravado na câmera do app, no formato que `formatoDeGravacao()` encontra — mesmo motivo do story: o que o navegador grava é o que ele toca.
+
+## Consentimento, idade e apagar a conta (0034)
+- A política de privacidade **não é mais texto de demonstração**. O que ela afirma tem que ser verdade: há teste (`src/test/politica.test.ts`) que lê o próprio arquivo e barra "fica neste navegador", "dados locais" e a palavra "demonstração" no texto legal.
+- Quem responde pelos dados mora num lugar só, `src/lib/politica.ts` (`RESPONSAVEL`). Enquanto o CNPJ da nommi não sai, `tipo: "em_registro"` e o texto admite isso em vez de inventar um nome. Quando sair: preencher `nome`/`documento`, trocar para `"empresa"` e subir `VERSAO_DOS_TEXTOS`.
+- `VERSAO_DOS_TEXTOS` é o que fica gravado no aceite de cada pessoa. **Mudar o texto sem mudar a versão é mentir no registro**; mudar a versão faz todo mundo ver o aviso de novo, que é o que a própria política promete ("avisa dentro do app antes de valer").
+- `aceites` guarda a prova (quem, qual documento, qual versão, quando). Não existe INSERT direto: só `registrar_aceite()`, porque a data tem que ser do servidor.
+- A trava de 18 anos saiu da tela e foi para o banco: `profiles.nascimento` + gatilho `confere_idade`. A data que já estava no cadastro (metadado do Auth) é copiada para lá na primeira visita, em `useAceite`.
+- Tribo sensível (`teias.sensivel`): política, religião, orientação. A política de INSERT em `teia_members` confere `posso_entrar_na_tribo()`, então **a trava é do banco** — não adianta a tela esquecer. `portaDaTribo()` ganhou o estado `"consentir"`, que vem antes de aberta/fechada.
+- `apagar_minha_conta()` apaga de verdade, na hora, sem período de arrependimento — menos dado guardado é menos risco, e o texto promete isso. Fica de pé só a denúncia feita **contra** quem saiu, porque ela protege quem denunciou.
+- `meus_dados()` devolve tudo num JSON. Tabela nova com dado de pessoa precisa entrar nas duas funções: a que apaga e a que exporta. Esquecer uma delas é descumprir o texto que está no ar.
