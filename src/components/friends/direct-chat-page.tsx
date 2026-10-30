@@ -5,6 +5,7 @@ import { EmptyState } from "./surfaces";
 import { useDemoSession } from "./session";
 import { DirectChat } from "./direct-chat";
 import { supabase } from "@/integrations/supabase/client";
+import { enderecoDaImagem } from "@/lib/covers";
 
 /** Abre a conversa a sós com uma pessoa, buscando o nome e a foto dela. */
 export function DirectChatPage({ id }: { id: string }) {
@@ -55,7 +56,7 @@ export function DirectChatPage({ id }: { id: string }) {
       me={cloudUser!.id}
       outroId={id}
       nickname={quem.nickname || "nommi"}
-      avatar={quem.avatar_url || ""}
+      avatar={enderecoDaImagem(quem.avatar_url || "")}
     />
   );
 }
