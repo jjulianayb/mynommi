@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { useCallback, useEffect, useState } from "react";
+import { enderecoDaImagem } from "@/lib/covers";
 
 export type PaginaPessoal = {
   id: string;
@@ -120,7 +121,7 @@ export const toPagina = (r: Row): PaginaPessoal => ({
   places: r.places ?? [],
   lookingFor: r.looking_for ?? "",
   instagram: r.instagram ?? "",
-  avatar: r.avatar_url ?? "",
+  avatar: enderecoDaImagem(r.avatar_url ?? ""),
   cover: r.cover_path ?? "",
   background: r.background_path ?? "",
   verified: !!r.person_verified,
