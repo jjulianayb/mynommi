@@ -253,3 +253,15 @@
   3. Janelinha embutida do WhatsApp. Resolvido: `ehNavegadorDeApp()` reconhece, esconde os botões sociais e explica como abrir no navegador, deixando o cadastro por e-mail em evidência, que funciona ali.
 - A nommi cresce por link de WhatsApp: **toda mudança no login precisa ser pensada para quem chega por lá.**
 - Erro de login nunca mostra código técnico para quem está entrando. Tem teste barrando `invalid_request`, `state parameter` e afins no texto.
+
+## Foto de perfil vira arquivo (30/10)
+- A foto virava **texto dentro da linha do perfil** (data URL em `profiles.avatar_url`). A maior em produção tinha 93 mil caracteres. Três problemas: viajava em toda consulta que lê perfil, falhava no salvamento com foto grande (era o bug da Ana: umas iam, outras não) e não dava para o navegador cachear.
+- Agora sobe para o balde **`covers`**, que já tem a regra certa: cada pessoa escreve só dentro da própria pasta, e qualquer um lê. Foto de perfil é pública por natureza. **Não precisou de balde novo nem de migração.**
+- O nome tem carimbo de tempo (`<uid>/foto-<agora>.jpg`): sem isso o celular mostra a foto velha do cache. A anterior é apagada depois que a nova salva.
+- **Foto antiga continua funcionando**: `enderecoDaImagem()` já lida com as duas formas e ninguém reenvia nada.
+- Se o envio do arquivo falhar, ainda tenta guardar embutido: melhor a foto feia por dentro do que a pessoa sem foto.
+- A prévia e o recorte já existiam em `FotoInstantanea`; o que faltava era o destino.
+
+## Espaço para se descrever (30/10)
+- "Sobre mim" era 140 caracteres e a conta da Ju já batia 136: o campo acabava antes da frase. Agora `MAX_SOBRE` = 600, com o campo em 6 linhas. Numa rede de amizade, "sobre mim" é o que faz alguém querer conversar.
+- O cadastro pedia **exatamente 3** interesses. Agora é de 3 a 6 (`INTERESSES_NO_CADASTRO`): três é o mínimo para a fila ter de onde partir, seis é onde o cadastro ainda é curto. Até 12 continuam em Meu nommi.

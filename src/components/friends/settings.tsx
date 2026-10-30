@@ -19,6 +19,8 @@ import { emptyState, people, groups, partners } from "@/lib/friends-data";
 import { ageOn, profileSchema } from "@/lib/nomi-validation";
 import { PRAZOS, RESPONSAVEL, VERSAO_DOS_TEXTOS, quemResponde } from "@/lib/politica";
 import { MeusDireitos } from "./meus-dados";
+import { apagarFotoAntiga, enviarFotoDePerfil, recadoDaFoto } from "@/lib/foto-perfil";
+import { MAX_SOBRE } from "@/lib/perfil-texto";
 import { FotoInstantanea } from "./foto-instantanea";
 import { recadoDoEnvio } from "@/lib/foto";
 import { FIGURAS, type Figura } from "@/lib/sem-foto";
@@ -193,13 +195,22 @@ export function Settings({ section }: { section: string }) {
                   return;
                 }
                 setEnviandoFoto(true);
-                const ok = await saveCloudProfile(cloudUser!.id, { avatar_url: jpeg });
+                // A foto vira arquivo no armazenamento. Se o envio do arquivo
+                // falhar, ainda tentamos guardar embutido: melhor a foto feia
+                // por dentro do que a pessoa sem foto nenhuma.
+                const anterior = state.photo;
+                const caminho = await enviarFotoDePerfil(cloudUser!.id, jpeg);
+                const ok = await saveCloudProfile(cloudUser!.id, {
+                  avatar_url: caminho ?? jpeg,
+                });
                 setEnviandoFoto(false);
-                if (ok) notify("Foto trocada em todos os seus aparelhos.");
-                else setError(recadoDoEnvio("erro"));
+                if (ok) {
+                  if (caminho) void apagarFotoAntiga(anterior);
+                  notify(recadoDaFoto("pronta"));
+                } else setError(recadoDaFoto("sem_rede"));
               }}
             />
-            {enviandoFoto && <p className="small-note">{recadoDoEnvio("indo")}</p>}
+            {enviandoFoto && <p className="small-note">{recadoDaFoto("subindo")}</p>}
             {!state.photo && cloud && (
               <>
                 <p className="small-note">Sem foto? Escolha seu bonequinho.</p>
@@ -260,12 +271,14 @@ export function Settings({ section }: { section: string }) {
               className="input"
               value={about}
               onChange={(e) => setAbout(e.target.value)}
-              maxLength={140}
-              rows={2}
-              placeholder="Uma frase sobre você"
+              maxLength={MAX_SOBRE}
+              rows={6}
+              placeholder="Conta um pouco da sua história, do que você gosta de fazer, do tipo de amizade que você quer encontrar por aqui."
             />
           </label>
-          <p className="small-note">{about.length}/140</p>
+          <p className="small-note">
+            {about.length}/{MAX_SOBRE}
+          </p>
           {error && (
             <p role="alert" className="form-error">
               {error}

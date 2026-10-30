@@ -11,6 +11,7 @@ import {
   recadoDoLoginSocial,
 } from "@/lib/navegador";
 import { irParaOEnderecoCerto } from "@/lib/endereco";
+import { INTERESSES_NO_CADASTRO } from "@/lib/perfil-texto";
 import { Icon } from "./art";
 import { Brand } from "./surfaces";
 import { useDemoSession } from "./session";
@@ -289,7 +290,7 @@ export function Account({
             </div>
             <fieldset>
               <legend>
-                Escolha 3 interesses <small>{interests.length}/3</small>
+                De 3 a 6 interesses <small>{interests.length} escolhidos</small>
               </legend>
               <div className="chips">
                 {SIGNUP_INTERESTS.map((i) => (
@@ -298,7 +299,7 @@ export function Account({
                     key={i}
                     variant="outline"
                     className={"chip " + (interests.includes(i) ? "selected" : "")}
-                    disabled={interests.length === 3 && !interests.includes(i)}
+                    disabled={interests.length >= INTERESSES_NO_CADASTRO.maximo && !interests.includes(i)}
                     aria-pressed={interests.includes(i)}
                     onClick={() =>
                       setInterests((v) => (v.includes(i) ? v.filter((x) => x !== i) : [...v, i]))
@@ -465,7 +466,9 @@ function CompleteAccount() {
           />
         </label>
         <fieldset>
-          <legend>3 interesses</legend>
+          <legend>
+              De 3 a 6 interesses <small>{interests.length} escolhidos</small>
+            </legend>
           <div className="chips">
             {SIGNUP_INTERESTS.map((i) => (
               <Button
@@ -473,7 +476,7 @@ function CompleteAccount() {
                 key={i}
                 variant="outline"
                 className={"chip " + (interests.includes(i) ? "selected" : "")}
-                disabled={interests.length === 3 && !interests.includes(i)}
+                disabled={interests.length >= INTERESSES_NO_CADASTRO.maximo && !interests.includes(i)}
                 onClick={() =>
                   setInterests((v) => (v.includes(i) ? v.filter((x) => x !== i) : [...v, i]))
                 }

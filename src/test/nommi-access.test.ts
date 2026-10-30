@@ -15,12 +15,15 @@ describe("Entrada e participação Nommi", () => {
     expect(signupDetails(details, today).data?.birthday).toBe("2008-10-11");
     expect(signupDetails({ ...details, birthday: "2008-10-12" }, today).data).toBeUndefined();
   });
-  it("exige exatamente 3 interesses distintos", () => {
+  it("pede de 3 a 6 interesses distintos", () => {
     expect(signupDetails(details, today).data?.interests).toHaveLength(3);
+    // Quatro, cinco e seis passam: o cadastro continua curto e a fila melhora.
+    const seis = ["café", "livros", "cinema", "games", "trilhas", "música"];
+    expect(signupDetails({ ...details, interests: seis }, today).data?.interests).toHaveLength(6);
     for (const interests of [
       ["café"],
       ["café", "café", "livros"],
-      ["café", "livros", "cinema", "games"],
+      [...seis, "vinho"],
     ]) {
       expect(signupDetails({ ...details, interests }, today).data).toBeUndefined();
     }
