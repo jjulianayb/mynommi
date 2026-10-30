@@ -1146,3 +1146,18 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
   .cenario-brilhos span{animation:none}
   .cenario-conteudo>*{animation:none}
 }
+/* A porta da tribo: o número verdadeiro, e o que falta para abrir a próxima. */
+.porta-abre{background:var(--butter);border-radius:18px;padding:14px 16px;display:grid;gap:10px;margin-bottom:14px}
+.porta-abre.completa{background:var(--secondary)}
+.porta-frase{font-size:15px;font-weight:700;line-height:1.4;margin:0}
+.porta-barra{height:8px;border-radius:999px;background:rgba(0,0,0,.09);overflow:hidden}
+.porta-barra span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--primary),var(--sunshine));transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.porta-acao{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.porta-acao p{font-size:13px;color:var(--muted-foreground);margin:0;flex:1;min-width:140px}
+.porta-botao{display:inline-flex;align-items:center;gap:7px;background:var(--primary);color:#fff;font-size:13px;font-weight:700;border-radius:999px;padding:11px 16px;min-height:44px}
+.porta-botao .friend-icon{width:16px;height:16px}
+/* Convidar em lote. */
+.lote{display:grid;gap:10px}
+.lote-rotulo{font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted-foreground);margin:6px 0 0}
+.lote-previa{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:14px;padding:12px 14px;font-size:13.5px;line-height:1.6;margin:0;overflow-wrap:anywhere}
+.lote-conta{font-size:12.5px;color:var(--muted-foreground);text-align:center;margin:0}

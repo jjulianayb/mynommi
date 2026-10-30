@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from "react";
+import { PortaQueAbre } from "./porta-que-abre";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { SemFoto, Avatar, Icon } from "./art";
@@ -236,6 +237,7 @@ export function CommunityDetail({
         )}
         {tab === "Membros" && (
           <>
+            {!demoMode && <PortaQueAbre membros={memberCount} />}
             <div className="community-section-heading">
               <h2>Quem faz parte</h2>
               <span>

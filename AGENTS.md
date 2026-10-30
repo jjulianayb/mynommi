@@ -278,3 +278,10 @@
 - Três brilhos coloridos (verde, sunshine, coral) andam devagar atrás da foto do Rio, com desfoque grande, e o conteúdo entra em cascata. Movimento longo e lento, nunca piscando.
 - Tudo respeita `prefers-reduced-motion`.
 - As cores são as da marca: movimento e desfoque dão vida sem inventar cor nova.
+
+## A porta da tribo e o convite em lote (30/10)
+- Decisão registrada: **a nommi não inventa gente.** Pedido de criar perfis fictícios dentro das tribos para dar sensação de movimento foi recusado, e a recusa vale para qualquer forma do mesmo pedido. O que resolve o vazio é verdade com objetivo, e distribuição.
+- `fraseDaPorta()` em `src/lib/porta-que-abre.ts` é o único lugar que escreve a frase do topo da tribo: o número **real** de membros e o que falta para a próxima porta abrir (3 = primeira conversa, 10 = primeiro rolê, 25 = Só entre nós). Tem teste exigindo que o número da frase seja o número recebido.
+- A barra recomeça do zero ao cruzar cada porta: objetivo à vista em vez de barra quase cheia para sempre.
+- `ConvidarEmLote` abre o WhatsApp com o convite escrito, com o nome de quem convida e, quando há tribo escolhida, quantas faltam para ela abrir. **A nommi não pede a agenda de contatos** — quem escolhe o destinatário é a pessoa, dentro do WhatsApp dela.
+- O link do convite cai **dentro da tribo** (`&tribo=`), não só na porta do app.

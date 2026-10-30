@@ -21,6 +21,7 @@ import { PRAZOS, RESPONSAVEL, VERSAO_DOS_TEXTOS, quemResponde } from "@/lib/poli
 import { MeusDireitos } from "./meus-dados";
 import { apagarFotoAntiga, enviarFotoDePerfil, recadoDaFoto } from "@/lib/foto-perfil";
 import { MAX_SOBRE } from "@/lib/perfil-texto";
+import { ConvidarEmLote } from "./convidar-em-lote";
 import { FotoInstantanea } from "./foto-instantanea";
 import { recadoDoEnvio } from "@/lib/foto";
 import { FIGURAS, type Figura } from "@/lib/sem-foto";
@@ -1084,7 +1085,22 @@ export function CreateGroup() {
 }
 export function InviteFriend() {
   const { state, notify } = useFriends();
+  const { cloudUser, demoMode } = useDemoSession();
   const [copied, setCopied] = useState(false);
+  const real = !!cloudUser && !demoMode;
+  // Conta real convida de verdade, em lote. A apresentação mantém o convite
+  // simbólico, que é o que ela sabe fazer.
+  if (real)
+    return (
+      <div className="action-page">
+        <h1>Chamar quem falta</h1>
+        <p className="intro">
+          A nommi fica boa quando tem gente que você gosta dentro. Chegar lá é uma tarde de
+          convites.
+        </p>
+        <ConvidarEmLote me={cloudUser.id} nickname={state.nickname || "Uma amiga"} />
+      </div>
+    );
   return (
     <div className="action-page">
       <h1>Convidar uma amizade</h1>
