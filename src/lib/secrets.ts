@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { useCallback, useEffect, useState } from "react";
+import { enderecoDaImagem } from "@/lib/covers";
 
 export type Secret = {
   id: string;
@@ -66,7 +67,7 @@ export function useSecrets(me: string | null, triboId: number | null) {
         id: r.id,
         authorId: r.author_id,
         authorName: r.nickname || "nommi",
-        authorAvatar: r.avatar_url || "",
+        authorAvatar: enderecoDaImagem(r.avatar_url || ""),
         body: r.body,
         createdAt: r.created_at,
         expiresAt: r.expires_at,
