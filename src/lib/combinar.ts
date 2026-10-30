@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { enderecoDaImagem } from "@/lib/covers";
 
 /** curtidas e as funções de combinar ainda não estão em types.ts. */
 const db = supabase as unknown as SupabaseClient;
@@ -56,7 +57,7 @@ type Linha = {
 export const toCandidata = (r: Linha): Candidata => ({
   userId: r.user_id,
   nome: r.nickname || "Alguém da nommi",
-  avatar: r.avatar_url || "",
+  avatar: enderecoDaImagem(r.avatar_url || ""),
   capa: r.cover_path || "",
   cidade: r.city || "",
   sobre: r.about || "",
