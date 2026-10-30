@@ -244,3 +244,12 @@
 - `deslocamentoDoAfinar` tem teto de 5,5% da largura do rosto, e quem está junto do queixo anda menos. Mão pesada aqui vira desenho animado.
 - `MANDIBULA` é só a parte de baixo do contorno, de propósito: mexer na testa deforma o rosto.
 - **Não testável aqui**: este ambiente não tem câmera nem rosto, e a rede não alcança o modelo. A primeira prova é no celular da Ju.
+
+## O login que falhava pelo WhatsApp (30/10)
+- Uma amiga da Ana tentou entrar e recebeu "Authorization failed / Missing state parameter", numa tela da Lovable. O erro é do servidor de login, não do app.
+- Causa: o login do Google guarda uma chave no navegador antes de sair e confere na volta. **Navegador guarda por endereço.** Começar num endereço e voltar noutro perde a chave. Três jeitos de isso acontecer aqui:
+  1. **Site URL desatualizado** na Lovable (Cloud → Auth → URL Configuration). Continua `nommibrasil.lovable.app` enquanto o app é servido em `nommibr.com.br`. **Só a Ju resolve**, e é a causa mais provável.
+  2. `www.nommibr.com.br` e `nommibr.com.br` são endereços diferentes para o navegador. Resolvido: `irParaOEnderecoCerto()` manda o `www` para o endereço sem `www` antes de qualquer login.
+  3. Janelinha embutida do WhatsApp. Resolvido: `ehNavegadorDeApp()` reconhece, esconde os botões sociais e explica como abrir no navegador, deixando o cadastro por e-mail em evidência, que funciona ali.
+- A nommi cresce por link de WhatsApp: **toda mudança no login precisa ser pensada para quem chega por lá.**
+- Erro de login nunca mostra código técnico para quem está entrando. Tem teste barrando `invalid_request`, `state parameter` e afins no texto.

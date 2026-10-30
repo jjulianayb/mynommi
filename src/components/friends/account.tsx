@@ -5,6 +5,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { emailSchema, passwordSchema } from "@/lib/nomi-validation";
 import { SIGNUP_INTERESTS, signupDetails } from "@/lib/nommi-access";
+import {
+  RECADO_DO_NAVEGADOR,
+  ehNavegadorDeApp,
+  recadoDoLoginSocial,
+} from "@/lib/navegador";
+import { irParaOEnderecoCerto } from "@/lib/endereco";
 import { Icon } from "./art";
 import { Brand } from "./surfaces";
 import { useDemoSession } from "./session";
@@ -30,6 +36,13 @@ export function Account({
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
   const [terms, setTerms] = useState(false);
+  // Link de WhatsApp abre numa janelinha embutida onde o login do Google não
+  // completa. Reconhecer antes evita a tela de erro que ninguém entende.
+  const [dentroDeApp, setDentroDeApp] = useState(false);
+  useEffect(() => {
+    irParaOEnderecoCerto();
+    setDentroDeApp(ehNavegadorDeApp(navigator.userAgent));
+  }, []);
   async function social(provider: "google" | "apple") {
     setError("");
     setBusy(true);
@@ -38,10 +51,10 @@ export function Account({
       const r = await lovable.auth.signInWithOAuth(provider, {
         redirect_uri: window.location.origin,
       });
-      if (r.error) setError("Não foi possível entrar agora. Tente de novo.");
+      if (r.error) setError(recadoDoLoginSocial(dentroDeApp));
       else if (!r.redirected) void navigate({ to: "/conta" });
     } catch {
-      setError("Não foi possível entrar agora. Tente de novo.");
+      setError(recadoDoLoginSocial(dentroDeApp));
     } finally {
       setBusy(false);
     }
@@ -149,26 +162,41 @@ export function Account({
           </Button>
         ))}
       </div>
-      <Button
-        type="button"
-        variant="secondary"
-        className="wide"
-        disabled={busy}
-        onClick={() => social("google")}
-      >
-        Continuar com Google
-      </Button>
-      <Button
-        type="button"
-        variant="secondary"
-        className="wide"
-        disabled={busy}
-        onClick={() => social("apple")}
-      >
-        Continuar com Apple
-      </Button>
+      {dentroDeApp ? (
+        <div className="aviso-janelinha">
+          <Icon name="lock" />
+          <p>{RECADO_DO_NAVEGADOR}</p>
+        </div>
+      ) : (
+        <>
+          <Button
+            type="button"
+            variant="secondary"
+            className="wide"
+            disabled={busy}
+            onClick={() => social("google")}
+          >
+            Continuar com Google
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            className="wide"
+            disabled={busy}
+            onClick={() => social("apple")}
+          >
+            Continuar com Apple
+          </Button>
+        </>
+      )}
       <p className="small-note account-or">
-        {mode === "criar" ? "ou crie com e-mail" : "ou com e-mail"}
+        {dentroDeApp
+          ? mode === "criar"
+            ? "crie sua conta com e-mail"
+            : "entre com e-mail"
+          : mode === "criar"
+            ? "ou crie com e-mail"
+            : "ou com e-mail"}
       </p>
       <form className="account-form" onSubmit={submit}>
         <label>
