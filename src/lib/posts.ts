@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { enderecoDaImagem } from "@/lib/covers";
 
 export type Reaction = "curtir" | "apoiar" | "rir";
 export const REACTIONS: { kind: Reaction; label: string }[] = [
@@ -125,7 +126,7 @@ export function toPost(
     id: r.id,
     authorId: r.author_id,
     authorName: a?.nickname || "nommi",
-    authorAvatar: a?.avatar_url ?? "",
+    authorAvatar: enderecoDaImagem(a?.avatar_url ?? ""),
     teiaId: r.teia_id,
     body: r.body,
     location: r.location,
