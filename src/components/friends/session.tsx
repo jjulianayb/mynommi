@@ -6,6 +6,7 @@ import { demoState, emptyState } from "@/lib/friends-data";
 import { signupDetails } from "@/lib/nommi-access";
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
+import { enderecoDaImagem } from "@/lib/covers";
 type DemoSession = { email: string; partner: boolean };
 export type CloudUser = {
   id: string;
@@ -129,7 +130,7 @@ export function DemoSessionProvider({ children }: { children: ReactNode }) {
               interests: p?.interests ?? [],
               birthday,
               about: p?.about ?? "",
-              photo: p?.avatar_url ?? "",
+              photo: enderecoDaImagem(p?.avatar_url ?? ""),
               profileMode: p?.profile_mode === "privado" ? "privado" : "publico",
             }
           : {
@@ -141,7 +142,7 @@ export function DemoSessionProvider({ children }: { children: ReactNode }) {
               interests: p?.interests ?? [],
               birthday,
               about: p?.about ?? "",
-              photo: p?.avatar_url ?? "",
+              photo: enderecoDaImagem(p?.avatar_url ?? ""),
               profileMode: p?.profile_mode === "privado" ? "privado" : "publico",
               adult: complete,
             },
