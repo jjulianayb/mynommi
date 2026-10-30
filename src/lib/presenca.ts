@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { enderecoDaImagem } from "@/lib/covers";
 
 /** Tabelas novas ainda fora de types.ts; quando o Lovable regerar, usar supabase direto. */
 const db = supabase as unknown as SupabaseClient;
@@ -73,7 +74,7 @@ export function usePresencas(me: string | null, roleId: number | null) {
       linhas.map((l) => ({
         userId: l.user_id,
         nickname: quem.get(l.user_id)?.nickname || "nommi",
-        avatar: quem.get(l.user_id)?.avatar_url ?? "",
+        avatar: enderecoDaImagem(quem.get(l.user_id)?.avatar_url ?? ""),
         declarou: l.declared_at,
         confirmada: !!l.confirmed_by,
         premiada: l.rewarded,
