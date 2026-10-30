@@ -618,7 +618,6 @@ export function Home() {
         </section>
       )}
       <InstallBanner />
-      <InstallBanner />
       <details className="home-radar">
         <summary>
           <Icon name="pin" />
