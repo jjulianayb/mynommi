@@ -23,12 +23,13 @@ import { useProfileStats, formatCount, useFollow } from "@/lib/follows";
 import { useWall, MAX_WALL } from "@/lib/wall";
 import { useRoles, whenLabel, spotsLabel, goingBlocker, loadGoing, type Role } from "@/lib/roles";
 import { useBlocks, reportTarget, REPORT_REASONS, type ReportReason } from "@/lib/safety";
+import { enderecoDaImagem } from "@/lib/covers";
 
 function Face({ url, name, size = 40 }: { url: string; name: string; size?: number }) {
   return url ? (
     <img
       className="real-face"
-      src={url}
+      src={enderecoDaImagem(url)}
       width={size}
       height={size}
       style={{ width: size, height: size, borderRadius: "50%", objectFit: "cover" }}
