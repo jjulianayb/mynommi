@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { enderecoDaImagem } from "@/lib/covers";
 
 /** pedidos_de_tribo ainda não está em types.ts. */
 const db = supabase as unknown as SupabaseClient;
@@ -110,7 +111,7 @@ export function usePedidosDaTribo(teiaId: number | null, souCriadora: boolean) {
       linhas.map((l) => ({
         userId: l.user_id,
         nome: l.nickname || "Alguém da nommi",
-        avatar: l.avatar_url || "",
+        avatar: enderecoDaImagem(l.avatar_url || ""),
         cidade: l.city || "",
         recado: l.recado || "",
         quando: l.quando,
