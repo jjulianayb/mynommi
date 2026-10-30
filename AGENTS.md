@@ -235,3 +235,12 @@
 - `desenhoDoFundo(f)` desenha cada estampa em SVG com as três cores do fundo (`base`, `linha`, `no`). SVG porque é leve, não depende de arquivo e fica nítido em qualquer tela. Estampa nova = um `desenho` novo no switch, nunca uma imagem solta.
 - Os ids `teia-*` continuam existindo com o mesmo nome: quem já escolheu um deles não pode perder o fundo. Tem teste que exige o prefixo nos fundos do grupo Teia.
 - Fundo novo **precisa declarar o tom**, senão o texto da página some. Teste confere.
+
+## Rastreamento de rosto (29/10, em construção)
+- `src/lib/rosto.ts` acha os 468 pontos do rosto para destravar maquiagem, olhos e contorno. Roda **dentro do celular**: a foto não vai para servidor nenhum.
+- A biblioteca vem do **CDN**, com `import(/* @vite-ignore */ ENDERECO_BIBLIOTECA)`, e não como dependência. Dois motivos: o build da Lovable usa `bun` com lockfile travado e não dá para sincronizar daqui, e são 43 MB que não têm por que entrar na árvore por um recurso opcional.
+- **Nada carrega sozinho.** O modelo é um arquivo que o aparelho baixa; só quando a pessoa liga a maquiagem. Se falhar, `carregarRosto()` devolve null e a câmera segue com os filtros de cor, sem quebrar.
+- Toda a conta é função pura com teste: quais índices são boca, olho e mandíbula; para onde cada ponto anda ao afinar; como o empurrão some longe das âncoras. Só carregar e desenhar tocam no navegador.
+- `deslocamentoDoAfinar` tem teto de 5,5% da largura do rosto, e quem está junto do queixo anda menos. Mão pesada aqui vira desenho animado.
+- `MANDIBULA` é só a parte de baixo do contorno, de propósito: mexer na testa deforma o rosto.
+- **Não testável aqui**: este ambiente não tem câmera nem rosto, e a rede não alcança o modelo. A primeira prova é no celular da Ju.
