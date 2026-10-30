@@ -13,12 +13,13 @@ import { StatsLine, FollowButton, WallPanel, Feed, SafetyMenu } from "./social-f
 import { Selos } from "./selos";
 import { MeuVideo, VideosDeAmigos } from "./videos-do-perfil";
 import { connectionState as _cs } from "@/lib/connections";
+import { enderecoDaImagem } from "@/lib/covers";
 
 function Face({ p, size }: { p: PublicProfile; size: number }) {
   return p.avatar_url ? (
     <img
       className="real-face"
-      src={p.avatar_url}
+      src={enderecoDaImagem(p.avatar_url)}
       width={size}
       height={size}
       style={{ width: size, height: size }}
