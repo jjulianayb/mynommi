@@ -116,6 +116,8 @@ export function CommunityDetail({
   coverEditor,
   pedidos,
   secrets,
+  identidade,
+  daDona,
 }: {
   tribo: Tribo;
   member: boolean;
@@ -132,6 +134,10 @@ export function CommunityDetail({
   coverEditor?: ReactNode;
   pedidos?: ReactNode;
   secrets?: ReactNode;
+  /** Missão, valores e visão, quando a dona escreveu. */
+  identidade?: ReactNode;
+  /** A tela de personalizar. Só vem preenchida para quem criou a tribo. */
+  daDona?: ReactNode;
 }) {
   const [tab, setTab] = useState("Posts");
   const memberCount = demoMode ? tribo.members : members.length;
@@ -195,11 +201,16 @@ export function CommunityDetail({
           </div>
         )}
       </section>
+      {identidade}
       <div role="tablist" aria-label="Conteúdo da tribo" className="community-tabs">
-        {(secrets
-          ? ["Membros", "Posts", "Só entre nós", "Eventos"]
-          : ["Membros", "Posts", "Eventos"]
-        ).map((t) => (
+        {[
+          "Membros",
+          "Posts",
+          ...(secrets ? ["Só entre nós"] : []),
+          "Rolês",
+          // "Sua tribo" só existe para quem criou: é a tela de personalizar.
+          ...(daDona ? ["Sua tribo"] : []),
+        ].map((t) => (
           <Button
             key={t}
             variant="ghost"
@@ -280,7 +291,8 @@ export function CommunityDetail({
           </>
         )}
         {tab === "Só entre nós" && secrets}
-        {tab === "Eventos" && events}
+        {tab === "Rolês" && events}
+        {tab === "Sua tribo" && daDona}
       </section>
     </div>
   );

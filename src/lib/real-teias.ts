@@ -34,6 +34,17 @@ export type RealTeiaRow = {
   pedidos_abertos?: number;
   sensivel?: boolean;
   ja_consenti?: boolean;
+  /* A tribo da dona (0041): o que ela escreve e decide sobre a tribo dela. */
+  missao?: string;
+  valores?: string;
+  visao?: string;
+  /** Nome de figurinha do catálogo, nunca o desenho nem endereço de imagem. */
+  figurinha?: string;
+  who_roles?: string;
+  link_publico?: boolean;
+  /** O rolê que nasceu dentro de uma tribo aponta para ela. */
+  tribo_id?: number | null;
+  i_can_role?: boolean;
 };
 
 /** Converte uma tribo salva no servidor para o formato usado pelas telas. */
@@ -144,12 +155,16 @@ export async function createRealTeia(
 export function useRealTeia(id: number, enabled: boolean) {
   const [row, setRow] = useState<RealTeiaRow | null>(null);
   const [ready, setReady] = useState(false);
-  useEffect(() => {
+  // `recarregar` existe para a dona ver a mudança na hora depois de salvar a
+  // personalização, sem precisar sair da tribo e voltar.
+  const carregar = useCallback(async () => {
     if (!enabled) return;
-    void supabase.rpc("list_teias", { _id: id }).then(({ data }) => {
-      setRow(((data as RealTeiaRow[] | null) ?? [])[0] ?? null);
-      setReady(true);
-    });
+    const { data } = await supabase.rpc("list_teias", { _id: id });
+    setRow(((data as RealTeiaRow[] | null) ?? [])[0] ?? null);
+    setReady(true);
   }, [id, enabled]);
-  return { row, ready };
+  useEffect(() => {
+    void carregar();
+  }, [carregar]);
+  return { row, ready, recarregar: carregar };
 }

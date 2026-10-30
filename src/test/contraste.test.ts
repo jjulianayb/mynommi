@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 const css = readFileSync("src/styles.css", "utf8");
@@ -43,5 +43,32 @@ describe("superfície clara declara a própria cor de texto", () => {
     expect(forte).toContain("width:74px");
     const reset = css.indexOf(".friends-app button {");
     expect(css.indexOf(".friends-app .camera-disparo")).toBeGreaterThan(reset);
+  });
+});
+
+/**
+ * Bug encontrado em 30/10: existiam dois nomes para "este chip está escolhido",
+ * `selected` e `active`, e **só `selected` tinha estilo**. Sete chips pelo app
+ * usavam `active` e pareciam exatamente iguais aos não escolhidos: a atividade
+ * e a duração do radar, o prazo do "Só entre nós", e os botões de quem cria
+ * rolê. A pessoa escolhia e a tela não respondia.
+ *
+ * A correção foi ter um nome só. Este teste existe para o segundo nome não
+ * voltar: chip escolhido é `selected`, e ponto.
+ */
+describe("chip escolhido tem cara de escolhido", () => {
+  const componentes = readdirSync("src/components/friends")
+    .filter((f) => f.endsWith(".tsx"))
+    .map((f) => ({ nome: f, texto: readFileSync("src/components/friends/" + f, "utf8") }));
+
+  it("o estilo de chip escolhido existe", () => {
+    expect(regra(".friends-app .chip.selected")).toContain("background:");
+  });
+
+  it("nenhum chip usa um nome de estado que não tem estilo", () => {
+    for (const c of componentes) {
+      const usaActive = /className=\{"chip"?\s*\+?[^}]*"\s*active"/.test(c.texto);
+      expect(usaActive, c.nome + " usa 'active' num chip, que não tem estilo").toBe(false);
+    }
   });
 });

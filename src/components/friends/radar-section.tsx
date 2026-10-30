@@ -191,7 +191,7 @@ export function RadarSection() {
                 type="button"
                 role="option"
                 aria-selected={s.nome === (custom || place?.name)}
-                className={"radar-place" + (s.nome === (custom || place?.name) ? " active" : "")}
+                className={"radar-place" + (s.nome === (custom || place?.name) ? " selected" : "")}
                 onClick={() => {
                   setCustom(s.nome);
                   setPlace(null);
@@ -245,7 +245,7 @@ export function RadarSection() {
                   variant="ghost"
                   key={m}
                   type="button"
-                  className={"chip" + (m === activity ? " active" : "")}
+                  className={"chip" + (m === activity ? " selected" : "")}
                   aria-pressed={m === activity}
                   onClick={() => setActivity(m)}
                 >
@@ -262,7 +262,7 @@ export function RadarSection() {
                   variant="ghost"
                   key={m}
                   type="button"
-                  className={"chip" + (m === mins ? " active" : "")}
+                  className={"chip" + (m === mins ? " selected" : "")}
                   aria-pressed={m === mins}
                   onClick={() => setMins(m)}
                 >
@@ -416,7 +416,7 @@ export function RadarSection() {
                 variant="ghost"
                 key={m || "todos"}
                 type="button"
-                className={"chip" + (m === filter ? " active" : "")}
+                className={"chip" + (m === filter ? " selected" : "")}
                 aria-pressed={m === filter}
                 onClick={() => setFilter(m)}
               >

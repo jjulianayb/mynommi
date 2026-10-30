@@ -52,6 +52,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { SemFoto, Avatar, Icon, Sticker, Cover } from "./art";
 import { useFriends } from "./store";
+import { IdentidadeDaTribo, RolesDaTribo } from "./identidade-da-tribo";
+import { PersonalizarTribo } from "./personalizar-tribo";
 import { ChatSticker, ChatStickerTray, SaveStickerButton } from "./chat-stickers";
 import {
   people,
@@ -1458,6 +1460,18 @@ export function GroupDetail({ id }: { id: number }) {
                 euVou={realTeia.row?.i_am_going === true}
               />
             )}
+            {/* Os rolês desta tribo. Antes aqui ficava a meta de exemplo
+                ("Próxima parada: day spa", com pontos) e os desafios com
+                anfitriões — tudo da apresentação, e conta real estava vendo.
+                Agora o que é de exemplo fica na apresentação. */}
+            {cloud && cloudUser && realTeia.row?.kind !== "role" && (
+              <RolesDaTribo
+                triboId={id}
+                quemCria={realTeia.row?.who_roles === "criadora" ? "criadora" : "todos"}
+                euPodeCriar={realTeia.row?.i_can_role !== false}
+              />
+            )}
+            {demoMode && (
             <div className="goal-band">
               <div className="row">
                 <Icon name="gift" />
@@ -1473,6 +1487,8 @@ export function GroupDetail({ id }: { id: number }) {
                     " pontos para o dia de beleza com a tribo."}
               </p>
             </div>
+            )}
+            {demoMode && (
             <section>
               <FirstMeetNotice />
               <h2>Desafios da tribo</h2>
@@ -1579,6 +1595,7 @@ export function GroupDetail({ id }: { id: number }) {
                 </Button>
               </form>
             </section>
+            )}
           </>
         }
         secrets={
@@ -1595,6 +1612,39 @@ export function GroupDetail({ id }: { id: number }) {
         pedidos={
           amCreator && cloudUser ? (
             <PedidosDaTribo teiaId={id} souCriadora={amCreator} />
+          ) : undefined
+        }
+        identidade={
+          cloud && realTeia.row ? (
+            <IdentidadeDaTribo
+              missao={realTeia.row.missao ?? ""}
+              valores={realTeia.row.valores ?? ""}
+              visao={realTeia.row.visao ?? ""}
+              figurinha={realTeia.row.figurinha ?? ""}
+            />
+          ) : undefined
+        }
+        daDona={
+          /* "Sua tribo" só existe para quem criou. */
+          cloud && amCreator && realTeia.row ? (
+            <PersonalizarTribo
+              id={id}
+              nome={realTeia.row.name ?? ""}
+              cidade={realTeia.row.city ?? ""}
+              sensivel={realTeia.row.sensivel === true}
+              inicial={{
+                about: realTeia.row.about ?? "",
+                rule: realTeia.row.rule ?? "",
+                missao: realTeia.row.missao ?? "",
+                valores: realTeia.row.valores ?? "",
+                visao: realTeia.row.visao ?? "",
+                figurinha: realTeia.row.figurinha ?? "",
+                who_posts: realTeia.row.who_posts === "criadora" ? "criadora" : "todos",
+                who_roles: realTeia.row.who_roles === "criadora" ? "criadora" : "todos",
+                link_publico: realTeia.row.link_publico === true,
+              }}
+              aoSalvar={() => void realTeia.recarregar?.()}
+            />
           ) : undefined
         }
         coverPath={covers.cover}

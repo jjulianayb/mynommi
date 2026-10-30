@@ -132,6 +132,13 @@ export type NewRole = {
   startsAt?: Date | null;
   capacity?: number | null;
   whenText?: string;
+  /**
+   * A tribo de onde o rolê nasceu, quando nasceu de dentro de uma.
+   * Rolê e tribo são a mesma tabela e, até aqui, não tinham ligação nenhuma:
+   * todo rolê era solto. Quem pode marcar rolê numa tribo é conferido pela
+   * política de INSERT do banco, não por esta função.
+   */
+  triboId?: number | null;
 };
 
 export async function createRole(me: string, nickname: string, input: NewRole) {
@@ -141,9 +148,9 @@ export async function createRole(me: string, nickname: string, input: NewRole) {
     input.capacity == null
       ? null
       : Math.min(MAX_CAPACITY, Math.max(MIN_CAPACITY, Math.round(input.capacity)));
-  const { data, error } = await supabase
-    .from("teias")
-    .insert({
+  // `tribo_id` ainda não está em types.ts (o arquivo é gerado pela Lovable),
+  // por isso a linha vai tipada à mão aqui.
+  const linha = {
       kind: "role",
       name,
       mode: input.mode ?? "Presencial",
@@ -155,7 +162,11 @@ export async function createRole(me: string, nickname: string, input: NewRole) {
       capacity,
       created_by: me,
       creator_nickname: nickname.slice(0, 40),
-    })
+      ...(input.triboId ? { tribo_id: input.triboId } : {}),
+  };
+  const { data, error } = await supabase
+    .from("teias")
+    .insert(linha as never)
     .select("id")
     .single();
   if (error || !data) return null;

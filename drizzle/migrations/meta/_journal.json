@@ -288,6 +288,13 @@
       "when": 1793490000000,
       "tag": "0040_lugares",
       "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "7",
+      "when": 1793500000000,
+      "tag": "0041_tribo_da_dona",
+      "breakpoints": true
     }
   ]
 }

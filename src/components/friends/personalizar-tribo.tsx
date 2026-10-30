@@ -131,7 +131,7 @@ export function PersonalizarTribo({
               key={g}
               variant="ghost"
               type="button"
-              className={"chip" + (g === grupo ? " active" : "")}
+              className={"chip" + (g === grupo ? " selected" : "")}
               aria-pressed={g === grupo}
               onClick={() => setGrupo(g)}
             >
@@ -193,7 +193,7 @@ export function PersonalizarTribo({
               key={q}
               variant="ghost"
               type="button"
-              className={"chip" + (q === p.who_roles ? " active" : "")}
+              className={"chip" + (q === p.who_roles ? " selected" : "")}
               aria-pressed={q === p.who_roles}
               onClick={() => setP((a) => ({ ...a, who_roles: q }))}
             >
@@ -212,7 +212,7 @@ export function PersonalizarTribo({
               key={q}
               variant="ghost"
               type="button"
-              className={"chip" + (q === p.who_posts ? " active" : "")}
+              className={"chip" + (q === p.who_posts ? " selected" : "")}
               aria-pressed={q === p.who_posts}
               onClick={() => setP((a) => ({ ...a, who_posts: q }))}
             >

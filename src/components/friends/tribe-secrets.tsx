@@ -96,7 +96,7 @@ export function TribeSecrets({
                 key={p.dias}
                 type="button"
                 variant="ghost"
-                className={"chip" + (dias === p.dias ? " active" : "")}
+                className={"chip" + (dias === p.dias ? " selected" : "")}
                 aria-pressed={dias === p.dias}
                 onClick={() => setDias(p.dias)}
               >

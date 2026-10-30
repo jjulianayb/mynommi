@@ -332,3 +332,11 @@
 - A página pública **não mostra membro nenhum**, nem nome nem foto: entrar numa tribo não é aceitar virar vitrine de divulgação. O número de pessoas é o real, sempre.
 - `/tribo/$id` é rota pública (entra na mesma lista de `social-shell` que termos e privacidade): link que só abre para quem já está dentro não divulga nada.
 - `roles_da_tribo()` só responde para quem é da tribo.
+- `IdentidadeDaTribo` só mostra o que a dona escreveu. Tribo sem nada escrito não mostra título vazio: três cabeçalhos sem texto embaixo fazem a tribo parecer abandonada, que é o contrário do pretendido.
+- A aba "Sua tribo" só existe para quem criou. As abas da tribo agora são Membros · Posts · Só entre nós · Rolês · Sua tribo.
+
+## O chip escolhido que não parecia escolhido (30/10)
+- Existiam **dois nomes** para "este chip está escolhido", `selected` e `active`, e **só `selected` tinha estilo**. Sete chips pelo app usavam `active` e ficavam idênticos aos não escolhidos: a atividade e a duração do Radar, o prazo do "Só entre nós", e os botões novos de quem cria rolê. A pessoa tocava e a tela não respondia.
+- Correção: um nome só, `selected`. Não styled o `active` de propósito — dois nomes para a mesma coisa é como o bug nasceu.
+- `src/test/contraste.test.ts` lê os componentes e **barra `active` em chip**. (Teste conferido: reintroduzir o nome antigo faz ele falhar.)
+- `.cover-preset.active` continua existindo e tem estilo próprio; o problema era só o chip.

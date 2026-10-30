@@ -810,11 +810,18 @@ export function CreateChallenge() {
     </div>
   );
 }
-export function CreateGroup() {
+export function CreateGroup({
+  initialKind = "teia",
+  triboId = null,
+}: {
+  initialKind?: "teia" | "role";
+  /** Quando o rolê nasce de dentro de uma tribo, ele já aponta para ela. */
+  triboId?: number | null;
+} = {}) {
   const { state, setState, notify } = useFriends();
   const { demoMode, cloudUser } = useDemoSession();
   const navigate = useNavigate();
-  const [kind, setKind] = useState<"teia" | "role">("teia");
+  const [kind, setKind] = useState<"teia" | "role">(initialKind);
   const [name, setName] = useState("");
   const [mode, setMode] = useState("Presencial");
   const [city, setCity] = useState(state.city);
@@ -873,6 +880,7 @@ export function CreateGroup() {
                     mode,
                     startsAt: when,
                     capacity: limited ? capacity : null,
+                    triboId,
                   })
                 : await createRealTeia(
                     {
