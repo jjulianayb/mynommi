@@ -51,12 +51,21 @@ RETURNS integer LANGUAGE sql IMMUTABLE AS $$ SELECT 100 $$;
 -- mesmo número para as duas; aí o índice único rejeita uma e o
 -- ON CONFLICT DO NOTHING engolia o erro em silêncio, devolvendo true para
 -- quem ficou sem título. Com a tabela travada por um instante, a fila é fila.
+--
+-- A guarda contra conta de teste e contra apelido vazio fica aqui dentro, e
+-- não em quem chama: esta é a única função que insere, então nenhum caminho
+-- novo de entrada pode furar a fila sem querer. Já aconteceu uma vez: duas
+-- contas de teste da Ju pegaram os números 1 e 3.
 CREATE OR REPLACE FUNCTION public.virar_embaixadora(_quem uuid)
 RETURNS boolean LANGUAGE plpgsql SECURITY DEFINER SET search_path TO 'public' AS $$
 DECLARE proximo integer;
 BEGIN
   IF _quem IS NULL THEN RETURN false; END IF;
   IF EXISTS (SELECT 1 FROM public.embaixadoras WHERE user_id = _quem) THEN RETURN true; END IF;
+  IF NOT EXISTS (
+    SELECT 1 FROM public.profiles p
+     WHERE p.id = _quem AND coalesce(p.nickname,'') <> '' AND NOT coalesce(p.is_test,false)
+  ) THEN RETURN false; END IF;
 
   LOCK TABLE public.embaixadoras IN SHARE ROW EXCLUSIVE MODE;
 
@@ -66,6 +75,36 @@ BEGIN
   INSERT INTO public.embaixadoras (user_id, numero) VALUES (_quem, proximo);
   RETURN true;
 END $$;
+
+-- Decisão da Ju: o título é de **quem chega primeiro**, com convite ou sem.
+--
+-- Quem entrou cedo direto pelo Google, sem clicar em link de ninguém, chegou
+-- cedo do mesmo jeito. Premiar só o link criava o caso esquisito de estar
+-- entre as primeiras e não ganhar nada.
+--
+-- Fica num gatilho, e não na tela de cadastro, porque a nommi tem vários
+-- caminhos de entrada (Google, Apple, e-mail, link de convite) e qualquer um
+-- deles poderia esquecer de dar o título.
+CREATE OR REPLACE FUNCTION public.titulo_de_quem_chega()
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path TO 'public' AS $$
+BEGIN
+  -- Marcar uma conta como teste tira o título: é assim que se devolve um
+  -- número que foi para uma conta de teste sem alguém ter que lembrar de
+  -- apagar a linha na mão.
+  IF coalesce(NEW.is_test,false) THEN
+    DELETE FROM public.embaixadoras WHERE user_id = NEW.id;
+    RETURN NEW;
+  END IF;
+  IF coalesce(NEW.nickname,'') <> '' THEN
+    PERFORM public.virar_embaixadora(NEW.id);
+  END IF;
+  RETURN NEW;
+END $$;
+
+DROP TRIGGER IF EXISTS profiles_titulo_de_quem_chega ON public.profiles;
+CREATE TRIGGER profiles_titulo_de_quem_chega
+AFTER INSERT OR UPDATE OF nickname, is_test ON public.profiles
+FOR EACH ROW EXECUTE FUNCTION public.titulo_de_quem_chega();
 
 -- Usar o convite agora faz três coisas em vez de uma.
 --
