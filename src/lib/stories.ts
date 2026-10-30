@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { venceEm, quantoFalta } from "./camera";
+import { enderecoDaImagem } from "@/lib/covers";
 
 export type StoryAudience = "todos" | "amizades";
 export type Story = {
@@ -140,7 +141,7 @@ export function useStories(me: string | null) {
         id: r.id,
         authorId: r.author_id,
         authorName: p?.nickname || "nommi",
-        authorAvatar: p?.avatar_url ?? "",
+        authorAvatar: enderecoDaImagem(p?.avatar_url ?? ""),
         kind: r.kind,
         path: r.path,
         caption: r.caption,
