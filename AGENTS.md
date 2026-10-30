@@ -265,3 +265,16 @@
 ## Espaço para se descrever (30/10)
 - "Sobre mim" era 140 caracteres e a conta da Ju já batia 136: o campo acabava antes da frase. Agora `MAX_SOBRE` = 600, com o campo em 6 linhas. Numa rede de amizade, "sobre mim" é o que faz alguém querer conversar.
 - O cadastro pedia **exatamente 3** interesses. Agora é de 3 a 6 (`INTERESSES_NO_CADASTRO`): três é o mínimo para a fila ter de onde partir, seis é onde o cadastro ainda é curto. Até 12 continuam em Meu nommi.
+
+## A apresentação depois do cadastro (0038)
+- A testadora saiu do cadastro sem entender como encontraria alguém. A apresentação é o pedaço entre "criei a conta" e "e agora?": uma pergunta por tela, barra de progresso, e no fim os três caminhos para achar gente.
+- **Três regras que não se mexem**: tudo é opcional (toda etapa tem "pular" e há "deixar para depois" sempre visível); nada de íntimo (tem teste barrando estado civil, filhos, religião, renda e corpo nas perguntas); e cada pergunta diz **na própria tela** se a resposta vai para a página ou fica só nas sugestões.
+- `profiles.nao_topa` é o único campo da apresentação que **não** aparece na página de ninguém: serve só para a nommi parar de sugerir o que a pessoa não gosta. Mudar isso quebra uma promessa feita na tela.
+- `profiles.apresentacao` ('pendente' | 'pulou' | 'feita'): **"pulou" conta como visto.** Ninguém é cobrado duas vezes.
+- Só aparece depois do aceite dos termos: duas telas por cima da outra é pior que nenhuma.
+- O tour antigo continua: ele mostra **onde** ficam as coisas; a apresentação pergunta e explica **como** as pessoas se acham.
+
+## A entrada com movimento (30/10)
+- Três brilhos coloridos (verde, sunshine, coral) andam devagar atrás da foto do Rio, com desfoque grande, e o conteúdo entra em cascata. Movimento longo e lento, nunca piscando.
+- Tudo respeita `prefers-reduced-motion`.
+- As cores são as da marca: movimento e desfoque dão vida sem inventar cor nova.

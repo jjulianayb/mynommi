@@ -15,6 +15,8 @@ import { esquecerTour, tourJaVisto } from "@/lib/tour";
 import { registrarAcesso } from "@/lib/numeros";
 import { useAceite } from "@/lib/aceite";
 import { AvisoDeAceite } from "./aceite";
+import { Apresentacao } from "./apresentacao";
+import { usePrecisaApresentar } from "@/lib/usar-apresentacao";
 
 /** Cada item da navegação vira um alvo do tour. */
 const alvoDoItem = (to: string) =>
@@ -38,6 +40,12 @@ export function SocialShell({ children }: { children: ReactNode }) {
   // Ninguém usa a nommi sem ter lido o texto que está no ar. As telas de termos
   // e privacidade ficam livres, senão a pessoa não consegue ler o que vai aceitar.
   const aceite = useAceite(real, cloudUser && !demoMode ? cloudUser.id : null);
+  // Logo depois do cadastro, a apresentação. Só uma vez, e só depois do aceite:
+  // duas telas por cima da outra seria pior que nenhuma.
+  const apresentar = usePrecisaApresentar(
+    real && aceite.pronto && !aceite.pendente,
+    cloudUser && !demoMode ? cloudUser.id : null,
+  );
   // O tour só começa na página inicial, onde estão as coisas que ele aponta.
   useEffect(() => {
     if (!real || pathname !== "/" || tourJaVisto(cloudUser?.id ?? null)) return;
@@ -66,6 +74,11 @@ export function SocialShell({ children }: { children: ReactNode }) {
           style={{ backgroundImage: `url(${rioPhoto})` }}
         />
         <div className="cenario-veu" aria-hidden="true" />
+        <div className="cenario-brilhos" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
         <div className="cenario-conteudo">{children}</div>
       </div>
     );
@@ -110,6 +123,9 @@ export function SocialShell({ children }: { children: ReactNode }) {
     <div className="friends-app social-app drawer-app nommi-refresh">
       {aceite.pronto && aceite.pendente && !legalPaths.includes(pathname) && (
         <AvisoDeAceite onAceitar={aceite.aceitar} />
+      )}
+      {apresentar.precisa && cloudUser && (
+        <Apresentacao me={cloudUser.id} aoFechar={apresentar.encerrar} />
       )}
       <header className="app-header">
         <Link to="/" aria-label="Nommi, início">
