@@ -26,6 +26,7 @@ import {
   useLugares,
   type Sugestao,
 } from "@/lib/lugares";
+import { enderecoDaImagem } from "@/lib/covers";
 
 type Saved = { on: boolean; place: string; activity: Activity; mins: number; until: number };
 export function RadarSection() {
@@ -503,7 +504,7 @@ function RealNearby({ coords, me }: { coords: { lat: number; lng: number } | nul
           {list.map((r) => (
             <article className="radar-person" key={r.user_id}>
               {r.avatar_url ? (
-                <img className="story-face" src={r.avatar_url} alt="" width={48} height={48} />
+                <img className="story-face" src={enderecoDaImagem(r.avatar_url)} alt="" width={48} height={48} />
               ) : (
                 <SemFoto size={48} />
               )}
