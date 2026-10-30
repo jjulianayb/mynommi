@@ -6,28 +6,26 @@ import { EmptyState } from "@/components/friends/surfaces";
 import { useFriends } from "@/components/friends/store";
 import { useDemoSession } from "@/components/friends/session";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  km,
-  distanceLabel,
-  coarse,
-  kmLabel,
-  suggestPlaces,
-  presenceRow,
-  type RadarNearby,
-} from "@/lib/radar";
+import { km, distanceLabel, coarse, kmLabel, presenceRow, type RadarNearby } from "@/lib/radar";
 import { SAMPLE_BOOSTED_PEOPLE } from "@/lib/credits";
 import { SemFoto } from "./art";
 import {
   ACTIVITIES,
   PLACES,
-  PLACE_TYPES,
-  nearestPlace,
   nearbyNommis,
-  searchPlaces,
   type Activity,
   type Place,
-  type PlaceType,
 } from "@/lib/radar";
+import {
+  doCatalogo,
+  filtrarSugestoes,
+  juntarSugestoes,
+  maisPertoDeVerdade,
+  nomeDoLugar,
+  recadoDeLugar,
+  useLugares,
+  type Sugestao,
+} from "@/lib/lugares";
 
 type Saved = { on: boolean; place: string; activity: Activity; mins: number; until: number };
 export function RadarSection() {
@@ -39,12 +37,12 @@ export function RadarSection() {
   const [place, setPlace] = useState<Place | null>(null);
   const [custom, setCustom] = useState("");
   const [query, setQuery] = useState("");
-  const [type, setType] = useState<PlaceType | "">("");
   const [activity, setActivity] = useState<Activity>("Tomar um café");
   const [mins, setMins] = useState(60);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [city, setCity] = useState("");
-  const [suggest, setSuggest] = useState<Place[]>([]);
+  // Sugestões do catálogo de BH, e só quando a pessoa está perto de BH.
+  const [doMapa, setDoMapa] = useState<Sugestao[]>([]);
   const [filter, setFilter] = useState<Activity | "">("");
   const [pick, setPick] = useState<number | null>(null);
   const [sent, setSent] = useState<number[]>([]);
@@ -80,6 +78,23 @@ export function RadarSection() {
       /* navegador sem espaço: seguimos sem guardar */
     }
   }
+  // A cidade do perfil já vem preenchida: a pessoa não precisa digitar de novo
+  // o que ela já contou no cadastro.
+  useEffect(() => {
+    if (!cloudUser) return;
+    void (async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("city")
+        .eq("id", cloudUser.id)
+        .maybeSingle();
+      const c = (data as { city?: string } | null)?.city ?? "";
+      if (c) setCity((atual) => atual || c);
+    })();
+  }, [cloudUser]);
+
+  const { meus, daCidade } = useLugares(!!cloudUser, city);
+
   function locate() {
     if (!("geolocation" in navigator)) {
       notify("Seu aparelho não permite localização. Escreva onde você está.");
@@ -91,16 +106,21 @@ export function RadarSection() {
         const lat = pos.coords.latitude,
           lng = pos.coords.longitude;
         setCoords({ lat, lng });
-        const perto = suggestPlaces(lat, lng);
-        setSuggest(perto);
+        setDoMapa(doCatalogo(lat, lng));
         setLocating(false);
-        if (perto.length) {
-          const p = perto[0] as Place;
-          setPlace(p);
+        // Só aponta um lugar se a pessoa estiver de fato ali. Antes, a lista só
+        // tinha endereços de BH e o código devolvia o menos distante sem olhar
+        // a distância: quem estava em São Paulo era avisada de que estava no BH
+        // Shopping.
+        const aqui = maisPertoDeVerdade(lat, lng);
+        if (aqui) {
+          setPlace(aqui);
           setCustom("");
           setQuery("");
-          notify("Lugar mais próximo: " + p.name + ". Guardamos só a posição aproximada.");
-        } else notify("Pegamos sua posição aproximada. Escreva o nome do lugar onde você está.");
+          notify("Você está em " + aqui.name + "? Guardamos só a posição aproximada.");
+        } else {
+          notify("Pegamos sua posição aproximada. Escreva o nome do lugar onde você está.");
+        }
       },
       () => {
         setLocating(false);
@@ -109,7 +129,11 @@ export function RadarSection() {
       { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 },
     );
   }
-  const results = searchPlaces(query, type);
+
+  // As três fontes, na ordem de quem acerta mais: os meus lugares, os lugares
+  // da minha cidade, e o catálogo de BH se for o caso.
+  const todas = juntarSugestoes(meus, daCidade, doMapa);
+  const results = filtrarSugestoes(todas, query);
   const nearby =
     demoMode && place
       ? nearbyNommis(place, { matches: state.matches, blocked: state.blocked, activity: filter })
@@ -159,58 +183,48 @@ export function RadarSection() {
               onChange={(e) => setCity(e.target.value)}
             />
           </label>
-          <div className="chips">
-            {(["", ...PLACE_TYPES] as const).map((t) => (
+          <div className="radar-places" role="listbox" aria-label="Lugares sugeridos">
+            {results.slice(0, 8).map((s) => (
               <Button
                 variant="ghost"
-                key={t || "todos"}
-                type="button"
-                className={"chip" + (t === type ? " active" : "")}
-                aria-pressed={t === type}
-                onClick={() => setType(t)}
-              >
-                {t || "Todos"}
-              </Button>
-            ))}
-          </div>
-          <div className="radar-places" role="listbox" aria-label="Lugares públicos">
-            {results.slice(0, 8).map((p) => (
-              <Button
-                variant="ghost"
-                key={p.name}
+                key={s.fonte + s.nome}
                 type="button"
                 role="option"
-                aria-selected={p.name === place?.name && !custom}
-                className={"radar-place" + (p.name === place?.name && !custom ? " active" : "")}
+                aria-selected={s.nome === (custom || place?.name)}
+                className={"radar-place" + (s.nome === (custom || place?.name) ? " active" : "")}
                 onClick={() => {
-                  setPlace(p);
-                  setCustom("");
+                  setCustom(s.nome);
+                  setPlace(null);
+                  setQuery("");
                 }}
               >
-                <b>{p.name}</b>
+                <b>{s.nome}</b>
                 <small>
-                  {p.type} · {p.area}
+                  {s.fonte === "meu"
+                    ? "Você já esteve aqui"
+                    : s.fonte === "cidade"
+                      ? "Lugar de rolê da nommi" + (s.cidade ? " · " + s.cidade : "")
+                      : s.area}
                 </small>
               </Button>
             ))}
-            {!results.length && (
-              <p className="muted small">
-                {coords
-                  ? "Escreva o nome do lugar onde você está. Fora de Belo Horizonte ainda não temos lista de lugares."
-                  : 'Toque em "Usar minha localização" ou escreva onde você está.'}
-              </p>
-            )}
+            {!results.length && <p className="muted small">{recadoDeLugar(false, city)}</p>}
           </div>
-          {query.trim().length > 2 && !results.length && (
+          {/* Escrever o lugar é caminho normal, não plano B: é o que funciona em
+              qualquer cidade do mundo. */}
+          {nomeDoLugar(query).length > 1 && (
             <Button
               type="button"
               variant="outline"
+              className="wide"
               onClick={() => {
-                setCustom(query.trim().slice(0, 60));
+                setCustom(nomeDoLugar(query));
+                setPlace(null);
                 notify("Lugar anotado.");
               }}
             >
-              Estou em "{query.trim().slice(0, 60)}"
+              <Icon name="pin" />
+              Estou em "{nomeDoLugar(query)}"
             </Button>
           )}
           <p className="radar-here">

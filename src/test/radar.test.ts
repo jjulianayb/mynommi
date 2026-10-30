@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   PLACES,
-  nearestPlace,
+  nearestPlaceDemo,
   nearbyNommis,
   distanceLabel,
   searchPlaces,
@@ -15,8 +15,8 @@ describe("Radar Nommi", () => {
   it("tem pelo menos 20 lugares públicos", () => {
     expect(PLACES.length).toBeGreaterThanOrEqual(20);
   });
-  it("converte a posição no lugar público mais próximo", () => {
-    expect(nearestPlace(-19.9246, -43.9353).name).toBe("Parque Municipal");
+  it("na apresentação, converte a posição no lugar mais próximo", () => {
+    expect(nearestPlaceDemo(-19.9246, -43.9353).name).toBe("Parque Municipal");
   });
   it("busca por nome ou bairro sem acento", () => {
     expect(searchPlaces("pampulha").map((p) => p.name)).toContain("Lagoa da Pampulha");

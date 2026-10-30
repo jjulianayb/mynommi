@@ -105,8 +105,16 @@ export function km(a: { lat: number; lng: number }, b: { lat: number; lng: numbe
     Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLng / 2) ** 2;
   return 2 * R * Math.asin(Math.sqrt(h));
 }
-/** Converte a posição do aparelho no lugar público mais próximo; a coordenada não sai desta função. */
-export function nearestPlace(lat: number, lng: number): Place {
+/**
+ * O lugar do catálogo mais próximo da posição, **sem olhar a distância**.
+ *
+ * Só serve para a apresentação, onde todos os lugares e todas as pessoas de
+ * exemplo são de Belo Horizonte. Para conta real isto está errado: o catálogo
+ * só tem BH, então quem está em São Paulo recebia "BH Shopping" como resposta.
+ * Quem precisa disso de verdade é `maisPertoDeVerdade()`, em `lugares.ts`, que
+ * devolve nada quando a pessoa não está perto de nenhum lugar conhecido.
+ */
+export function nearestPlaceDemo(lat: number, lng: number): Place {
   return PLACES.reduce(
     (best, p) => (km({ lat, lng }, p) < km({ lat, lng }, best) ? p : best),
     PLACES[0] as Place,
@@ -179,7 +187,13 @@ export type RadarNearby = {
   km: number;
 };
 
-/** Sugestões de lugar: usa o catálogo quando a pessoa está em Belo Horizonte, senão pede o nome do lugar. */
+/**
+ * Sugestões vindas do catálogo, dentro de 25 km.
+ *
+ * Usado só pela apresentação. O radar de conta real monta a lista em
+ * `lugares.ts`, com os lugares da pessoa e os lugares de rolê da cidade dela,
+ * porque um catálogo escrito à mão nunca vai cobrir o Brasil.
+ */
 export function suggestPlaces(lat: number, lng: number, limit = 6): Place[] {
   const near = PLACES.map((p) => ({ p, d: km({ lat, lng }, p) }))
     .filter((x) => x.d <= 25)
