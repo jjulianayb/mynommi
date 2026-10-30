@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { useCallback, useEffect, useState } from "react";
+import { enderecoDaImagem } from "@/lib/covers";
 
 export type DirectMessage = {
   id: string;
@@ -81,7 +82,7 @@ type ConversaRow = {
 export const toConversa = (r: ConversaRow): Conversa => ({
   outroId: r.outro_id,
   nickname: r.nickname || "nommi",
-  avatar: r.avatar_url || "",
+  avatar: enderecoDaImagem(r.avatar_url || ""),
   ultima: r.ultima,
   ultimaSticker: r.ultima_sticker,
   ultimaMinha: r.ultima_minha,
