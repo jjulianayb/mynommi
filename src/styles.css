@@ -1161,3 +1161,10 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .lote-rotulo{font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted-foreground);margin:6px 0 0}
 .lote-previa{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:14px;padding:12px 14px;font-size:13.5px;line-height:1.6;margin:0;overflow-wrap:anywhere}
 .lote-conta{font-size:12.5px;color:var(--muted-foreground);text-align:center;margin:0}
+/* O título de quem chegou no começo, e o que já veio pelo convite dela. */
+.titulo-cartao{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:14px 16px;display:grid;gap:6px}
+.titulo-cartao.embaixadora{background:linear-gradient(135deg,var(--butter),#fff);border-color:var(--sunshine)}
+.titulo-selo{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:800;color:var(--foreground);margin:0}
+.titulo-selo .friend-icon{width:17px;height:17px;color:var(--sunshine)}
+.titulo-conta{font-size:15px;font-weight:700;line-height:1.35;margin:0}
+.titulo-recado{font-size:12.5px;color:var(--muted-foreground);line-height:1.5;margin:0}

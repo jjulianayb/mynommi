@@ -274,6 +274,13 @@
       "when": 1793470000000,
       "tag": "0038_apresentacao",
       "breakpoints": true
+    },
+    {
+      "idx": 39,
+      "version": "7",
+      "when": 1793480000000,
+      "tag": "0039_embaixadoras",
+      "breakpoints": true
     }
   ]
 }

@@ -285,3 +285,15 @@
 - A barra recomeça do zero ao cruzar cada porta: objetivo à vista em vez de barra quase cheia para sempre.
 - `ConvidarEmLote` abre o WhatsApp com o convite escrito, com o nome de quem convida e, quando há tribo escolhida, quantas faltam para ela abrir. **A nommi não pede a agenda de contatos** — quem escolhe o destinatário é a pessoa, dentro do WhatsApp dela.
 - O link do convite cai **dentro da tribo** (`&tribo=`), não só na porta do app.
+
+## Embaixadora: o título de quem chegou no começo (30/10)
+- Pedido da Ju: em vez de um selo enfeite, um **título com nome e número** para as primeiras, e quem tem o título tem **acesso premium** às funcionalidades que um dia serão pagas.
+- `embaixadoras` guarda `user_id` + `numero` com **índice único no número**. O número nunca se repete e nunca muda de dono: título que troca de dono não é título.
+- `virar_embaixadora()` **nunca remove ninguém** e usa `max(numero) + 1`, não `count(*) + 1`. Dois motivos: duas pessoas entrando no mesmo segundo receberiam o mesmo número com `count(*)`, e se alguém apagar a conta o número dela fica vazio para sempre em vez de reaparecer na cabeça de outra pessoa. Tem `LOCK TABLE ... SHARE ROW EXCLUSIVE` para a fila ser fila.
+- **Promessa permanente não se tira.** Se um dia as vagas mudarem, muda `vagas_de_embaixadora()` para a frente; quem já tem o título fica com ele. Tirar acesso prometido de quem chegou primeiro e confiou é a pior coisa que a nommi pode fazer.
+- `tem_premium()` é o **único lugar** que decide quem tem acesso pago. Hoje responde "é embaixadora?"; no dia da cobrança passa a ser "é embaixadora OU tem assinatura ativa", e nenhuma tela precisa mudar. Nenhuma tela pergunta "pagou?" por conta própria.
+- O título **não** dá vantagem social: não aparece mais na descoberta, não sobe no match, não cria duas classes de gente. Numa rede de amizade isso se sente na hora.
+- `usar_convite()` agora faz três coisas: marca o convite, **cria a amizade já aceita** com quem convidou (para ninguém cair numa rede vazia no primeiro minuto) e chama `virar_embaixadora()`.
+- `convites_que_vingaram()` conta **quem ficou**, não quem foi chamado: precisa ter apelido e estar em pelo menos uma tribo. Contar envio premiaria espalhar link em grupo, e link espalhado queima a nommi. Teste garante que a frase na tela nunca diga "enviados".
+- `embaixadoras` entrou em `meus_dados()` e em `apagar_minha_conta()` no mesmo commit da criação, como manda a regra da casa. O `DELETE` é explícito porque o `DELETE FROM auth.users` final está dentro de um `EXCEPTION` que engole erro.
+- Cliente **não escreve** em `embaixadoras`: só `GRANT SELECT`. Quem dá o título é o banco, na hora em que o convite é usado.

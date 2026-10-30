@@ -12,6 +12,12 @@ import { faltamParaAPorta } from "@/lib/porta-que-abre";
 import { useMinhasTribos } from "@/lib/minhas-tribos";
 import { Icon } from "./art";
 import { useFriends } from "./store";
+import {
+  convidaMais,
+  fraseDosConvites,
+  selodeEmbaixadora,
+  useMeuTitulo,
+} from "@/lib/embaixadora";
 
 /**
  * Convidar em lote.
@@ -29,6 +35,7 @@ export function ConvidarEmLote({ me, nickname }: { me: string; nickname: string 
   const [codigo, setCodigo] = useState<string | null>(null);
   const [alvo, setAlvo] = useState<number | null>(null);
   const [mandados, setMandados] = useState(0);
+  const { titulo, ready } = useMeuTitulo(true);
 
   useEffect(() => {
     void (async () => setCodigo(await meuConvite(me, nickname)))();
@@ -45,6 +52,18 @@ export function ConvidarEmLote({ me, nickname }: { me: string; nickname: string 
 
   return (
     <section className="lote">
+      {ready && (
+        <div className={"titulo-cartao" + (titulo.embaixadora ? " embaixadora" : "")}>
+          {titulo.embaixadora && (
+            <p className="titulo-selo">
+              <Icon name="star" />
+              {selodeEmbaixadora(titulo)}
+            </p>
+          )}
+          <p className="titulo-conta">{fraseDosConvites(titulo.vingaram)}</p>
+          <p className="titulo-recado">{convidaMais(titulo.vingaram)}</p>
+        </div>
+      )}
       <h2 className="settings-subtitle">Chamar suas amigas</h2>
       <p className="small-note">
         Um toque abre o WhatsApp com o convite escrito. Você escolhe para quem mandar, aí volta e
