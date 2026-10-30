@@ -33,7 +33,9 @@ export function InstallBanner() {
       dismissed = null;
     }
     if (!shouldOffer(dismissed)) return;
-    setPlatform(platformOf(navigator.userAgent, navigator.maxTouchPoints));
+    const p = platformOf(navigator.userAgent, navigator.maxTouchPoints);
+    if (p === "desktop") return;
+    setPlatform(p);
     setShow(true);
     const onPrompt = (e: Event) => {
       e.preventDefault();
