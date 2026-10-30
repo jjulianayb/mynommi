@@ -17,6 +17,12 @@ import { useAceite } from "@/lib/aceite";
 import { AvisoDeAceite } from "./aceite";
 import { Apresentacao } from "./apresentacao";
 import { usePrecisaApresentar } from "@/lib/usar-apresentacao";
+import {
+  recadoDaChegada,
+  useConviteNaChegada,
+  useGuardarConviteDaUrl,
+} from "@/lib/convite-que-chega";
+import { useFriends } from "./store";
 
 /** Cada item da navegação vira um alvo do tour. */
 const alvoDoItem = (to: string) =>
@@ -24,8 +30,19 @@ const alvoDoItem = (to: string) =>
   undefined;
 const entryPaths = ["/conta", "/cadastro", "/login", "/login-parceiro", "/recuperar-senha"];
 const legalPaths = ["/termos", "/privacidade", "/ajuda"];
+/**
+ * A página pública de uma tribo. Abre para quem não tem conta: é o link que a
+ * dona da tribo divulga nas redes, e link que só abre para quem já está dentro
+ * não divulga nada.
+ */
+const paginaDeTribo = (pathname: string) => pathname.startsWith("/tribo/");
 export function SocialShell({ children }: { children: ReactNode }) {
   const { session, ready, signOut, cloudUser, demoMode } = useDemoSession();
+  const { state, notify } = useFriends();
+  // O código do convite é guardado antes de qualquer login: o Google e a Apple
+  // devolvem a pessoa num endereço limpo, e o que fica só na barra de endereço
+  // se perde justamente no caminho mais usado.
+  useGuardarConviteDaUrl();
   const naoLidas = useNaoLidas(cloudUser && !demoMode ? cloudUser.id : null);
   const avisosNovos = useAvisosNaoLidos(cloudUser && !demoMode ? cloudUser.id : null);
   const { pathname, searchStr } = useLocation();
@@ -37,6 +54,13 @@ export function SocialShell({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (real) void registrarAcesso();
   }, [real, cloudUser?.id]);
+  // O convite é usado assim que a conta existe: é o que cria a amizade com quem
+  // convidou e leva a pessoa para dentro da tribo do link. Antes disso, o link
+  // de convite carregava o código e ninguém o lia.
+  useConviteNaChegada(real, state.nickname, (r) => {
+    const recado = recadoDaChegada(r);
+    if (recado) notify(recado);
+  });
   // Ninguém usa a nommi sem ter lido o texto que está no ar. As telas de termos
   // e privacidade ficam livres, senão a pessoa não consegue ler o que vai aceitar.
   const aceite = useAceite(real, cloudUser && !demoMode ? cloudUser.id : null);
@@ -65,7 +89,10 @@ export function SocialShell({ children }: { children: ReactNode }) {
         </div>
       </div>
     );
-  if (entryPaths.includes(pathname) || (!session && legalPaths.includes(pathname)))
+  if (
+    entryPaths.includes(pathname) ||
+    (!session && (legalPaths.includes(pathname) || paginaDeTribo(pathname)))
+  )
     return (
       <div className="friends-app public-app com-cenario">
         <div

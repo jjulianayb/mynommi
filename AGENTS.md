@@ -311,3 +311,24 @@
 - Cidade comparada com `sem_acento()` + `lower()`: "São Paulo", "sao paulo" e "Sao Paulo" são a mesma cidade e as pessoas escrevem dos três jeitos. A extensão `unaccent` não está instalada.
 - **Escrever o nome do lugar é caminho normal, não plano B**: é o que funciona em qualquer lugar do mundo. Tem teste barrando o recado voltar a pedir desculpa ou a nomear Belo Horizonte como "a cidade que funciona".
 - A cidade do perfil já vem preenchida no radar: a pessoa não digita de novo o que contou no cadastro.
+
+## O link de convite que não fazia nada (30/10, bug grave)
+- O link de convite sempre carregou `?convite=CODIGO&tribo=ID`, e **nada no app lia esses dois valores**. `usar_convite()` existia no banco desde o começo e **nunca foi chamada por tela nenhuma**. Resultado: quem entrava por um link não virava amiga de quem convidou, não caía dentro da tribo, e `convites_que_vingaram()` ia ficar em zero para sempre. A Ju estava mandando convites acreditando que funcionava.
+- Explicou um sintoma que eu tinha visto e não entendi: a Michelle e a Jaque chegaram e ficaram com zero tribo.
+- **O código tem que atravessar o login.** Google e Apple devolvem a pessoa num endereço limpo, sem `?convite=`. Por isso `useGuardarConviteDaUrl()` guarda no aparelho **assim que a página abre, antes de qualquer login**, e `useConviteNaChegada()` usa depois, quando a conta já existe. Mesma lição do "Missing state parameter": o que precisa atravessar o login não pode viver só na barra de endereço.
+- O código sai da barra de endereço depois de guardado (`enderecoSemConvite`), para não ficar no histórico nem ser recolado.
+- `tribo=abc` virava `NaN` e a pessoa entraria numa tribo que não existe: só número passa. Tem teste.
+- `codigo` pode ser **vazio**: a página pública da tribo manda só `?tribo=`, sem código, porque link de divulgação é usado por muita gente e código de convite vale uma vez só. Nesse caso não há amizade automática, só a entrada na tribo.
+- Falhar ao entrar na tribo **nunca** desfaz o convite: tribo fechada e tribo sensível recusam de propósito, e a amizade com quem convidou é o que mais importa.
+
+## A tribo é da dona (0041)
+- Pedido da Ju: quem cria a tribo escreve missão, valores, visão e as próprias regras; escolhe capa e figurinha; decide quem cria rolê; e tem um link da tribo para divulgar nas redes.
+- **Descoberta no caminho: o rolê não era da tribo.** Rolê e tribo são a mesma tabela (`teias`, com `kind`) e não havia ligação nenhuma entre os dois — todo rolê era solto. Daí `teias.tribo_id`. Sem isso, "quem cria rolê nesta tribo" não tinha onde se apoiar.
+- **Segunda descoberta: a aba Eventos da tribo mostrava meta de exemplo** ("Próxima parada: day spa", com pontos) para conta real. Sobra da apresentação, igual aos cartões de rolê que já saíram do Início.
+- `who_roles` ('todos' | 'criadora') é conferido por `pode_criar_role_na_tribo()` **na política de INSERT de teias**: a trava é do banco, não da tela.
+- `teias.figurinha` guarda o **nome do catálogo**, nunca o desenho e nunca endereço de imagem. Nome fora do catálogo não desenha nada, em vez de virar texto solto. Tem teste.
+- **O link público nasce desligado** (`link_publico` default false). Se toda tribo tivesse página aberta, bastaria varrer os ids para listar tribo por tribo.
+- **Tribo sensível não tem página pública, nem se a dona ligar**: `tribo_publica()` recusa na leitura e o gatilho `teias_sensivel_sem_pagina` impede o valor de ficar gravado como true. Política, religião e orientação: página aberta dessas expõe o assunto de quem está lá, e quem entrou não escolheu isso.
+- A página pública **não mostra membro nenhum**, nem nome nem foto: entrar numa tribo não é aceitar virar vitrine de divulgação. O número de pessoas é o real, sempre.
+- `/tribo/$id` é rota pública (entra na mesma lista de `social-shell` que termos e privacidade): link que só abre para quem já está dentro não divulga nada.
+- `roles_da_tribo()` só responde para quem é da tribo.
