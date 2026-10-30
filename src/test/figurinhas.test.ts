@@ -52,8 +52,19 @@ describe("procurar figurinha", () => {
 });
 
 describe("fundos", () => {
-  it("todo fundo tem id começando com teia-", () => {
-    for (const f of FUNDOS) expect(f.id.startsWith("teia-")).toBe(true);
+  it("todo fundo tem id único e declara o tom", () => {
+    const ids = FUNDOS.map((f) => f.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    for (const f of FUNDOS) expect(["claro", "escuro"]).toContain(f.tom);
+  });
+  it("os fundos de teia continuam com o prefixo, para não quebrar quem já escolheu", () => {
+    const teias = FUNDOS.filter((f) => (f.grupo ?? "Teia") === "Teia");
+    expect(teias.length).toBeGreaterThanOrEqual(8);
+    for (const f of teias) expect(f.id.startsWith("teia-")).toBe(true);
+  });
+  it("tem bem mais que teia: degradê, tie-dye e estampa", () => {
+    for (const g of ["Degradê", "Tie-dye", "Estampa"])
+      expect(FUNDOS.filter((f) => f.grupo === g).length).toBeGreaterThanOrEqual(5);
   });
   it("monta o estilo a partir do id, nunca de texto solto", () => {
     const e = estiloDoFundo("teia-mata");

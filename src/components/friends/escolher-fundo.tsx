@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { FUNDOS, miniaturaDoFundo } from "@/lib/fundos";
+import { GRUPOS_DE_FUNDO, fundosDoGrupo, miniaturaDoFundo } from "@/lib/fundos";
 import { useFriends } from "./store";
 
 /**
@@ -36,25 +36,30 @@ export function EscolherFundo({
       <p className="small-note">
         O fundo escolhido aparece na sua página e atrás de você quando alguém te vê no match.
       </p>
-      <div className="fundos">
-        {FUNDOS.map((f) => (
-          <button
-            type="button"
-            key={f.id}
-            className={
-              "fundo-opcao " +
-              f.tom +
-              (atual === f.id ? " escolhido" : "") +
-              (salvando === f.id ? " salvando" : "")
-            }
-            style={miniaturaDoFundo(f)}
-            aria-pressed={atual === f.id}
-            onClick={() => void escolher(f.id)}
-          >
-            <span>{f.nome}</span>
-          </button>
-        ))}
-      </div>
+      {GRUPOS_DE_FUNDO.map((g) => (
+        <div className="fundos-grupo" key={g}>
+          <h3>{g}</h3>
+          <div className="fundos">
+            {fundosDoGrupo(g).map((f) => (
+              <button
+                type="button"
+                key={f.id}
+                className={
+                  "fundo-opcao " +
+                  f.tom +
+                  (atual === f.id ? " escolhido" : "") +
+                  (salvando === f.id ? " salvando" : "")
+                }
+                style={miniaturaDoFundo(f)}
+                aria-pressed={atual === f.id}
+                onClick={() => void escolher(f.id)}
+              >
+                <span>{f.nome}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
     </>
   );
 }

@@ -229,3 +229,9 @@
 - O tour mostra **onde** ficam as coisas. `src/lib/primeira-vez.ts` explica **o que faz e por quê**, no momento em que a pessoa abre cada tela, e some depois de lida.
 - Fica por aparelho (`localStorage`), igual ao tour: é preferência de tela, não dado de conta.
 - Texto novo entra em `EXPLICACOES` com uma chave; a tela só chama pela chave.
+
+## Plano de fundo: quatro gavetas, 33 opções (29/10)
+- "Meu fundo" virou **"Plano de fundo"**, e o seletor é por gaveta: Teia, Degradê, Tie-dye e Estampa.
+- `desenhoDoFundo(f)` desenha cada estampa em SVG com as três cores do fundo (`base`, `linha`, `no`). SVG porque é leve, não depende de arquivo e fica nítido em qualquer tela. Estampa nova = um `desenho` novo no switch, nunca uma imagem solta.
+- Os ids `teia-*` continuam existindo com o mesmo nome: quem já escolheu um deles não pode perder o fundo. Tem teste que exige o prefixo nos fundos do grupo Teia.
+- Fundo novo **precisa declarar o tom**, senão o texto da página some. Teste confere.

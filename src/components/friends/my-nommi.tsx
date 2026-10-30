@@ -210,7 +210,7 @@ export function MyNommi({ me }: { me: string }) {
         </p>
       )}
 
-      <h2 className="settings-subtitle">Meu fundo</h2>
+      <h2 className="settings-subtitle">Plano de fundo</h2>
       <EscolherFundo me={me} atual={pagina.background} onSalvo={() => void reload()} />
       <details className="descobrir-busca">
         <summary>Prefiro usar uma foto minha de fundo</summary>
