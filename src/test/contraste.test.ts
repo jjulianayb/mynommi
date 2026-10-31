@@ -72,3 +72,19 @@ describe("chip escolhido tem cara de escolhido", () => {
     }
   });
 });
+
+/**
+ * 31/10: ao transformar a comemoração do match em camada por cima da fila, eu
+ * acrescentei uma regra `.deu-match` no fim do arquivo com `background:
+ * var(--card)`. Mesma força, mais abaixo: ela vencia a regra original e levava
+ * junto o `color:#F7F0DE`, deixando texto claro sobre fundo claro. É o bug da
+ * figurinha da Ana outra vez, agora na tela mais bonita do app.
+ */
+describe("a comemoração do match continua legível", () => {
+  it("existe uma regra só, com fundo escuro e cor de texto declarada", () => {
+    const todas = css.match(/^\.deu-match\{[^}]*\}/gm) ?? [];
+    expect(todas).toHaveLength(1);
+    expect(todas[0]).toContain("color:");
+    expect(todas[0]).toContain("linear-gradient");
+  });
+});

@@ -1,10 +1,10 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { paraCss } from "@/lib/enquadrar";
 import { estiloDoFundo, tomDoFundo } from "@/lib/fundos";
-import { figurinhaDe } from "@/lib/figurinhas";
-import { figuraDoSelo } from "@/lib/selos";
+import { iconeDoInteresse } from "@/lib/figurinhas";
+
 import {
   decisaoDoArrasto,
   interessesOrdenados,
@@ -44,6 +44,18 @@ function Face({ c, size }: { c: Candidata; size: number }) {
   );
 }
 
+/**
+ * Quanto tempo a carta leva para sair da tela.
+ *
+ * É animação, não espera: a decisão já foi tomada e a próxima carta já está
+ * desenhada atrás. Curto o bastante para a fila andar rápido, longo o
+ * bastante para a pessoa ver para que lado a carta foi.
+ */
+const SAIDA_DA_CARTA_MS = 170;
+
+/** A comemoração do match sai sozinha, sem precisar de toque. */
+const TEMPO_DA_COMEMORACAO_MS = 3600;
+
 /** O match: o que vocês têm em comum vem antes do rosto. */
 export function Combinar({ me }: { me: string }) {
   const { notify } = useFriends();
@@ -53,22 +65,45 @@ export function Combinar({ me }: { me: string }) {
   const [deuMatch, setDeuMatch] = useState<Candidata | null>(null);
   const arrasto = useRef<{ x0: number; largura: number } | null>(null);
   const c = fila[0];
+  const atras = fila[1];
 
-  async function decidir(quem: Candidata, sim: boolean) {
+  /**
+   * Decidir não espera a rede.
+   *
+   * Antes, a carta só saía depois que o servidor respondia, e no meio disso
+   * vinha um aviso na tela a cada toque. Dava a sensação de pedir licença para
+   * ver a próxima pessoa. Agora a carta sai na hora, a próxima já está
+   * desenhada atrás, e a resposta do servidor chega em silêncio: só aparece
+   * algo na tela se der match ou se der erro.
+   */
+  function decidir(quem: Candidata, sim: boolean) {
+    if (saindo) return; // duplo toque não gasta duas pessoas da fila
     setSaindo(sim ? "sim" : "nao");
-    const r = await responder(quem, sim);
-    setSaindo(null);
-    setDx(0);
-    if (r === "match") setDeuMatch(quem);
-    else notify(recadoDaResposta(r, quem.nome));
-    if (fila.length <= 2) void recarregar();
+    window.setTimeout(() => {
+      setSaindo(null);
+      setDx(0);
+      void (async () => {
+        const r = await responder(quem, sim);
+        if (r === "match") setDeuMatch(quem);
+        else if (r === "erro") notify(recadoDaResposta(r, quem.nome));
+        // Recarrega com folga, para a fila nunca acabar na mão da pessoa.
+        if (fila.length <= 4) void recarregar();
+      })();
+    }, SAIDA_DA_CARTA_MS);
   }
+
+  // A comemoração do match não tranca mais a fila: ela aparece por alguns
+  // segundos e sai sozinha, e quem quiser falar agora tem o botão ali.
+  useEffect(() => {
+    if (!deuMatch) return;
+    const t = window.setTimeout(() => setDeuMatch(null), TEMPO_DA_COMEMORACAO_MS);
+    return () => window.clearTimeout(t);
+  }, [deuMatch]);
 
   if (!ready) return <Esqueleto tipo="cartoes" />;
 
-  if (deuMatch)
-    return (
-      <section className="deu-match">
+  const comemoracao = deuMatch && (
+      <section className="deu-match" onClick={() => setDeuMatch(null)}>
         <div className="deu-match-ceu" aria-hidden="true">
           {CONFETE.map((c, i) => (
             <span key={i} style={{ left: c.left, background: c.cor, animationDelay: c.atraso }} />
@@ -91,7 +126,8 @@ export function Combinar({ me }: { me: string }) {
           <p className="deu-match-comum">
             {deuMatch.emComum.slice(0, 3).map((i) => (
               <span key={i}>
-                {figurinhaDe(i)} {i}
+                <Icon name={iconeDoInteresse(i)} />
+                {i}
               </span>
             ))}
           </p>
@@ -110,10 +146,12 @@ export function Combinar({ me }: { me: string }) {
           </Button>
         </div>
       </section>
-    );
+  );
 
   if (!c)
     return (
+      <>
+        {comemoracao}
       <EmptyState
         title="Por hoje, você viu todo mundo."
         text="A nommi só mostra gente de verdade, então a fila acaba rápido no começo. Chame alguém que você gosta e volte amanhã."
@@ -128,6 +166,7 @@ export function Combinar({ me }: { me: string }) {
           <Link to="/grupos">Entrar numa tribo</Link>
         </Button>
       </EmptyState>
+      </>
     );
 
   const lista = interessesOrdenados(c);
@@ -136,11 +175,25 @@ export function Combinar({ me }: { me: string }) {
 
   return (
     <section className={"combinar tom-" + tom}>
+      {comemoracao}
       <div
         className="combinar-fundo"
         style={estiloDoFundo(c.fundo || "teia-mata")}
         aria-hidden="true"
       />
+
+      {/* A carta de trás, com o fundo da próxima pessoa aparecendo pelas
+          beiradas. Sem ela, cada decisão mostrava um buraco antes da carta
+          seguinte, e era isso que dava sensação de lentidão — não a rede.
+          É uma placa, sem rosto e sem nome: rosto aqui ficaria desalinhado do
+          rosto da carta de cima e pareceria duas cartas empilhadas de lado. */}
+      {atras && (
+        <div
+          className="combinar-atras"
+          aria-hidden="true"
+          style={estiloDoFundo(atras.fundo || "teia-mata")}
+        />
+      )}
 
       {curiosidade > 0 && (
         <p className="combinar-curiosidade">
@@ -173,8 +226,16 @@ export function Combinar({ me }: { me: string }) {
           setDx(0);
         }}
       >
-        {dx > 60 && <span className="combinar-marca sim">✓</span>}
-        {dx < -60 && <span className="combinar-marca nao">✕</span>}
+        {dx > 60 && (
+          <span className="combinar-marca sim">
+            <Icon name="check" />
+          </span>
+        )}
+        {dx < -60 && (
+          <span className="combinar-marca nao">
+            <Icon name="close" />
+          </span>
+        )}
 
         {c.emComum.length > 0 ? (
           <>
@@ -182,7 +243,9 @@ export function Combinar({ me }: { me: string }) {
             <div className="combinar-nos">
               {c.emComum.slice(0, 4).map((i) => (
                 <span key={i}>
-                  <b>{figurinhaDe(i)}</b>
+                  <b>
+                    <Icon name={iconeDoInteresse(i)} />
+                  </b>
                   {i}
                 </span>
               ))}
@@ -216,7 +279,8 @@ export function Combinar({ me }: { me: string }) {
             <div>
               {c.selosDoPovo.slice(0, 3).map((x) => (
                 <span key={x}>
-                  {figuraDoSelo(x)} {x}
+                  <Icon name="star" />
+                  {x}
                 </span>
               ))}
             </div>
@@ -234,7 +298,8 @@ export function Combinar({ me }: { me: string }) {
             <div className="combinar-outros">
               {outros.slice(0, 6).map((i) => (
                 <span key={i.nome}>
-                  {figurinhaDe(i.nome)} {i.nome}
+                  <Icon name={iconeDoInteresse(i.nome)} />
+                  {i.nome}
                 </span>
               ))}
             </div>
@@ -300,7 +365,7 @@ export function PessoasParaVoce({ me }: { me: string }) {
             <b>{c.nome.split(" ")[0]}</b>
             <span>
               {c.emComum.length > 0
-                ? c.emComum.slice(0, 2).map(figurinhaDe).join(" ")
+                ? c.emComum.slice(0, 2).join(" · ")
                 : c.tribosEmComum > 0
                   ? "mesma tribo"
                   : c.mesmaCidade && c.cidade

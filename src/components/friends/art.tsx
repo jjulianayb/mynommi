@@ -73,6 +73,11 @@ const icons: Record<string, string> = {
   glass: '<path d="M8 3h8l-.5 6a3.5 3.5 0 0 1-7 0zM12 12.5V20M8.5 21h7"/>',
   mic: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
   spa: '<path d="M12 20c-4 0-7-3-7-7 4 0 7 3 7 7zM12 20c4 0 7-3 7-7-4 0-7 3-7 7zM12 14c-2-2-2-6 0-9 2 3 2 7 0 9z"/>',
+  /* Interesses: um ícone por família, no lugar do emoji. Emoji muda de
+     desenho em cada aparelho e some num fundo escuro; ícone é da casa. */
+  arte: '<path d="M12 3a9 9 0 0 0 0 18c1.1 0 1.7-.8 1.7-1.6 0-1.6 1-2.1 2.3-2.1H18a3 3 0 0 0 3-3c0-5-4-11.3-9-11.3z"/><circle cx="8.5" cy="10.5" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="15.5" cy="10" r="1"/>',
+  monte: '<circle cx="17" cy="6.5" r="2.5"/><path d="M3 19l5.5-8 3.5 5 2-2.5L21 19z"/>',
+  vida: '<path d="M12 21v-7M12 14c0-3 2-5 5-5 0 3-2 5-5 5zM12 14c0-3-2-5-5-5 0 3 2 5 5 5z"/>',
   heart: '<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>',
   chat: '<path d="M4 5h16v11H9l-5 4z"/>',
   users:

@@ -748,10 +748,10 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .combinar.tom-escuro .combinar-curiosidade{color:#8FD3B0}
 .combinar.tom-claro .combinar-curiosidade{color:var(--primary)}
 .combinar-curiosidade svg{width:16px;height:16px;flex:none}
-.combinar-card{position:relative;display:grid;justify-items:center;gap:4px;text-align:center;touch-action:pan-y;cursor:grab;transition:transform .18s ease;will-change:transform;padding-top:4px}
+.combinar-card{position:relative;z-index:2;display:grid;justify-items:center;gap:4px;text-align:center;touch-action:pan-y;cursor:grab;transition:transform .17s cubic-bezier(.3,0,.2,1),opacity .17s linear;will-change:transform;padding-top:4px}
 .combinar-card:active{cursor:grabbing}
-.combinar-card.saindo-sim{transform:translateX(120%) rotate(12deg);opacity:0}
-.combinar-card.saindo-nao{transform:translateX(-120%) rotate(-12deg);opacity:0}
+.combinar-card.saindo-sim{transform:translateX(125%) rotate(14deg);opacity:0}
+.combinar-card.saindo-nao{transform:translateX(-125%) rotate(-14deg);opacity:0}
 .combinar-marca{position:absolute;top:0;font-size:30px;font-weight:800;width:62px;height:62px;border-radius:50%;display:grid;place-items:center;z-index:3}
 .combinar-marca.sim{left:4px;background:#2EA36A;color:#fff;transform:rotate(-10deg)}
 .combinar-marca.nao{right:4px;background:#B3261E;color:#fff;transform:rotate(10deg)}
@@ -968,7 +968,7 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .figura-opcao[aria-pressed="true"] .sem-foto{border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,126,70,.2)}
 
 /* Deu match: o momento do app */
-.deu-match{position:relative;display:grid;justify-items:center;gap:14px;text-align:center;padding:26px 18px 30px;margin:-14px -16px 0;min-height:calc(100vh - 150px);background:linear-gradient(170deg,#07351F 0%,#0C5C3B 55%,#124E36 100%);color:#F7F0DE;overflow:hidden}
+.deu-match{position:fixed;inset:0;z-index:60;display:grid;align-content:center;justify-items:center;gap:14px;text-align:center;padding:26px 18px 30px;background:linear-gradient(170deg,#07351F 0%,#0C5C3B 55%,#124E36 100%);color:#F7F0DE;overflow:hidden;animation:match-chega .22s ease both}
 .deu-match-ceu{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
 .deu-match>*:not(.deu-match-ceu){position:relative;z-index:1}
 .deu-match-ceu span{position:absolute;top:-14px;width:9px;height:14px;border-radius:2px;opacity:.9;animation:confete 2.6s ease-in forwards}
@@ -1211,3 +1211,19 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .role-linha b{font-size:15px;line-height:1.3}
 .role-linha small{font-size:12.5px;color:var(--muted-foreground)}
 .role-quantos{font-size:12px;font-weight:700;color:var(--primary)}
+
+
+/* A próxima pessoa, desenhada atrás da carta de cima.
+   Sem ela, cada decisão mostrava um buraco antes da carta seguinte, e era isso
+   que dava sensação de lentidão — não a rede. */
+.combinar-atras{position:absolute;top:30px;left:14px;right:14px;bottom:70px;border-radius:26px;transform:scale(.95) translateY(16px);opacity:.5;pointer-events:none;z-index:0;box-shadow:0 6px 20px rgba(0,0,0,.1)}
+@media (prefers-reduced-motion: reduce){
+  .combinar-card{transition:opacity .17s linear}
+  .combinar-atras{transform:scale(.95)}
+}
+
+/* A comemoração do match virou camada por cima da fila, e sai sozinha.
+   Antes ela tomava a tela inteira e só saía com um toque: a pessoa dava match
+   e era obrigada a pedir licença para continuar vendo gente. */
+@keyframes match-chega{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.deu-match{animation:none}}

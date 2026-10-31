@@ -143,3 +143,74 @@ export function procurarFigurinhas(termo: string): Figurinha[] {
 
 /** Dois interesses são o mesmo se o nome bate sem acento e sem maiúscula. */
 export const mesmoInteresse = (a: string, b: string) => semAcento(a) === semAcento(b);
+
+/**
+ * O mesmo interesse, como **ícone da casa** em vez de emoji.
+ *
+ * Por que trocar: emoji é desenhado por cada aparelho, então a mesma tela sai
+ * diferente no iPhone e no Android, não acompanha a cor da marca e some num
+ * fundo escuro. No match, que é a tela onde a nommi mais precisa parecer
+ * cuidada, isso dava cara de coisa montada às pressas.
+ *
+ * A família do interesse decide o ícone, não a palavra solta: são cinco
+ * famílias, e um ícone por família lê melhor do que sessenta desenhos
+ * parecidos. Interesse escrito à mão continua achando o dele pelas pistas, e no
+ * pior caso cai no `spark`, que é um ícone de verdade e não um "✨".
+ */
+const ICONE_POR_GRUPO: Record<string, string> = {
+  "Comer e beber": "glass",
+  "Arte e cultura": "arte",
+  "Corpo e ar livre": "monte",
+  "Em casa": "home",
+  Vida: "vida",
+};
+
+const GRUPO_POR_CHAVE = new Map(FIGURINHAS.map((f) => [semAcento(f.nome), f.grupo]));
+
+/** Pistas para quem escreveu um interesse que não está no catálogo. */
+const PISTAS_DE_ICONE: [string, string][] = [
+  ["cafe", "glass"],
+  ["vinho", "glass"],
+  ["cerveja", "glass"],
+  ["bar", "glass"],
+  ["comida", "glass"],
+  ["cozinh", "glass"],
+  ["music", "arte"],
+  ["show", "arte"],
+  ["cant", "arte"],
+  ["cinema", "arte"],
+  ["filme", "arte"],
+  ["serie", "arte"],
+  ["livro", "arte"],
+  ["leitura", "arte"],
+  ["ler", "arte"],
+  ["arte", "arte"],
+  ["dan", "arte"],
+  ["teatro", "arte"],
+  ["foto", "arte"],
+  ["corr", "monte"],
+  ["caminh", "monte"],
+  ["trilha", "monte"],
+  ["pedal", "monte"],
+  ["bike", "monte"],
+  ["praia", "monte"],
+  ["natureza", "monte"],
+  ["viag", "monte"],
+  ["yoga", "spa"],
+  ["medita", "spa"],
+  ["academia", "spa"],
+  ["jogo", "home"],
+  ["game", "home"],
+  ["planta", "vida"],
+  ["pet", "vida"],
+  ["animal", "vida"],
+  ["volunt", "vida"],
+];
+
+export function iconeDoInteresse(interesse: string): string {
+  const chave = semAcento(interesse);
+  const grupo = GRUPO_POR_CHAVE.get(chave);
+  if (grupo && ICONE_POR_GRUPO[grupo]) return ICONE_POR_GRUPO[grupo];
+  for (const [pista, ic] of PISTAS_DE_ICONE) if (chave.includes(pista)) return ic;
+  return "spark";
+}

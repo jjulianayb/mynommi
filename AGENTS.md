@@ -340,3 +340,30 @@
 - Correção: um nome só, `selected`. Não styled o `active` de propósito — dois nomes para a mesma coisa é como o bug nasceu.
 - `src/test/contraste.test.ts` lê os componentes e **barra `active` em chip**. (Teste conferido: reintroduzir o nome antigo faz ele falhar.)
 - `.cover-preset.active` continua existindo e tem estilo próprio; o problema era só o chip.
+
+## As regras da nommi e a trava de respeito (0042)
+- **Dois andares, e eles não se misturam.** As **regras da nommi** (`REGRAS_DA_NOMMI`, em `src/lib/respeito.ts`) valem em toda tribo e ninguém tira. As **regras da tribo** são escritas por quem criou aquela tribo e valem só lá dentro. Confundir os dois foi o meu erro ao apresentar a tela pela primeira vez.
+- **Três níveis**: `barra` (não envia), `avisa` (manda se quiser) e `ok`. Ataque a um grupo barra sempre; xingamento barra **só quando vai endereçado**; palavrão sem alvo apenas avisa.
+- **A regra mais importante do arquivo:** quem conta o que sofreu não é barrada. "Ela me chamou de X" é desabafo, não ataque, e é exatamente a pessoa que mais precisa falar na tribo. Tem teste.
+- `SO_COM_ALVO` existe para palavra que também é palavra comum ("macaca" é bicho, "crioulo" é corrente em parte do país). Sem alvo não gera nem aviso: mandar "tem palavrão aí" para quem escreveu "vi uma macaca no zoológico" é acusar inocente, e regra que acusa inocente é regra que se desliga.
+- `normalizar` encolhe letra repetida para **uma**, não duas ("vadiiiia" com duas viraria "vadiia" e passava). E **não** junta letras separadas por espaço: "v a c a" viraria "vaca".
+- `vaiContraAlguem` usa `simples` e não `normalizar`, porque a troca de @ por a comeria a arroba de uma menção.
+- **A trava final é do banco** (gatilho `confere_respeito` em `teia_messages`, `posts`, `post_comments` e `wall_items`), não da tela. A tela avisa antes de enviar, que é o que ajuda a pessoa a reescrever; o banco é quem recusa. A conversa a sós fica de fora de propósito: ali as duas se escolheram, e quem não quer mais falar bloqueia.
+- **As duas listas são a mesma, e há teste que lê a migração e compara.** Duas listas que deveriam ser iguais sempre acabam diferentes, e aí a tela deixa passar o que o banco recusa.
+- O recado nunca devolve o xingamento na cara de quem escreveu, e diz o que fazer em vez de só proibir. Teste confere.
+- **O que isto não faz: pegar bullying.** Bullying quase nunca tem palavrão. Quem segura a tribo continua sendo quem criou (podendo remover), a denúncia e a fila de moderação. Fingir que o filtro resolve seria pior que não ter filtro, porque a Ju pararia de olhar.
+
+## O match sem cara de robô (31/10)
+- **Emoji saiu, ícone entrou.** Emoji é desenhado por cada aparelho, não acompanha a cor da marca e some em fundo escuro. `iconeDoInteresse()` mapeia a **família** do interesse para um ícone da casa. Três ícones novos em `art.tsx`: `arte`, `monte`, `vida`.
+- Há teste que percorre o catálogo e exige que cada ícone **exista** em `art.tsx`: nome errado cairia no `star` por padrão, sem erro nenhum.
+- **Decidir não espera a rede.** Antes a carta só saía depois da resposta do servidor, com um aviso na tela a cada toque. Agora sai em 170 ms e a resposta chega em silêncio; só aparece algo se der match ou erro.
+- `if (saindo) return`: duplo toque não gasta duas pessoas da fila.
+- **A carta de trás** é uma placa com o fundo da próxima pessoa, sem rosto e sem nome. Com rosto ele ficava desalinhado do rosto da carta de cima e parecia duas cartas empilhadas de lado — vi na prova e refiz.
+- **A comemoração do match virou camada e sai sozinha** em 3,6 s. Antes tomava a tela e só saía com um toque.
+- Ao fazer isso eu acrescentei uma regra `.deu-match` no fim do CSS, mesma força e mais abaixo: vencia a original e levava junto o `color`, deixando texto claro sobre fundo claro. **É o bug da figurinha da Ana outra vez.** Tem teste exigindo uma regra só, com fundo escuro e cor declarada.
+
+## A linha que sumiu numa colisão (31/10)
+- Enquanto eu trabalhava, o agente da Lovable corrigiu um 403 ao apagar a conta (migração `0042_apagar_conta_storage`). Ele reescreveu `apagar_minha_conta()` **inteira a partir da 0039** e, sem querer, deixou de fora o `DELETE FROM public.meus_lugares`, que tinha entrado na 0040. Os lugares do radar de alguém sobreviveriam ao apagar da conta dela — exatamente o que o texto no ar promete que não acontece.
+- Ao consertar, descobri que **a minha 0040 tinha o mesmo defeito ao contrário**: ela aplicou `meus_dados()` com `meus_lugares` em produção mas deixou só um comentário no arquivo ("ver 0039"). Arquivo de migração que não bate com o banco é pior que arquivo nenhum.
+- **Regra nova, com teste (`src/test/apagar-conta.test.ts`):** `meus_dados()` e `apagar_minha_conta()` vão **por inteiro** em toda migração que mexa nelas, nunca "ver a migração anterior". O teste lê a última migração que define cada uma e exige que toda tabela que sai na exportação também seja apagada.
+- Reescrever a função inteira a cada correção vai acontecer de novo — ela é longa e duas pessoas mexem no mesmo repositório. O teste é a rede, não a disciplina.
