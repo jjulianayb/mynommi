@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import {
   chatStickers,
   isStickerId,
+  isPippoSticker,
+  pippoPackLocked,
   recentStickerIds,
   searchStickers,
   searchCustom,
@@ -198,7 +200,7 @@ export function ChatStickerTray({
   onSendCustom?: (c: { src: string; caption: string }) => void;
   onClose: () => void;
 }) {
-  const { state, setState } = useFriends();
+  const { state, setState, notify } = useFriends();
   const [tab, setTab] = useState<Tab>("Pacotes");
   const [making, setMaking] = useState(false);
   const [query, setQuery] = useState("");
@@ -210,6 +212,8 @@ export function ChatStickerTray({
     tab === "Recentes" ? recent : tab === "Favoritas" ? favorites : chatStickers.map((s) => s.id);
   const found = new Set(searchStickers(query).map((s) => s.id));
   const ids = query.trim() ? base.filter((id) => found.has(id)) : base;
+  const triboIds = ids.filter((id) => !isPippoSticker(id));
+  const pippoIds = ids.filter(isPippoSticker);
   const mineShown = searchCustom(mine, query);
   useEffect(() => {
     tray.current?.scrollIntoView({
@@ -233,6 +237,71 @@ export function ChatStickerTray({
     Minhas: "plus",
     Pacotes: "stickers",
   };
+  function renderTile(id: number) {
+    const s = chatStickers[id];
+    if (!s) return null;
+    const locked = pippoPackLocked && isPippoSticker(id);
+    return (
+      <div className="chat-sticker-tile" key={id}>
+        <Button
+          variant="ghost"
+          type="button"
+          className={"chat-sticker-send" + (locked ? " sticker-locked" : "")}
+          aria-label={
+            locked
+              ? s.caption + " — figurinha exclusiva do plano pago, em breve"
+              : "Enviar figurinha " + s.caption
+          }
+          onClick={() => {
+            if (locked) {
+              notify("Figurinhas do Pippo serão exclusivas do plano pago. Em breve!");
+              return;
+            }
+            setState((prev) => ({
+              ...prev,
+              recentStickers: recentStickerIds(prev.recentStickers ?? [], id),
+            }));
+            onSend(id);
+          }}
+        >
+          <ChatSticker id={id} />
+          {locked && (
+            <span className="sticker-lock">
+              <Icon name="lock" />
+            </span>
+          )}
+        </Button>
+        {!locked && (
+          <Button
+            variant="ghost"
+            type="button"
+            size="icon"
+            className="sticker-favorite"
+            aria-label={
+              (favorites.includes(id) ? "Remover dos favoritos: " : "Favoritar: ") + s.caption
+            }
+            aria-pressed={favorites.includes(id)}
+            title={favorites.includes(id) ? "Remover dos favoritos" : "Favoritar figurinha"}
+            onClick={() => toggleFavorite(id)}
+          >
+            <Icon name="heart" />
+          </Button>
+        )}
+      </div>
+    );
+  }
+  const emptyBlock = (
+    <div className="sticker-tray-empty">
+      <ChatSticker id={tab === "Recentes" ? 7 : 20} />
+      <p>
+        {query.trim()
+          ? "Nenhuma figurinha com esse nome."
+          : tab === "Recentes"
+            ? "Suas próximas figurinhas ficam aqui."
+            : "Ainda não há favoritas. Toque no coração numa figurinha."}
+      </p>
+    </div>
+  );
   return (
     <section
       className="chat-sticker-tray"
@@ -352,76 +421,50 @@ export function ChatStickerTray({
               ))}
             </div>
           )
-        ) : (
-          <>
-            {tab === "Pacotes" && (
-              <div className="sticker-pack-heading">
-                <span className="sticker-pack-mark">
-                  <Icon name="stickers" />
-                </span>
-                <div>
-                  <strong>Tribo Nommi</strong>
-                  <small>24 figurinhas · pacote original</small>
-                </div>
-                <Icon name="check" />
-              </div>
-            )}
-            {!ids.length ? (
-              <div className="sticker-tray-empty">
-                <ChatSticker id={tab === "Recentes" ? 7 : 20} />
-                <p>
-                  {query.trim()
-                    ? "Nenhuma figurinha com esse nome."
-                    : tab === "Recentes"
-                      ? "Suas próximas figurinhas ficam aqui."
-                      : "Ainda não há favoritas. Toque no coração numa figurinha."}
-                </p>
-              </div>
-            ) : (
-              <div className="chat-sticker-grid">
-                {ids.map((id) => {
-                  const s = chatStickers[id];
-                  if (!s) return null;
-                  return (
-                    <div className="chat-sticker-tile" key={id}>
-                      <Button
-                        variant="ghost"
-                        type="button"
-                        className="chat-sticker-send"
-                        aria-label={"Enviar figurinha " + s.caption}
-                        onClick={() => {
-                          setState((prev) => ({
-                            ...prev,
-                            recentStickers: recentStickerIds(prev.recentStickers ?? [], id),
-                          }));
-                          onSend(id);
-                        }}
-                      >
-                        <ChatSticker id={id} />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        type="button"
-                        size="icon"
-                        className="sticker-favorite"
-                        aria-label={
-                          (favorites.includes(id) ? "Remover dos favoritos: " : "Favoritar: ") +
-                          s.caption
-                        }
-                        aria-pressed={favorites.includes(id)}
-                        title={
-                          favorites.includes(id) ? "Remover dos favoritos" : "Favoritar figurinha"
-                        }
-                        onClick={() => toggleFavorite(id)}
-                      >
-                        <Icon name="heart" />
-                      </Button>
+        ) : tab === "Pacotes" ? (
+          !ids.length ? (
+            emptyBlock
+          ) : (
+            <>
+              {triboIds.length > 0 && (
+                <>
+                  <div className="sticker-pack-heading">
+                    <span className="sticker-pack-mark">
+                      <Icon name="stickers" />
+                    </span>
+                    <div>
+                      <strong>Tribo Nommi</strong>
+                      <small>24 figurinhas · pacote original</small>
                     </div>
-                  );
-                })}
-              </div>
-            )}
-          </>
+                    <Icon name="check" />
+                  </div>
+                  <div className="chat-sticker-grid">{triboIds.map(renderTile)}</div>
+                </>
+              )}
+              {pippoIds.length > 0 && (
+                <>
+                  <div className="sticker-pack-heading">
+                    <span className="sticker-pack-mark">
+                      <Icon name="stickers" />
+                    </span>
+                    <div>
+                      <strong>Pippo</strong>
+                      <small>{pippoIds.length} figurinhas · pacote do mascote</small>
+                    </div>
+                    <span className="sticker-pack-lock">
+                      <Icon name="lock" />
+                      <small>Exclusivo do plano pago · em breve</small>
+                    </span>
+                  </div>
+                  <div className="chat-sticker-grid">{pippoIds.map(renderTile)}</div>
+                </>
+              )}
+            </>
+          )
+        ) : !ids.length ? (
+          emptyBlock
+        ) : (
+          <div className="chat-sticker-grid">{ids.map(renderTile)}</div>
         )}
       </div>
     </section>
