@@ -1237,3 +1237,7 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .sticker-premium .friend-icon{width:14px;height:14px;display:block;stroke:#b8860b;fill:#ffd34d}
 .sticker-pack-premium{display:flex;align-items:center;color:#b8860b}
 .sticker-pack-premium .friend-icon{width:18px;height:18px;fill:#ffd34d}
+
+/* Saldo de créditos na bandeja de figurinhas (0044) */
+.sticker-credits{display:inline-flex;align-items:center;gap:4px;margin-left:auto;margin-right:8px;font-size:13px;font-weight:600;color:#8a6d00}
+.sticker-credits .friend-icon{width:14px;height:14px;stroke:#b8860b;fill:#ffd34d}
