@@ -33,7 +33,7 @@ export function buyCredits<T extends S>(
     credits: (state.credits ?? 0) + pack.credits,
     creditHistory: [
       {
-        label: `${pack.credits} créditos via ${method}`,
+        label: `${pack.credits} Pippins via ${method}`,
         amount: pack.credits,
         at: now.toISOString(),
       },
