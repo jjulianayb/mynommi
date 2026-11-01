@@ -13,10 +13,9 @@ describe("o título de embaixadora", () => {
   it("quem não é, não vê selo nenhum", () => {
     expect(selodeEmbaixadora(t())).toBe("");
   });
-  it("mostra o número, que é o que o título tem de bonito", () => {
-    expect(selodeEmbaixadora(t({ embaixadora: true, numero: 7 }))).toBe("Embaixadora nº 7");
-  });
-  it("sem número, ainda é embaixadora", () => {
+  it("o selo é igual para todas: nunca mostra o número", () => {
+    expect(selodeEmbaixadora(t({ embaixadora: true, numero: 1 }))).toBe("Embaixadora");
+    expect(selodeEmbaixadora(t({ embaixadora: true, numero: 7 }))).toBe("Embaixadora");
     expect(selodeEmbaixadora(t({ embaixadora: true }))).toBe("Embaixadora");
   });
 });
