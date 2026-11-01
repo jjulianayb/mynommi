@@ -9,6 +9,7 @@ import { useDemoSession } from "./session";
 import { supabase } from "@/integrations/supabase/client";
 import { useConnections, connectionState, otherId } from "@/lib/connections";
 import { usePeopleSearch, usePublicProfile, type PublicProfile } from "@/lib/real-profiles";
+import { useSeloDe } from "@/lib/embaixadora";
 import { StatsLine, FollowButton, WallPanel, Feed, SafetyMenu } from "./social-feed";
 import { Selos } from "./selos";
 import { MeuVideo, VideosDeAmigos } from "./videos-do-perfil";
@@ -117,6 +118,7 @@ export function PublicNommi({ id }: { id: string }) {
   const { cloudUser, demoMode } = useDemoSession();
   const enabled = !!cloudUser && !demoMode;
   const { ready, profile, tribos } = usePublicProfile(id, enabled);
+  const selo = useSeloDe(profile?.id, enabled && ready && !!profile);
   const con = useConnections(enabled ? cloudUser!.id : null);
   if (!enabled)
     return (
@@ -155,6 +157,12 @@ export function PublicNommi({ id }: { id: string }) {
         <Face p={profile} size={108} />
         <div className="profile-name">
           <h1>{profile.nickname}</h1>
+          {selo.embaixadora && (
+            <span className="selo-embaixadora" title="Chegou no começo da nommi">
+              <Icon name="crown" />
+              Embaixadora
+            </span>
+          )}
           {!own && (
             <SafetyMenu
               me={cloudUser!.id}
