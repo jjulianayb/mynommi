@@ -82,12 +82,19 @@ export const chatStickers: ChatStickerEntry[] = [
     pack: "tribo" as StickerPack,
     src: images["../assets/stickers/" + id + ".png"] ?? "",
   })),
-  ...pippoCaptions.map((caption, i) => ({
-    id: PIPPO_FIRST_ID + i,
-    caption,
-    pack: "pippo" as StickerPack,
-    src: pippoImages["../assets/stickers/pippo/pippo-" + String(i + 1).padStart(2, "0") + ".png"] ?? "",
-  })),
+  ...pippoCaptions.map((caption, i) => {
+    // Os arquivos no repo podem ter prefixo numerico do upload web (ex.: "2-pippo-01.png").
+    const pad = String(i + 1).padStart(2, "0");
+    const hit = Object.entries(pippoImages).find(
+      ([path]) => path.endsWith("-pippo-" + pad + ".png") || path.endsWith("/pippo-" + pad + ".png"),
+    );
+    return {
+      id: PIPPO_FIRST_ID + i,
+      caption,
+      pack: "pippo" as StickerPack,
+      src: hit?.[1] ?? "",
+    };
+  }),
 ];
 
 export function isStickerId(id: unknown): id is number {
