@@ -316,6 +316,13 @@
       "when": 1793520000000,
       "tag": "0044_creditos_pippo",
       "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "7",
+      "when": 1793521000000,
+      "tag": "0045_tribo_is_test",
+      "breakpoints": true
     }
   ]
 }
