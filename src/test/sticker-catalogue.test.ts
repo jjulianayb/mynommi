@@ -50,7 +50,7 @@ describe("buscar figurinhas", () => {
   });
   it("acha as figurinhas do Pippo", () => {
     expect(searchStickers("neida")).toHaveLength(2);
-    expect(searchStickers("sexta").some((s) => s.caption === "Sextou!")).toBe(true);
+    expect(searchStickers("sextou").some((s) => s.caption === "Sextou!")).toBe(true);
     expect(searchStickers("pão de queijo")).toHaveLength(1);
   });
   it("termo vazio mostra tudo", () => {
