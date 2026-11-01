@@ -36,7 +36,7 @@ type Idea = {
   created_at: string;
 };
 type Credit = { user_id: string; balance: number; boost_until: string | null };
-const TABS = ["Números", "Denúncias", "Empresas", "Ideias", "Créditos", "Pessoas"] as const;
+const TABS = ["Números", "Denúncias", "Empresas", "Ideias", "Pippins", "Pessoas"] as const;
 
 /** Painel de administração: os dados vêm do servidor e as permissões são conferidas lá. */
 export function Admin() {
@@ -177,7 +177,7 @@ export function Admin() {
         </div>
         <div>
           <b>{credits.reduce((a, c) => a + c.balance, 0)}</b>
-          <span>créditos</span>
+          <span>Pippins</span>
         </div>
       </div>
       <div className="chips" role="tablist">
@@ -258,7 +258,7 @@ export function Admin() {
             ) : (
               <p className="small-note">Nenhuma ideia salva ainda.</p>
             ))}
-          {tab === "Créditos" &&
+          {tab === "Pippins" &&
             (credits.length ? (
               credits.map((c) => (
                 <article className="activity" key={c.user_id}>
@@ -268,7 +268,7 @@ export function Admin() {
                   <div>
                     <h3>{name(c.user_id)}</h3>
                     <p>
-                      {c.balance} créditos
+                      {c.balance} Pippins
                       {c.boost_until && new Date(c.boost_until) > new Date()
                         ? " · em destaque"
                         : ""}
