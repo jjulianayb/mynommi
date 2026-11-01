@@ -18,6 +18,9 @@ import {
 import type { Message } from "@/lib/friends-data";
 import { Icon } from "./art";
 import { useFriends } from "./store";
+import { useDemoSession } from "./session";
+import { useMeuTitulo } from "@/lib/embaixadora";
+import { useCreditosFigurinha } from "@/lib/figurinha-creditos";
 
 export function ChatSticker({
   id,
@@ -201,6 +204,10 @@ export function ChatStickerTray({
   onClose: () => void;
 }) {
   const { state, setState, notify } = useFriends();
+  const { cloudUser, demoMode } = useDemoSession();
+  const contaReal = !!cloudUser && !demoMode;
+  const { titulo } = useMeuTitulo(contaReal);
+  const { saldo, gastarFigurinha } = useCreditosFigurinha(contaReal, cloudUser?.id);
   const [tab, setTab] = useState<Tab>("Pacotes");
   const [making, setMaking] = useState(false);
   const [query, setQuery] = useState("");
@@ -240,7 +247,12 @@ export function ChatStickerTray({
   function renderTile(id: number) {
     const s = chatStickers[id];
     if (!s) return null;
-    const locked = pippoPackLocked && isPippoSticker(id);
+    const pippo = isPippoSticker(id);
+    const premium = titulo.premium;
+    // Conta real: Premium envia de graça; sem Premium, 1 crédito por envio.
+    // Demonstração: o pacote continua só como vitrine.
+    const semCredito = contaReal && !premium && (saldo ?? 0) < 1;
+    const locked = pippoPackLocked && pippo && (!contaReal || semCredito);
     return (
       <div className="chat-sticker-tile" key={id}>
         <Button
@@ -249,13 +261,29 @@ export function ChatStickerTray({
           className={"chat-sticker-send" + (locked ? " sticker-locked" : "")}
           aria-label={
             locked
-              ? s.caption + " — figurinha Premium, em breve"
-              : "Enviar figurinha " + s.caption
+              ? s.caption + (contaReal ? " — falta 1 crédito" : " — figurinha Premium, em breve")
+              : pippo && contaReal && !premium
+                ? s.caption + " — usa 1 crédito"
+                : "Enviar figurinha " + s.caption
           }
-          onClick={() => {
-            if (locked) {
-              notify("Figurinha Premium · em breve!");
-              return;
+          onClick={async () => {
+            if (pippoPackLocked && pippo) {
+              if (!contaReal) {
+                notify("Figurinha Premium · em breve!");
+                return;
+              }
+              if (!premium) {
+                if ((saldo ?? 0) < 1) {
+                  notify("Sem créditos. Ganhe +2 por convite que vingar.");
+                  return;
+                }
+                const ok = await gastarFigurinha();
+                if (!ok) {
+                  notify("Não foi possível usar o crédito agora.");
+                  return;
+                }
+                notify("Figurinha do Pippo enviada · 1 crédito");
+              }
             }
             setState((prev) => ({
               ...prev,
@@ -265,7 +293,7 @@ export function ChatStickerTray({
           }}
         >
           <ChatSticker id={id} />
-          {locked && (
+          {pippo && (
             <span className="sticker-premium">
               <Icon name="crown" />
             </span>
@@ -316,6 +344,12 @@ export function ChatStickerTray({
     >
       <div className="sticker-tray-heading">
         <span>Figurinhas</span>
+        {contaReal && (
+          <span className="sticker-credits" title="Seus créditos">
+            <Icon name="star" />
+            {saldo ?? "…"}
+          </span>
+        )}
         <Button
           variant="ghost"
           size="icon"
@@ -451,7 +485,7 @@ export function ChatStickerTray({
                       <strong>Pippo</strong>
                       <small>{pippoIds.length} figurinhas · pacote do mascote</small>
                     </div>
-                    <span className="sticker-pack-premium" title="Premium · em breve">
+                    <span className="sticker-pack-premium" title="Pacote Premium · 1 crédito por envio">
                       <Icon name="crown" />
                     </span>
                   </div>
