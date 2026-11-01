@@ -112,7 +112,7 @@ export function InviteCard({ invite }: { invite: Invite }) {
           onClick={() => {
             const next = boostInvite(state, invite.id);
             if (!next) {
-              notify("Faltam créditos. Adicione na Carteira.");
+              notify("Faltam Pippins. Adicione na Carteira.");
               return;
             }
             setState(next);
@@ -120,7 +120,7 @@ export function InviteCard({ invite }: { invite: Invite }) {
           }}
         >
           <Icon name="spark" />
-          Destacar · {INVITE_BOOST_COST} créditos
+          Destacar · {INVITE_BOOST_COST} Pippins
         </Button>
       )}
       <Button variant={going ? "secondary" : "default"} className="wide" onClick={toggle}>
