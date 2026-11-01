@@ -8,9 +8,10 @@ const db = supabase as unknown as SupabaseClient;
 /**
  * Embaixadora: quem chegou no começo.
  *
- * O título é permanente e numerado, e o número nunca se repete nem muda de
- * dono. Título que some depois de dado não é título, é pegadinha — e numa rede
- * que está pedindo confiança para as primeiras usuárias, isso custa caro.
+ * O título é permanente e o número nunca se repete nem muda de dono. Mas o
+ * número é só dela, não da vitrine: o selo que aparece no app é igual para
+ * todas, sem número — assim ninguém identifica quem chegou primeiro
+ * (decisão da Ju, 01/11).
  *
  * O que ele dá hoje é acesso às funcionalidades que um dia serão pagas.
  * Quem decide isso é `tem_premium()` no banco, num lugar só: nenhuma tela
@@ -34,10 +35,41 @@ export const TITULO_VAZIO: Titulo = {
   premium: false,
 };
 
-/** Como o título aparece na página. */
+/** Como o título aparece na página: um selo só, igual para todas. */
 export function selodeEmbaixadora(t: Titulo): string {
   if (!t.embaixadora) return "";
-  return t.numero ? `Embaixadora nº ${t.numero}` : "Embaixadora";
+  return "Embaixadora";
+}
+
+/**
+ * Selo de outra pessoa: diz só se é embaixadora, nunca o número.
+ * A tabela é pública de propósito ("Embaixadora é título público", 0039).
+ */
+export function useSeloDe(quem: string | undefined, ativo: boolean) {
+  const [embaixadora, setEmbaixadora] = useState(false);
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    if (!ativo || !quem) {
+      setEmbaixadora(false);
+      setReady(true);
+      return;
+    }
+    let alive = true;
+    void (async () => {
+      const { data } = await db
+        .from("embaixadoras")
+        .select("user_id")
+        .eq("user_id", quem)
+        .maybeSingle();
+      if (!alive) return;
+      setEmbaixadora(!!data);
+      setReady(true);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [quem, ativo]);
+  return { embaixadora, ready };
 }
 
 /**
