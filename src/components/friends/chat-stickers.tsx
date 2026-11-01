@@ -249,12 +249,12 @@ export function ChatStickerTray({
           className={"chat-sticker-send" + (locked ? " sticker-locked" : "")}
           aria-label={
             locked
-              ? s.caption + " — figurinha exclusiva do plano pago, em breve"
+              ? s.caption + " — figurinha Premium, em breve"
               : "Enviar figurinha " + s.caption
           }
           onClick={() => {
             if (locked) {
-              notify("Figurinhas do Pippo serão exclusivas do plano pago. Em breve!");
+              notify("Figurinha Premium · em breve!");
               return;
             }
             setState((prev) => ({
@@ -266,8 +266,8 @@ export function ChatStickerTray({
         >
           <ChatSticker id={id} />
           {locked && (
-            <span className="sticker-lock">
-              <Icon name="lock" />
+            <span className="sticker-premium">
+              <Icon name="crown" />
             </span>
           )}
         </Button>
@@ -451,9 +451,8 @@ export function ChatStickerTray({
                       <strong>Pippo</strong>
                       <small>{pippoIds.length} figurinhas · pacote do mascote</small>
                     </div>
-                    <span className="sticker-pack-lock">
-                      <Icon name="lock" />
-                      <small>Exclusivo do plano pago · em breve</small>
+                    <span className="sticker-pack-premium" title="Premium · em breve">
+                      <Icon name="crown" />
                     </span>
                   </div>
                   <div className="chat-sticker-grid">{pippoIds.map(renderTile)}</div>
