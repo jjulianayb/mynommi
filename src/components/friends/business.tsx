@@ -60,7 +60,7 @@ function CloudWallet({ userId }: { userId: string }) {
     if (error) {
       notify(
         error.message.includes("saldo")
-          ? "Faltam créditos para o destaque."
+          ? "Faltam Pippins para o destaque."
           : "Não foi possível destacar agora.",
       );
       return;
@@ -70,7 +70,7 @@ function CloudWallet({ userId }: { userId: string }) {
   }
   return (
     <>
-      <Heading title="Carteira" label="CRÉDITOS DE ALCANCE · SUA CONTA" />
+      <Heading title="Carteira" label="PIPPINS · SUA CONTA" />
       <p className="intro">Seu saldo fica guardado na sua conta e vale em qualquer aparelho.</p>
       <section className="card wallet-balance">
         <span className="tone-icon yellow">
@@ -78,7 +78,7 @@ function CloudWallet({ userId }: { userId: string }) {
         </span>
         <div>
           <small>Seu saldo</small>
-          <strong>{acc ? acc.balance : "…"} créditos</strong>
+          <strong>{acc ? acc.balance : "…"} Pippins</strong>
         </div>
         {boosted && (
           <span className="boost-badge">
@@ -94,7 +94,7 @@ function CloudWallet({ userId }: { userId: string }) {
           </span>
           <div>
             <h3>Destaque por 24 h</h3>
-            <p>Seu perfil aparece antes para quem combina · {BOOST_COST} créditos</p>
+            <p>Seu perfil aparece antes para quem combina · {BOOST_COST} Pippins</p>
           </div>
           <Button onClick={boost} disabled={!acc}>
             {boosted ? "Estender" : "Destacar"}
@@ -102,13 +102,13 @@ function CloudWallet({ userId }: { userId: string }) {
         </article>
       </div>
       <div className="section-heading">
-        <h2>Adicionar créditos</h2>
+        <h2>Adicionar Pippins</h2>
       </div>
       {typeof window !== "undefined" &&
         new URLSearchParams(window.location.search).get("compra") === "ok" && (
           <p className="small-note">
             Pagamento enviado! Cartão confirma na hora; Pix aguardando pagamento até a confirmação.
-            Os créditos aparecem no saldo assim que confirmar.{" "}
+            Os Pippins aparecem no saldo assim que confirmar.{" "}
             <Button variant="link" onClick={() => void load()}>
               Atualizar saldo
             </Button>
@@ -179,16 +179,16 @@ function DemoWallet() {
       () => {
         setState((s) => buyCredits(s, pack, method));
         setPaying(false);
-        notify("Créditos adicionados nesta demonstração. Nenhuma cobrança.");
+        notify("Pippins adicionados nesta demonstração. Nenhuma cobrança.");
       },
       method === "Pix" ? 3000 : 1200,
     );
   }
   return (
     <>
-      <Heading title="Carteira" label="CRÉDITOS DE ALCANCE" />
+      <Heading title="Carteira" label="PIPPINS" />
       <p className="intro">
-        Use créditos para aparecer para mais gente com interesses em comum. Sem ranking: o destaque
+        Use Pippins para aparecer para mais gente com interesses em comum. Sem ranking: o destaque
         só coloca você um pouco mais perto de quem combina.
       </p>
       <section className="card wallet-balance">
@@ -197,7 +197,7 @@ function DemoWallet() {
         </span>
         <div>
           <small>Seu saldo</small>
-          <strong>{state.credits ?? 0} créditos</strong>
+          <strong>{state.credits ?? 0} Pippins</strong>
         </div>
         {boosted && (
           <span className="boost-badge">
@@ -207,7 +207,7 @@ function DemoWallet() {
         )}
       </section>
       <div className="section-heading">
-        <h2>Usar créditos</h2>
+        <h2>Usar Pippins</h2>
       </div>
       <div className="activity-list">
         <article className="activity">
@@ -216,13 +216,13 @@ function DemoWallet() {
           </span>
           <div>
             <h3>Destaque por 24 h</h3>
-            <p>Seu perfil aparece antes no Descobrir e no Radar · {BOOST_COST} créditos</p>
+            <p>Seu perfil aparece antes no Descobrir e no Radar · {BOOST_COST} Pippins</p>
           </div>
           <Button
             onClick={() => {
               const next = boostProfile(state);
               if (!next) {
-                notify("Faltam créditos. Escolha um pacote abaixo.");
+                notify("Faltam Pippins. Escolha um pacote abaixo.");
                 return;
               }
               setState(next);
@@ -242,7 +242,7 @@ function DemoWallet() {
           </span>
           <div>
             <h3>Destacar convite</h3>
-            <p>Seu plano sobe em "Planos perto de você" · {INVITE_BOOST_COST} créditos</p>
+            <p>Seu plano sobe em "Planos perto de você" · {INVITE_BOOST_COST} Pippins</p>
           </div>
           <Button asChild variant="secondary">
             <Link to="/convites">Escolher</Link>
@@ -255,9 +255,9 @@ function DemoWallet() {
         </p>
       )}
       <div className="section-heading">
-        <h2>Adicionar créditos</h2>
+        <h2>Adicionar Pippins</h2>
       </div>
-      <div className="pack-grid" role="radiogroup" aria-label="Pacotes de créditos">
+      <div className="pack-grid" role="radiogroup" aria-label="Pacotes de Pippins">
         {CREDIT_PACKS.map((p) => (
           <Button
             key={p.id}
@@ -269,7 +269,7 @@ function DemoWallet() {
             onClick={() => setPack(p.id)}
           >
             <strong>{p.credits}</strong>
-            <span>créditos</span>
+            <span>Pippins</span>
             <small>{money(p.price)}</small>
           </Button>
         ))}
@@ -516,13 +516,13 @@ export function PartnerCommunity() {
         </div>
       </div>
       <p className="small-note">
-        Sua tribo da marca reúne quem gosta do lugar. Use créditos de alcance para mostrar seus
+        Sua tribo da marca reúne quem gosta do lugar. Use Pippins para mostrar seus
         encontros a mais gente por perto.
       </p>
       <Button asChild variant="secondary" className="wide">
         <Link to="/carteira">
           <Icon name="star" />
-          Créditos de alcance
+          Pippins
         </Link>
       </Button>
     </>
