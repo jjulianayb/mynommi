@@ -15,6 +15,7 @@ import { figurinhaDe } from "@/lib/figurinhas";
 import { EscolherFundo } from "./escolher-fundo";
 import { EscolherInteresses } from "./escolher-interesses";
 import { Selos } from "./selos";
+import { useMeuTitulo } from "@/lib/embaixadora";
 import { MeuVideo, VideosDeAmigos } from "./videos-do-perfil";
 import { AjustarEnquadramento } from "./enquadrar";
 import {
@@ -56,6 +57,7 @@ function Face({
 /** A página pessoal: é por ela que alguém decide se quer se conectar com você. */
 export function MyNommi({ me }: { me: string }) {
   const { pagina, ready, reload } = usePaginaPessoal(me);
+  const { titulo } = useMeuTitulo(true);
   const [editando, setEditando] = useState(false);
   const [mexendoInteresses, setMexendoInteresses] = useState(false);
   const { estrelas } = useEstrelas(me);
@@ -112,6 +114,12 @@ export function MyNommi({ me }: { me: string }) {
         </span>
         <div className="mynommi-nome">
           <h1>{pagina.nickname}</h1>
+          {titulo.embaixadora && (
+            <span className="selo-embaixadora" title="Chegou no começo da nommi">
+              <Icon name="crown" />
+              Embaixadora
+            </span>
+          )}
           {pagina.city && (
             <p>
               <Icon name="pin" />
