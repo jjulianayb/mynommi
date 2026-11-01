@@ -309,6 +309,13 @@
       "when": 1793510000000,
       "tag": "0043_respeito",
       "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "7",
+      "when": 1793520000000,
+      "tag": "0044_creditos_pippo",
+      "breakpoints": true
     }
   ]
 }
