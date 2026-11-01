@@ -249,7 +249,7 @@ export function ChatStickerTray({
     if (!s) return null;
     const pippo = isPippoSticker(id);
     const premium = titulo.premium;
-    // Conta real: Premium envia de graça; sem Premium, 1 crédito por envio.
+    // Conta real: Pro envia de graça; sem Pro, 1 Pippin por envio.
     // Demonstração: o pacote continua só como vitrine.
     const semCredito = contaReal && !premium && (saldo ?? 0) < 1;
     const locked = pippoPackLocked && pippo && (!contaReal || semCredito);
@@ -261,28 +261,28 @@ export function ChatStickerTray({
           className={"chat-sticker-send" + (locked ? " sticker-locked" : "")}
           aria-label={
             locked
-              ? s.caption + (contaReal ? " — falta 1 crédito" : " — figurinha Premium, em breve")
+              ? s.caption + (contaReal ? " — falta 1 Pippin" : " — figurinha Pro, em breve")
               : pippo && contaReal && !premium
-                ? s.caption + " — usa 1 crédito"
+                ? s.caption + " — usa 1 Pippin"
                 : "Enviar figurinha " + s.caption
           }
           onClick={async () => {
             if (pippoPackLocked && pippo) {
               if (!contaReal) {
-                notify("Figurinha Premium · em breve!");
+                notify("Figurinha Pro · em breve!");
                 return;
               }
               if (!premium) {
                 if ((saldo ?? 0) < 1) {
-                  notify("Sem créditos. Ganhe +2 por convite que vingar.");
+                  notify("Sem Pippins. Ganhe +2 por convite que vingar.");
                   return;
                 }
                 const ok = await gastarFigurinha();
                 if (!ok) {
-                  notify("Não foi possível usar o crédito agora.");
+                  notify("Não foi possível usar o Pippin agora.");
                   return;
                 }
-                notify("Figurinha do Pippo enviada · 1 crédito");
+                notify("Figurinha do Pippo enviada · 1 Pippin");
               }
             }
             setState((prev) => ({
@@ -345,7 +345,7 @@ export function ChatStickerTray({
       <div className="sticker-tray-heading">
         <span>Figurinhas</span>
         {contaReal && (
-          <span className="sticker-credits" title="Seus créditos">
+          <span className="sticker-credits" title="Seus Pippins">
             <Icon name="star" />
             {saldo ?? "…"}
           </span>
@@ -485,7 +485,7 @@ export function ChatStickerTray({
                       <strong>Pippo</strong>
                       <small>{pippoIds.length} figurinhas · pacote do mascote</small>
                     </div>
-                    <span className="sticker-pack-premium" title="Pacote Premium · 1 crédito por envio">
+                    <span className="sticker-pack-premium" title="Pacote Pro · 1 Pippin por envio">
                       <Icon name="crown" />
                     </span>
                   </div>
