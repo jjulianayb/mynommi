@@ -1,4 +1,5 @@
 import { createRealTeia } from "@/lib/real-teias";
+import { useMeuTitulo } from "@/lib/embaixadora";
 import { createRole, MIN_CAPACITY, MAX_CAPACITY } from "@/lib/roles";
 import { saveCloudProfile } from "@/lib/real-profiles";
 import { hasSharedTeia, teiasFor } from "@/lib/tribos";
@@ -835,6 +836,22 @@ export function CreateGroup({
   const [busy, setBusy] = useState(false);
   const real = !!cloudUser && !demoMode;
   const isRole = kind === "role";
+  // Criar tribo é Premium, uma tribo por pessoa (decisão da Ju, 01/11). O
+  // banco trava de verdade (gatilho teias_confere_criacao, migração 0044);
+  // aqui a tela só avisa bonito antes de tentar.
+  const { titulo, ready: tituloPronto } = useMeuTitulo(real && !isRole);
+  const [minhasTribos, setMinhasTribos] = useState<number | null>(null);
+  useEffect(() => {
+    if (!real || isRole || !titulo.premium) return;
+    void (async () => {
+      const { count } = await supabase
+        .from("teias")
+        .select("id", { count: "exact", head: true })
+        .eq("created_by", cloudUser!.id)
+        .eq("kind", "teia");
+      setMinhasTribos(count ?? 0);
+    })();
+  }, [real, isRole, titulo.premium, cloudUser]);
   return (
     <div className="action-page">
       <h1>{isRole ? "Criar um rolê" : "Criar minha tribo"}</h1>
@@ -852,6 +869,16 @@ export function CreateGroup({
         <EmptyState
           title="Entre na sua conta para criar."
           text="Assim todo mundo que entrar vê a mesma conversa."
+        />
+      ) : real && !isRole && tituloPronto && !titulo.premium ? (
+        <EmptyState
+          title="Criar tribo é Premium."
+          text="Com o Premium você cria a sua tribo e manda figurinhas do Pippo de graça. Em breve."
+        />
+      ) : real && !isRole && titulo.premium && (minhasTribos ?? 0) >= 1 ? (
+        <EmptyState
+          title="Você já tem a sua tribo."
+          text="Por enquanto é uma tribo por pessoa. Capriche na que você já criou."
         />
       ) : (
         <form
@@ -1151,4 +1178,4 @@ export function InviteFriend() {
       ))}
     </div>
   );
-}
+                          }
