@@ -1231,10 +1231,9 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 
 /* Pacote Pippo: cadeado enquanto o plano pago não existe */
 .friends-app .chat-sticker-send.sticker-locked{cursor:default}
-.chat-sticker-send.sticker-locked .chat-sticker-image{opacity:.55}
+.chat-sticker-send.sticker-locked .chat-sticker-image{opacity:.7}
 .chat-sticker-send.sticker-locked:hover .chat-sticker-image{transform:none}
-.sticker-lock{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--card);border-radius:50%;padding:8px;box-shadow:0 2px 8px oklch(0 0 0 / .25)}
-.sticker-lock .friend-icon{width:22px;height:22px;display:block}
-.sticker-pack-lock{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--muted-foreground);text-align:center}
-.sticker-pack-lock .friend-icon{width:16px;height:16px}
-.sticker-pack-lock small{font-size:10px;line-height:1.2;max-width:96px}
+.sticker-premium{position:absolute;top:4px;right:4px;background:var(--card);border-radius:50%;padding:4px;box-shadow:0 1px 4px oklch(0 0 0 / .2)}
+.sticker-premium .friend-icon{width:14px;height:14px;display:block;stroke:#b8860b;fill:#ffd34d}
+.sticker-pack-premium{display:flex;align-items:center;color:#b8860b}
+.sticker-pack-premium .friend-icon{width:18px;height:18px;fill:#ffd34d}
