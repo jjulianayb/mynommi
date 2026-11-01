@@ -872,8 +872,8 @@ export function CreateGroup({
         />
       ) : real && !isRole && tituloPronto && !titulo.premium ? (
         <EmptyState
-          title="Criar tribo é Premium."
-          text="Com o Premium você cria a sua tribo e manda figurinhas do Pippo de graça. Em breve."
+          title="Criar tribo é Pro."
+          text="Com o Nommi Pro você cria a sua tribo e manda figurinhas do Pippo de graça. Em breve."
         />
       ) : real && !isRole && titulo.premium && (minhasTribos ?? 0) >= 1 ? (
         <EmptyState
@@ -1178,4 +1178,4 @@ export function InviteFriend() {
       ))}
     </div>
   );
-                          }
+}
