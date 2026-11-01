@@ -56,7 +56,7 @@ export function ConvidarEmLote({ me, nickname }: { me: string; nickname: string 
         <div className={"titulo-cartao" + (titulo.embaixadora ? " embaixadora" : "")}>
           {titulo.embaixadora && (
             <p className="titulo-selo">
-              <Icon name="star" />
+              <Icon name="crown" />
               {selodeEmbaixadora(titulo)}
             </p>
           )}
