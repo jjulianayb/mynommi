@@ -48,7 +48,7 @@ export function CreditPurchase() {
           Modo de teste: nenhuma cobrança real. Use o cartão 4242 4242 4242 4242.
         </p>
       )}
-      <div className="pack-grid" role="radiogroup" aria-label="Pacotes de créditos">
+      <div className="pack-grid" role="radiogroup" aria-label="Pacotes de Pippins">
         {CREDIT_PACKS.map((p) => (
           <Button
             key={p.id}
@@ -63,7 +63,7 @@ export function CreditPurchase() {
             }}
           >
             <strong>{p.credits}</strong>
-            <span>créditos</span>
+            <span>Pippins</span>
             <small>{money(p.price)}</small>
           </Button>
         ))}
@@ -81,7 +81,7 @@ export function CreditPurchase() {
         </Button>
       )}
       <p className="small-note">
-        Pague com cartão ou Pix (quando disponível). No Pix, os créditos entram só depois que o
+        Pague com cartão ou Pix (quando disponível). No Pix, os Pippins entram só depois que o
         pagamento é confirmado; se não pagar, nada é cobrado.
       </p>
     </>
