@@ -48,3 +48,4 @@
 .dc-tribo.catalogo{flex-basis:180px;align-items:center;justify-content:center;flex-direction:row;gap:8px;padding:16px;border-style:dashed}
 .dc-tribo.catalogo .dc-tribo-txt{padding:0}
 a.dc-mini-foto{display:block}
+.dc-mini-tribos{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--muted-foreground)}
