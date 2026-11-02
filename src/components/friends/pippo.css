@@ -2,17 +2,25 @@
 .pippo-busto{width:auto;display:block;filter:drop-shadow(0 6px 10px rgba(0,0,0,.28));pointer-events:none}
 .pippo-canto{position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 96px);z-index:40;display:grid;justify-items:end;gap:10px}
 .pippo-botao{padding:0;border:0;background:transparent;cursor:pointer;min-width:64px;min-height:64px}
-.pippo-painel{width:min(300px,calc(100vw - 28px));background:var(--card);border-radius:20px;padding:16px;box-shadow:0 14px 40px rgba(0,0,0,.28);display:grid;gap:8px}
-.pippo-painel h2{font-size:18px;line-height:1.2}
-.pippo-painel p{font-size:14px}
-.pippo-aponta{width:140px;height:auto;justify-self:center}
-.pippo-painel ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-.pippo-painel li a{display:flex;gap:10px;align-items:flex-start;padding:8px;border-radius:12px;text-decoration:none;color:inherit;background:var(--muted)}
-.pippo-painel li small{display:block;font-size:12.5px;color:var(--muted-foreground);line-height:1.4}
-.pippo-tour{min-height:44px;border:0;border-radius:999px;background:var(--primary);color:#fff;font-weight:700;cursor:pointer}
+.pippo-painel{width:min(330px,calc(100vw - 28px));max-height:min(520px,calc(100vh - 220px));background:var(--card);border-radius:20px;padding:14px;box-shadow:0 14px 40px rgba(0,0,0,.28);display:grid;grid-template-rows:auto 1fr auto auto;gap:8px;overflow:hidden}
+.pippo-painel h2{font-size:18px;line-height:1.1}
+.pippo-topo{display:flex;align-items:center;gap:10px}.pippo-topo p{font-size:12.5px;color:var(--muted-foreground)}
+.pippo-aponta{width:72px;height:auto}
 .tour-mao{position:fixed;z-index:3;width:128px;height:auto;pointer-events:none;filter:drop-shadow(0 8px 12px rgba(0,0,0,.35));transition:top .25s ease,left .25s ease,transform .25s ease}
 .tour-seta{position:fixed;z-index:3;width:28px;height:28px;pointer-events:none;animation:tour-seta 1s ease-in-out infinite}
 .tour-seta::before{content:"";position:absolute;left:3px;border:11px solid transparent}
 .tour-seta.para-cima::before{top:-2px;border-bottom:18px solid var(--sunshine);border-top:0}
 .tour-seta.para-baixo::before{top:4px;border-top:18px solid var(--sunshine);border-bottom:0}
 @keyframes tour-seta{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+.pippo-conversa{overflow:auto;display:grid;gap:8px;align-content:start;min-height:90px;padding:2px}
+.pippo-fala{max-width:88%;padding:9px 12px;border-radius:16px;font-size:14px;line-height:1.45}
+.pippo-fala p{margin:0}
+.pippo-fala.pippo{background:var(--muted);justify-self:start;border-bottom-left-radius:4px}
+.pippo-fala.voce{background:var(--primary);color:#fff;justify-self:end;border-bottom-right-radius:4px}
+.pippo-ir{display:inline-block;margin-top:6px;font-weight:700;font-size:13px;color:var(--primary)}
+.pippo-perguntas{display:flex;flex-wrap:wrap;gap:6px;max-height:112px;overflow:auto}
+.pippo-perguntas button{min-height:36px;padding:6px 12px;border-radius:999px;border:1px solid var(--border);background:var(--card);font-size:12.5px;font-weight:600;cursor:pointer}
+.pippo-perguntas .pippo-tour{background:var(--primary);color:#fff;border-color:var(--primary)}
+.pippo-escrever{display:flex;gap:6px}
+.pippo-escrever input{flex:1;min-height:44px;border:1px solid var(--border);border-radius:999px;padding:0 14px;font-size:14px;background:var(--card)}
+.pippo-escrever button{min-height:44px;padding:0 16px;border:0;border-radius:999px;background:var(--primary);color:#fff;font-weight:700;cursor:pointer}
