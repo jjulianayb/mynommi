@@ -32,6 +32,15 @@ export const RESPOSTAS_DO_PIPPO: RespostaDoPippo[] = [
     palavras: ["instalar", "instalo", "tela", "icone", "app", "aplicativo", "celular", "iphone", "android", "inicio"],
   },
   {
+    id: "avisos",
+    abre: "Dá para ficar por dentro sem abrir o app.",
+    depois: ["instalar", "match", "tribo"],
+    pergunta: "Como recebo as novidades no celular?",
+    resposta:
+      "Com a nommi instalada na tela inicial, eu te aviso quando chegar algo novo. É só tocar em Ativar avisos quando eu oferecer. Você liga e desliga quando quiser.",
+    palavras: ["notificacao", "notificacoes", "aviso", "avisos", "novidade", "novidades", "alerta", "alertas", "push", "novidades no celular"],
+  },
+  {
     id: "match",
     abre: "Essa eu sei de olho fechado.",
     depois: ["limite", "pagina", "tribo"],
@@ -249,4 +258,4 @@ export function respostaDeInstalar(
   if (instalado) return ["Você já está usando a nommi como app, então está tudo certo por aqui."];
   const nome = plataforma === "ios" ? "iPhone" : plataforma === "android" ? "Android" : "computador";
   return [`No ${nome} é rapidinho:`, ...passos.map((x, n) => `${n + 1}. ${x}`)];
-}
+    }
