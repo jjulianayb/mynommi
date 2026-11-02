@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { RealTeiaRow } from "@/lib/real-teias";
 import { publicUrl } from "@/lib/covers";
 import { iconeDoInteresse } from "@/lib/figurinhas";
-import { Icon, Sticker } from "./art";
+import { Icon } from "./art";
 
 const db = supabase as unknown as SupabaseClient;
 
@@ -21,6 +21,37 @@ export type TriboSugerida = {
 
 const semAcento = (s: string) =>
   s.normalize("NFD").replace(/[̀-ͯ]/g, "").trim().toLowerCase();
+
+/**
+ * Capas ilustradas que a Ju recortou do mockup (02/11): são dela e cobrem as
+ * tribos-oficiais mais conhecidas. A capa real enviada pela tribo sempre vem
+ * primeiro; a ilustração entra quando a tribo ainda não tem capa própria.
+ */
+const CAPAS_DA_JU: Record<string, string> = {
+  "cinema & series": "/capas-tribos/cinema-e-series.png",
+  "cinema e series": "/capas-tribos/cinema-e-series.png",
+  viagens: "/capas-tribos/viagens.png",
+  musica: "/capas-tribos/musica.png",
+  "bem-estar": "/capas-tribos/bem-estar.png",
+  "bem estar": "/capas-tribos/bem-estar.png",
+  livros: "/capas-tribos/livros.png",
+};
+
+export function capaDaTribo(nome: string, coverPath: string | null): string {
+  if (coverPath) return publicUrl(coverPath);
+  return CAPAS_DA_JU[semAcento(nome)] ?? "";
+}
+
+function paraSugerida(r: RealTeiaRow): TriboSugerida {
+  return {
+    id: r.id,
+    nome: r.name,
+    categoria: (r.category ?? "").trim(),
+    membros: r.member_count ?? 0,
+    capa: capaDaTribo(r.name, r.cover_path ?? null),
+    sobre: (r.about ?? "").trim(),
+  };
+}
 
 /**
  * As tribos que podem ser a cara da pessoa: primeiro as que casam com um
@@ -47,18 +78,21 @@ export function sugerirTribos(
           ? -1
           : 1,
     );
-  return candidatas.slice(0, Math.max(0, limite)).map(({ r, cat }) => ({
-    id: r.id,
-    nome: r.name,
-    categoria: cat,
-    membros: r.member_count ?? 0,
-    capa: r.cover_path ? publicUrl(r.cover_path) : "",
-    sobre: (r.about ?? "").trim(),
-  }));
+  return candidatas.slice(0, Math.max(0, limite)).map(({ r }) => paraSugerida(r));
 }
 
-export function useTribosSugeridas(me: string | null) {
-  const [lista, setLista] = useState<TriboSugerida[]>([]);
+/** As tribos de que a pessoa já faz parte, na ordem das maiores. */
+export function minhasTribos(rows: RealTeiaRow[], limite = 10): TriboSugerida[] {
+  return rows
+    .filter((r) => r.i_am_member && r.kind !== "role")
+    .sort((a, b) => (b.member_count ?? 0) - (a.member_count ?? 0))
+    .slice(0, Math.max(0, limite))
+    .map(paraSugerida);
+}
+
+function useTeias(me: string | null) {
+  const [rows, setRows] = useState<RealTeiaRow[]>([]);
+  const [interesses, setInteresses] = useState<string[]>([]);
   const [ready, setReady] = useState(false);
   const carregar = useCallback(async () => {
     if (!me) {
@@ -69,14 +103,99 @@ export function useTribosSugeridas(me: string | null) {
       db.rpc("list_teias", {}),
       db.from("profiles").select("interests").eq("id", me).maybeSingle(),
     ]);
-    const interesses = ((eu as { interests?: string[] } | null)?.interests ?? []) as string[];
-    setLista(sugerirTribos((data as RealTeiaRow[] | null) ?? [], interesses));
+    setRows((data as RealTeiaRow[] | null) ?? []);
+    setInteresses(
+      (((eu as { interests?: string[] } | null)?.interests ?? []) as string[]),
+    );
     setReady(true);
   }, [me]);
   useEffect(() => {
     void carregar();
   }, [carregar]);
-  return { lista, ready };
+  return { rows, interesses, ready };
+}
+
+/** Contagem real e curta, como no mockup (12k, 8k). */
+function contagemCurta(n: number): string {
+  if (n >= 1000) return `${Math.floor(n / 100) / 10}k`.replace(".0k", "k");
+  return String(n);
+}
+
+/** Capa quadrada: foto real, ilustração da Ju ou monograma honesto. */
+function CapaTribo({ t }: { t: TriboSugerida }) {
+  const [quebrou, setQuebrou] = useState(false);
+  if (t.capa && !quebrou)
+    return (
+      <img src={t.capa} alt="" loading="lazy" onError={() => setQuebrou(true)} />
+    );
+  return (
+    <span className="dc-tribo-mono" aria-hidden="true">
+      {t.nome.trim().charAt(0).toUpperCase() || "N"}
+    </span>
+  );
+}
+
+/**
+ * "Suas tribos": as comunidades da pessoa logo abaixo das fotos, com capa
+ * quadrada, nome e contagem real — o trilho do mockup da Ju (02/11).
+ */
+export function TrilhoMinhasTribos({ me }: { me: string }) {
+  const { rows, ready } = useTeias(me);
+  if (!ready) return null;
+  const lista = minhasTribos(rows);
+  if (lista.length === 0) return null;
+  return (
+    <section className="dc-minhas-tribos" aria-label="Suas tribos">
+      <div className="dc-minhas-tribos-topo">
+        <h3 className="dc-secao-titulo">
+          <Icon name="users" />
+          Suas tribos
+        </h3>
+        <Link to="/grupos" className="dc-ver-todas">
+          Ver todas
+          <Icon name="arrow" />
+        </Link>
+      </div>
+      <div className="dc-trilho">
+        {lista.map((t) => (
+          <Link
+            key={t.id}
+            to="/grupos/$id"
+            params={{ id: String(t.id) }}
+            className="dc-minha-tribo"
+            aria-label={`Abrir a tribo ${t.nome}`}
+          >
+            <span className="dc-minha-tribo-capa">
+              <CapaTribo t={t} />
+            </span>
+            <span className="dc-minha-tribo-txt">
+              <strong>{t.nome}</strong>
+              <span className="dc-tribo-membros">{contagemCurta(t.membros)}</span>
+            </span>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/**
+ * O convite verde do mockup: quem ainda não achou sua tribo descobre o
+ * catálogo aqui. Sempre visível, mesmo para quem já tem tribos.
+ */
+export function BannerTribos() {
+  return (
+    <section className="dc-banner-tribos" aria-label="Explorar tribos">
+      <div className="dc-banner-tribos-txt">
+        <h3>Alguma tribo te esperando?</h3>
+        <p>Descubra comunidades incríveis e faça novas conexões.</p>
+      </div>
+      <Link to="/grupos" className="dc-banner-tribos-cta">
+        Explorar Tribos
+        <Icon name="arrow" />
+      </Link>
+    </section>
+  );
 }
 
 /**
@@ -84,8 +203,10 @@ export function useTribosSugeridas(me: string | null) {
  * cada carta abre a página da tribo. A última carta leva para o catálogo.
  */
 export function TrilhoTribos({ me }: { me: string }) {
-  const { lista, ready } = useTribosSugeridas(me);
-  if (!ready || lista.length === 0) return null;
+  const { rows, interesses, ready } = useTeias(me);
+  if (!ready) return null;
+  const lista = sugerirTribos(rows, interesses);
+  if (lista.length === 0) return null;
   return (
     <section className="dc-tribos" aria-label="Tribos que podem ser sua cara">
       <h3 className="dc-secao-titulo">Tribos que podem ser sua cara</h3>
@@ -99,11 +220,7 @@ export function TrilhoTribos({ me }: { me: string }) {
             aria-label={`Conhecer a tribo ${t.nome}`}
           >
             <span className="dc-tribo-capa">
-              {t.capa ? (
-                <img src={t.capa} alt="" loading="lazy" />
-              ) : (
-                <Sticker id={i % 16} size={64} semLegenda />
-              )}
+              <CapaTribo t={t} />
             </span>
             <span className="dc-tribo-txt">
               {t.categoria && (
