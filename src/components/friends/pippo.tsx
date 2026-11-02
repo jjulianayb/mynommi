@@ -6,16 +6,14 @@ import "./pippo.css";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Icon } from "./art";
-import rostoPippo from "@/assets/stickers/pippo/2-pippo-01.png";
-import apontaPippo from "@/assets/stickers/pippo/15-pippo-14.png";
+import rostoPippo from "@/assets/pippo/2-pippo-busto.png";
+import apontaPippo from "@/assets/pippo/1-pippo-aponta.png";
 
-/** O rosto do Pippo, recortado do pacote de figurinhas (sem a legenda). */
-export function PippoRosto({ tamanho = 52 }: { tamanho?: number }) {
-  return (
-    <span className="pippo-rosto" style={{ width: tamanho, height: tamanho }} aria-hidden="true">
-      <img src={rostoPippo} alt="" />
-    </span>
-  );
+export { apontaPippo };
+
+/** O Pippo de busto, com fundo transparente. */
+export function PippoRosto({ altura = 84 }: { altura?: number }) {
+  return <img className="pippo-busto" src={rostoPippo} alt="" style={{ height: altura }} />;
 }
 
 const DICAS = [
@@ -81,7 +79,7 @@ export function PippoAjudante({ aoRefazerTour }: { aoRefazerTour: () => void }) 
         aria-expanded={aberto}
         onClick={() => setAberto((a) => !a)}
       >
-        <PippoRosto />
+        <PippoRosto altura={92} />
       </button>
     </div>
   );
