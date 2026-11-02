@@ -76,6 +76,20 @@ export function sortByCity<T extends { city: string }>(list: T[], city: string):
   ];
 }
 
+/**
+ * Quantas tribos abertas aparecem de cara na página de tribos. Catálogo grande
+ * não pode virar rolagem sem fim; "Ver mais" abre o resto no mesmo lugar.
+ */
+export const TRIBOS_ABERTAS_INICIAIS = 6;
+
+export function tribosAbertasVisiveis<T>(
+  abertas: T[],
+  verMais: boolean,
+  limite = TRIBOS_ABERTAS_INICIAIS,
+): T[] {
+  return verMais ? abertas : abertas.slice(0, Math.max(0, limite));
+}
+
 export function useRealTeias(userId: string | null) {
   const [rows, setRows] = useState<RealTeiaRow[]>([]);
   const [joined, setJoined] = useState<number[]>([]);
