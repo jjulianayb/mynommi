@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
+  TRIBOS_NA_HOME,
   contador,
   quandoFoi,
   recadoDaTribo,
   temNovidade,
+  tribosDaHome,
   type MinhaTribo,
 } from "@/lib/minhas-tribos";
 
@@ -62,5 +64,20 @@ describe("há quanto tempo foi", () => {
   });
   it("sem fala, não mostra tempo nenhum", () => {
     expect(quandoFoi(null, agora)).toBe("");
+  });
+});
+
+describe("o Início não vira uma rolagem de tribos", () => {
+  const muitas = Array.from({ length: 11 }, (_, i) => ({ id: i + 1 }));
+  it("cabe um teto curto; o resto fica em Ver todas", () => {
+    expect(TRIBOS_NA_HOME).toBe(5);
+    expect(tribosDaHome(muitas).map((t) => t.id)).toEqual([1, 2, 3, 4, 5]);
+  });
+  it("com poucas tribos, mostra todas", () => {
+    expect(tribosDaHome(muitas.slice(0, 3))).toHaveLength(3);
+  });
+  it("teto zero ou negativo não mostra nada, nunca quebra", () => {
+    expect(tribosDaHome(muitas, 0)).toHaveLength(0);
+    expect(tribosDaHome(muitas, -2)).toHaveLength(0);
   });
 });
