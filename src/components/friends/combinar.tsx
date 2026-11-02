@@ -177,6 +177,14 @@ export function Combinar({ me }: { me: string }) {
             </Link>
             <h4>{k.nome}</h4>
             <p>{k.cidade || "Brasil"}</p>
+            {k.tribosEmComum.length > 0 && (
+              <p className="dc-mini-tribos">
+                <Icon name="teia" />
+                {k.tribosEmComum.length === 1
+                  ? `1 tribo em comum: ${k.tribosEmComum[0]}`
+                  : `${k.tribosEmComum.length} tribos em comum`}
+              </p>
+            )}
             {k.interesses.length > 0 && (
               <div className="dc-tags">
                 {k.interesses.slice(0, 2).map((i) => (
