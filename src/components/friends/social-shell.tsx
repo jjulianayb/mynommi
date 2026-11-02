@@ -251,6 +251,7 @@ export function SocialShell({ children }: { children: ReactNode }) {
         !aceite.pendente &&
         !pathname.startsWith("/conversas/") && (
           <PippoAjudante
+            me={cloudUser!.id}
             aoRefazerTour={() => {
               esquecerTour(cloudUser!.id);
               setTourAberto(true);
