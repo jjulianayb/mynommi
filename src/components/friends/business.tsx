@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { fraseValidadePippins } from "@/lib/plano";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { partners, people, getPartner, money } from "@/lib/friends-data";
@@ -18,6 +20,9 @@ import { EmptyState } from "./surfaces";
 import { useFriends } from "./store";
 import { useDemoSession } from "./session";
 import { supabase } from "@/integrations/supabase/client";
+
+/** saldo_pippins ainda não está em types.ts (o Lovable regenera os tipos). */
+const db = supabase as unknown as SupabaseClient;
 import { CreditPurchase } from "./credit-checkout";
 
 /** Carteira da conta real: saldo e destaque guardados no servidor. */
@@ -25,8 +30,12 @@ function CloudWallet({ userId }: { userId: string }) {
   const { notify } = useFriends();
   const [acc, setAcc] = useState<{ balance: number; boost_until: string | null } | null>(null);
   const [hist, setHist] = useState<{ amount: number; reason: string; created_at: string }[]>([]);
+  const [validade, setValidade] = useState<{ aVencer: number; venceEm: Date | null }>({
+    aVencer: 0,
+    venceEm: null,
+  });
   async function load() {
-    const [a, h] = await Promise.all([
+    const [a, h, s] = await Promise.all([
       supabase
         .from("credit_accounts")
         .select("balance,boost_until")
@@ -38,8 +47,20 @@ function CloudWallet({ userId }: { userId: string }) {
         .eq("user_id", userId)
         .order("created_at", { ascending: false })
         .limit(50),
+      db.rpc("saldo_pippins"),
     ]);
-    setAcc(a.data ?? { balance: 0, boost_until: null });
+    const linha = ((s.data as { saldo: number; a_vencer: number; vence_em: string | null }[] | null) ?? [])[0];
+    // O saldo que aparece é o varrido: o que venceu já saiu antes de mostrar.
+    setAcc(
+      linha
+        ? { balance: linha.saldo, boost_until: (a.data?.boost_until as string | null) ?? null }
+        : (a.data ?? { balance: 0, boost_until: null }),
+    );
+    setValidade(
+      linha
+        ? { aVencer: linha.a_vencer ?? 0, venceEm: linha.vence_em ? new Date(linha.vence_em) : null }
+        : { aVencer: 0, venceEm: null },
+    );
     setHist(h.data ?? []);
   }
   useEffect(() => {
@@ -80,6 +101,9 @@ function CloudWallet({ userId }: { userId: string }) {
           <small>Seu saldo</small>
           <strong>{acc ? acc.balance : "…"} Pippins</strong>
         </div>
+        <p className="small-note wallet-validade">
+          {fraseValidadePippins(validade.aVencer, validade.venceEm)}
+        </p>
         {boosted && (
           <span className="boost-badge">
             <Icon name="spark" />
