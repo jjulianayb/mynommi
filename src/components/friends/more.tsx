@@ -16,6 +16,7 @@ import { ageOn } from "@/lib/nomi-validation";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { SemFoto, Avatar, Icon, Sticker, StickerPicker } from "./art";
+import { MATCHES_GRATIS, PERFIS_GRATIS_POR_DIA, PERFIS_PRO_POR_DIA, TRIBOS_PRO } from "@/lib/plano";
 import { useFriends } from "./store";
 import { PartnerCommunity } from "./business";
 import { PartnerIdeas } from "./meetup-ideas";
@@ -656,9 +657,40 @@ export function Signup() {
 export function Pro() {
   return (
     <>
-      <Heading title="Nommi Pro" />
+      <Heading title="Nommi Pro" label="GRÁTIS E PRO" />
+      <p className="intro">
+        O grátis continua de graça. O Pro é para quem quer mais nommi no mesmo dia.
+      </p>
+      <div className="activity-list">
+        <article className="activity">
+          <span className="tone-icon teal">
+            <Icon name="teia" />
+          </span>
+          <div>
+            <h3>Grátis</h3>
+            <p>
+              {PERFIS_GRATIS_POR_DIA} perfis por dia no Descobrir · até {MATCHES_GRATIS} matches ·
+              entrar em todas as tribos abertas
+            </p>
+          </div>
+        </article>
+        <article className="activity">
+          <span className="tone-icon yellow">
+            <Icon name="spark" />
+          </span>
+          <div>
+            <h3>Pro</h3>
+            <p>
+              {PERFIS_PRO_POR_DIA} perfis por dia · match sem teto · criar até {TRIBOS_PRO} tribos ·
+              figurinhas do Pippo de graça
+            </p>
+          </div>
+        </article>
+      </div>
       <p className="small-note pro-discreet">
-        Estamos preparando o Pro. Por enquanto, não há assinatura ou teste para ativar.
+        A assinatura do Pro ainda não está à venda. Quem é Embaixadora já tem tudo isso, para
+        sempre, de presente. Na fila para o Pro: figurinhas personalizáveis, Espiadinha, quem
+        visitou o seu nommi e descontos de anfitriões.
       </p>
       <Button asChild variant="secondary" className="wide">
         <Link to="/perfil">
