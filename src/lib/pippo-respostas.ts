@@ -199,3 +199,34 @@ export function respostaPara(texto: string): RespostaDoPippo | null {
   }
   return melhor;
 }
+
+export type TriboParaIndicar = {
+  id: number;
+  name: string;
+  members: number;
+  iAmMember: boolean;
+  emComum: number;
+};
+
+/** O Pippo só indica tribo com gente (2 ou mais), que a pessoa ainda não tem e que não é a dele. */
+export function indicarTribo(
+  tribos: TriboParaIndicar[],
+  idDaTriboDoPippo: number,
+): TriboParaIndicar | null {
+  const boas = tribos
+    .filter((t) => !t.iAmMember && t.members >= 2 && t.id !== idDaTriboDoPippo)
+    .sort((a, b) => b.emComum - a.emComum || b.members - a.members);
+  return boas[0] ?? null;
+}
+
+/** Boas-vindas ativas: nome, uma dica de tribo real e a porta para o resto. */
+export function boasVindasAtivas(nome: string, tribo: TriboParaIndicar | null): string[] {
+  const oi = nome ? `Oi, ${nome}! Eu sou o Pippo e fiquei de olho na sua chegada.` : "Oi! Eu sou o Pippo.";
+  if (!tribo) {
+    return [oi, "Dá uma volta pelo Descobrir e, qualquer dúvida, é só me chamar."];
+  }
+  return [
+    oi,
+    `Uma dica: a tribo ${tribo.name} já tem ${tribo.members} pessoas conversando. Quer dar uma olhada?`,
+  ];
+}
