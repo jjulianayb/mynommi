@@ -7,11 +7,13 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import frontalPippo from "@/assets/pippo/1-pippo-frontal.png";
 import apontaPippo from "@/assets/pippo/1-pippo-aponta.png";
+import { installSteps, isStandalone, platformOf } from "@/lib/install";
 import { supabase } from "@/integrations/supabase/client";
 import { TRIBO_DO_PIPPO_ID } from "@/lib/pippo-tribo";
 import {
   BOAS_VINDAS_DO_PIPPO,
   boasVindasAtivas,
+  respostaDeInstalar,
   indicarTribo,
   COMECO_DO_PIPPO,
   NAO_SEI_DO_PIPPO,
@@ -153,7 +155,17 @@ export function PippoAjudante({
     let ir: RespostaDoPippo["ir"];
     let depois: string[];
     const papo = r ? null : papoPara(pergunta);
-    if (r) {
+    if (r && r.id === "instalar") {
+      baloesDele = [
+        r.abre,
+        ...respostaDeInstalar(
+          platformOf(navigator.userAgent, navigator.maxTouchPoints),
+          isStandalone(window as Parameters<typeof isStandalone>[0]),
+          installSteps(platformOf(navigator.userAgent, navigator.maxTouchPoints)),
+        ),
+      ];
+      depois = r.depois;
+    } else if (r) {
       baloesDele = [r.abre, ...baloes(r.resposta)];
       ir = r.ir;
       depois = r.depois;
