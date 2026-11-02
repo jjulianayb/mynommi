@@ -1,10 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { enderecoDaImagem } from "@/lib/covers";
 import {
+  TRIBOS_NA_HOME,
   contador,
   quandoFoi,
   recadoDaTribo,
   temNovidade,
+  tribosDaHome,
   useMinhasTribos,
 } from "@/lib/minhas-tribos";
 import { Icon } from "./art";
@@ -25,12 +27,12 @@ export function MinhasTribos({ ativo }: { ativo: boolean }) {
       <div className="section-heading">
         <h2>Suas tribos</h2>
         <Link to="/grupos" className="section-link">
-          Ver todas
+          Ver todas{tribos.length > TRIBOS_NA_HOME ? ` (${tribos.length})` : ""}
           <Icon name="arrow" />
         </Link>
       </div>
       <div className="tribo-linhas">
-        {tribos.map((t) => (
+        {tribosDaHome(tribos).map((t) => (
           <Link
             key={t.id}
             className={"tribo-linha" + (temNovidade(t) ? " nova" : "")}
