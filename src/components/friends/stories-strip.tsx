@@ -90,8 +90,13 @@ function StoryViewer({
   onRemove: (s: Story) => void;
 }) {
   const [i, setI] = useState(0);
+  const [falhou, setFalhou] = useState(false);
   const story = group.stories[i];
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    setFalhou(false);
+  }, [story?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!story) return;
@@ -150,10 +155,19 @@ function StoryViewer({
         </Button>
       </header>
       <div className="story-media">
-        {story.kind === "video" ? (
-          <video src={story.url} autoPlay playsInline controls onEnded={next} />
+        {falhou || !story.url ? (
+          <p className="story-indisponivel">Não consegui abrir este story.</p>
+        ) : story.kind === "video" ? (
+          <video
+            src={story.url}
+            autoPlay
+            playsInline
+            controls
+            onEnded={next}
+            onError={() => setFalhou(true)}
+          />
         ) : (
-          <img src={story.url} alt={story.caption || "Story"} />
+          <img src={story.url} alt={story.caption || "Story"} onError={() => setFalhou(true)} />
         )}
       </div>
       {story.caption && <p className="story-caption">{story.caption}</p>}
