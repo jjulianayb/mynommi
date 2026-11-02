@@ -35,13 +35,26 @@ describe("texto do post", () => {
 });
 
 describe("fotos e vídeos", () => {
-  it("aceita JPG, PNG, WebP, MP4 e WebM", () => {
-    expect(mediaProblem({ type: "image/jpeg", size: 1000 }, 0)).toBeNull();
-    expect(mediaProblem({ type: "video/mp4", size: 1000 }, 0)).toBeNull();
-    expect(mediaProblem({ type: "image/gif", size: 10 }, 0)).toMatch(/JPG/);
+  /**
+   * O bug do iPhone (02/11): isto aceitava só jpeg, png e webp, e foto de
+   * iPhone chega em HEIC. Quem tem iPhone não conseguia anexar nada. Mesmo
+   * bug de 26/10 na foto de perfil, e a lição de lá vale aqui: conferir só
+   * se é imagem; o canvas converte o resto.
+   */
+  it("aceita qualquer foto que o celular mande, HEIC inclusive", () => {
+    for (const t of ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"])
+      expect(mediaProblem({ type: t, size: 1000 }, 0), t).toBeNull();
   });
-  it("recusa foto acima de 5 MB e vídeo acima de 30 MB", () => {
-    expect(mediaProblem({ type: "image/png", size: 6e6 }, 0)).toMatch(/5 MB/);
+  it("aceita o .mov do iPhone, senão quem tem iPhone não posta vídeo", () => {
+    expect(mediaProblem({ type: "video/quicktime", size: 1000 }, 0)).toBeNull();
+    expect(mediaProblem({ type: "video/mp4", size: 1000 }, 0)).toBeNull();
+  });
+  it("recusa o que não é foto nem vídeo, sem listar formato", () => {
+    const r = mediaProblem({ type: "application/pdf", size: 10 }, 0);
+    expect(r).toBeTruthy();
+    expect(/JPG|PNG|WebP|HEIC/i.test(r!)).toBe(false);
+  });
+  it("vídeo ainda tem teto de 30 MB", () => {
     expect(mediaProblem({ type: "video/mp4", size: 33e6 }, 0)).toMatch(/30 MB/);
   });
   it("não passa de quatro arquivos", () => {
@@ -49,7 +62,8 @@ describe("fotos e vídeos", () => {
   });
   it("separa foto de vídeo e monta o caminho a partir do id de quem envia", () => {
     expect(mediaKind("video/webm")).toBe("video");
-    expect(mediaKind("image/png")).toBe("foto");
+    expect(mediaKind("video/quicktime")).toBe("video");
+    expect(mediaKind("image/heic")).toBe("foto");
     expect(mediaPath("u1", "p1", 0, "image/png")).toBe("u1/p1/0.png");
     expect(mediaPath("u1", "p1", 2, "video/mp4")).toBe("u1/p1/2.mp4");
   });

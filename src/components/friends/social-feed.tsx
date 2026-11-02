@@ -19,6 +19,7 @@ import {
   type FeedScope,
   type CreateResult,
 } from "@/lib/posts";
+import { AVISO_DO_VIDEO, videoPodeNaoTocar } from "@/lib/foto-do-post";
 import { useProfileStats, formatCount, useFollow } from "@/lib/follows";
 import { useWall, MAX_WALL } from "@/lib/wall";
 import { useRoles, whenLabel, spotsLabel, goingBlocker, loadGoing, type Role } from "@/lib/roles";
@@ -426,17 +427,23 @@ export function CreatePostForm({
   const [teiaId, setTeiaId] = useState<number | "">("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [aviso, setAviso] = useState("");
   function pick(list: FileList | null) {
     if (!list) return;
     const next = [...files];
+    let avisar = "";
     for (const f of Array.from(list)) {
       const problem = mediaProblem(f, next.length);
       if (problem) {
         setError(problem);
         continue;
       }
+      // Sobe mesmo assim: recusar o .mov do iPhone deixaria quem tem iPhone
+      // sem postar vídeo nenhum. Ver src/lib/foto-do-post.ts.
+      if (videoPodeNaoTocar(f.type)) avisar = AVISO_DO_VIDEO;
       next.push(f);
     }
+    setAviso(avisar);
     setFiles(next.slice(0, MAX_MEDIA));
   }
   async function submit(e: React.FormEvent) {
@@ -482,7 +489,7 @@ export function CreatePostForm({
         Adicionar fotos ou vídeos ({files.length}/{MAX_MEDIA})
         <input
           type="file"
-          accept="image/jpeg,image/png,image/webp,video/mp4,video/webm"
+          accept="image/*,video/*"
           multiple
           aria-label="Adicionar fotos ou vídeos"
           onChange={(e) => {
@@ -541,6 +548,7 @@ export function CreatePostForm({
           {error}
         </p>
       )}
+      {aviso && !error && <p className="small-note">{aviso}</p>}
       <Button className="wide" disabled={busy || !text.trim()}>
         <Icon name="send" />
         {busy ? "Publicando…" : "Publicar"}

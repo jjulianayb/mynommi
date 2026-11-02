@@ -74,7 +74,7 @@ export function CoverEditor({
             <small>JPG, PNG ou WebP, até 4 MB.</small>
             <input
               type="file"
-              accept="image/jpeg,image/png,image/webp"
+              accept="image/*"
               disabled={busy}
               onChange={async (e) => {
                 const f = e.target.files?.[0];

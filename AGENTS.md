@@ -453,3 +453,25 @@
 - **O prazo mora num lugar só.** `src/test/midia-que-vence.test.ts` acha toda chamada de `createSignedUrl(s)` em `posts.ts`, `stories.ts` e `video-perfil.ts` e exige `VALIDADE_DA_MIDIA` nela: número solto na chamada é o bug voltando.
 - Cuidado ao escrever esse teste: proibir a string "3600" no arquivo pega o `timeAgo()` de `posts.ts`, que é conta de minuto e não tem nada a ver.
 - `FotoQueFalha` zera a tentativa quando o `src` muda — sem isso, trocar a foto de uma pessoa pela de outra herdaria o estado de falha da anterior.
+
+## O bug do iPhone, pela terceira vez (02/11)
+- Esta é a **terceira** vez que o mesmo bug aparece em lugar diferente: foto de perfil em 26/10, e agora **post** e **capa** (de perfil e de tribo). Em todos, o código conferia uma **lista de formatos** (`image/jpeg`, `image/png`, `image/webp`) e foto de iPhone chega em **HEIC**. Quem tem iPhone — a maioria das pessoas da nommi — não conseguia anexar foto no post nem pôr capa.
+- **A trava de verdade não era a conferência, era o `accept` do seletor de arquivo.** Com `accept="image/jpeg,image/png,..."` a galeria do iPhone **apaga** tudo o que não é daqueles tipos: a pessoa nem chega na mensagem de erro, só vê as fotos cinzas. Corrigir só o `mediaProblem` não teria resolvido nada, e eu quase fiz isso. Há teste lendo o `accept` dos componentes.
+- Regra, agora num lugar só (`src/lib/foto-do-post.ts`): **conferir só se é imagem, com teto generoso, e deixar o canvas decidir.** Quem desenha a imagem é o Safari, que sabe ler HEIC; o canvas devolve JPEG.
+- `fotoParaEnviar()` devolve `null` quando o navegador não consegue nem abrir a imagem (um Android que receba um HEIC compartilhado por WhatsApp). Melhor dizer que não deu do que subir arquivo que ninguém vê. Ela roda **antes** de o post ser criado: se falhar, ninguém fica com post pela metade.
+- Ainda falta: `camera-story.tsx`, `foto-instantanea.tsx` e `chat-stickers.tsx` já usavam `accept="image/*"` e passam pelo canvas. Conferido.
+
+## A foto que subia do tamanho da câmera (02/11)
+- A foto do post subia **como saiu do celular**, até 5 MB, e o feed servia o arquivo inteiro como miniatura. Foto de 12 MP tem uns 4000 px de lado; na tela ocupa 350. Quem rolava o feed baixava dezenas de megabytes de dados móveis para ver imagens que o navegador reduzia na hora de desenhar.
+- Agora toda foto passa pelo canvas: **1600 px no maior lado, JPEG 0.82**. Sai de uns 4 MB para uns 300 KB. 1600 é o dobro da maior tela de celular, com folga para quem abre em tela cheia e dá zoom — reduzir mais apareceria na hora em que alguém ampliasse.
+- `medidasReduzidas()` **nunca aumenta** foto pequena: esticar uma foto de 300 px deixaria o arquivo maior e a imagem pior.
+- Fundo branco antes de desenhar: PNG com transparência viraria preto no JPEG.
+- `loading="lazy"` já estava no componente de avatar (`art.tsx`) e entrou no `FotoQueFalha`, que é o que o feed usa. São os dois lugares que repetem imagem em lista.
+- A capa também passa a reduzir: capa é imagem grande numa tela que abre muito.
+
+## Vídeo de iPhone: subir e avisar, em vez de recusar (02/11)
+- Vídeo da galeria de iPhone é `.mov` (`video/quicktime`) e era **recusado**. A decisão anterior (29/10, no story) foi gravar pela câmera do app para garantir o formato — mas no post **não existe gravar pela câmera**, então recusar significava que quem tem iPhone não postava vídeo nenhum.
+- Agora sobe, com duas coisas por trás:
+  1. **Anunciado como `video/mp4`** (`tipoParaSubir`). `.mov` e `.mp4` são o **mesmo recipiente** (ISO BMFF) com assinatura diferente: o Chrome do Android recusa de cara qualquer coisa anunciada como `video/quicktime`, mas toca o conteúdo quando vem como `video/mp4`. Isso faz o vídeo de iPhone tocar no Android na maioria dos casos.
+  2. **Um aviso honesto**, não uma promessa: iPhone novo grava em HEVC, que o Android não decodifica, e nada aqui conserta isso. Converter vídeo no navegador é outra ordem de trabalho. O teste exige que o aviso diga que **dá para publicar** e que **não** mostre nome técnico de formato.
+- Com o `VideoQueFalha` do mesmo dia, quem não consegue tocar vê um recado em vez de um quadro preto.

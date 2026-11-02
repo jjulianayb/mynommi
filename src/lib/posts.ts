@@ -4,6 +4,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { enderecoDaImagem } from "@/lib/covers";
 import { VALIDADE_DA_MIDIA, aoVoltarParaOApp, precisaRenovar } from "./midia-que-vence";
+import {
+  MAIOR_FOTO_QUE_ENTRA,
+  ehFoto,
+  ehVideo,
+  fotoParaEnviar,
+  tipoParaSubir,
+} from "./foto-do-post";
 
 export type Reaction = "curtir" | "apoiar" | "rir";
 export const REACTIONS: { kind: Reaction; label: string }[] = [
@@ -46,9 +53,13 @@ export type PostComment = {
 export const MAX_BODY = 1000;
 export const MAX_COMMENT = 500;
 export const MAX_MEDIA = 4;
-const PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp"];
-const VIDEO_TYPES = ["video/mp4", "video/webm"];
-export const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
+/**
+ * Teto do arquivo que **entra**. Foto é generoso porque `fotoParaEnviar()`
+ * reduz tudo pelo canvas antes de subir: o que chega no balde tem uns 300 KB.
+ * Conferir formato aqui foi o bug do iPhone — HEIC era recusado. Ver
+ * `src/lib/foto-do-post.ts`.
+ */
+export const MAX_PHOTO_BYTES = MAIOR_FOTO_QUE_ENTRA;
 export const MAX_VIDEO_BYTES = 30 * 1024 * 1024;
 const BUCKET = "post-media";
 
@@ -64,27 +75,26 @@ export function mediaProblem(
   alreadyAttached: number,
 ): string | null {
   if (alreadyAttached >= MAX_MEDIA) return `No máximo ${MAX_MEDIA} fotos ou vídeos por post.`;
-  if (PHOTO_TYPES.includes(file.type))
-    return file.size > MAX_PHOTO_BYTES ? "A foto passa de 5 MB." : null;
-  if (VIDEO_TYPES.includes(file.type))
+  if (ehFoto(file.type)) return file.size > MAX_PHOTO_BYTES ? "Essa foto é grande demais." : null;
+  if (ehVideo(file.type))
     return file.size > MAX_VIDEO_BYTES ? "O vídeo passa de 30 MB." : null;
-  return "Use foto JPG, PNG ou WebP, ou vídeo MP4 ou WebM.";
+  return "Anexe uma foto ou um vídeo.";
 }
-export const mediaKind = (type: string): "foto" | "video" =>
-  VIDEO_TYPES.includes(type) ? "video" : "foto";
+export const mediaKind = (type: string): "foto" | "video" => (ehVideo(type) ? "video" : "foto");
 
 /** Caminho no armazenamento: sempre começa pelo id de quem envia (é o que a regra de segurança confere). */
 export function mediaPath(userId: string, postId: string, position: number, type: string) {
-  const ext =
-    type === "image/png"
+  // Foto sempre sai daqui como JPEG (passou pelo canvas), então a extensão é
+  // decidida pelo tipo **que vai subir**, não pelo que o celular mandou.
+  const ext = ehVideo(type)
+    ? type === "video/webm"
+      ? "webm"
+      : "mp4"
+    : type === "image/png"
       ? "png"
       : type === "image/webp"
         ? "webp"
-        : type === "video/mp4"
-          ? "mp4"
-          : type === "video/webm"
-            ? "webm"
-            : "jpg";
+        : "jpg";
   return `${userId}/${postId}/${position}.${ext}`;
 }
 
@@ -202,10 +212,23 @@ export type CreateResult = { ok: true; id: string } | { ok: false; error: string
 export async function createPost(me: string, input: NewPost): Promise<CreateResult> {
   const body = cleanBody(input.body);
   if (!body) return { ok: false, error: "Escreva de 1 a 1000 letras." };
-  const files = [...(input.files ?? [])];
-  for (let i = 0; i < files.length; i++) {
-    const p = mediaProblem(files[i]!, i);
+  const escolhidos = [...(input.files ?? [])];
+  for (let i = 0; i < escolhidos.length; i++) {
+    const p = mediaProblem(escolhidos[i]!, i);
     if (p) return { ok: false, error: p };
+  }
+  // A foto passa pelo canvas **antes** de o post existir: se o navegador não
+  // conseguir abrir a imagem, ninguém fica com post pela metade.
+  const files: File[] = [];
+  for (const f of escolhidos) {
+    if (!ehFoto(f.type)) {
+      files.push(f);
+      continue;
+    }
+    const pronta = await fotoParaEnviar(f);
+    if (!pronta)
+      return { ok: false, error: "Não consegui abrir essa foto. Tente outra ou tire na hora." };
+    files.push(pronta);
   }
   const { data, error } = await supabase
     .from("posts")
@@ -221,8 +244,9 @@ export async function createPost(me: string, input: NewPost): Promise<CreateResu
   const id = (data as { id: string }).id;
   for (let i = 0; i < files.length; i++) {
     const file = files[i]!;
-    const path = mediaPath(me, id, i, file.type);
-    const up = await supabase.storage.from(BUCKET).upload(path, file, { contentType: file.type });
+    const tipo = tipoParaSubir(file.type);
+    const path = mediaPath(me, id, i, tipo);
+    const up = await supabase.storage.from(BUCKET).upload(path, file, { contentType: tipo });
     const ins = up.error
       ? null
       : await supabase

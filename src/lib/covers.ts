@@ -1,9 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { ehFoto, fotoParaEnviar } from "./foto-do-post";
 
 export type CoverSlot = "cover" | "background";
-export const MAX_COVER_BYTES = 4 * 1024 * 1024;
-const TYPES = ["image/jpeg", "image/png", "image/webp"];
+/**
+ * Teto do arquivo que **entra**: generoso, porque a capa passa pelo canvas
+ * antes de subir (`fotoParaEnviar`) e chega no balde com uns 300 KB.
+ *
+ * Isto já foi 4 MB **e** uma lista de formatos, e era o bug do iPhone pela
+ * terceira vez: capa de perfil e de tribo recusava HEIC, que é o que todo
+ * iPhone manda. Ver `src/lib/foto-do-post.ts`.
+ */
+export const MAX_COVER_BYTES = 30 * 1024 * 1024;
 const BUCKET = "covers";
 
 /** Planos de fundo prontos da nommi, para quem não quer enviar foto. */
@@ -16,8 +24,8 @@ export const PRESET_BACKGROUNDS = [
 ] as const;
 
 export function coverProblem(file: { type: string; size: number }): string | null {
-  if (!TYPES.includes(file.type)) return "Use uma imagem JPG, PNG ou WebP.";
-  return file.size > MAX_COVER_BYTES ? "A imagem passa de 4 MB." : null;
+  if (!ehFoto(file.type)) return "Escolha uma imagem.";
+  return file.size > MAX_COVER_BYTES ? "Essa imagem é grande demais." : null;
 }
 
 export function coverPath(
@@ -78,10 +86,14 @@ export async function uploadCover(
   file: File,
 ) {
   if (coverProblem(file)) return null;
-  const path = coverPath(userId, slot, target, file.type);
+  // Sempre pelo canvas: converte o HEIC do iPhone e reduz a foto de 12 MP
+  // que ninguém precisa carregar para ver uma capa.
+  const pronta = await fotoParaEnviar(file);
+  if (!pronta) return null;
+  const path = coverPath(userId, slot, target, "image/jpeg");
   const { error } = await supabase.storage
     .from(BUCKET)
-    .upload(path, file, { contentType: file.type, upsert: true });
+    .upload(path, pronta, { contentType: "image/jpeg", upsert: true });
   return error ? null : path;
 }
 
