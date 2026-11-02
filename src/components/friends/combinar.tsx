@@ -33,7 +33,10 @@ const CONFETE = [
 ];
 
 function Face({ c, size }: { c: Candidata; size: number }) {
-  return c.avatar ? (
+  // Foto quebrada (URL velha, arquivo apagado) cai no bonequinho, nunca no
+  // ícone de imagem quebrada do navegador.
+  const [quebrou, setQuebrou] = useState(false);
+  return c.avatar && !quebrou ? (
     <img
       className="real-face"
       src={c.avatar}
@@ -41,6 +44,7 @@ function Face({ c, size }: { c: Candidata; size: number }) {
       height={size}
       style={{ width: size, height: size, objectPosition: paraCss(c.fotoFoco) }}
       alt={"Foto de " + c.nome}
+      onError={() => setQuebrou(true)}
     />
   ) : (
     <SemFoto nome={c.nome} size={size} />
@@ -54,6 +58,20 @@ function Face({ c, size }: { c: Candidata; size: number }) {
  * desenhada atrás. Curto o bastante para a fila andar rápido, longo o
  * bastante para a pessoa ver para que lado a carta foi.
  */
+/** Miniatura do trilho com o mesmo cuidado: erro de imagem vira bonequinho. */
+function FotoMini({ k }: { k: Conhecida }) {
+  const [quebrou, setQuebrou] = useState(false);
+  return k.avatar && !quebrou ? (
+    <img
+      src={k.avatar}
+      alt={"Foto de " + k.nome}
+      onError={() => setQuebrou(true)}
+    />
+  ) : (
+    <SemFoto nome={k.nome} size={112} />
+  );
+}
+
 const SAIDA_DA_CARTA_MS = 170;
 
 /** A comemoração do match sai sozinha, sem precisar de toque. */
@@ -157,11 +175,7 @@ export function Combinar({ me }: { me: string }) {
               className="dc-mini-foto"
               aria-label={"Ver o perfil de " + k.nome}
             >
-              {k.avatar ? (
-                <img src={k.avatar} alt={"Foto de " + k.nome} />
-              ) : (
-                <SemFoto nome={k.nome} size={112} />
-              )}
+  <FotoMini k={k} />
             </Link>
             <h4>{k.nome}</h4>
             <p>{k.cidade || "Brasil"}</p>
