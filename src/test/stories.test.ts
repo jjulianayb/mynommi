@@ -5,6 +5,7 @@ import {
   storyPath,
   timeLeft,
   groupStories,
+  soComLink,
   type Story,
 } from "@/lib/stories";
 
@@ -58,6 +59,13 @@ describe("stories", () => {
     expect(g[0]!.mine).toBe(true);
     expect(g[1]!.allSeen).toBe(false);
     expect(g[2]!.allSeen).toBe(true);
+  });
+  it("story cujo arquivo não existe mais sai da lista", () => {
+    const list: Story[] = [
+      { ...base, id: "1", url: "https://x/1.jpg" },
+      { ...base, id: "2" },
+    ];
+    expect(list.filter(soComLink).map((s) => s.id)).toEqual(["1"]);
   });
   it("coloca os stories da mesma pessoa em ordem de publicação", () => {
     const list: Story[] = [
