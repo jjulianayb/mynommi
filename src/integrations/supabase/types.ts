@@ -210,6 +210,7 @@ export type Database = {
           actor_id: string | null
           amount: number
           created_at: string
+          expira_em: string | null
           id: string
           reason: string
           user_id: string
@@ -218,6 +219,7 @@ export type Database = {
           actor_id?: string | null
           amount: number
           created_at?: string
+          expira_em?: string | null
           id?: string
           reason: string
           user_id: string
@@ -226,6 +228,7 @@ export type Database = {
           actor_id?: string | null
           amount?: number
           created_at?: string
+          expira_em?: string | null
           id?: string
           reason?: string
           user_id?: string
@@ -381,6 +384,7 @@ export type Database = {
           code: string
           created_at: string
           owner_id: string
+          premiado_em: string | null
           used_at: string | null
           used_by: string | null
         }
@@ -388,6 +392,7 @@ export type Database = {
           code: string
           created_at?: string
           owner_id: string
+          premiado_em?: string | null
           used_at?: string | null
           used_by?: string | null
         }
@@ -395,6 +400,7 @@ export type Database = {
           code?: string
           created_at?: string
           owner_id?: string
+          premiado_em?: string | null
           used_at?: string | null
           used_by?: string | null
         }
@@ -581,6 +587,24 @@ export type Database = {
           },
         ]
       }
+      perfil_visto: {
+        Row: {
+          dia: string
+          user_id: string
+          visto_id: string
+        }
+        Insert: {
+          dia?: string
+          user_id: string
+          visto_id: string
+        }
+        Update: {
+          dia?: string
+          user_id?: string
+          visto_id?: string
+        }
+        Relationships: []
+      }
       post_comments: {
         Row: {
           author: string
@@ -745,6 +769,8 @@ export type Database = {
           is_business: boolean
           is_test: boolean
           looking_for: string
+          mostrar_idade: boolean
+          mostrar_online: boolean
           nao_topa: string
           nascimento: string | null
           nickname: string
@@ -756,6 +782,7 @@ export type Database = {
           updated_at: string
           video_path: string
           visibility: Json
+          visto_em: string | null
           wall_approval: boolean
         }
         Insert: {
@@ -778,6 +805,8 @@ export type Database = {
           is_business?: boolean
           is_test?: boolean
           looking_for?: string
+          mostrar_idade?: boolean
+          mostrar_online?: boolean
           nao_topa?: string
           nascimento?: string | null
           nickname?: string
@@ -789,6 +818,7 @@ export type Database = {
           updated_at?: string
           video_path?: string
           visibility?: Json
+          visto_em?: string | null
           wall_approval?: boolean
         }
         Update: {
@@ -811,6 +841,8 @@ export type Database = {
           is_business?: boolean
           is_test?: boolean
           looking_for?: string
+          mostrar_idade?: boolean
+          mostrar_online?: boolean
           nao_topa?: string
           nascimento?: string | null
           nickname?: string
@@ -822,6 +854,7 @@ export type Database = {
           updated_at?: string
           video_path?: string
           visibility?: Json
+          visto_em?: string | null
           wall_approval?: boolean
         }
         Relationships: []
@@ -1394,6 +1427,7 @@ export type Database = {
         Returns: number
       }
       apagar_minha_conta: { Args: never; Returns: undefined }
+      aponta_para_alguem: { Args: { _t: string }; Returns: boolean }
       avisar: {
         Args: {
           _actor: string
@@ -1421,6 +1455,11 @@ export type Database = {
         Args: { _amount: number; _reason: string; _teia: number; _user: string }
         Returns: undefined
       }
+      e_embaixadora: { Args: { _quem: string }; Returns: boolean }
+      esta_online: {
+        Args: { _quer: boolean; _visto: string }
+        Returns: boolean
+      }
       estive_no_role: {
         Args: { _teia: number; _user: string }
         Returns: boolean
@@ -1442,6 +1481,7 @@ export type Database = {
           teia_nome: string
         }[]
       }
+      gastar_figurinha: { Args: never; Returns: boolean }
       grant_purchased_credits: {
         Args: {
           _amount: number
@@ -1565,6 +1605,7 @@ export type Database = {
           nao_lidas: number
           nickname: string
           outro_id: string
+          tribos_juntas: number
           ultima: string
           ultima_em: string
           ultima_minha: boolean
@@ -1641,6 +1682,9 @@ export type Database = {
           voltaram: number
         }[]
       }
+      palavras_de_ataque_a_grupo: { Args: never; Returns: string[] }
+      palavras_de_xingamento: { Args: never; Returns: string[] }
+      palavras_so_com_alvo: { Args: never; Returns: string[] }
       pedidos_da_tribo: {
         Args: { _teia: number }
         Returns: {
@@ -1650,6 +1694,15 @@ export type Database = {
           quando: string
           recado: string
           user_id: string
+        }[]
+      }
+      perfis_do_dia: {
+        Args: never
+        Returns: {
+          pro: boolean
+          restantes: number
+          teto: number
+          vistos: number
         }[]
       }
       peso_dos_interesses: {
@@ -1664,27 +1717,24 @@ export type Database = {
         Returns: {
           about: string
           afinidade: number
-          avatar_figura: string
           avatar_url: string
           avatar_x: number
           avatar_y: number
-          background_path: string
           city: string
           cover_path: string
           cover_x: number
           cover_y: number
           em_comum: string[]
           goals: string[]
+          idade: number
           interests: string[]
           ja_me_curtiu: boolean
           looking_for: string
           mesma_cidade: boolean
           nickname: string
+          online: boolean
           person_verified: boolean
           places: string[]
-          selos_do_povo: string[]
-          selos_em_comum: string[]
-          tribos_em_comum: number
           user_id: string
         }[]
       }
@@ -1703,6 +1753,7 @@ export type Database = {
       pode_ganhar_estrela: { Args: { _user: string }; Returns: boolean }
       pode_selar: { Args: { _de: string; _dono: string }; Returns: boolean }
       posso_entrar_na_tribo: { Args: { _teia: number }; Returns: boolean }
+      premiar_convite_se_vingou: { Args: { _quem: string }; Returns: undefined }
       presenca_do_anfitriao: { Args: { _teia: number }; Returns: string }
       profile_stats: {
         Args: { _user: string }
@@ -1779,6 +1830,7 @@ export type Database = {
         Returns: undefined
       }
       registrar_acesso: { Args: never; Returns: undefined }
+      registrar_visita: { Args: never; Returns: undefined }
       responder_pedido: {
         Args: { _aceitar: boolean; _quem: string; _teia: number }
         Returns: string
@@ -1813,6 +1865,14 @@ export type Database = {
           when_text: string
         }[]
       }
+      saldo_pippins: {
+        Args: never
+        Returns: {
+          a_vencer: number
+          saldo: number
+          vence_em: string
+        }[]
+      }
       sao_amigos: { Args: { _a: string; _b: string }; Returns: boolean }
       segredos_da_tribo: {
         Args: { _teia: number }
@@ -1840,7 +1900,13 @@ export type Database = {
       spend_boost: { Args: never; Returns: string }
       spend_invite_boost: { Args: { _invite_ref: string }; Returns: number }
       teia_has_room: { Args: { _teia: number }; Returns: boolean }
+      tem_palavra: {
+        Args: { _palavras: string[]; _t: string }
+        Returns: boolean
+      }
       tem_premium: { Args: { _quem?: string }; Returns: boolean }
+      texto_comparavel: { Args: { _t: string }; Returns: string }
+      texto_simples: { Args: { _t: string }; Returns: string }
       tribo_e_aberta: { Args: { _teia: number }; Returns: boolean }
       tribo_publica: {
         Args: { _id: number }
@@ -1880,6 +1946,7 @@ export type Database = {
       }
       usar_convite: { Args: { _code: string }; Returns: boolean }
       vagas_de_embaixadora: { Args: never; Returns: number }
+      varre_meus_pippins: { Args: never; Returns: number }
       ve_contas_de_teste: { Args: never; Returns: boolean }
       videos_da_pagina: {
         Args: { _user: string }
