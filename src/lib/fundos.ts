@@ -103,7 +103,7 @@ export const FUNDOS: Fundo[] = [
   },
 
   // Degradê: a cor escorrendo, sem desenho nenhum em cima.
-  { id: "deg-amanhecer", nome: "Amanhecer", base: "#FF9A62", linha: "#FFD166", no: "#FFF3D6", tom: "escuro", desenho: "degrade", grupo: "Degradê" },
+  { id: "deg-amanhecer", nome: "Amanhecer", base: "#FF9A62", linha: "#FFD166", no: "#FFF3D6", tom: "claro", desenho: "degrade", grupo: "Degradê" },
   { id: "deg-anoitecer", nome: "Anoitecer", base: "#2B1B4D", linha: "#6B3FA0", no: "#C56BA0", tom: "escuro", desenho: "degrade", grupo: "Degradê" },
   { id: "deg-mar", nome: "Mar", base: "#043B5C", linha: "#1C86A8", no: "#8FD3B0", tom: "escuro", desenho: "degrade", grupo: "Degradê" },
   { id: "deg-algodao", nome: "Algodão-doce", base: "#FFC2D1", linha: "#D9B8FF", no: "#BDE0FE", tom: "claro", desenho: "degrade", grupo: "Degradê" },
@@ -113,7 +113,7 @@ export const FUNDOS: Fundo[] = [
   { id: "deg-neve", nome: "Neve", base: "#FAF9F6", linha: "#E6F3EA", no: "#BDE0FE", tom: "claro", desenho: "degrade", grupo: "Degradê" },
 
   // Tie-dye: manchas redondas que se misturam, como camiseta tingida.
-  { id: "tie-verao", nome: "Verão", base: "#FFB400", linha: "#EF675A", no: "#8FD3B0", tom: "escuro", desenho: "tiedye", grupo: "Tie-dye" },
+  { id: "tie-verao", nome: "Verão", base: "#FFB400", linha: "#EF675A", no: "#8FD3B0", tom: "claro", desenho: "tiedye", grupo: "Tie-dye" },
   { id: "tie-oceano", nome: "Oceano", base: "#075E3B", linha: "#1C86A8", no: "#BDE0FE", tom: "escuro", desenho: "tiedye", grupo: "Tie-dye" },
   { id: "tie-rosa", nome: "Rosa", base: "#FFC2D1", linha: "#C56BA0", no: "#FFF3D6", tom: "claro", desenho: "tiedye", grupo: "Tie-dye" },
   { id: "tie-roxo", nome: "Roxo", base: "#3A0E4D", linha: "#7B2CBF", no: "#FFB400", tom: "escuro", desenho: "tiedye", grupo: "Tie-dye" },
@@ -352,6 +352,16 @@ export function miniaturaDoFundo(f: Fundo): CSSProperties {
 }
 
 /**
+ * O valor é uma foto enviada (nem preset novo, nem gradiente antigo, nem
+ * vazio). Foto pede o véu escuro por cima, senão o texto claro some nela.
+ */
+export function fundoEhFoto(valor: string): boolean {
+  if (!valor || fundoPorId(valor)) return false;
+  if (PRESET_BACKGROUNDS.some((p) => p.id === valor)) return false;
+  return enderecoDaImagem(valor) !== "";
+}
+
+/**
  * Em fundo escuro o texto é claro, e vice-versa. Foto enviada conta como escura,
  * porque por cima dela vai um véu escuro para o texto continuar legível.
  */
@@ -360,6 +370,6 @@ export function tomDoFundo(valor: string): "claro" | "escuro" {
   if (f) return f.tom;
   if (!valor) return "claro";
   const antigo = PRESET_BACKGROUNDS.find((p) => p.id === valor);
-  if (antigo) return antigo.id === "papel" ? "claro" : "escuro";
+  if (antigo) return ["papel", "amanhecer", "cerrado"].includes(antigo.id) ? "claro" : "escuro";
   return enderecoDaImagem(valor) ? "escuro" : "claro";
 }
