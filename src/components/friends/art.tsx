@@ -191,11 +191,21 @@ export function SemFoto({
 }
 
 export const captions = CAP;
-export function Sticker({ id, size = 76, author }: { id: number; size?: number; author?: string }) {
+export function Sticker({
+  id,
+  size = 76,
+  author,
+  semLegenda = false,
+}: {
+  id: number;
+  size?: number;
+  author?: string;
+  semLegenda?: boolean;
+}) {
   return (
     <span className="friend-sticker">
       <i dangerouslySetInnerHTML={{ __html: sk(id, size) }} />
-      <b>{CAP[id]}</b>
+      {!semLegenda && <b>{CAP[id]}</b>}
       {author && <em>{author}</em>}
     </span>
   );
