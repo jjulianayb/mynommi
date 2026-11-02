@@ -31,3 +31,20 @@
 .dc-banner-txt h3{font-size:17px;margin:0 0 4px}
 .dc-banner-txt p{font-size:13px;color:var(--muted-foreground);margin:0 0 10px}
 .dc-banner-cta{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--primary);color:var(--primary);border-radius:999px;padding:9px 18px;font-weight:700;font-size:14px;text-decoration:none}
+
+/* Descobrir — etapa 1 do redesign (briefing da Ju 02/11): ritmo de revista */
+.dc-secao-titulo{font-size:18px;margin:0 0 10px}
+.dc-tribos{margin-top:24px;text-align:left;position:relative;z-index:2}
+.dc-tribo{flex:0 0 218px;scroll-snap-align:start;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--border);border-radius:22px;overflow:hidden;text-decoration:none;color:var(--foreground)}
+.dc-tribo.destaque{flex-basis:262px}
+.dc-tribo-capa{display:block;height:128px;overflow:hidden;background:#f4efe8;display:grid;place-items:center}
+.dc-tribo.destaque .dc-tribo-capa{height:158px}
+.dc-tribo-capa img{width:100%;height:100%;object-fit:cover;display:block}
+.dc-tribo-capa .friend-sticker{transform:none;width:auto}
+.dc-tribo-txt{display:flex;flex-direction:column;gap:3px;padding:12px 14px 14px;text-align:left}
+.dc-tribo-txt strong{font-size:15.5px;line-height:1.25}
+.dc-tribo-cat{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:#F6775B;text-transform:uppercase;letter-spacing:.4px}
+.dc-tribo-membros{font-size:12.5px;color:var(--muted-foreground)}
+.dc-tribo.catalogo{flex-basis:180px;align-items:center;justify-content:center;flex-direction:row;gap:8px;padding:16px;border-style:dashed}
+.dc-tribo.catalogo .dc-tribo-txt{padding:0}
+a.dc-mini-foto{display:block}
