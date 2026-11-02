@@ -88,7 +88,7 @@ export function EmptyState({
 }) {
   return (
     <div className="empty-state">
-      <Sticker id={4} size={112} />
+      <Sticker id={4} size={112} semLegenda />
       <h2>{title}</h2>
       <p>{text}</p>
       {children}
