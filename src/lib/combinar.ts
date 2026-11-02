@@ -28,7 +28,7 @@ export type Candidata = {
   selosEmComum: string[];
   selosDoPovo: string[];
 };
-export type Resposta = "match" | "guardado" | "passou" | "erro";
+export type Resposta = "match" | "guardado" | "passou" | "limite" | "erro";
 
 type Linha = {
   user_id: string;
@@ -97,6 +97,8 @@ export function porqueApareceu(c: Candidata): string {
 
 /** O que dizer depois da resposta. Ninguém é avisado de que foi passado. */
 export function recadoDaResposta(r: Resposta, nome: string): string {
+  if (r === "limite")
+    return "No plano grátis dá para combinar com até 3 pessoas. Com o Pro, match não tem teto.";
   if (r === "match") return `Deu match com ${nome}.`;
   if (r === "guardado")
     return "Guardamos sua resposta. Se a pessoa também quiser, vocês dois ficam sabendo.";
@@ -124,6 +126,7 @@ export function decisaoDoArrasto(dx: number, largura: number): "sim" | "nao" | n
 export function useCombinar(souReal: boolean) {
   const [fila, setFila] = useState<Candidata[]>([]);
   const [curiosidade, setCuriosidade] = useState(0);
+  const [doDia, setDoDia] = useState<{ teto: number; restantes: number; pro: boolean } | null>(null);
   const [ready, setReady] = useState(false);
 
   const carregar = useCallback(async () => {
@@ -131,12 +134,19 @@ export function useCombinar(souReal: boolean) {
       setReady(true);
       return;
     }
-    const [p, q] = await Promise.all([
+    const [p, q, d] = await Promise.all([
       db.rpc("pessoas_para_combinar", { _limite: 30 }),
       db.rpc("quem_tem_curiosidade"),
+      db.rpc("perfis_do_dia"),
     ]);
     setFila(((p.data as Linha[] | null) ?? []).map(toCandidata));
     setCuriosidade(typeof q.data === "number" ? q.data : 0);
+    const linhaDia = ((d.data as { teto: number; restantes: number; pro: boolean }[] | null) ?? [])[0];
+    setDoDia(
+      linhaDia
+        ? { teto: linhaDia.teto, restantes: linhaDia.restantes, pro: !!linhaDia.pro }
+        : null,
+    );
     setReady(true);
   }, [souReal]);
   useEffect(() => {
@@ -148,9 +158,9 @@ export function useCombinar(souReal: boolean) {
     setFila((f) => f.filter((c) => c.userId !== quem.userId));
     setCuriosidade((n) => (quem.jaMeCurtiu && n > 0 ? n - 1 : n));
     const { data, error } = await db.rpc("responder_pessoa", { _para: quem.userId, _sim: sim });
-    if (error) return "erro";
+    if (error) return error.message.includes("match não tem teto") ? "limite" : "erro";
     return (data as Resposta) ?? "erro";
   }, []);
 
-  return { fila, curiosidade, ready, responder, recarregar: carregar };
+  return { fila, curiosidade, doDia, ready, responder, recarregar: carregar };
 }
