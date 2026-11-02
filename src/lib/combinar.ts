@@ -130,6 +130,7 @@ export type Conhecida = {
   avatar: string;
   cidade: string;
   interesses: string[];
+  tribosEmComum: string[];
 };
 
 /**
@@ -160,35 +161,43 @@ export function useConhecidas(me: string | null) {
         setReady(true);
         return;
       }
-      const { data: perfis } = await db
-        .from("profiles")
-        .select("id,nickname,city,interests,avatar_url")
-        .in("id", ids);
+      // A leitura passa pelo pagina_pessoal: a política de privacidade mora
+      // lá, e perfis trancados (privado) voltam vazios e somem do trilho.
+      const paginas = await Promise.all(
+        ids.map((id) => db.rpc("pagina_pessoal", { _user: id })),
+      );
       setLista(
-        (
-          (perfis as
-            | {
-                id: string;
-                nickname: string | null;
-                city: string | null;
-                interests: string[] | null;
-                avatar_url: string | null;
-              }[]
-            | null) ?? []
-        ).map((x) => ({
-          userId: x.id,
-          nome: x.nickname || "nommi",
-          avatar: enderecoDaImagem(x.avatar_url || ""),
-          cidade: x.city || "",
-          interesses: x.interests ?? [],
-        })),
+        paginas
+          .map(({ data }) => {
+            const x = (
+              (data as
+                | {
+                    id: string;
+                    nickname: string | null;
+                    city: string | null;
+                    interests: string[] | null;
+                    avatar_url: string | null;
+                    tribos_em_comum: string[] | null;
+                  }[]
+                | null) ?? []
+            )[0];
+            if (!x) return null;
+            return {
+              userId: x.id,
+              nome: x.nickname || "nommi",
+              avatar: x.avatar_url || "",
+              cidade: x.city || "",
+              interesses: (x.interests ?? []).slice(0, 3),
+              tribosEmComum: (x.tribos_em_comum ?? []).slice(0, 2),
+            } as Conhecida;
+          })
+          .filter((k): k is Conhecida => k !== null),
       );
       setReady(true);
     })();
   }, [me]);
   return { lista, ready };
 }
-
 export function useCombinar(souReal: boolean) {
   const [fila, setFila] = useState<Candidata[]>([]);
   const [curiosidade, setCuriosidade] = useState(0);
