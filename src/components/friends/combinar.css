@@ -64,3 +64,6 @@ a.dc-mini-foto{display:block}
 .dc-pessoa .combinar-chamada{margin:0;font-size:13.5px}
 .dc-pessoa .combinar-perfil{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:13px;color:var(--muted-foreground);text-decoration:underline}
 .dc-tags span.comum{background:#EAF4EE;border-color:transparent}
+
+/* foto retangular de cantos suaves, como no mockup (real-face padrao e redonda) */
+.dc-pessoa .dc-foto img{border-radius:16px!important}
