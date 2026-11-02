@@ -10,6 +10,7 @@ import rioPhoto from "@/assets/welcome-rio.jpg";
 import { useNaoLidas } from "@/lib/direct-messages";
 import { useAvisosNaoLidos } from "@/lib/avisos";
 import { Tour } from "./tour";
+import { PippoAjudante } from "./pippo";
 import { VersaoNova } from "./versao-nova";
 import { esquecerTour, tourJaVisto } from "@/lib/tour";
 import { registrarAcesso } from "@/lib/numeros";
@@ -243,6 +244,19 @@ export function SocialShell({ children }: { children: ReactNode }) {
         ))}
       </nav>
       <VersaoNova />
+      {real &&
+        !tourAberto &&
+        !apresentar.precisa &&
+        aceite.pronto &&
+        !aceite.pendente &&
+        !pathname.startsWith("/conversas/") && (
+          <PippoAjudante
+            aoRefazerTour={() => {
+              esquecerTour(cloudUser!.id);
+              setTourAberto(true);
+            }}
+          />
+        )}
       {tourAberto && cloudUser && <Tour me={cloudUser.id} onFim={() => setTourAberto(false)} />}
       {drawer && (
         <Sheet title="Seu nommi" side="right" onClose={() => setDrawer(false)}>
