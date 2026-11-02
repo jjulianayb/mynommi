@@ -123,6 +123,72 @@ export function decisaoDoArrasto(dx: number, largura: number): "sim" | "nao" | n
   return null;
 }
 
+
+export type Conhecida = {
+  userId: string;
+  nome: string;
+  avatar: string;
+  cidade: string;
+  interesses: string[];
+};
+
+/**
+ * Quem já é conexão aceita. Leitura direta das tabelas: não passa pelo
+ * baralho, então não consome o teto de perfis do dia nem conta match.
+ * Perfis trancados (privado) somem sozinhos pela política do banco.
+ */
+export function useConhecidas(me: string | null) {
+  const [lista, setLista] = useState<Conhecida[]>([]);
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    if (!me) return;
+    void (async () => {
+      const { data: conns } = await db
+        .from("connections")
+        .select("requester_id,addressee_id")
+        .eq("status", "aceita")
+        .or(`requester_id.eq.${me},addressee_id.eq.${me}`);
+      const ids = [
+        ...new Set(
+          ((conns as { requester_id: string; addressee_id: string }[] | null) ?? []).map((r) =>
+            r.requester_id === me ? r.addressee_id : r.requester_id,
+          ),
+        ),
+      ];
+      if (!ids.length) {
+        setLista([]);
+        setReady(true);
+        return;
+      }
+      const { data: perfis } = await db
+        .from("profiles")
+        .select("id,nickname,city,interests,avatar_url")
+        .in("id", ids);
+      setLista(
+        (
+          (perfis as
+            | {
+                id: string;
+                nickname: string | null;
+                city: string | null;
+                interests: string[] | null;
+                avatar_url: string | null;
+              }[]
+            | null) ?? []
+        ).map((x) => ({
+          userId: x.id,
+          nome: x.nickname || "nommi",
+          avatar: enderecoDaImagem(x.avatar_url || ""),
+          cidade: x.city || "",
+          interesses: x.interests ?? [],
+        })),
+      );
+      setReady(true);
+    })();
+  }, [me]);
+  return { lista, ready };
+}
+
 export function useCombinar(souReal: boolean) {
   const [fila, setFila] = useState<Candidata[]>([]);
   const [curiosidade, setCuriosidade] = useState(0);
