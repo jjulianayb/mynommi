@@ -9,9 +9,13 @@ import frontalPippo from "@/assets/pippo/1-pippo-frontal.png";
 import apontaPippo from "@/assets/pippo/1-pippo-aponta.png";
 import {
   BOAS_VINDAS_DO_PIPPO,
+  COMECO_DO_PIPPO,
   NAO_SEI_DO_PIPPO,
   RESPOSTAS_DO_PIPPO,
+  baloes,
+  papoPara,
   respostaPara,
+  respostaPorId,
   type RespostaDoPippo,
 } from "@/lib/pippo-respostas";
 
@@ -24,25 +28,91 @@ export function PippoRosto({ altura = 92 }: { altura?: number }) {
 
 type Fala = { de: "pippo" | "voce"; texto: string; ir?: RespostaDoPippo["ir"] };
 
+const CHAVE = "nommi-pippo-conversa";
+const COMECO: Fala[] = BOAS_VINDAS_DO_PIPPO.map((texto) => ({ de: "pippo", texto }));
+
+function lerSessao(): { falas: Fala[]; sugestoes: string[] } {
+  try {
+    const bruto = window.sessionStorage.getItem(CHAVE);
+    if (bruto) {
+      const d = JSON.parse(bruto);
+      if (Array.isArray(d.falas) && Array.isArray(d.sugestoes)) return d;
+    }
+  } catch {
+    /* sem armazenamento: a conversa vale só até fechar a aba */
+  }
+  return { falas: COMECO, sugestoes: COMECO_DO_PIPPO };
+}
+
 /** Ajudante fixo no cantinho: conversa com respostas prontas e refaz o tour. */
 export function PippoAjudante({ aoRefazerTour }: { aoRefazerTour: () => void }) {
   const [aberto, setAberto] = useState(false);
-  const [falas, setFalas] = useState<Fala[]>([{ de: "pippo", texto: BOAS_VINDAS_DO_PIPPO }]);
+  const [falas, setFalas] = useState<Fala[]>(COMECO);
+  const [sugestoes, setSugestoes] = useState<string[]>(COMECO_DO_PIPPO);
+  const [digitando, setDigitando] = useState(false);
   const [texto, setTexto] = useState("");
+  const [todas, setTodas] = useState(false);
   const fim = useRef<HTMLDivElement>(null);
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  useEffect(() => {
+    const d = lerSessao();
+    setFalas(d.falas);
+    setSugestoes(d.sugestoes);
+    const t = timers.current;
+    return () => t.forEach(clearTimeout);
+  }, []);
+
+  useEffect(() => {
+    try {
+      window.sessionStorage.setItem(CHAVE, JSON.stringify({ falas, sugestoes }));
+    } catch {
+      /* ok */
+    }
+  }, [falas, sugestoes]);
 
   useEffect(() => {
     fim.current?.scrollIntoView({ block: "end" });
-  }, [falas, aberto]);
+  }, [falas, digitando, aberto]);
 
-  const perguntar = (pergunta: string, r: RespostaDoPippo | null) =>
-    setFalas((f) => [
-      ...f,
-      { de: "voce", texto: pergunta },
-      r
-        ? { de: "pippo", texto: r.resposta, ir: r.ir }
-        : { de: "pippo", texto: NAO_SEI_DO_PIPPO, ir: { to: "/ajuda", rotulo: "Abrir a Ajuda" } },
-    ]);
+  const responder = (pergunta: string, r: RespostaDoPippo | null) => {
+    setFalas((f) => [...f, { de: "voce", texto: pergunta }]);
+    setSugestoes([]);
+    setTodas(false);
+    setDigitando(true);
+    let baloesDele: string[];
+    let ir: RespostaDoPippo["ir"];
+    let depois: string[];
+    const papo = r ? null : papoPara(pergunta);
+    if (r) {
+      baloesDele = [r.abre, ...baloes(r.resposta)];
+      ir = r.ir;
+      depois = r.depois;
+    } else if (papo) {
+      baloesDele = papo;
+      depois = COMECO_DO_PIPPO;
+    } else {
+      baloesDele = NAO_SEI_DO_PIPPO;
+      ir = { to: "/ajuda", rotulo: "Abrir a Ajuda" };
+      depois = COMECO_DO_PIPPO;
+    }
+    let espera = 650;
+    baloesDele.forEach((b, i) => {
+      const ultimo = i === baloesDele.length - 1;
+      timers.current.push(
+        setTimeout(() => {
+          setFalas((f) => [...f, { de: "pippo", texto: b, ir: ultimo ? ir : undefined }]);
+          if (ultimo) {
+            setDigitando(false);
+            setSugestoes(depois);
+          } else setDigitando(true);
+        }, espera),
+      );
+      espera += 500 + Math.min(900, b.length * 14);
+    });
+  };
+
+  const lista = todas ? RESPOSTAS_DO_PIPPO : sugestoes.map(respostaPorId).filter(Boolean);
 
   return (
     <div className="pippo-canto">
@@ -66,32 +136,47 @@ export function PippoAjudante({ aoRefazerTour }: { aoRefazerTour: () => void }) 
                 )}
               </div>
             ))}
+            {digitando && (
+              <div className="pippo-fala pippo digitando" aria-label="Pippo está digitando">
+                <span />
+                <span />
+                <span />
+              </div>
+            )}
             <div ref={fim} />
           </div>
           <div className="pippo-perguntas">
-            {RESPOSTAS_DO_PIPPO.map((r) => (
-              <button key={r.id} type="button" onClick={() => perguntar(r.pergunta, r)}>
-                {r.pergunta}
+            {!digitando &&
+              (lista as RespostaDoPippo[]).map((r) => (
+                <button key={r.id} type="button" onClick={() => responder(r.pergunta, r)}>
+                  {r.pergunta}
+                </button>
+              ))}
+            {!digitando && !todas && (
+              <button type="button" onClick={() => setTodas(true)}>
+                Ver todas as perguntas
               </button>
-            ))}
-            <button
-              type="button"
-              className="pippo-tour"
-              onClick={() => {
-                setAberto(false);
-                aoRefazerTour();
-              }}
-            >
-              Fazer o tour do app
-            </button>
+            )}
+            {!digitando && (
+              <button
+                type="button"
+                className="pippo-tour"
+                onClick={() => {
+                  setAberto(false);
+                  aoRefazerTour();
+                }}
+              >
+                Fazer o tour do app
+              </button>
+            )}
           </div>
           <form
             className="pippo-escrever"
             onSubmit={(e) => {
               e.preventDefault();
               const t = texto.trim();
-              if (!t) return;
-              perguntar(t, respostaPara(t));
+              if (!t || digitando) return;
+              responder(t, respostaPara(t));
               setTexto("");
             }}
           >
