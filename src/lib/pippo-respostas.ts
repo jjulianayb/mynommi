@@ -11,6 +11,10 @@ export type RespostaDoPippo = {
   resposta: string;
   /** Palavras que levam a esta resposta quando a pessoa escreve livre (sem acento). */
   palavras: string[];
+  /** Abertura curta e leve, antes da resposta. */
+  abre: string;
+  /** Perguntas que fazem sentido logo depois desta. */
+  depois: string[];
   ir?: {
     to: "/descobrir" | "/grupos" | "/perfil" | "/convites" | "/convidar" | "/ajuda";
     rotulo: string;
@@ -20,6 +24,8 @@ export type RespostaDoPippo = {
 export const RESPOSTAS_DO_PIPPO: RespostaDoPippo[] = [
   {
     id: "match",
+    abre: "Essa eu sei de olho fechado.",
+    depois: ["limite", "pagina", "tribo"],
     pergunta: "Como funciona o match?",
     resposta:
       "Você vê uma pessoa por vez, com os interesses dela. Diz se quer conhecer ou passa. Se os dois quiserem, viram amizade na hora e a conversa abre.",
@@ -28,12 +34,16 @@ export const RESPOSTAS_DO_PIPPO: RespostaDoPippo[] = [
   },
   {
     id: "limite",
+    abre: "Boa, vamos de conta rápida.",
+    depois: ["match", "criar-tribo", "tribo"],
     pergunta: "Quantas pessoas vejo por dia?",
     resposta: `No plano grátis são ${PERFIS_GRATIS_POR_DIA} apresentações por dia e até ${MATCHES_GRATIS} matches. No Pro são ${PERFIS_PRO_POR_DIA} por dia e o match não tem teto. Amanhã vem gente nova.`,
     palavras: ["dia", "quantas", "limite", "acabou", "acabaram", "gratis", "pro", "teto", "plano"],
   },
   {
     id: "tribo",
+    abre: "Tribo é a minha parte favorita.",
+    depois: ["entrar", "segredo", "role"],
     pergunta: "O que é uma tribo?",
     resposta:
       "Tribo é gente com algo em comum: café, trilha, jogos, maternidade. Você entra pelo interesse, não por estar sozinha. Dentro dela tem conversa que só quem está lá vê.",
@@ -42,6 +52,8 @@ export const RESPOSTAS_DO_PIPPO: RespostaDoPippo[] = [
   },
   {
     id: "entrar",
+    abre: "Fácil, é um toque só.",
+    depois: ["segredo", "role", "criar-tribo"],
     pergunta: "Como entro numa tribo?",
     resposta:
       "Abra Tribos, escolha uma das abertas e toque em Entrar. Sair também é simples, é só tocar em Sair.",
@@ -50,6 +62,8 @@ export const RESPOSTAS_DO_PIPPO: RespostaDoPippo[] = [
   },
   {
     id: "segredo",
+    abre: "Aqui é cofre, ninguém fala.",
+    depois: ["tribo", "role", "convidar"],
     pergunta: "O que é o “Só entre nós”?",
     resposta:
       "Cada tribo tem um espaço onde o que se escreve some sozinho e não sai do grupo. Só quem está na tribo vê.",
@@ -57,6 +71,8 @@ export const RESPOSTAS_DO_PIPPO: RespostaDoPippo[] = [
   },
   {
     id: "role",
+    abre: "Sextou mesmo, né?",
+    depois: ["convidar", "entrar", "pagina"],
     pergunta: "Como marco um rolê?",
     resposta:
       "Alguém abre um rolê com dia, lugar e vagas, e quem quiser diz “Quero ir”. É opcional. Para abrir um, toque no botão do meio e escolha “Criar rolê aberto”.",
@@ -65,6 +81,8 @@ export const RESPOSTAS_DO_PIPPO: RespostaDoPippo[] = [
   },
   {
     id: "convidar",
+    abre: "Quanto mais gente boa, melhor.",
+    depois: ["role", "pagina", "tribo"],
     pergunta: "Como chamo alguém para a nommi?",
     resposta: "Toque no botão do meio e escolha “Chamar minha tribo”. Você manda o convite por lá.",
     palavras: ["convidar", "convite", "chamar", "chamo", "alguem", "amiga", "amigo", "indicar"],
@@ -72,6 +90,8 @@ export const RESPOSTAS_DO_PIPPO: RespostaDoPippo[] = [
   },
   {
     id: "pagina",
+    abre: "Capricha que a primeira impressão conta.",
+    depois: ["match", "tribo", "limite"],
     pergunta: "Como deixo minha página mais atraente?",
     resposta:
       "Em Meu nommi, coloque sua foto, sua capa, seus interesses e o que você está procurando. É por ela que alguém decide se quer te conhecer.",
@@ -80,17 +100,76 @@ export const RESPOSTAS_DO_PIPPO: RespostaDoPippo[] = [
   },
   {
     id: "criar-tribo",
+    abre: "Já pensando em fundar a sua?",
+    depois: ["tribo", "entrar", "limite"],
     pergunta: "Posso criar uma tribo?",
     resposta: `Quem tem Pro pode criar até ${TRIBOS_PRO} tribos. No plano grátis você pode entrar em todas as tribos abertas.`,
     palavras: ["criar", "crio", "nova tribo", "fundar", "criar uma", "posso criar"],
   },
 ];
 
-export const BOAS_VINDAS_DO_PIPPO =
-  "Oi, eu sou o Pippo. Te ajudo a se achar na nommi. Toque numa pergunta ou escreva a sua.";
+export const BOAS_VINDAS_DO_PIPPO = [
+  "Oi! Pippo na área.",
+  "Te ajudo a se achar na nommi. Toca numa sugestão ou escreve a sua dúvida.",
+];
 
-export const NAO_SEI_DO_PIPPO =
-  "Essa eu ainda não sei responder. Dá uma olhada na Ajuda, que lá tem mais.";
+/** As três sugestões do começo da conversa. */
+export const COMECO_DO_PIPPO = ["match", "tribo", "limite"];
+
+export const NAO_SEI_DO_PIPPO = [
+  "Essa me pegou.",
+  "Ainda não sei responder isso. Dá uma olhada na Ajuda, que lá tem mais.",
+];
+
+/** Conversa fiada: respostas curtas para quem só quer dar um oi. */
+const PAPO: { palavras: string[]; baloes: string[] }[] = [
+  {
+    palavras: ["oi", "ola", "bom dia", "boa tarde", "boa noite", "eai", "opa"],
+    baloes: [
+      "Opa, que bom te ver por aqui!",
+      "Quer saber como a nommi funciona? É só tocar numa sugestão.",
+    ],
+  },
+  {
+    palavras: ["obrigado", "obrigada", "valeu", "brigado", "brigada"],
+    baloes: ["Imagina, é meu trabalho e meu hobby.", "Qualquer coisa, é só chamar."],
+  },
+  { palavras: ["tchau", "ate mais", "flw", "falou"], baloes: ["Até mais! Vai lá fazer amizade."] },
+  {
+    palavras: ["quem e voce", "quem e vc", "quem voce e", "seu nome", "pippo"],
+    baloes: [
+      "Sou o Pippo, o ajudante da nommi.",
+      "Respondo o que o app já sabe. O resto eu admito que não sei.",
+    ],
+  },
+  {
+    palavras: ["robo", "ia", "inteligencia artificial", "chatgpt"],
+    baloes: [
+      "Sou um ajudante de respostas prontas, escritas pela nommi.",
+      "Não invento nada, só repito o que o app diz.",
+    ],
+  },
+];
+
+export function papoPara(texto: string): string[] | null {
+  const t = " " + limpa(texto) + " ";
+  for (const p of PAPO) if (p.palavras.some((w) => t.includes(" " + w + " "))) return p.baloes;
+  return null;
+}
+
+/** Quebra um texto em balões curtos, por frase, sem passar de ~110 caracteres cada. */
+export function baloes(texto: string, max = 110): string[] {
+  const frases = texto.match(/[^.!?]+[.!?]+["”]?|[^.!?]+$/g)?.map((f) => f.trim()) ?? [texto];
+  const out: string[] = [];
+  for (const f of frases) {
+    const ult = out[out.length - 1];
+    if (ult && (ult + " " + f).length <= max) out[out.length - 1] = ult + " " + f;
+    else out.push(f);
+  }
+  return out;
+}
+
+export const respostaPorId = (id: string) => RESPOSTAS_DO_PIPPO.find((r) => r.id === id) ?? null;
 
 const limpa = (t: string) =>
   t
