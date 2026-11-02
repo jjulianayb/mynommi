@@ -8,6 +8,7 @@ import { Link } from "@tanstack/react-router";
 import frontalPippo from "@/assets/pippo/1-pippo-frontal.png";
 import apontaPippo from "@/assets/pippo/1-pippo-aponta.png";
 import { installSteps, isStandalone, platformOf } from "@/lib/install";
+import { ativarAvisos, estadoDosAvisos } from "@/lib/push";
 import { supabase } from "@/integrations/supabase/client";
 import { TRIBO_DO_PIPPO_ID } from "@/lib/pippo-tribo";
 import {
@@ -37,6 +38,7 @@ type Fala = {
   texto: string;
   ir?: RespostaDoPippo["ir"];
   irTribo?: { id: number; rotulo: string };
+  acao?: "ativar-avisos" | undefined;
 };
 
 const CHAVE = "nommi-pippo-conversa";
@@ -108,6 +110,20 @@ export function PippoAjudante({
       }));
       const tribo = indicarTribo(lista, TRIBO_DO_PIPPO_ID);
       const msgs = boasVindasAtivas(nome ?? "", tribo);
+      // Com o app instalado e a permissão em aberto, o Pippo já oferece os avisos.
+      const oferecerAvisos =
+        isStandalone(window as Parameters<typeof isStandalone>[0]) &&
+        estadoDosAvisos() === "disponivel";
+      const falaAvisos: Fala[] = oferecerAvisos
+        ? [
+            {
+              de: "pippo",
+              texto:
+                "Quer que eu te avise quando chegar coisa nova? É um toque, e você desliga quando quiser.",
+              acao: "ativar-avisos",
+            },
+          ]
+        : [];
       setFalas((f) => [
         ...f,
         ...msgs.map((texto, i): Fala => {
@@ -116,6 +132,7 @@ export function PippoAjudante({
             fala.irTribo = { id: tribo.id, rotulo: "Ver a tribo " + tribo.name };
           return fala;
         }),
+        ...falaAvisos,
       ]);
       setNovidade(true);
     });
@@ -154,8 +171,33 @@ export function PippoAjudante({
     let baloesDele: string[];
     let ir: RespostaDoPippo["ir"];
     let depois: string[];
+    let acaoFinal: Fala["acao"];
     const papo = r ? null : papoPara(pergunta);
-    if (r && r.id === "instalar") {
+    if (r && r.id === "avisos") {
+      const instalado = isStandalone(window as Parameters<typeof isStandalone>[0]);
+      const estado = estadoDosAvisos();
+      const plataforma = platformOf(navigator.userAgent, navigator.maxTouchPoints);
+      if (!instalado) {
+        baloesDele = [
+          r.abre,
+          "Primeiro instala a nommi na tela inicial, que aí eu consigo te avisar.",
+          ...respostaDeInstalar(plataforma, false, installSteps(plataforma)),
+        ];
+      } else if (estado === "ativo") {
+        baloesDele = [r.abre, "Seus avisos já estão ligados. Pode deixar que eu te chamo."];
+      } else if (estado === "negado") {
+        baloesDele = [
+          r.abre,
+          "Os avisos estão desligados no seu aparelho. Para ligar, abra os ajustes, em Notificações, e libere a nommi.",
+        ];
+      } else if (estado === "disponivel") {
+        baloesDele = [r.abre, "É um toque só: ativa aqui embaixo e eu te aviso quando chegar coisa nova."];
+        acaoFinal = "ativar-avisos";
+      } else {
+        baloesDele = [r.abre, "Esse navegador não tem avisos. No celular, com a nommi instalada, eu te chamo."];
+      }
+      depois = r.depois;
+    } else if (r && r.id === "instalar") {
       baloesDele = [
         r.abre,
         ...respostaDeInstalar(
@@ -182,7 +224,10 @@ export function PippoAjudante({
       const ultimo = i === baloesDele.length - 1;
       timers.current.push(
         setTimeout(() => {
-          setFalas((f) => [...f, { de: "pippo", texto: b, ir: ultimo ? ir : undefined }]);
+          setFalas((f) => [
+            ...f,
+            { de: "pippo", texto: b, ir: ultimo ? ir : undefined, acao: ultimo ? acaoFinal : undefined },
+          ]);
           if (ultimo) {
             setDigitando(false);
             setSugestoes(depois);
@@ -190,6 +235,22 @@ export function PippoAjudante({
         }, espera),
       );
       espera += 500 + Math.min(900, b.length * 14);
+    });
+  };
+
+  const aoAtivarAvisos = () => {
+    if (!me || digitando) return;
+    setFalas((f) => [...f, { de: "voce", texto: "Ativar avisos" }]);
+    setDigitando(true);
+    void ativarAvisos(me).then((r) => {
+      const texto =
+        r === "ativo"
+          ? "Pronto! Agora eu te aviso quando chegar coisa nova. Para desligar, é nas configurações de notificações do aparelho."
+          : r === "negado"
+            ? "Tudo bem, sem avisos por enquanto. Se mudar de ideia, é só me chamar aqui."
+            : "Não consegui ligar agora. Tenta de novo daqui a pouquinho.";
+      setFalas((f) => [...f, { de: "pippo", texto }]);
+      setDigitando(false);
     });
   };
 
@@ -224,6 +285,11 @@ export function PippoAjudante({
                   <Link to={f.ir.to} className="pippo-ir" onClick={() => setAberto(false)}>
                     {f.ir.rotulo}
                   </Link>
+                )}
+                {f.acao === "ativar-avisos" && estadoDosAvisos() === "disponivel" && (
+                  <button type="button" className="pippo-ir" onClick={aoAtivarAvisos}>
+                    Ativar avisos
+                  </button>
                 )}
               </div>
             ))}
