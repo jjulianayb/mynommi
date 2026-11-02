@@ -1,6 +1,7 @@
 import { CommunityDetail } from "./community-detail";
 import { useDemoSession } from "./session";
 import { useSharedTeia } from "@/lib/shared-teias";
+import { ConvitePippo } from "@/components/friends/convite-pippo";
 import { useRealTeias, useRealTeia, toTeia, sortByCity, TRIBOS_ABERTAS_INICIAIS, tribosAbertasVisiveis } from "@/lib/real-teias";
 import { RadarSection } from "./radar-section";
 import { Feed, CreatePostForm, RolesList, RoleCard } from "./social-feed";
@@ -392,6 +393,7 @@ export function Home() {
     <>
       <VitrineTop nickname={state.nickname} city={city} avatar={state.photo} />
       {realHome && <StoriesStrip me={cloudUser!.id} nickname={state.nickname || "nommi"} />}
+      {realHome && <ConvitePippo me={cloudUser!.id} nickname={state.nickname || "nommi"} />}
       {realHome && (filter === "Todas" || filter === "Amizade") && (
         <PessoasParaVoce me={cloudUser!.id} />
       )}
@@ -1753,4 +1755,4 @@ export function GroupDetail({ id }: { id: number }) {
       />
     </>
   );
-      }
+                        }
