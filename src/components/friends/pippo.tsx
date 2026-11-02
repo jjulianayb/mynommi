@@ -7,8 +7,12 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import frontalPippo from "@/assets/pippo/1-pippo-frontal.png";
 import apontaPippo from "@/assets/pippo/1-pippo-aponta.png";
+import { supabase } from "@/integrations/supabase/client";
+import { TRIBO_DO_PIPPO_ID } from "@/lib/pippo-tribo";
 import {
   BOAS_VINDAS_DO_PIPPO,
+  boasVindasAtivas,
+  indicarTribo,
   COMECO_DO_PIPPO,
   NAO_SEI_DO_PIPPO,
   RESPOSTAS_DO_PIPPO,
@@ -26,7 +30,12 @@ export function PippoRosto({ altura = 92 }: { altura?: number }) {
   return <img className="pippo-busto" src={frontalPippo} alt="" style={{ height: altura }} />;
 }
 
-type Fala = { de: "pippo" | "voce"; texto: string; ir?: RespostaDoPippo["ir"] };
+type Fala = {
+  de: "pippo" | "voce";
+  texto: string;
+  ir?: RespostaDoPippo["ir"];
+  irTribo?: { id: number; rotulo: string };
+};
 
 const CHAVE = "nommi-pippo-conversa";
 const COMECO: Fala[] = BOAS_VINDAS_DO_PIPPO.map((texto) => ({ de: "pippo", texto }));
@@ -45,7 +54,16 @@ function lerSessao(): { falas: Fala[]; sugestoes: string[] } {
 }
 
 /** Ajudante fixo no cantinho: conversa com respostas prontas e refaz o tour. */
-export function PippoAjudante({ aoRefazerTour }: { aoRefazerTour: () => void }) {
+export function PippoAjudante({
+  aoRefazerTour,
+  me,
+  nome,
+}: {
+  aoRefazerTour: () => void;
+  me?: string;
+  nome?: string;
+}) {
+  const [novidade, setNovidade] = useState(false);
   const [aberto, setAberto] = useState(false);
   const [falas, setFalas] = useState<Fala[]>(COMECO);
   const [sugestoes, setSugestoes] = useState<string[]>(COMECO_DO_PIPPO);
@@ -62,6 +80,57 @@ export function PippoAjudante({ aoRefazerTour }: { aoRefazerTour: () => void }) 
     const t = timers.current;
     return () => t.forEach(clearTimeout);
   }, []);
+
+  // Boas-vindas ativas: uma vez por conta, o Pippo chega falando e indica uma tribo real.
+  useEffect(() => {
+    if (!me) return;
+    const marca = "nommi-pippo-boasvindas-" + me;
+    try {
+      if (window.localStorage.getItem(marca)) return;
+    } catch {
+      return;
+    }
+    let vivo = true;
+    void supabase.rpc("tribos_para_mim", { _limite: 6 }).then(({ data }) => {
+      if (!vivo) return;
+      const lista = (
+        (data as
+          | { id: number; name: string; member_count: number; i_am_member: boolean; em_comum: number }[]
+          | null) ?? []
+      ).map((r) => ({
+        id: r.id,
+        name: r.name,
+        members: r.member_count,
+        iAmMember: r.i_am_member,
+        emComum: r.em_comum,
+      }));
+      const tribo = indicarTribo(lista, TRIBO_DO_PIPPO_ID);
+      const msgs = boasVindasAtivas(nome ?? "", tribo);
+      setFalas((f) => [
+        ...f,
+        ...msgs.map((texto, i): Fala => {
+          const fala: Fala = { de: "pippo", texto };
+          if (tribo && i === msgs.length - 1)
+            fala.irTribo = { id: tribo.id, rotulo: "Ver a tribo " + tribo.name };
+          return fala;
+        }),
+      ]);
+      setNovidade(true);
+    });
+    return () => {
+      vivo = false;
+    };
+  }, [me, nome]);
+
+  useEffect(() => {
+    if (!aberto || !novidade || !me) return;
+    setNovidade(false);
+    try {
+      window.localStorage.setItem("nommi-pippo-boasvindas-" + me, "1");
+    } catch {
+      /* ok */
+    }
+  }, [aberto, novidade, me]);
 
   useEffect(() => {
     try {
@@ -129,6 +198,16 @@ export function PippoAjudante({ aoRefazerTour }: { aoRefazerTour: () => void }) 
             {falas.map((f, i) => (
               <div key={i} className={"pippo-fala " + f.de}>
                 <p>{f.texto}</p>
+                {f.irTribo && (
+                  <Link
+                    to="/grupos/$id"
+                    params={{ id: String(f.irTribo.id) }}
+                    className="pippo-ir"
+                    onClick={() => setAberto(false)}
+                  >
+                    {f.irTribo.rotulo}
+                  </Link>
+                )}
                 {f.ir && (
                   <Link to={f.ir.to} className="pippo-ir" onClick={() => setAberto(false)}>
                     {f.ir.rotulo}
@@ -199,6 +278,7 @@ export function PippoAjudante({ aoRefazerTour }: { aoRefazerTour: () => void }) 
         onClick={() => setAberto((a) => !a)}
       >
         <PippoRosto altura={92} />
+        {novidade && !aberto && <span className="pippo-novidade" aria-label="Pippo tem uma novidade" />}
       </button>
     </div>
   );
