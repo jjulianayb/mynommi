@@ -409,3 +409,22 @@
 - A chamada virou: *"Gente que combina com você, pelo que vocês têm em comum. Quando o sim é dos dois lados, a conversa abre."*
 - `src/test/voz.test.ts` barra "vocês dois" e "já são amizade" em componentes **e** em libs.
 - Teste de texto exato é obstáculo, não rede: `combinar.test.ts` travava a frase palavra por palavra e quebrou nas duas reescritas de hoje. Onde o sentido é o que importa, o teste confere o sentido.
+
+## A carta do Descobrir, igual ao mockup (02/11)
+- **A foto É a carta.** Nome, idade, cidade, interesses e o botão Conectar ficam **por cima** dela, sobre um véu verde escuro que começa a 58% da altura. Antes a foto era um retângulo dentro de uma folha branca com o texto embaixo — parecia ficha, não carta.
+- Isso resolve o problema real das fotos: **o peso visual vem do tamanho da carta, não da qualidade da fotografia.** Quem não tem foto entra na mesma moldura com a inicial em 92px, e a carta tem o mesmo porte.
+- Medidas do mockup: proporção **3 / 4,3**, cantos de 28px, carta de `min(78vw,330px)`, vizinhas espiando com `scale(.94)` e 1,2° de rotação, opacidade 0,6.
+- **Nenhuma margem negativa no trilho.** Trilho que já rola na horizontal com margem negativa vaza para a página e cria rolagem horizontal no app inteiro — e isso **não aparece em teste, só no celular**. O recuo de 24px do mockup é a folha do app (16px) mais 8px de padding. (Medido: com `-24px` o documento ia a 414px numa tela de 390.)
+- **Pílula sobre foto é vidro fosco, nunca a pílula creme.** Sobre imagem clara a pílula creme some — é o bug de contraste que já nos pegou três vezes (figurinha da Ana, disparo da câmera, chip do cadastro).
+- `no-meio`: não existe seletor de CSS para "a carta que o snap parou no meio", e é ela que precisa ficar reta e opaca. É uma conta de rolagem no próprio evento, sem observador. A primeira carta nasce marcada, senão o baralho abre todo apagado.
+- **Idade e "agora" são escolha da pessoa** (`mostrar_idade`, `mostrar_online`, os dois nascem desligados). Quando ela não ligou, o banco devolve null/false e a carta não mostra nada: não é ausência de dado, é a resposta dela.
+- Correção de paleta: a versão anterior tinha entrado com `#F6775B`, `#FCE8E4`, `#f4efe8` e `#EAF4EE`, quatro cores fora da marca. Trocadas por `--primary`, `--butter` e uma mistura do verde. A regra da casa continua: **não introduzir cor nova**, e `--coral` é só alerta.
+- O chip de filtro usava `.ativa`, que não tinha estilo nenhum — mesmo bug de 30/10, de novo. Agora é `selected`, que é o nome que tem estilo.
+
+## A carta do Descobrir (02/11)
+- O Instinct e eu construímos a **mesma carta em paralelo**, nos mesmos dois arquivos: foto preenchendo, nome e interesses por cima, véu embaixo, coração no canto. Nove conflitos de merge. Em vez de impor a minha versão, **tomei a dele como base** — ela já estava certa na estrutura e levava junto a separação das seções de tribo (`descobrir-tribos.tsx`), que eu teria destruído.
+- O que eu acrescentei por cima, que é o que só eu tinha: **idade** e **"agora"**, os dois dependendo de campo novo no banco (`mostrar_idade`, `mostrar_online`, `visto_em`), e os dois **nascendo desligados**. Quando a pessoa não ligou, o banco devolve null/false e a carta não mostra nada — é a resposta dela, não dado ausente.
+- `.dc-foto > .sem-foto` entrou porque a regra dele alcançava só `img.real-face`: sem isso, quem não tem foto vira uma bolinha pequena num retângulo vazio e a carta perde o porte. **É justamente o porte que faz a composição funcionar com foto de celular** — o peso visual vem do tamanho, não da fotografia.
+- Medidas do mockup aplicadas: `aspect-ratio: 3/4.3` e `min(78vw,330px)`. A Ju foi explícita: "o tamanho é aquele".
+- Paleta: tinham entrado `#00A651` (verde mais claro que o da marca), `#E7F2EA` e `#f4efe8`. Trocados. A regra continua: **não introduzir cor nova**; `--primary` é `#007E46` e `--coral` é só alerta.
+- **Lição de processo:** dois agentes no mesmo arquivo gastam o dobro para chegar no mesmo lugar, e o merge é o que cobra a conta. Quando houver dois, divide por arquivo antes de começar — não por tarefa.

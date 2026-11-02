@@ -29,6 +29,8 @@ const base: Candidata = {
   fotoFoco: { x: 50, y: 50 },
   selosEmComum: [],
   selosDoPovo: [],
+  idade: null,
+  online: false,
 };
 
 describe("porque apareceu", () => {

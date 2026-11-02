@@ -10,8 +10,8 @@
 .dc-combinar{min-height:0;margin:0;padding:0}
 .dc-carrossel{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:14px 0 34px;scrollbar-width:none;margin:0 -16px;padding-left:calc((100vw - min(74vw,300px))/2 - 8px);padding-right:calc((100vw - min(74vw,300px))/2 - 8px)}
 .dc-carrossel::-webkit-scrollbar{display:none}
-.dc-pessoa{position:relative;flex:0 0 min(74vw,300px);aspect-ratio:3/4.05;scroll-snap-align:center;transform-origin:center 62%}
-.dc-foto{position:absolute;inset:0;border-radius:28px;overflow:hidden;background:#f4efe8;box-shadow:0 14px 34px rgba(30,20,10,.28)}
+.dc-pessoa{position:relative;flex:0 0 min(78vw,330px);aspect-ratio:3/4.3;scroll-snap-align:center;transform-origin:center 62%}
+.dc-foto{position:absolute;inset:0;border-radius:28px;overflow:hidden;background:var(--butter);box-shadow:0 14px 34px rgba(30,20,10,.28)}
 .dc-foto img.real-face{position:absolute;inset:0;width:100%!important;height:100%!important;object-fit:cover;border-radius:0!important}
 .dc-foto .sem-foto{position:absolute;inset:0;width:100%!important;height:100%!important;border-radius:0!important;display:grid;place-items:center}
 .dc-foto-sombra{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.18) 0%,rgba(0,0,0,0) 26%,rgba(0,0,0,0) 46%,rgba(0,0,0,.62) 100%);pointer-events:none}
@@ -30,7 +30,7 @@
 .dc-info{position:absolute;left:14px;right:14px;bottom:14px;display:flex;flex-direction:column;gap:7px;text-align:left;z-index:2}
 .dc-nome{font-size:22px;color:#fff;display:flex;align-items:center;gap:7px;margin:0;text-shadow:0 1px 8px rgba(0,0,0,.45)}
 .dc-nome a{color:#fff}
-.dc-nome .selo-verificada{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#00A651;color:#fff;flex:none}
+.dc-nome .selo-verificada{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--primary);color:#fff;flex:none}
 .dc-cidade{display:flex;align-items:center;gap:5px;margin:0;font-size:13.5px;font-weight:600;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.5)}
 .dc-info .dc-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-start}
 .dc-info .dc-tags span{display:inline-flex;align-items:center;gap:5px;background:rgba(0,0,0,.42);backdrop-filter:blur(6px);color:#fff;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:600;border:0}
@@ -51,15 +51,15 @@
 .dc-trilho{display:flex;gap:12px;overflow-x:auto;padding:2px 2px 12px;scroll-snap-type:x mandatory;scrollbar-width:none}
 .dc-trilho::-webkit-scrollbar{display:none}
 .dc-minha-tribo{flex:0 0 108px;scroll-snap-align:start;display:flex;flex-direction:column;gap:7px;text-decoration:none;color:var(--foreground)}
-.dc-minha-tribo-capa{display:block;width:108px;height:108px;border-radius:18px;overflow:hidden;background:#f4efe8;display:grid;place-items:center}
+.dc-minha-tribo-capa{display:block;width:108px;height:108px;border-radius:18px;overflow:hidden;background:var(--butter);display:grid;place-items:center}
 .dc-minha-tribo-capa img{width:100%;height:100%;object-fit:cover;display:block}
 .dc-tribo-mono{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:34px;color:#075E3B}
 .dc-minha-tribo-txt{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;padding:0 2px}
 .dc-minha-tribo-txt strong{font-size:12.5px;line-height:1.2;font-weight:700}
-.dc-minha-tribo-txt .dc-tribo-membros{flex:none;font-size:10.5px;font-weight:700;color:var(--muted-foreground);background:#f4efe8;border-radius:999px;padding:2px 7px;margin-top:1px}
+.dc-minha-tribo-txt .dc-tribo-membros{flex:none;font-size:10.5px;font-weight:700;color:var(--muted-foreground);background:var(--butter);border-radius:999px;padding:2px 7px;margin-top:1px}
 
 /* Banner verde: Alguma tribo te esperando? */
-.dc-banner-tribos{margin:18px 0 0;display:flex;align-items:center;justify-content:space-between;gap:14px;background:#E7F2EA;border-radius:24px;padding:18px;position:relative;z-index:2}
+.dc-banner-tribos{margin:18px 0 0;display:flex;align-items:center;justify-content:space-between;gap:14px;background:color-mix(in srgb, var(--primary) 12%, #fff);border-radius:24px;padding:18px;position:relative;z-index:2}
 .dc-banner-tribos-txt h3{font-size:18px;margin:0 0 5px}
 .dc-banner-tribos-txt p{font-size:13px;color:var(--muted-foreground);margin:0;line-height:1.35}
 .dc-banner-tribos-cta{flex:none;display:inline-flex;align-items:center;gap:7px;background:#075E3B;color:#fff;border-radius:999px;padding:12px 18px;font-weight:700;font-size:14px;text-decoration:none}
@@ -72,7 +72,7 @@
 .dc-mini h4{font-size:16px;margin:0}
 .dc-mini p{font-size:12px;color:var(--muted-foreground);margin:0}
 .dc-mini .dc-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
-.dc-mini .dc-tags span{display:inline-flex;align-items:center;gap:5px;background:#f4efe8;border-radius:999px;padding:5px 10px;font-size:11.5px;font-weight:600;border:0;color:var(--foreground)}
+.dc-mini .dc-tags span{display:inline-flex;align-items:center;gap:5px;background:var(--butter);border-radius:999px;padding:5px 10px;font-size:11.5px;font-weight:600;border:0;color:var(--foreground)}
 .dc-mini-tribos{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--muted-foreground);justify-content:center}
 .dc-conversar{width:100%;border-radius:999px;margin-top:2px}
 a.dc-mini-foto{display:block}
@@ -81,7 +81,7 @@ a.dc-mini-foto{display:block}
 .dc-tribos{margin-top:24px;text-align:left;position:relative;z-index:2}
 .dc-tribo{flex:0 0 218px;scroll-snap-align:start;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--border);border-radius:22px;overflow:hidden;text-decoration:none;color:var(--foreground)}
 .dc-tribo.destaque{flex-basis:262px}
-.dc-tribo-capa{display:block;height:128px;overflow:hidden;background:#f4efe8;display:grid;place-items:center}
+.dc-tribo-capa{display:block;height:128px;overflow:hidden;background:var(--butter);display:grid;place-items:center}
 .dc-tribo.destaque .dc-tribo-capa{height:158px}
 .dc-tribo-capa img{width:100%;height:100%;object-fit:cover;display:block}
 .dc-tribo-txt{display:flex;flex-direction:column;gap:3px;padding:12px 14px 14px;text-align:left}
@@ -90,3 +90,18 @@ a.dc-mini-foto{display:block}
 .dc-tribo-membros{font-size:12.5px;color:var(--muted-foreground)}
 .dc-tribo.catalogo{flex-basis:180px;align-items:center;justify-content:center;flex-direction:row;gap:8px;padding:16px;border-style:dashed}
 .dc-tribo.catalogo .dc-tribo-txt{padding:0}
+
+/* Acrescentado por mim sobre o trabalho do Instinct (02/11).
+
+   1. Quem não tem foto precisa preencher a MESMA moldura. A regra dele
+      alcançava só `img.real-face`; sem isto a inicial vira uma bolinha
+      pequena no meio de um retângulo vazio, e a carta perde o porte —
+      que é justamente o que faz a composição funcionar com foto de celular.
+   2. "agora" é escolha da pessoa (`mostrar_online`, nasce desligado). */
+.dc-foto>.sem-foto{position:absolute;inset:0;width:100%!important;height:100%!important;border-radius:0!important}
+.dc-foto>.sem-foto b{font-size:88px!important}
+
+.dc-agora{position:absolute;top:16px;left:50%;transform:translateX(-50%);z-index:3;
+  display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.95);
+  color:var(--foreground);border-radius:999px;padding:5px 11px;font-size:12px;font-weight:700}
+.dc-agora i{width:8px;height:8px;border-radius:50%;background:var(--primary);display:block}

@@ -21,6 +21,14 @@ export type Candidata = {
   emComum: string[];
   afinidade: number;
   mesmaCidade: boolean;
+  /**
+   * Idade e "está agora" são **escolha da pessoa** (`mostrar_idade` e
+   * `mostrar_online` no perfil, os dois nascem desligados). Quando ela não
+   * ligou, o banco devolve null/false e a carta não mostra nada — não é
+   * ausência de dado, é a resposta dela.
+   */
+  idade: number | null;
+  online: boolean;
   jaMeCurtiu: boolean;
   fundo: string;
   tribosEmComum: number;
@@ -45,6 +53,8 @@ type Linha = {
   em_comum: string[] | null;
   afinidade: number | null;
   mesma_cidade: boolean | null;
+  idade?: number | null;
+  online?: boolean | null;
   ja_me_curtiu: boolean | null;
   background_path?: string | null;
   tribos_em_comum?: number | null;
@@ -69,6 +79,8 @@ export const toCandidata = (r: Linha): Candidata => ({
   emComum: r.em_comum ?? [],
   afinidade: r.afinidade ?? 0,
   mesmaCidade: r.mesma_cidade === true,
+  idade: typeof r.idade === "number" ? r.idade : null,
+  online: r.online === true,
   jaMeCurtiu: r.ja_me_curtiu === true,
   fundo: r.background_path || "",
   tribosEmComum: r.tribos_em_comum ?? 0,

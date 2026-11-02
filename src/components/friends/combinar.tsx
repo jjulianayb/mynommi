@@ -365,10 +365,20 @@ export function Combinar({ me }: { me: string }) {
                 >
                   <Icon name="heart" />
                 </button>
+                {pessoa.online && (
+                  <span className="dc-agora" title="Está na nommi agora">
+                    <i aria-hidden="true" />
+                    agora
+                  </span>
+                )}
                 <div className="dc-info">
                   <h2 className="dc-nome">
                     <Link to="/nommi/$id" params={{ id: pessoa.userId }}>
                       {pessoa.nome}
+                      {/* Idade só aparece se a pessoa escolheu mostrar. Quando
+                          não escolheu, o banco devolve null e não falta nada na
+                          carta: é a resposta dela, não um dado ausente. */}
+                      {pessoa.idade ? `, ${pessoa.idade}` : ""}
                     </Link>
                     {pessoa.verificada && (
                       <span className="selo-verificada" title="Perfil conferido pela nommi">
