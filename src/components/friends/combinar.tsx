@@ -17,7 +17,7 @@ import {
 import { fraseTetoDePerfis } from "@/lib/plano";
 import { Icon, SemFoto } from "./art";
 import { Esqueleto, EmptyState } from "./surfaces";
-import { TrilhoTribos } from "./descobrir-tribos";
+import { BannerTribos, TrilhoMinhasTribos } from "./descobrir-tribos";
 import { SafetyMenu } from "./social-feed";
 import { useFriends } from "./store";
 
@@ -106,6 +106,42 @@ export function Combinar({ me }: { me: string }) {
       if (fila.length <= 4) void recarregar();
     })();
   }
+
+
+  /**
+   * Profundidade do carrossel: conforme a carta sai do centro ela gira, desce
+   * e encolhe um pouco, e a do centro fica maior — o efeito do mockup da Ju
+   * (02/11). Feito no scroll, então o deslize acompanha o dedo.
+   */
+  const carrosselRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = carrosselRef.current;
+    if (!el) return;
+    let quadro = 0;
+    const aplicar = () => {
+      quadro = 0;
+      const caixa = el.getBoundingClientRect();
+      const centro = caixa.left + el.clientWidth / 2;
+      el.querySelectorAll<HTMLElement>(".dc-pessoa").forEach((carta) => {
+        const r = carta.getBoundingClientRect();
+        const d = Math.max(-1.4, Math.min(1.4, (r.left + r.width / 2 - centro) / r.width));
+        const a = Math.abs(d);
+        carta.style.transform = `rotate(${d * 6}deg) translateY(${a * 26}px) scale(${1 - a * 0.08})`;
+        carta.style.zIndex = String(10 - Math.round(a * 8));
+      });
+    };
+    const aoRolar = () => {
+      if (!quadro) quadro = requestAnimationFrame(aplicar);
+    };
+    aplicar();
+    el.addEventListener("scroll", aoRolar, { passive: true });
+    window.addEventListener("resize", aoRolar);
+    return () => {
+      el.removeEventListener("scroll", aoRolar);
+      window.removeEventListener("resize", aoRolar);
+      if (quadro) cancelAnimationFrame(quadro);
+    };
+  }, [vista.length]);
 
   // A comemoração do match não tranca mais a fila: ela aparece por alguns
   // segundos e sai sozinha, e quem quiser falar agora tem o botão ali.
@@ -209,7 +245,8 @@ export function Combinar({ me }: { me: string }) {
     </section>
   );
 
-  const trilhoTribos = <TrilhoTribos me={me} />;
+  const trilhoMinhasTribos = <TrilhoMinhasTribos me={me} />;
+  const bannerTribos = <BannerTribos />;
 
   const faixaFiltros = opcoesFiltro.length > 1 && (
     <div className="dc-filtros" role="group" aria-label="Filtrar por interesse">
@@ -238,8 +275,9 @@ export function Combinar({ me }: { me: string }) {
     return (
       <>
         {comemoracao}
+      {trilhoMinhasTribos}
+      {bannerTribos}
       {trilhoConhecidas}
-      {trilhoTribos}
       <EmptyState
         title={
           doDia && doDia.restantes === 0
@@ -287,10 +325,15 @@ export function Combinar({ me }: { me: string }) {
         </p>
       )}
 
-      {/* Carrossel de pessoas: cartas grandes e padronizadas, deslize fluido,
-          como no mockup da Ju (02/11). A decisão sai no coração, no Conectar
-          ou no Agora não; a carta some da fila na hora. */}
-      <div className="dc-carrossel" role="list" aria-label="Pessoas que podem combinar com você">
+      {/* Carrossel de pessoas com profundidade: a carta do centro é maior,
+          as vizinhas entram inclinadas e mais baixas (mockup da Ju 02/11).
+          Conectar sai no coração ou na barra branca; o X passa para a próxima. */}
+      <div
+        className="dc-carrossel"
+        role="list"
+        aria-label="Pessoas que podem combinar com você"
+        ref={carrosselRef}
+      >
         {vista.map((pessoa) => {
           const listaP = interessesOrdenados(pessoa);
           const tagsP = listaP.slice(0, 3);
@@ -298,6 +341,22 @@ export function Combinar({ me }: { me: string }) {
             <article key={pessoa.userId} className="dc-pessoa" role="listitem">
               <div className="dc-foto">
                 <Face c={pessoa} size={320} />
+                <span className="dc-foto-sombra" aria-hidden="true" />
+                <div className="dc-topo-esq">
+                  <button
+                    type="button"
+                    className="dc-x"
+                    aria-label={"Agora não, " + pessoa.nome}
+                    onClick={() => void decidir(pessoa, false)}
+                  >
+                    <Icon name="close" />
+                  </button>
+                  <SafetyMenu
+                    me={me}
+                    targetUserId={pessoa.userId}
+                    targetUserName={pessoa.nome}
+                  />
+                </div>
                 <button
                   type="button"
                   className="dc-coracao"
@@ -306,64 +365,51 @@ export function Combinar({ me }: { me: string }) {
                 >
                   <Icon name="heart" />
                 </button>
-              </div>
-              <h2 className="dc-nome">
-                {pessoa.nome}
-                {pessoa.verificada && (
-                  <span className="selo-verificada" title="Perfil conferido pela nommi">
-                    <Icon name="check" />
-                  </span>
-                )}
-              </h2>
-              <p className="combinar-cidade">
-                <Icon name="pin" />
-                {pessoa.cidade || "Brasil"}
-                {pessoa.tribosEmComum > 0 &&
-                  ` · ${pessoa.tribosEmComum} ${pessoa.tribosEmComum === 1 ? "tribo" : "tribos"} em comum`}
-              </p>
-              {pessoa.emComum.length > 0 && (
-                <p className="combinar-chamada">
-                  Vocês gostam de {pessoa.emComum.slice(0, 3).join(", ")}
-                </p>
-              )}
-              {tagsP.length > 0 && (
-                <div className="dc-tags">
-                  {tagsP.map((i) => (
-                    <span key={i.nome} className={i.comum ? "comum" : ""}>
-                      <Icon name={iconeDoInteresse(i.nome)} />
-                      {i.nome}
-                    </span>
-                  ))}
+                <div className="dc-info">
+                  <h2 className="dc-nome">
+                    <Link to="/nommi/$id" params={{ id: pessoa.userId }}>
+                      {pessoa.nome}
+                    </Link>
+                    {pessoa.verificada && (
+                      <span className="selo-verificada" title="Perfil conferido pela nommi">
+                        <Icon name="check" />
+                      </span>
+                    )}
+                  </h2>
+                  <p className="dc-cidade">
+                    <Icon name="pin" />
+                    {pessoa.cidade || "Brasil"}
+                    {pessoa.tribosEmComum > 0 &&
+                      ` · ${pessoa.tribosEmComum} ${pessoa.tribosEmComum === 1 ? "tribo" : "tribos"} em comum`}
+                  </p>
+                  {tagsP.length > 0 && (
+                    <div className="dc-tags">
+                      {tagsP.map((i) => (
+                        <span key={i.nome} className={i.comum ? "comum" : ""}>
+                          <Icon name={iconeDoInteresse(i.nome)} />
+                          {i.nome}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    className="dc-conectar"
+                    onClick={() => void decidir(pessoa, true)}
+                  >
+                    <Icon name="users" />
+                    Conectar
+                  </button>
                 </div>
-              )}
-              <div className="dc-decidir">
-                <Button className="dc-conectar" onClick={() => void decidir(pessoa, true)}>
-                  <Icon name="users" />
-                  Conectar
-                </Button>
-                <button
-                  type="button"
-                  className="dc-passar"
-                  aria-label={"Agora não, " + pessoa.nome}
-                  onClick={() => void decidir(pessoa, false)}
-                >
-                  Agora não
-                </button>
-              </div>
-              <Link className="combinar-perfil" to="/nommi/$id" params={{ id: pessoa.userId }}>
-                Ver o perfil inteiro
-                <Icon name="arrow" />
-              </Link>
-              <div className="combinar-rodape">
-                <SafetyMenu me={me} targetUserId={pessoa.userId} targetUserName={pessoa.nome} />
               </div>
             </article>
           );
         })}
       </div>
 
+      {trilhoMinhasTribos}
+      {bannerTribos}
       {trilhoConhecidas}
-      {trilhoTribos}
     </section>
   );
 }
