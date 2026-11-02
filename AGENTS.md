@@ -374,3 +374,16 @@
 - `ordemDasAmizades()`: quem espera resposta primeiro, **depois quem nunca conversou**, depois a conversa mais recente. Quem nunca conversou vem antes de propósito — é a amizade que morre sem nunca ter começado; conversa que já existe volta sozinha.
 - `recadoDaAmizade()` **nunca mostra a última mensagem**: a tira é larga de um dedo, o recado sairia cortado, e conversa particular não entra em tela de descoberta. Tem teste.
 - Número de tribos em comum é sempre o real, nunca arredondado para "12k". Tem teste barrando o "k".
+
+## A voz da nommi (02/11)
+- Reclamação da Ju: "tem uns textos muito engessados, não estão com cara de aplicativo, falta gíria". O exemplo dela foi **"GENTE DE VERDADE"** em caixa alta por cima de "Encontre sua tribo".
+- Ela tem razão, e o problema era maior: eram **seis** rótulos desses ("UM ENCONTRO DE CADA VEZ", "AMIZADES QUE CONTINUAM", "SUAS TEIAS"). Sozinhos, davam ao app cara de folheto institucional. Todos removidos; a prop `kicker` do `Title` ficou **sem uso de propósito**, e `src/test/voz.test.ts` barra ela voltar.
+- **A nommi não usar perfil falso é valor nosso, não manchete.** Na tela soava como desculpa pela fila curta. O teste barra "gente de verdade", "perfis reais" e afins em texto visível.
+- **"SUAS TEIAS" por cima de "Suas tribos"** — as duas palavras na mesma linha, contradizendo a decisão da Ju de semanas atrás. O teste barra "teia" em texto visível, e ignora chave de objeto (`teia: "todos"` é dado de visibilidade já gravado; renomear quebraria o que está salvo).
+- **A régua da voz são as legendas do Pippo**, aprovadas pela Ju em 31/10: "Setor de milagres, bom dia!", "Trem tá feio", "Que inicie o estrago", "Sextou!". Gíria sem exagero, frase curta, jeito de quem fala e não de quem redige.
+- Cuidado ao escrever o teste: casar aspas de dois em dois pega o **miolo entre** dois valores (`, teia: `), que é código e não texto. Por isso o filtro exige começar com letra.
+
+## Pippo, o mascote (02/11)
+- **Pippo existe** (dois p — procurar por "Pipo" não acha): 29 figurinhas em `src/assets/stickers/pippo/`, no pacote de chat, aprovadas pela Ju em 31/10.
+- O que **não** existe: Pippo como guia de quem acabou de se cadastrar, Pippo no cantinho da tela, e Pippo com quem dá para conversar. A Ju acredita que já está implementado; só o pacote de figurinhas está.
+- As figurinhas são **fotos de uma pessoa**, não ilustração. Usar como mascote oficial do app é diferente de usar como pacote de figurinha: vale confirmar com a Ju de onde vêm as imagens antes de pôr o Pippo como rosto da nommi.

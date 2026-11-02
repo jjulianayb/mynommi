@@ -648,7 +648,7 @@ export function Discover() {
   if (cloudUser && !dm)
     return (
       <>
-        <Title title="Encontre sua tribo" kicker="GENTE DE VERDADE" />
+        <Title title="Encontre sua tribo" />
         <p className="intro">
           Veja do que a pessoa gosta. Se vocês dois quiserem se conhecer, já são amizade.
         </p>
@@ -694,7 +694,7 @@ function DemoDiscover() {
   );
   return (
     <>
-      <Title title="Novas amizades" kicker="UM ENCONTRO DE CADA VEZ" />
+      <Title title="Novas amizades" />
       <p className="intro">Qual assunto rende um bom café?</p>
       {state.profileMode === "privado" && <ProfileModeBadge mode="privado" />}
       {waiting && p && (
@@ -918,7 +918,7 @@ export function Conversations({ personId }: { personId?: number | undefined }) {
   if (cloudUser && !demoMode)
     return (
       <>
-        <Title title="Conversas" kicker="AMIZADES QUE CONTINUAM" />
+        <Title title="Conversas" />
         <DirectConversations me={cloudUser.id} />
       </>
     );
@@ -932,7 +932,7 @@ function DemoConversations({ personId }: { personId?: number | undefined }) {
   );
   return (
     <>
-      <Title title="Conversas" kicker="AMIZADES QUE CONTINUAM" />
+      <Title title="Conversas" />
       {p ? (
         <section className="chat-panel">
           <div className="chat-heading">
@@ -1063,7 +1063,7 @@ function RealGroups({ userId }: { userId: string }) {
   );
   return (
     <>
-      <Title title="Suas tribos" kicker="SUAS TEIAS">
+      <Title title="Suas tribos">
         <Button asChild variant="secondary">
           <Link to="/criar-grupo">
             <Icon name="plus" />
@@ -1253,7 +1253,7 @@ function DemoGroups() {
   }
   return (
     <>
-      <Title title="Suas tribos" kicker="SUAS TEIAS">
+      <Title title="Suas tribos">
         <Button asChild variant="secondary">
           <Link to="/criar-grupo">
             <Icon name="plus" />

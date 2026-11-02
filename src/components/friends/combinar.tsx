@@ -239,11 +239,11 @@ export function Combinar({ me }: { me: string }) {
       {trilhoConhecidas}
       {trilhoTribos}
       <EmptyState
-        title={doDia && doDia.restantes === 0 ? "Por hoje é só." : "Por hoje, você viu todo mundo."}
+        title={doDia && doDia.restantes === 0 ? "Por hoje é só." : "Acabou a fila por hoje."}
         text={
           doDia && doDia.restantes === 0
             ? fraseTetoDePerfis(doDia.pro)
-            : "A nommi só mostra gente de verdade, então a fila acaba rápido no começo. Chame alguém que você gosta e volte amanhã."
+            : "Chama uma amiga sua pra cá e volta amanhã, que a fila enche de novo."
         }
       >
         {doDia && doDia.restantes === 0 && !doDia.pro && (

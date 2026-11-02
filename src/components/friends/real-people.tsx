@@ -124,7 +124,7 @@ export function PublicNommi({ id }: { id: string }) {
     return (
       <EmptyState
         title="Entre na sua conta para ver este nommi."
-        text="Perfis reais ficam visíveis só para quem tem conta."
+        text="Entra na sua conta pra ver quem é."
       >
         <Button asChild>
           <Link to="/conta">Entrar</Link>
