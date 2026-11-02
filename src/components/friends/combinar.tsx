@@ -17,8 +17,9 @@ import {
   type Conhecida,
 } from "@/lib/combinar";
 import { fraseTetoDePerfis } from "@/lib/plano";
-import { Icon, SemFoto, Sticker } from "./art";
+import { Icon, SemFoto } from "./art";
 import { Esqueleto, EmptyState } from "./surfaces";
+import { TrilhoTribos } from "./descobrir-tribos";
 import { SafetyMenu } from "./social-feed";
 import { useFriends } from "./store";
 
@@ -157,18 +158,23 @@ export function Combinar({ me }: { me: string }) {
   );
 
   const trilhoConhecidas = conhecidas.length > 0 && (
-    <section className="dc-conhecidas" aria-label="Suas conexões">
-      <h3>Suas conexões</h3>
+    <section className="dc-conhecidas" aria-label="Continue suas conexões">
+      <h3 className="dc-secao-titulo">Continue suas conexões</h3>
       <div className="dc-trilho">
         {conhecidas.map((k: Conhecida) => (
           <article key={k.userId} className="dc-mini">
-            <span className="dc-mini-foto">
+            <Link
+              to="/nommi/$id"
+              params={{ id: k.userId }}
+              className="dc-mini-foto"
+              aria-label={"Ver o perfil de " + k.nome}
+            >
               {k.avatar ? (
                 <img src={k.avatar} alt={"Foto de " + k.nome} />
               ) : (
                 <SemFoto nome={k.nome} size={112} />
               )}
-            </span>
+            </Link>
             <h4>{k.nome}</h4>
             <p>{k.cidade || "Brasil"}</p>
             {k.interesses.length > 0 && (
@@ -193,23 +199,7 @@ export function Combinar({ me }: { me: string }) {
     </section>
   );
 
-  const bannerTribos = (
-    <aside className="dc-banner">
-      <div className="dc-banner-arte" aria-hidden="true">
-        <Sticker id={5} size={54} semLegenda />
-        <Sticker id={0} size={64} semLegenda />
-        <Sticker id={15} size={54} semLegenda />
-      </div>
-      <div className="dc-banner-txt">
-        <h3>Alguma tribo te esperando?</h3>
-        <p>Descubra comunidades incríveis e faça novas conexões.</p>
-        <Link to="/grupos" className="dc-banner-cta">
-          Explorar Tribos
-          <Icon name="arrow" />
-        </Link>
-      </div>
-    </aside>
-  );
+  const trilhoTribos = <TrilhoTribos me={me} />;
 
   const faixaFiltros = opcoesFiltro.length > 1 && (
     <div className="dc-filtros" role="group" aria-label="Filtrar por interesse">
@@ -239,7 +229,7 @@ export function Combinar({ me }: { me: string }) {
       <>
         {comemoracao}
       {trilhoConhecidas}
-      {bannerTribos}
+      {trilhoTribos}
       <EmptyState
         title={doDia && doDia.restantes === 0 ? "Por hoje é só." : "Por hoje, você viu todo mundo."}
         text={
@@ -432,7 +422,7 @@ export function Combinar({ me }: { me: string }) {
         <SafetyMenu me={me} targetUserId={c.userId} targetUserName={c.nome} />
       </div>
       {trilhoConhecidas}
-      {bannerTribos}
+      {trilhoTribos}
     </section>
   );
 }
