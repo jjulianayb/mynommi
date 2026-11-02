@@ -49,3 +49,7 @@
 .dc-tribo.catalogo .dc-tribo-txt{padding:0}
 a.dc-mini-foto{display:block}
 .dc-mini-tribos{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--muted-foreground)}
+
+/* Folha clara continua: as secoes depois do baralho saem do fundo da carta */
+.dc-conhecidas,.dc-tribos{background:var(--background);margin:16px -16px 0;padding:16px 16px 8px;border-radius:26px 26px 0 0}
+.dc-tribos{margin-top:0;border-radius:0;padding-bottom:20px}
