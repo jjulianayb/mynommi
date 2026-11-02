@@ -110,20 +110,6 @@ export function PippoAjudante({
       }));
       const tribo = indicarTribo(lista, TRIBO_DO_PIPPO_ID);
       const msgs = boasVindasAtivas(nome ?? "", tribo);
-      // Com o app instalado e a permissão em aberto, o Pippo já oferece os avisos.
-      const oferecerAvisos =
-        isStandalone(window as Parameters<typeof isStandalone>[0]) &&
-        estadoDosAvisos() === "disponivel";
-      const falaAvisos: Fala[] = oferecerAvisos
-        ? [
-            {
-              de: "pippo",
-              texto:
-                "Quer que eu te avise quando chegar coisa nova? É um toque, e você desliga quando quiser.",
-              acao: "ativar-avisos",
-            },
-          ]
-        : [];
       setFalas((f) => [
         ...f,
         ...msgs.map((texto, i): Fala => {
@@ -132,7 +118,6 @@ export function PippoAjudante({
             fala.irTribo = { id: tribo.id, rotulo: "Ver a tribo " + tribo.name };
           return fala;
         }),
-        ...falaAvisos,
       ]);
       setNovidade(true);
     });
@@ -140,6 +125,45 @@ export function PippoAjudante({
       vivo = false;
     };
   }, [me, nome]);
+
+  // Recado único dos avisos: vale para quem já usava o app antes deles existirem.
+  // Instalado e sem decisão: oferece o botão. Não instalado: ensina a instalar.
+  // Já ligado, negado ou sem suporte: não incomoda.
+  useEffect(() => {
+    if (!me) return;
+    const marca = "nommi-pippo-avisos-" + me;
+    try {
+      if (window.localStorage.getItem(marca)) return;
+      window.localStorage.setItem(marca, "1");
+    } catch {
+      return;
+    }
+    const instalado = isStandalone(window as Parameters<typeof isStandalone>[0]);
+    const estado = estadoDosAvisos();
+    let falasNovas: Fala[];
+    if (instalado && estado === "disponivel") {
+      falasNovas = [
+        { de: "pippo", texto: "Novidade: agora eu te aviso quando chegar coisa nova por aqui." },
+        { de: "pippo", texto: "É um toque só, e você desliga quando quiser.", acao: "ativar-avisos" },
+      ];
+    } else if (!instalado) {
+      const plataforma = platformOf(navigator.userAgent, navigator.maxTouchPoints);
+      falasNovas = [
+        { de: "pippo", texto: "Novidade: agora eu consigo te avisar quando chegar coisa nova." },
+        {
+          de: "pippo",
+          texto: "Para receber os avisos, primeiro coloca a nommi na sua tela inicial:",
+        },
+        ...respostaDeInstalar(plataforma, false, installSteps(plataforma)).map(
+          (texto): Fala => ({ de: "pippo", texto }),
+        ),
+      ];
+    } else {
+      return;
+    }
+    setFalas((f) => [...f, ...falasNovas]);
+    setNovidade(true);
+  }, [me]);
 
   useEffect(() => {
     if (!aberto || !novidade || !me) return;
