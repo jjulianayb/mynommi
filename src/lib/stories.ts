@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { venceEm, quantoFalta } from "./camera";
 import { enderecoDaImagem } from "@/lib/covers";
+import { VALIDADE_DA_MIDIA, aoVoltarParaOApp, precisaRenovar } from "./midia-que-vence";
 
 export type StoryAudience = "todos" | "amizades";
 export type Story = {
@@ -126,7 +127,7 @@ export function useStories(me: string | null) {
       supabase.from("story_views").select("story_id").eq("viewer_id", me),
       supabase.storage.from(BUCKET).createSignedUrls(
         rows.map((r) => r.path),
-        3600,
+        VALIDADE_DA_MIDIA,
       ),
     ]);
     const who = new Map(
@@ -163,6 +164,19 @@ export function useStories(me: string | null) {
   useEffect(() => {
     void load();
   }, [load]);
+
+  // Mesmo motivo do feed: endereço de story vence, e o app fica aberto por
+  // dias. Sem isto a fita de stories aparece toda quebrada ao voltar.
+  const pedidoEm = useRef<number | null>(null);
+  useEffect(() => {
+    pedidoEm.current = ready ? Date.now() : null;
+  }, [ready, groups]);
+  useEffect(() => {
+    if (!me) return;
+    return aoVoltarParaOApp(() => {
+      if (precisaRenovar(pedidoEm.current)) void load();
+    });
+  }, [me, load]);
 
   const publish = async (file: File, caption: string, audience: StoryAudience = "todos") => {
     if (!me) return { ok: false as const, error: "Entre para publicar." };

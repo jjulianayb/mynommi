@@ -24,6 +24,7 @@ import { useWall, MAX_WALL } from "@/lib/wall";
 import { useRoles, whenLabel, spotsLabel, goingBlocker, loadGoing, type Role } from "@/lib/roles";
 import { useBlocks, reportTarget, REPORT_REASONS, type ReportReason } from "@/lib/safety";
 import { enderecoDaImagem } from "@/lib/covers";
+import { FotoQueFalha, VideoQueFalha } from "./foto-que-falha";
 
 function Face({ url, name, size = 40 }: { url: string; name: string; size?: number }) {
   return url ? (
@@ -309,9 +310,12 @@ export function PostCard({
             .slice(0, MAX_MEDIA)
             .map((m) =>
               m.kind === "video" ? (
-                <video key={m.id} src={m.url} controls preload="metadata" />
+                <VideoQueFalha key={m.id} src={m.url ?? ""} />
               ) : (
-                <img key={m.id} src={m.url} alt="Foto do post" />
+                // Foto que sabe falhar: tenta de novo uma vez com endereço
+                // novo antes de mostrar recado. Antes disto, endereço vencido
+                // virava o ícone de imagem quebrada do navegador.
+                <FotoQueFalha key={m.id} src={m.url ?? ""} alt="Foto do post" />
               ),
             )}
         </div>

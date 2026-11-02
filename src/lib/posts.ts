@@ -1,8 +1,9 @@
 import { PIPPO_ID } from "@/lib/pippo-tribo";
 import frontalPippo from "@/assets/pippo/1-pippo-frontal.png";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { enderecoDaImagem } from "@/lib/covers";
+import { VALIDADE_DA_MIDIA, aoVoltarParaOApp, precisaRenovar } from "./midia-que-vence";
 
 export type Reaction = "curtir" | "apoiar" | "rir";
 export const REACTIONS: { kind: Reaction; label: string }[] = [
@@ -174,13 +175,18 @@ export async function loadPosts(me: string, scope: FeedScope = {}, limit = 30): 
   return posts;
 }
 
-/** Links temporários (1 h) das fotos e vídeos: o armazenamento é privado. */
+/**
+ * Links temporários das fotos e vídeos: o armazenamento é fechado.
+ * O prazo mora em `VALIDADE_DA_MIDIA`, um lugar só — já foi 1 hora, e numa
+ * página que fica aberta por dias isso quebrava a tela de todo mundo que
+ * voltava ao app depois do almoço.
+ */
 async function attachMediaUrls(posts: Post[]) {
   const all = posts.flatMap((p) => p.media);
   if (!all.length) return;
   const { data } = await supabase.storage.from(BUCKET).createSignedUrls(
     all.map((m) => m.path),
-    3600,
+    VALIDADE_DA_MIDIA,
   );
   const byPath = new Map((data ?? []).map((d) => [d.path ?? "", d.signedUrl]));
   for (const m of all) {
@@ -271,6 +277,26 @@ export function usePosts(me: string | null, scope: FeedScope = {}) {
   useEffect(() => {
     void reload();
   }, [reload]);
+
+  /**
+   * Recarrega quando o app volta para a frente depois de um tempo parado.
+   *
+   * Os endereços das fotos vencem, e a nommi é uma página só que fica aberta
+   * por dias. Sem isto, quem voltava ao app depois do almoço via o feed com
+   * todas as fotos quebradas — e fechar e abrir era a única saída, coisa que
+   * ninguém descobre sozinho.
+   */
+  const pedidoEm = useRef<number | null>(null);
+  useEffect(() => {
+    pedidoEm.current = ready ? Date.now() : null;
+  }, [ready, posts]);
+  useEffect(() => {
+    if (!me) return;
+    return aoVoltarParaOApp(() => {
+      if (precisaRenovar(pedidoEm.current)) void reload();
+    });
+  }, [me, reload]);
+
   const react = async (p: Post, kind: Reaction) => {
     if (!me) return false;
     const ok = await setReaction(me, p.id, p.myReaction, kind);

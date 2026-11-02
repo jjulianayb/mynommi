@@ -9,6 +9,7 @@ import {
   salvarMeuVideo,
   useVideosDaPagina,
 } from "@/lib/video-perfil";
+import { VideoQueFalha } from "./foto-que-falha";
 import { Icon } from "./art";
 import { GravarVideo } from "./gravar-video";
 import { useFriends } from "./store";
@@ -49,7 +50,7 @@ export function MeuVideo({
 
       {path && url ? (
         <div className="video-cartao">
-          <video src={url} controls playsInline preload="metadata" />
+          <VideoQueFalha src={url} />
           {souDono && (
             <Button
               variant="ghost"
@@ -135,7 +136,7 @@ export function VideosDeAmigos({
         <div className="videos-fila">
           {noAr.map((v) => (
             <figure className="video-cartao" key={v.id}>
-              <video src={v.url} controls playsInline preload="metadata" />
+              <VideoQueFalha src={v.url} />
               <figcaption>{v.quem}</figcaption>
               {(souDono || v.de === me) && (
                 <Button
@@ -158,7 +159,7 @@ export function VideosDeAmigos({
           <h3>Esperando sua licença</h3>
           {esperando.map((v) => (
             <figure className="video-cartao" key={v.id}>
-              <video src={v.url} controls playsInline preload="metadata" />
+              <VideoQueFalha src={v.url} />
               <figcaption>{v.quem} gravou sobre você</figcaption>
               <div className="video-acoes">
                 <Button

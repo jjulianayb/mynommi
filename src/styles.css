@@ -1247,3 +1247,9 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 /* Saldo de créditos na bandeja de figurinhas (0044) */
 .sticker-credits{display:inline-flex;align-items:center;gap:4px;margin-left:auto;margin-right:8px;font-size:13px;font-weight:600;color:#8a6d00}
 .sticker-credits .friend-icon{width:14px;height:14px;stroke:#b8860b;fill:#ffd34d}
+
+/* Mídia que não carregou. Antes isto era o ícone de imagem quebrada do
+   navegador, que não diz nada e parece defeito do app. */
+.midia-falhou{display:grid;place-items:center;text-align:center;padding:18px 14px;min-height:120px;
+  background:var(--butter);color:var(--muted-foreground);border:1px dashed var(--border);border-radius:16px}
+.midia-falhou small{font-size:12.5px;line-height:1.5;max-width:30ch}

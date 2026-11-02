@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { VALIDADE_DA_MIDIA } from "./midia-que-vence";
 
 /** videos_amigos e video_path ainda não estão em types.ts. */
 const db = supabase as unknown as SupabaseClient;
@@ -58,7 +59,7 @@ export async function apagarMeuVideo(userId: string, path: string) {
 /** Endereço assinado: o balde é fechado, então o link vale por um tempo. */
 export async function enderecoDoVideo(path: string): Promise<string> {
   if (!path) return "";
-  const { data } = await supabase.storage.from(BALDE).createSignedUrl(path, 60 * 60);
+  const { data } = await supabase.storage.from(BALDE).createSignedUrl(path, VALIDADE_DA_MIDIA);
   return data?.signedUrl ?? "";
 }
 
