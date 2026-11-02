@@ -10,7 +10,7 @@ import { MinhasEstrelas } from "./presenca";
 import { useEstrelas } from "@/lib/presenca";
 import { coverStyle } from "@/lib/covers";
 import { paraCss } from "@/lib/enquadrar";
-import { estiloDoFundo, tomDoFundo } from "@/lib/fundos";
+import { estiloDoFundo, fundoEhFoto, tomDoFundo } from "@/lib/fundos";
 import { figurinhaDe } from "@/lib/figurinhas";
 import { EscolherFundo } from "./escolher-fundo";
 import { EscolherInteresses } from "./escolher-interesses";
@@ -75,7 +75,11 @@ export function MyNommi({ me }: { me: string }) {
 
   return (
     <section className={"mynommi tom-" + tomDoFundo(pagina.background)}>
-      <div className="mynommi-fundo" style={estiloDoFundo(pagina.background)} aria-hidden="true" />
+      <div
+        className={"mynommi-fundo" + (fundoEhFoto(pagina.background) ? " foto" : "")}
+        style={estiloDoFundo(pagina.background)}
+        aria-hidden="true"
+      />
       <div
         className="mynommi-capa"
         style={{ ...coverStyle(pagina.cover), backgroundPosition: paraCss(pagina.capaFoco) }}
