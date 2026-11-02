@@ -1,3 +1,4 @@
+- [ ] Redesenhar somente Descobrir conforme briefing de 02/11: conexões, Pipo, pessoas e tribos reais, busca e estados; preservar permissões e validar no celular.
 - [x] Correção: pessoa nommi, etiqueta Teias, estrelas apenas privadas no Clube e mural com aprovação obrigatória.
 # Nommi — marca, entrada e navegação
 - [x] Vocabulário nomi/Anfitriões/teias; estrelas visuais em vez de troféus.
