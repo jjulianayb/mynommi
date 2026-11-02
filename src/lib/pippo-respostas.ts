@@ -23,6 +23,15 @@ export type RespostaDoPippo = {
 
 export const RESPOSTAS_DO_PIPPO: RespostaDoPippo[] = [
   {
+    id: "instalar",
+    abre: "Dica de ouro: deixa a nommi na tela do celular.",
+    depois: ["tribo", "match", "limite"],
+    pergunta: "Como coloco a nommi na tela do celular?",
+    resposta:
+      "No iPhone: toque em Compartilhar no Safari e escolha Adicionar à Tela de Início. No Android: toque nos três pontinhos e escolha Instalar aplicativo. Aí a nommi vira um ícone, igual a um app.",
+    palavras: ["instalar", "instalo", "tela", "icone", "app", "aplicativo", "celular", "iphone", "android", "inicio"],
+  },
+  {
     id: "match",
     abre: "Essa eu sei de olho fechado.",
     depois: ["limite", "pagina", "tribo"],
@@ -229,4 +238,15 @@ export function boasVindasAtivas(nome: string, tribo: TriboParaIndicar | null): 
     oi,
     `Uma dica: a tribo ${tribo.name} já tem ${tribo.members} pessoas conversando. Quer dar uma olhada?`,
   ];
+}
+
+/** O passo a passo certo para o aparelho de quem pergunta (ou aviso de que já está instalado). */
+export function respostaDeInstalar(
+  plataforma: "android" | "ios" | "desktop",
+  instalado: boolean,
+  passos: string[],
+): string[] {
+  if (instalado) return ["Você já está usando a nommi como app, então está tudo certo por aqui."];
+  const nome = plataforma === "ios" ? "iPhone" : plataforma === "android" ? "Android" : "computador";
+  return [`No ${nome} é rapidinho:`, ...passos.map((x, n) => `${n + 1}. ${x}`)];
 }
