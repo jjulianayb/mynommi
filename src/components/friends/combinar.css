@@ -53,3 +53,14 @@ a.dc-mini-foto{display:block}
 /* Folha clara continua: as secoes depois do baralho saem do fundo da carta */
 .dc-conhecidas,.dc-tribos{background:var(--background);margin:16px -16px 0;padding:16px 16px 8px;border-radius:26px 26px 0 0}
 .dc-tribos{margin-top:0;border-radius:0;padding-bottom:20px}
+
+/* Carrossel de pessoas (mockup da Ju 02/11): cartas grandes, padronizadas, deslize fluido */
+.dc-combinar{min-height:0;margin:0;padding:0}
+.dc-carrossel{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 2px 18px;scrollbar-width:none;margin:0 -2px}
+.dc-carrossel::-webkit-scrollbar{display:none}
+.dc-pessoa{flex:0 0 min(82vw,330px);scroll-snap-align:center;background:var(--card);border-radius:26px;padding:12px 12px 16px;box-shadow:0 8px 28px rgba(60,40,20,.12);display:flex;flex-direction:column;gap:8px;text-align:center}
+.dc-pessoa .dc-foto img{width:100%!important;height:310px!important;object-fit:cover}
+.dc-pessoa .combinar-cidade{display:flex;align-items:center;justify-content:center;gap:5px;margin:0;font-size:13.5px;color:var(--muted-foreground)}
+.dc-pessoa .combinar-chamada{margin:0;font-size:13.5px}
+.dc-pessoa .combinar-perfil{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:13px;color:var(--muted-foreground);text-decoration:underline}
+.dc-tags span.comum{background:#EAF4EE;border-color:transparent}
