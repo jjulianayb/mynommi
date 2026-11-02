@@ -43,7 +43,7 @@ export function isPreset(value: string): boolean {
  */
 export function enderecoDaImagem(valor: string): string {
   if (!valor) return "";
-  if (/^(https?:|data:|blob:)/.test(valor)) return valor;
+  if (/^(https?:|data:|blob:|\/assets\/)/.test(valor)) return valor;
   return valor.includes("/") ? publicUrl(valor) : "";
 }
 
