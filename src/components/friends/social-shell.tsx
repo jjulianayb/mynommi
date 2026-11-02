@@ -252,6 +252,7 @@ export function SocialShell({ children }: { children: ReactNode }) {
         !pathname.startsWith("/conversas/") && (
           <PippoAjudante
             me={cloudUser!.id}
+            nome={(state.nickname || "").split(" ")[0] ?? ""}
             aoRefazerTour={() => {
               esquecerTour(cloudUser!.id);
               setTourAberto(true);
