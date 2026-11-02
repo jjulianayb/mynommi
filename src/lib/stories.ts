@@ -75,6 +75,9 @@ type Row = {
   expires_at: string;
 };
 
+/** Story cujo arquivo não existe mais não entra na fita. */
+export const soComLink = (s: Story) => !!s.url;
+
 /** Agrupa por pessoa, na ordem: os meus primeiro, depois quem tem story não visto. */
 export function groupStories(list: Story[], me: string): StoryGroup[] {
   const by = new Map<string, Story[]>();
@@ -152,7 +155,7 @@ export function useStories(me: string | null) {
         seen: seen.has(r.id),
         mine: r.author_id === me,
       };
-    });
+    }).filter(soComLink);
     setGroups(groupStories(list, me));
     setReady(true);
   }, [me]);
