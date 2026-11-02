@@ -44,6 +44,18 @@ export const temNovidade = (t: MinhaTribo) => t.naoLidas > 0;
 /** O contador, com teto: acima de 99 vira "99+". */
 export const contador = (n: number) => (n > 99 ? "99+" : String(Math.max(0, Math.floor(n))));
 
+/**
+ * Quantas tribos cabem no Início antes de a lista empurrar o resto da tela.
+ * O resto fica a um toque, em "Ver todas".
+ */
+export const TRIBOS_NA_HOME = 5;
+
+/** As que aparecem de cara no Início, já na ordem de conversa mais fresca. */
+export function tribosDaHome<T>(tribos: T[], limite = TRIBOS_NA_HOME): T[] {
+  return tribos.slice(0, Math.max(0, limite));
+}
+
+
 export async function marcarTriboVista(teiaKey: string | number) {
   await db.rpc("marcar_tribo_vista", { _teia: String(teiaKey) });
 }
