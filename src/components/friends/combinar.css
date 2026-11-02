@@ -1,0 +1,33 @@
+/* Descobrir nova — visual aprovado pela Ju (mockup 02/11) */
+.dc-filtros{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;scrollbar-width:none;position:relative;z-index:2}
+.dc-filtros::-webkit-scrollbar{display:none}
+.dc-chip{display:inline-flex;align-items:center;gap:6px;padding:9px 15px;border-radius:999px;border:1px solid var(--border);background:var(--card);font-size:13px;font-weight:600;white-space:nowrap;color:var(--foreground);cursor:pointer}
+.dc-chip.ativa{background:#F6775B;border-color:#F6775B;color:#fff}
+.dc-card-superficie{background:var(--card);border-radius:26px;padding:14px 14px 18px;box-shadow:0 8px 28px rgba(60,40,20,.12);gap:10px}
+.dc-foto{position:relative;width:100%;border-radius:20px;overflow:hidden}
+.dc-foto img{width:100%!important;height:330px!important;object-fit:cover;display:block}
+.dc-coracao{position:absolute;top:14px;right:14px;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.95);display:grid;place-items:center;border:0;box-shadow:0 3px 12px rgba(0,0,0,.2);color:var(--foreground);cursor:pointer;transition:transform .12s}
+.dc-coracao:active{transform:scale(.9)}
+.dc-nome{font-size:24px;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px}
+.dc-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.dc-tags span{display:inline-flex;align-items:center;gap:6px;background:#f4efe8;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;border:0;opacity:1;color:var(--foreground)}
+.dc-decidir{display:flex;flex-direction:column;gap:6px;align-items:stretch;position:relative;z-index:2}
+.dc-conectar{width:100%;min-height:54px;border-radius:999px;font-size:16px;font-weight:700}
+.dc-passar{background:none;border:0;color:var(--muted-foreground);font-size:14px;padding:8px;align-self:center;cursor:pointer}
+.dc-conhecidas{margin-top:24px;text-align:left;position:relative;z-index:2}
+.dc-conhecidas>h3{font-size:18px;margin:0 0 10px}
+.dc-trilho{display:flex;gap:14px;overflow-x:auto;padding:4px 2px 12px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.dc-trilho::-webkit-scrollbar{display:none}
+.dc-mini{flex:0 0 196px;scroll-snap-align:start;background:var(--card);border:1px solid var(--border);border-radius:22px;padding:12px;text-align:center;display:flex;flex-direction:column;gap:6px}
+.dc-mini-foto{display:block;border-radius:16px;overflow:hidden}
+.dc-mini-foto img{width:100%;height:150px;object-fit:cover;display:block}
+.dc-mini h4{font-size:16px;margin:0}
+.dc-mini p{font-size:12px;color:var(--muted-foreground);margin:0}
+.dc-mini .dc-tags span{padding:5px 10px;font-size:11.5px}
+.dc-conversar{width:100%;border-radius:999px;margin-top:2px}
+.dc-banner{margin-top:20px;display:flex;gap:14px;align-items:center;background:#FCE8E4;border-radius:24px;padding:16px;text-align:left;position:relative;z-index:2}
+.dc-banner-arte{display:flex;align-items:flex-end;flex:none}
+.dc-banner-arte .friend-sticker{transform:none;width:auto}
+.dc-banner-txt h3{font-size:17px;margin:0 0 4px}
+.dc-banner-txt p{font-size:13px;color:var(--muted-foreground);margin:0 0 10px}
+.dc-banner-cta{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--primary);color:var(--primary);border-radius:999px;padding:9px 18px;font-weight:700;font-size:14px;text-decoration:none}
