@@ -14,6 +14,7 @@ import { PippoAjudante } from "./pippo";
 import { VersaoNova } from "./versao-nova";
 import { esquecerTour, tourJaVisto } from "@/lib/tour";
 import { registrarAcesso } from "@/lib/numeros";
+import { registrarServiceWorker } from "@/lib/push";
 import { useAceite } from "@/lib/aceite";
 import { AvisoDeAceite } from "./aceite";
 import { Apresentacao } from "./apresentacao";
@@ -55,6 +56,10 @@ export function SocialShell({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (real) void registrarAcesso();
   }, [real, cloudUser?.id]);
+  // O service worker é o carteiro dos avisos push; sem ele nada chega.
+  useEffect(() => {
+    if (real) void registrarServiceWorker();
+  }, [real]);
   // O convite é usado assim que a conta existe: é o que cria a amizade com quem
   // convidou e leva a pessoa para dentro da tribo do link. Antes disso, o link
   // de convite carregava o código e ninguém o lia.
