@@ -10,6 +10,7 @@ import {
   type Posicao,
 } from "@/lib/tour";
 import { Icon } from "./art";
+import { PippoRosto } from "./pippo";
 
 const medir = (el: Element): Caixa => {
   const r = el.getBoundingClientRect();
@@ -93,6 +94,7 @@ export function Tour({ me, onFim }: { me: string; onFim: () => void }) {
         ref={balaoRef}
         style={pos ? { top: pos.top, left: pos.left } : { bottom: 24, left: 16, right: 16 }}
       >
+        <PippoRosto tamanho={44} />
         <p className="tour-conta">
           Passo {i + 1} de {passos.length}
         </p>
