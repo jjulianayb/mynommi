@@ -43,7 +43,7 @@ export function selodeEmbaixadora(t: Titulo): string {
 
 /**
  * Selo de outra pessoa: diz só se é embaixadora, nunca o número.
- * A tabela é pública de propósito ("Embaixadora é título público", 0039).
+ * Número e data ficam no banco (0046): a API responde só "é" ou "não é".
  */
 export function useSeloDe(quem: string | undefined, ativo: boolean) {
   const [embaixadora, setEmbaixadora] = useState(false);
@@ -56,13 +56,9 @@ export function useSeloDe(quem: string | undefined, ativo: boolean) {
     }
     let alive = true;
     void (async () => {
-      const { data } = await db
-        .from("embaixadoras")
-        .select("user_id")
-        .eq("user_id", quem)
-        .maybeSingle();
+      const { data } = await db.rpc("e_embaixadora", { _quem: quem });
       if (!alive) return;
-      setEmbaixadora(!!data);
+      setEmbaixadora(data === true);
       setReady(true);
     })();
     return () => {
