@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { paraCss } from "@/lib/enquadrar";
-import { estiloDoFundo, tomDoFundo } from "@/lib/fundos";
+import { estiloDoFundo, fundoEhFoto, tomDoFundo } from "@/lib/fundos";
 import { iconeDoInteresse } from "@/lib/figurinhas";
 
 import {
@@ -177,7 +177,7 @@ export function Combinar({ me }: { me: string }) {
     <section className={"combinar tom-" + tom}>
       {comemoracao}
       <div
-        className="combinar-fundo"
+        className={"combinar-fundo" + (fundoEhFoto(c.fundo) ? " foto" : "")}
         style={estiloDoFundo(c.fundo || "teia-mata")}
         aria-hidden="true"
       />
