@@ -275,9 +275,10 @@ export function Combinar({ me }: { me: string }) {
     return (
       <>
         {comemoracao}
-      {trilhoMinhasTribos}
-      {bannerTribos}
-      {trilhoConhecidas}
+      {/* Sem cartas, a explicação vem PRIMEIRO. Antes a pessoa rolava tribos,
+          banner e conexões inteiros antes de descobrir por que não havia
+          ninguém — e no Descobrir, onde a promessa é conhecer gente, isso lê
+          como se o app tivesse quebrado. */}
       <EmptyState
         title={
           doDia && doDia.restantes === 0
@@ -308,6 +309,9 @@ export function Combinar({ me }: { me: string }) {
           <Link to="/grupos">Entrar numa tribo</Link>
         </Button>
       </EmptyState>
+      {trilhoMinhasTribos}
+      {bannerTribos}
+      {trilhoConhecidas}
       </>
     );
 

@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { RealTeiaRow } from "@/lib/real-teias";
 import { publicUrl } from "@/lib/covers";
 import { iconeDoInteresse } from "@/lib/figurinhas";
+import { corDoNome } from "@/lib/sem-foto";
 import { Icon } from "./art";
 
 const db = supabase as unknown as SupabaseClient;
@@ -37,9 +38,33 @@ const CAPAS_DA_JU: Record<string, string> = {
   livros: "/capas-tribos/livros.png",
 };
 
-export function capaDaTribo(nome: string, coverPath: string | null): string {
+/**
+ * Acha a capa da tribo.
+ *
+ * As cinco capas do mockup casavam **só com o nome exato** da tribo — "Cinema
+ * & Séries", "Viagens", "Música", "Bem-estar", "Livros". Nenhuma tribo real da
+ * nommi se chama assim ("Café e IA", "Caminhada da Pampulha", "Tribo dos
+ * Cafés"), então todas caíam na letra solta e o trilho ficava com C, C, T.
+ *
+ * Agora procura em três lugares, nesta ordem: a capa que a tribo enviou, a
+ * categoria dela, e por fim uma palavra do nome. Assim "Tribo dos Cafés" e
+ * "Caminhada da Pampulha" acham alguma coisa sem ninguém renomear nada.
+ */
+export function capaDaTribo(
+  nome: string,
+  coverPath: string | null,
+  categoria?: string,
+): string {
   if (coverPath) return publicUrl(coverPath);
-  return CAPAS_DA_JU[semAcento(nome)] ?? "";
+  const porCategoria = CAPAS_DA_JU[semAcento(categoria ?? "")];
+  if (porCategoria) return porCategoria;
+  const exata = CAPAS_DA_JU[semAcento(nome)];
+  if (exata) return exata;
+  // Palavra a palavra: "Tribo dos Cafés" acha "cafe" se houver capa de café.
+  for (const palavra of semAcento(nome).split(/[^a-z0-9]+/)) {
+    if (palavra.length > 2 && CAPAS_DA_JU[palavra]) return CAPAS_DA_JU[palavra] as string;
+  }
+  return "";
 }
 
 function paraSugerida(r: RealTeiaRow): TriboSugerida {
@@ -48,7 +73,7 @@ function paraSugerida(r: RealTeiaRow): TriboSugerida {
     nome: r.name,
     categoria: (r.category ?? "").trim(),
     membros: r.member_count ?? 0,
-    capa: capaDaTribo(r.name, r.cover_path ?? null),
+    capa: capaDaTribo(r.name, r.cover_path ?? null, r.category ?? ""),
     sobre: (r.about ?? "").trim(),
   };
 }
@@ -128,9 +153,17 @@ function CapaTribo({ t }: { t: TriboSugerida }) {
     return (
       <img src={t.capa} alt="" loading="lazy" onError={() => setQuebrou(true)} />
     );
+  // Sem capa, uma capa desenhada: cor estável pelo nome e o ícone da família
+  // do assunto. Uma letra solta num quadrado bege parece erro de carregamento;
+  // isto parece escolha.
+  const tom = corDoNome(t.nome || "nommi");
   return (
-    <span className="dc-tribo-mono" aria-hidden="true">
-      {t.nome.trim().charAt(0).toUpperCase() || "N"}
+    <span
+      className="dc-tribo-arte"
+      aria-hidden="true"
+      style={{ background: tom.fundo, color: tom.letra }}
+    >
+      <Icon name={iconeDoInteresse(t.categoria || t.nome)} />
     </span>
   );
 }

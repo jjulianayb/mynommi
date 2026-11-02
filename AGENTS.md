@@ -428,3 +428,10 @@
 - Medidas do mockup aplicadas: `aspect-ratio: 3/4.3` e `min(78vw,330px)`. A Ju foi explícita: "o tamanho é aquele".
 - Paleta: tinham entrado `#00A651` (verde mais claro que o da marca), `#E7F2EA` e `#f4efe8`. Trocados. A regra continua: **não introduzir cor nova**; `--primary` é `#007E46` e `--coral` é só alerta.
 - **Lição de processo:** dois agentes no mesmo arquivo gastam o dobro para chegar no mesmo lugar, e o merge é o que cobra a conta. Quando houver dois, divide por arquivo antes de começar — não por tarefa.
+
+## O trilho de tribos com C, C, T (02/11)
+- As cinco capas recortadas do mockup casavam **só com o nome exato** da tribo: "Cinema & Séries", "Viagens", "Música", "Bem-estar", "Livros". **Nenhuma tribo real da nommi se chama assim** — as da Ju são "Café e IA", "Caminhada da Pampulha", "Tribo dos Cafés", "Mães com noite livre". Resultado: o trilho inteiro caía no monograma e ela via C, C, T.
+- É o erro clássico de copiar um mockup: a fileira de categorias do desenho não é a fileira de tribos que existe no banco.
+- `capaDaTribo()` agora procura em três lugares, nesta ordem: **a capa que a tribo enviou**, a **categoria** dela, e por fim **palavra por palavra do nome**. "Tribo dos Cafés" acha café sem ninguém renomear nada.
+- Sem capa nenhuma, entra uma **capa desenhada** — quadrado com cor estável pelo nome e o ícone da família do assunto. Letra solta num quadrado bege parece imagem que não carregou; isso parece escolha.
+- **Ordem no estado sem cartas:** a explicação vem primeiro, e só depois tribos, banner e conexões. Antes a pessoa rolava três seções inteiras antes de descobrir por que não havia ninguém — e no Descobrir, onde a promessa é conhecer gente, isso lê como app quebrado. (No estado normal o baralho já vinha primeiro; o problema era só no vazio.)

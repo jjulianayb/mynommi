@@ -53,7 +53,12 @@
 .dc-minha-tribo{flex:0 0 108px;scroll-snap-align:start;display:flex;flex-direction:column;gap:7px;text-decoration:none;color:var(--foreground)}
 .dc-minha-tribo-capa{display:block;width:108px;height:108px;border-radius:18px;overflow:hidden;background:var(--butter);display:grid;place-items:center}
 .dc-minha-tribo-capa img{width:100%;height:100%;object-fit:cover;display:block}
-.dc-tribo-mono{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:34px;color:#075E3B}
+/* Capa desenhada para tribo sem foto: um quadrado colorido com o ícone da
+   família do assunto. A letra solta que havia antes parecia imagem que não
+   carregou — e era o que a Ju via no trilho inteiro (C, C, T), porque as
+   cinco capas do mockup só casavam com cinco nomes que não existem na nommi. */
+.dc-tribo-arte{display:grid;place-items:center;width:100%;height:100%}
+.dc-tribo-arte .friend-icon{width:46%;height:46%;opacity:.92}
 .dc-minha-tribo-txt{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;padding:0 2px}
 .dc-minha-tribo-txt strong{font-size:12.5px;line-height:1.2;font-weight:700}
 .dc-minha-tribo-txt .dc-tribo-membros{flex:none;font-size:10.5px;font-weight:700;color:var(--muted-foreground);background:var(--butter);border-radius:999px;padding:2px 7px;margin-top:1px}
