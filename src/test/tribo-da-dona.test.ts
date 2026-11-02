@@ -127,6 +127,9 @@ describe("o link da tribo", () => {
     expect(t).toContain("São Paulo");
     expect(t).toContain("https://x/tribo/1");
     expect(t).toContain("amizade");
+    // Mas sem dizer que a nommi é só de mulheres: foi o que eu escrevi antes,
+    // e saía na página pública e no texto colado no Instagram.
+    expect(/mulher/i.test(t)).toBe(false);
   });
   it("sem cidade, o texto não fica com espaço solto", () => {
     expect(textoDeDivulgacao("Trilhas", "", "https://x/tribo/2")).not.toContain("  ");

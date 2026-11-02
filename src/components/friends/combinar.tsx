@@ -241,11 +241,15 @@ export function Combinar({ me }: { me: string }) {
       {trilhoConhecidas}
       {trilhoTribos}
       <EmptyState
-        title={doDia && doDia.restantes === 0 ? "Por hoje é só." : "Por hoje, você viu todo mundo."}
+        title={
+          doDia && doDia.restantes === 0
+            ? "Suas apresentações de hoje acabaram."
+            : "Você conheceu todo mundo de hoje."
+        }
         text={
           doDia && doDia.restantes === 0
             ? fraseTetoDePerfis(doDia.pro)
-            : "A nommi só mostra gente de verdade, então a fila acaba rápido no começo. Chame alguém que você gosta e volte amanhã."
+            : "Amanhã a nommi te apresenta gente nova."
         }
       >
         {doDia && doDia.restantes === 0 && !doDia.pro && (
@@ -259,7 +263,7 @@ export function Combinar({ me }: { me: string }) {
         <Button asChild>
           <Link to="/convidar">
             <Icon name="send" />
-            Convidar uma amiga
+            Convidar alguém
           </Link>
         </Button>
         <Button asChild variant="secondary">

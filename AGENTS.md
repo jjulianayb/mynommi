@@ -387,3 +387,18 @@
 - **Pippo existe** (dois p — procurar por "Pipo" não acha): 29 figurinhas em `src/assets/stickers/pippo/`, no pacote de chat, aprovadas pela Ju em 31/10.
 - O que **não** existe: Pippo como guia de quem acabou de se cadastrar, Pippo no cantinho da tela, e Pippo com quem dá para conversar. A Ju acredita que já está implementado; só o pacote de figurinhas está.
 - As figurinhas são **fotos de uma pessoa**, não ilustração. Usar como mascote oficial do app é diferente de usar como pacote de figurinha: vale confirmar com a Ju de onde vêm as imagens antes de pôr o Pippo como rosto da nommi.
+
+## A nommi não é uma rede só de mulheres (02/11)
+- **Eu escrevi "app de amizade entre mulheres" em dois lugares que saem da nommi**: a página pública da tribo (qualquer pessoa na internet abre) e o texto que a dona cola no Instagram. A Ju corrigiu: *"fica parecendo que é uma rede social só de mulher, e ela é de amizades e tribos"*.
+- Os dois foram trocados. Teste em `tribo-da-dona.test.ts` barra "mulher" no texto de divulgação, e `plano.test.ts` barra falar com a pessoa no feminino nos avisos de teto.
+- O que **continua** existindo de propósito: `teias.audience = 'mulheres'` é rótulo de uma tribo específica que escolheu ser espaço de mulheres, e "Embaixadora" é palavra que a própria Ju escolheu. Tribo pode ser de mulheres; **a nommi não é.**
+- Ainda há 21 ocorrências de "amiga/amigas" em texto de tela. Não troquei todas de uma vez: é decisão de voz da Ju, não minha.
+
+## Errei a mão na voz (02/11)
+- A Ju disse "falta gíria" e eu fui para o lado **pobre**: "Acabou a fila por hoje", "Chama uma amiga pra cá". Ela detestou, e com razão — "fila" é linguagem de banco, não de app de relacionamento, e o público inclui gente de tecnologia que vai conectar o LinkedIn.
+- **A régua do Pippo é a voz das figurinhas, não a da interface.** Figurinha pode dizer "Trem tá feio"; a tela precisa de português bom com personalidade. As duas coisas convivem, e misturar empobrece.
+- O que ficou: "Você conheceu todo mundo de hoje." / "Amanhã a nommi te apresenta gente nova." **"Apresentação"** no lugar de "fila" ou "perfis" — reposiciona o baralho como a nommi apresentando gente, que é mais verdadeiro e mais elegante que uma fila acabando.
+- Teste de teto agora confere **sentido**, não redação (o número é o real, o Pro não faz propaganda para quem já paga): frase vai ser reescrita muitas vezes, e teste colado na palavra exata vira obstáculo em vez de rede.
+
+## Pippo tem direito de uso (02/11)
+- A Ju **pagou pelo influencer**, feito para a nommi, e tem mais imagens dele. Usar como mascote e como guia está resolvido — era a minha única ressalva.

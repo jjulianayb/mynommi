@@ -125,7 +125,7 @@ export function linkDaTribo(origem: string, id: number): string {
 /** O texto pronto para colar junto do link. */
 export function textoDeDivulgacao(nome: string, cidade: string, link: string): string {
   const onde = cidade ? ` em ${cidade}` : "";
-  return `Criei a tribo ${nome}${onde} na nommi, que é um app de amizade entre mulheres. Se quiser entrar: ${link}`;
+  return `Criei a tribo ${nome}${onde} na nommi, um app pra achar sua tribo e fazer amizade. Se quiser entrar, é por aqui: ${link}`;
 }
 
 /** Tribo sensível nunca tem página pública, nem se a dona ligar. */

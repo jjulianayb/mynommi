@@ -20,18 +20,18 @@ export const DIAS_DE_PIPPIN = 90;
 /** O que dizer quando o baralho do dia acaba. */
 export function fraseTetoDePerfis(pro: boolean): string {
   return pro
-    ? `Você viu os ${PERFIS_PRO_POR_DIA} perfis de hoje. Amanhã tem mais.`
-    : `Você viu os ${PERFIS_GRATIS_POR_DIA} perfis de hoje. Amanhã tem mais — e com o Pro são ${PERFIS_PRO_POR_DIA} por dia.`;
+    ? `São ${PERFIS_PRO_POR_DIA} apresentações por dia, e você aproveitou todas. Amanhã a nommi volta com gente nova.`
+    : `São ${PERFIS_GRATIS_POR_DIA} apresentações por dia no plano grátis. Amanhã vem gente nova — e no Pro são ${PERFIS_PRO_POR_DIA} por dia.`;
 }
 
 /** O que dizer quando o plano grátis não fecha mais match. */
 export function fraseTetoDeMatch(): string {
-  return `No plano grátis dá para combinar com até ${MATCHES_GRATIS} pessoas. Com o Pro, match não tem teto.`;
+  return `O plano grátis fecha até ${MATCHES_GRATIS} amizades pelo match. No Pro, não tem limite.`;
 }
 
 /** O que dizer quando a cota de tribos do Pro enche. */
 export function fraseTetoDeTribos(): string {
-  return `No plano Pro dá para criar até ${TRIBOS_PRO} tribos.`;
+  return `O Pro deixa você criar até ${TRIBOS_PRO} tribos suas.`;
 }
 
 /** Aviso da carteira sobre validade dos Pippins de presente. */

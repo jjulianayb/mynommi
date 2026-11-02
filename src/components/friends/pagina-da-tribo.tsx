@@ -90,8 +90,8 @@ export function PaginaDaTribo({ id }: { id: string }) {
 
       <section className="tribo-publica-entrar">
         <p>
-          A nommi é um app de amizade entre mulheres. Para entrar nesta tribo, crie sua conta: leva
-          um minuto e é de graça.
+          A nommi é onde as pessoas acham a tribo delas. Pra entrar nesta aqui, é só criar sua
+          conta: leva um minuto e é de graça.
         </p>
         <Button asChild className="wide">
           {/* O id da tribo vai no endereço, e o app guarda antes do login:
