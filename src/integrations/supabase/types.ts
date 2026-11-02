@@ -1458,6 +1458,10 @@ export type Database = {
         Args: { _legenda: string; _path: string; _teia: number }
         Returns: undefined
       }
+      e_embaixadora: {
+        Args: { _quem: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
