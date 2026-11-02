@@ -10,7 +10,7 @@ import {
   type Posicao,
 } from "@/lib/tour";
 import { Icon } from "./art";
-import { apontaPippo } from "./pippo";
+import { frontalPippo } from "./pippo";
 import "./pippo.css";
 
 const medir = (el: Element): Caixa => {
@@ -19,7 +19,7 @@ const medir = (el: Element): Caixa => {
 };
 
 const LARGURA_MAO = 128;
-const ALTURA_MAO = 112;
+const ALTURA_MAO = 118;
 
 /**
  * Onde o Pippo fica: ao lado do balão quando cabe e, em tela estreita, espiando
@@ -139,7 +139,7 @@ export function Tour({ me, onFim }: { me: string; onFim: () => void }) {
       {mao && (
         <img
           className="tour-mao"
-          src={apontaPippo}
+          src={frontalPippo}
           alt=""
           style={{ top: mao.top, left: mao.left, transform: mao.transform }}
         />
