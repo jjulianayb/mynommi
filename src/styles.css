@@ -847,6 +847,8 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 /* O fundo escolhido pinta a página inteira */
 .mynommi{position:relative;margin:-14px -16px 0;padding:16px 16px 10px;min-height:calc(100vh - 150px)}
 .mynommi-fundo{position:absolute;inset:0;z-index:0}
+/* Foto de fundo ganha um véu escuro: o texto claro não some nela */
+.mynommi-fundo.foto::after,.combinar-fundo.foto::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.42),rgba(0,0,0,.55))}
 .mynommi>*:not(.mynommi-fundo){position:relative;z-index:1}
 .mynommi.tom-escuro{color:#F7F0DE}
 .mynommi.tom-escuro .settings-subtitle,.mynommi.tom-escuro h1,.mynommi.tom-escuro h2{color:#fff}
