@@ -185,7 +185,7 @@ export function useConhecidas(me: string | null) {
             return {
               userId: x.id,
               nome: x.nickname || "nommi",
-              avatar: x.avatar_url || "",
+              avatar: enderecoDaImagem(x.avatar_url || ""),
               cidade: x.city || "",
               interesses: (x.interests ?? []).slice(0, 3),
               tribosEmComum: (x.tribos_em_comum ?? []).slice(0, 2),
