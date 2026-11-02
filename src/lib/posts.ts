@@ -1,3 +1,5 @@
+import { PIPPO_ID } from "@/lib/pippo-tribo";
+import frontalPippo from "@/assets/pippo/1-pippo-frontal.png";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { enderecoDaImagem } from "@/lib/covers";
@@ -125,8 +127,9 @@ export function toPost(
   return {
     id: r.id,
     authorId: r.author_id,
-    authorName: a?.nickname || "nommi",
-    authorAvatar: enderecoDaImagem(a?.avatar_url ?? ""),
+    authorName: r.author_id === PIPPO_ID ? "Pippo" : a?.nickname || "nommi",
+    authorAvatar:
+      r.author_id === PIPPO_ID ? frontalPippo : enderecoDaImagem(a?.avatar_url ?? ""),
     teiaId: r.teia_id,
     body: r.body,
     location: r.location,
