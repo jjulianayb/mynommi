@@ -367,3 +367,10 @@
 - Ao consertar, descobri que **a minha 0040 tinha o mesmo defeito ao contrário**: ela aplicou `meus_dados()` com `meus_lugares` em produção mas deixou só um comentário no arquivo ("ver 0039"). Arquivo de migração que não bate com o banco é pior que arquivo nenhum.
 - **Regra nova, com teste (`src/test/apagar-conta.test.ts`):** `meus_dados()` e `apagar_minha_conta()` vão **por inteiro** em toda migração que mexa nelas, nunca "ver a migração anterior". O teste lê a última migração que define cada uma e exige que toda tabela que sai na exportação também seja apagada.
 - Reescrever a função inteira a cada correção vai acontecer de novo — ela é longa e duas pessoas mexem no mesmo repositório. O teste é a rede, não a disciplina.
+
+## Suas amigas no Descobrir (02/11)
+- Decisão da Ju: **o baralho de cartas continua sendo o Descobrir.** Mas com treze contas reais a fila acaba no primeiro dia, e a tela inteira virava "Por hoje, você viu todo mundo" sem mais nada para fazer. Então embaixo do baralho ficam as amizades que a pessoa já tem, com atalho para a conversa.
+- `minhas_conversas()` já devolvia **todas as amizades aceitas**, inclusive quem nunca trocou mensagem (`LEFT JOIN LATERAL` + `NULLS LAST`). Não precisou de função nova; só acrescentei `tribos_juntas`.
+- `ordemDasAmizades()`: quem espera resposta primeiro, **depois quem nunca conversou**, depois a conversa mais recente. Quem nunca conversou vem antes de propósito — é a amizade que morre sem nunca ter começado; conversa que já existe volta sozinha.
+- `recadoDaAmizade()` **nunca mostra a última mensagem**: a tira é larga de um dedo, o recado sairia cortado, e conversa particular não entra em tela de descoberta. Tem teste.
+- Número de tribos em comum é sempre o real, nunca arredondado para "12k". Tem teste barrando o "k".

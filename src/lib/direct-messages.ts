@@ -19,6 +19,8 @@ export type Conversa = {
   ultimaMinha: boolean | null;
   ultimaEm: string | null;
   naoLidas: number;
+  /** Quantas tribos vocês duas dividem. É o que explica a amizade na tela. */
+  tribosJuntas: number;
 };
 
 export const MAX_MESSAGE = 1000;
@@ -78,6 +80,7 @@ type ConversaRow = {
   ultima_minha: boolean | null;
   ultima_em: string | null;
   nao_lidas: number;
+  tribos_juntas?: number;
 };
 export const toConversa = (r: ConversaRow): Conversa => ({
   outroId: r.outro_id,
@@ -88,6 +91,7 @@ export const toConversa = (r: ConversaRow): Conversa => ({
   ultimaMinha: r.ultima_minha,
   ultimaEm: r.ultima_em,
   naoLidas: r.nao_lidas ?? 0,
+  tribosJuntas: r.tribos_juntas ?? 0,
 });
 
 /** Lista de conversas: uma por amizade, atualizada em tempo real. */
