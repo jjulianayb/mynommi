@@ -1,7 +1,7 @@
 import { CommunityDetail } from "./community-detail";
 import { useDemoSession } from "./session";
 import { useSharedTeia } from "@/lib/shared-teias";
-import { useRealTeias, useRealTeia, toTeia, sortByCity } from "@/lib/real-teias";
+import { useRealTeias, useRealTeia, toTeia, sortByCity, TRIBOS_ABERTAS_INICIAIS, tribosAbertasVisiveis } from "@/lib/real-teias";
 import { RadarSection } from "./radar-section";
 import { Feed, CreatePostForm, RolesList, RoleCard } from "./social-feed";
 import { InstallBanner } from "./install-banner";
@@ -1055,6 +1055,7 @@ function RealGroups({ userId }: { userId: string }) {
   const { state, notify } = useFriends();
   const navigate = useNavigate();
   const real = useRealTeias(userId);
+  const [verMaisTribos, setVerMaisTribos] = useState(false);
   const mine = real.rows.filter((r) => real.joined.includes(r.id));
   const open = sortByCity(
     real.rows.filter((r) => !real.joined.includes(r.id)),
@@ -1150,7 +1151,7 @@ function RealGroups({ userId }: { userId: string }) {
             : "Ainda não há outras tribos abertas. Que tal ser a primeira pessoa a criar uma?"}
         </p>
         <div className="group-grid">
-          {open.map((r) => (
+          {tribosAbertasVisiveis(open, verMaisTribos).map((r) => (
             <article className="group-card card-vivo" key={r.id}>
               <div className="row">
                 <ToneIcon
@@ -1212,6 +1213,13 @@ function RealGroups({ userId }: { userId: string }) {
             </article>
           ))}
         </div>
+        {open.length > TRIBOS_ABERTAS_INICIAIS && !verMaisTribos && (
+          <div className="episode-actions">
+            <Button variant="secondary" onClick={() => setVerMaisTribos(true)}>
+              Ver mais tribos ({open.length - TRIBOS_ABERTAS_INICIAIS})
+            </Button>
+          </div>
+        )}
       </section>
       <div className="episode-actions">
         <Button asChild variant="secondary">
@@ -1745,4 +1753,4 @@ export function GroupDetail({ id }: { id: number }) {
       />
     </>
   );
-}
+      }
