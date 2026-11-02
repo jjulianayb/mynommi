@@ -435,3 +435,9 @@
 - `capaDaTribo()` agora procura em três lugares, nesta ordem: **a capa que a tribo enviou**, a **categoria** dela, e por fim **palavra por palavra do nome**. "Tribo dos Cafés" acha café sem ninguém renomear nada.
 - Sem capa nenhuma, entra uma **capa desenhada** — quadrado com cor estável pelo nome e o ícone da família do assunto. Letra solta num quadrado bege parece imagem que não carregou; isso parece escolha.
 - **Ordem no estado sem cartas:** a explicação vem primeiro, e só depois tribos, banner e conexões. Antes a pessoa rolava três seções inteiras antes de descobrir por que não havia ninguém — e no Descobrir, onde a promessa é conhecer gente, isso lê como app quebrado. (No estado normal o baralho já vinha primeiro; o problema era só no vazio.)
+
+## Pippo guia: construído duas vezes (02/11)
+- O Instinct e eu construímos o **Pippo guia em paralelo**, pela terceira vez no mesmo dia (depois da carta do Descobrir e do rastreio da carta do meio). A versão dele é melhor em dois pontos: PNG com fundo transparente, e aparece só quando não atrapalha (fora do tour, da apresentação e da conversa). **Descartei a minha inteira** e fiquei com a dele.
+- O que sobrou do meu lado é o que ele não tinha: `src/lib/voz-do-pippo.ts`, a régua de **o que o Pippo não diz** — erro, senha, privacidade, denúncia, bloqueio, pagamento, apagar a conta. Mascote dando má notícia é o jeito mais rápido de a pessoa achar que o app está tirando sarro dela: quem perdeu a senha ou foi ofendida numa tribo quer resposta, não personagem. O teste lê o componente dele e confere as falas.
+- **Build quebrado no main:** `discover-page.tsx` passava `onDelete` para o `PostCard`, que recebe `onRemove`. `tsc` falhava, e isso derruba a publicação pela Lovable — ou seja, a nommi parada para todo mundo. Corrigido.
+- **Conferir `npx tsc --noEmit` antes de empurrar não é zelo, é o que mantém o app no ar.** Com duas pessoas no mesmo repositório isso deixa de ser opcional.
