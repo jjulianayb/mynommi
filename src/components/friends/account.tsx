@@ -371,7 +371,7 @@ function signupErrorMessage(err: {
     return "Este e-mail já tem conta. Use Entrar.";
   if (err.status === 429 || m.includes("rate"))
     return "Muitas tentativas seguidas. Espere alguns minutos e tente de novo, ou use Google ou Apple.";
-  if (m.includes("email")) return "Confira o e-mail digitado e tente de supabase.";
+  if (m.includes("email")) return "Confira o e-mail digitado e tente de novo.";
   return "Não foi possível criar a conta agora. Tente de novo ou use Google ou Apple.";
 }
 function CompleteAccount() {
