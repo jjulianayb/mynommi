@@ -3,73 +3,107 @@
  * Confirmado por ela em 02/11 às 14:13, com uso liberado como rosto da nommi.
  */
 import "./pippo.css";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Icon } from "./art";
-import rostoPippo from "@/assets/pippo/2-pippo-busto.png";
+import frontalPippo from "@/assets/pippo/1-pippo-frontal.png";
 import apontaPippo from "@/assets/pippo/1-pippo-aponta.png";
+import {
+  BOAS_VINDAS_DO_PIPPO,
+  NAO_SEI_DO_PIPPO,
+  RESPOSTAS_DO_PIPPO,
+  respostaPara,
+  type RespostaDoPippo,
+} from "@/lib/pippo-respostas";
 
-export { apontaPippo };
+/** O Pippo de frente, recortado, com fundo transparente. Usado no cantinho e no tour. */
+export { frontalPippo };
 
-/** O Pippo de busto, com fundo transparente. */
-export function PippoRosto({ altura = 84 }: { altura?: number }) {
-  return <img className="pippo-busto" src={rostoPippo} alt="" style={{ height: altura }} />;
+export function PippoRosto({ altura = 92 }: { altura?: number }) {
+  return <img className="pippo-busto" src={frontalPippo} alt="" style={{ height: altura }} />;
 }
 
-const DICAS = [
-  {
-    to: "/descobrir",
-    icon: "spark",
-    titulo: "Descobrir",
-    texto: "Veja uma pessoa por vez e diga se quer conhecer.",
-  },
-  {
-    to: "/grupos",
-    icon: "teia",
-    titulo: "Tribos",
-    texto: "Entre numa tribo pelo que você gosta e converse por lá.",
-  },
-  {
-    to: "/perfil",
-    icon: "users",
-    titulo: "Meu nommi",
-    texto: "Foto, capa e interesses: é o que decide se alguém quer te conhecer.",
-  },
-] as const;
+type Fala = { de: "pippo" | "voce"; texto: string; ir?: RespostaDoPippo["ir"] };
 
-/** Ajudante fixo no cantinho: abre dicas curtas e refaz o tour. */
+/** Ajudante fixo no cantinho: conversa com respostas prontas e refaz o tour. */
 export function PippoAjudante({ aoRefazerTour }: { aoRefazerTour: () => void }) {
   const [aberto, setAberto] = useState(false);
+  const [falas, setFalas] = useState<Fala[]>([{ de: "pippo", texto: BOAS_VINDAS_DO_PIPPO }]);
+  const [texto, setTexto] = useState("");
+  const fim = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    fim.current?.scrollIntoView({ block: "end" });
+  }, [falas, aberto]);
+
+  const perguntar = (pergunta: string, r: RespostaDoPippo | null) =>
+    setFalas((f) => [
+      ...f,
+      { de: "voce", texto: pergunta },
+      r
+        ? { de: "pippo", texto: r.resposta, ir: r.ir }
+        : { de: "pippo", texto: NAO_SEI_DO_PIPPO, ir: { to: "/ajuda", rotulo: "Abrir a Ajuda" } },
+    ]);
+
   return (
     <div className="pippo-canto">
       {aberto && (
         <div className="pippo-painel" role="dialog" aria-label="Pippo, seu ajudante">
-          <img className="pippo-aponta" src={apontaPippo} alt="" />
-          <h2>Oi, eu sou o Pippo</h2>
-          <p>Te mostro por onde começar na nommi.</p>
-          <ul>
-            {DICAS.map((d) => (
-              <li key={d.to}>
-                <Link to={d.to} onClick={() => setAberto(false)}>
-                  <Icon name={d.icon} />
-                  <span>
-                    <b>{d.titulo}</b>
-                    <small>{d.texto}</small>
-                  </span>
-                </Link>
-              </li>
+          <div className="pippo-topo">
+            <img className="pippo-aponta" src={apontaPippo} alt="" />
+            <div>
+              <h2>Pippo</h2>
+              <p>Seu ajudante na nommi</p>
+            </div>
+          </div>
+          <div className="pippo-conversa" aria-live="polite">
+            {falas.map((f, i) => (
+              <div key={i} className={"pippo-fala " + f.de}>
+                <p>{f.texto}</p>
+                {f.ir && (
+                  <Link to={f.ir.to} className="pippo-ir" onClick={() => setAberto(false)}>
+                    {f.ir.rotulo}
+                  </Link>
+                )}
+              </div>
             ))}
-          </ul>
-          <button
-            type="button"
-            className="pippo-tour"
-            onClick={() => {
-              setAberto(false);
-              aoRefazerTour();
+            <div ref={fim} />
+          </div>
+          <div className="pippo-perguntas">
+            {RESPOSTAS_DO_PIPPO.map((r) => (
+              <button key={r.id} type="button" onClick={() => perguntar(r.pergunta, r)}>
+                {r.pergunta}
+              </button>
+            ))}
+            <button
+              type="button"
+              className="pippo-tour"
+              onClick={() => {
+                setAberto(false);
+                aoRefazerTour();
+              }}
+            >
+              Fazer o tour do app
+            </button>
+          </div>
+          <form
+            className="pippo-escrever"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const t = texto.trim();
+              if (!t) return;
+              perguntar(t, respostaPara(t));
+              setTexto("");
             }}
           >
-            Fazer o tour do app
-          </button>
+            <input
+              value={texto}
+              onChange={(e) => setTexto(e.target.value)}
+              placeholder="Pergunte ao Pippo"
+              aria-label="Pergunte ao Pippo"
+              maxLength={120}
+            />
+            <button type="submit">Enviar</button>
+          </form>
         </div>
       )}
       <button
