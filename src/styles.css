@@ -432,6 +432,7 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .story-head button{color:#fff}
 .story-media{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .story-media img,.story-media video{max-width:100%;max-height:100%;object-fit:contain}
+.story-indisponivel{color:#fff;text-align:center;padding:2rem}
 .story-caption{color:#fff;text-align:center;padding:16px 20px calc(24px + env(safe-area-inset-bottom));font-size:15px;line-height:1.5;z-index:2}
 .story-half{position:absolute;top:70px;bottom:70px;width:35%;background:none;border:0;cursor:pointer}
 .story-half.left{left:0}.story-half.right{right:0}
