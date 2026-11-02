@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import "./combinar.css";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { paraCss } from "@/lib/enquadrar";
@@ -11,10 +12,12 @@ import {
   porqueApareceu,
   recadoDaResposta,
   useCombinar,
+  useConhecidas,
   type Candidata,
+  type Conhecida,
 } from "@/lib/combinar";
 import { fraseTetoDePerfis } from "@/lib/plano";
-import { Icon, SemFoto } from "./art";
+import { Icon, SemFoto, Sticker } from "./art";
 import { Esqueleto, EmptyState } from "./surfaces";
 import { SafetyMenu } from "./social-feed";
 import { useFriends } from "./store";
@@ -61,12 +64,16 @@ const TEMPO_DA_COMEMORACAO_MS = 3600;
 export function Combinar({ me }: { me: string }) {
   const { notify } = useFriends();
   const { fila, curiosidade, doDia, ready, responder, recarregar } = useCombinar(Boolean(me));
+  const { lista: conhecidas } = useConhecidas(me || null);
+  const [filtro, setFiltro] = useState<string | null>(null);
   const [dx, setDx] = useState(0);
   const [saindo, setSaindo] = useState<"sim" | "nao" | null>(null);
   const [deuMatch, setDeuMatch] = useState<Candidata | null>(null);
   const arrasto = useRef<{ x0: number; largura: number } | null>(null);
-  const c = fila[0];
-  const atras = fila[1];
+  const vista = filtro ? fila.filter((x) => x.interesses.includes(filtro)) : fila;
+  const c = vista[0];
+  const atras = vista[1];
+  const opcoesFiltro = [...new Set(fila.flatMap((x) => x.interesses))].slice(0, 8);
 
   /**
    * Decidir não espera a rede.
@@ -149,10 +156,90 @@ export function Combinar({ me }: { me: string }) {
       </section>
   );
 
+  const trilhoConhecidas = conhecidas.length > 0 && (
+    <section className="dc-conhecidas" aria-label="Suas conexões">
+      <h3>Suas conexões</h3>
+      <div className="dc-trilho">
+        {conhecidas.map((k: Conhecida) => (
+          <article key={k.userId} className="dc-mini">
+            <span className="dc-mini-foto">
+              {k.avatar ? (
+                <img src={k.avatar} alt={"Foto de " + k.nome} />
+              ) : (
+                <SemFoto nome={k.nome} size={112} />
+              )}
+            </span>
+            <h4>{k.nome}</h4>
+            <p>{k.cidade || "Brasil"}</p>
+            {k.interesses.length > 0 && (
+              <div className="dc-tags">
+                {k.interesses.slice(0, 2).map((i) => (
+                  <span key={i}>
+                    <Icon name={iconeDoInteresse(i)} />
+                    {i}
+                  </span>
+                ))}
+              </div>
+            )}
+            <Button asChild className="dc-conversar">
+              <Link to="/conversas/$id" params={{ id: k.userId }}>
+                <Icon name="chat" />
+                Conversar
+              </Link>
+            </Button>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+
+  const bannerTribos = (
+    <aside className="dc-banner">
+      <div className="dc-banner-arte" aria-hidden="true">
+        <Sticker id={5} size={54} semLegenda />
+        <Sticker id={0} size={64} semLegenda />
+        <Sticker id={15} size={54} semLegenda />
+      </div>
+      <div className="dc-banner-txt">
+        <h3>Alguma tribo te esperando?</h3>
+        <p>Descubra comunidades incríveis e faça novas conexões.</p>
+        <Link to="/grupos" className="dc-banner-cta">
+          Explorar Tribos
+          <Icon name="arrow" />
+        </Link>
+      </div>
+    </aside>
+  );
+
+  const faixaFiltros = opcoesFiltro.length > 1 && (
+    <div className="dc-filtros" role="group" aria-label="Filtrar por interesse">
+      <button
+        type="button"
+        className={"dc-chip" + (filtro === null ? " ativa" : "")}
+        onClick={() => setFiltro(null)}
+      >
+        Todas
+      </button>
+      {opcoesFiltro.map((i) => (
+        <button
+          key={i}
+          type="button"
+          className={"dc-chip" + (filtro === i ? " ativa" : "")}
+          onClick={() => setFiltro(filtro === i ? null : i)}
+        >
+          <Icon name={iconeDoInteresse(i)} />
+          {i}
+        </button>
+      ))}
+    </div>
+  );
+
   if (!c)
     return (
       <>
         {comemoracao}
+      {trilhoConhecidas}
+      {bannerTribos}
       <EmptyState
         title={doDia && doDia.restantes === 0 ? "Por hoje é só." : "Por hoje, você viu todo mundo."}
         text={
@@ -189,6 +276,7 @@ export function Combinar({ me }: { me: string }) {
   return (
     <section className={"combinar tom-" + tom}>
       {comemoracao}
+      {faixaFiltros}
       <div
         className={"combinar-fundo" + (fundoEhFoto(c.fundo) ? " foto" : "")}
         style={estiloDoFundo(c.fundo || "teia-mata")}
@@ -218,7 +306,7 @@ export function Combinar({ me }: { me: string }) {
       )}
 
       <article
-        className={"combinar-card" + (saindo ? " saindo-" + saindo : "")}
+        className={"combinar-card dc-card-superficie" + (saindo ? " saindo-" + saindo : "")}
         style={saindo ? undefined : { transform: `translateX(${dx}px) rotate(${dx / 22}deg)` }}
         onPointerDown={(e) => {
           arrasto.current = { x0: e.clientX, largura: e.currentTarget.clientWidth };
@@ -250,29 +338,22 @@ export function Combinar({ me }: { me: string }) {
           </span>
         )}
 
-        {c.emComum.length > 0 ? (
-          <>
-            <p className="combinar-chamada">Vocês dois gostam de</p>
-            <div className="combinar-nos">
-              {c.emComum.slice(0, 4).map((i) => (
-                <span key={i}>
-                  <b>
-                    <Icon name={iconeDoInteresse(i)} />
-                  </b>
-                  {i}
-                </span>
-              ))}
-            </div>
-          </>
-        ) : (
-          <p className="combinar-chamada solta">{porqueApareceu(c)}</p>
-        )}
-
-        <div className="combinar-anel">
-          <Face c={c} size={150} />
+        <div className="dc-foto">
+          <Face c={c} size={340} />
+          <button
+            type="button"
+            className="dc-coracao"
+            aria-label={"Quero conhecer " + c.nome}
+            onClick={(e) => {
+              e.stopPropagation();
+              void decidir(c, true);
+            }}
+          >
+            <Icon name="heart" />
+          </button>
         </div>
 
-        <h2>
+        <h2 className="dc-nome">
           {c.nome}
           {c.verificada && (
             <span className="selo-verificada" title="Perfil conferido pela nommi">
@@ -285,6 +366,14 @@ export function Combinar({ me }: { me: string }) {
           {c.tribosEmComum > 0 &&
             ` · ${c.tribosEmComum} ${c.tribosEmComum === 1 ? "tribo" : "tribos"} em comum`}
         </p>
+
+        {c.emComum.length > 0 ? (
+          <p className="combinar-chamada">
+            Vocês dois gostam de {c.emComum.slice(0, 3).join(", ")}
+          </p>
+        ) : (
+          <p className="combinar-chamada solta">{porqueApareceu(c)}</p>
+        )}
 
         {c.selosDoPovo.length > 0 && (
           <div className="combinar-selos">
@@ -308,7 +397,7 @@ export function Combinar({ me }: { me: string }) {
             </>
           )}
           {outros.length > 0 && (
-            <div className="combinar-outros">
+            <div className="combinar-outros dc-tags">
               {outros.slice(0, 6).map((i) => (
                 <span key={i.nome}>
                   <Icon name={iconeDoInteresse(i.nome)} />
@@ -324,28 +413,26 @@ export function Combinar({ me }: { me: string }) {
         </div>
       </article>
 
-      <div className="combinar-acoes">
+      <div className="combinar-acoes dc-decidir">
+        <Button className="dc-conectar" onClick={() => void decidir(c, true)}>
+          <Icon name="users" />
+          Conectar
+        </Button>
         <button
           type="button"
-          className="decidir nao"
+          className="dc-passar"
           aria-label={"Agora não, " + c.nome}
           onClick={() => void decidir(c, false)}
         >
-          ✕
-        </button>
-        <button
-          type="button"
-          className="decidir sim"
-          aria-label={"Quero conhecer " + c.nome}
-          onClick={() => void decidir(c, true)}
-        >
-          ✓
+          Agora não
         </button>
       </div>
 
       <div className="combinar-rodape">
         <SafetyMenu me={me} targetUserId={c.userId} targetUserName={c.nome} />
       </div>
+      {trilhoConhecidas}
+      {bannerTribos}
     </section>
   );
 }
