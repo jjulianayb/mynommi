@@ -13,6 +13,7 @@ import {
   useCombinar,
   type Candidata,
 } from "@/lib/combinar";
+import { fraseTetoDePerfis } from "@/lib/plano";
 import { Icon, SemFoto } from "./art";
 import { Esqueleto, EmptyState } from "./surfaces";
 import { SafetyMenu } from "./social-feed";
@@ -59,7 +60,7 @@ const TEMPO_DA_COMEMORACAO_MS = 3600;
 /** O match: o que vocês têm em comum vem antes do rosto. */
 export function Combinar({ me }: { me: string }) {
   const { notify } = useFriends();
-  const { fila, curiosidade, ready, responder, recarregar } = useCombinar(Boolean(me));
+  const { fila, curiosidade, doDia, ready, responder, recarregar } = useCombinar(Boolean(me));
   const [dx, setDx] = useState(0);
   const [saindo, setSaindo] = useState<"sim" | "nao" | null>(null);
   const [deuMatch, setDeuMatch] = useState<Candidata | null>(null);
@@ -85,7 +86,7 @@ export function Combinar({ me }: { me: string }) {
       void (async () => {
         const r = await responder(quem, sim);
         if (r === "match") setDeuMatch(quem);
-        else if (r === "erro") notify(recadoDaResposta(r, quem.nome));
+        else if (r === "erro" || r === "limite") notify(recadoDaResposta(r, quem.nome));
         // Recarrega com folga, para a fila nunca acabar na mão da pessoa.
         if (fila.length <= 4) void recarregar();
       })();
@@ -153,9 +154,21 @@ export function Combinar({ me }: { me: string }) {
       <>
         {comemoracao}
       <EmptyState
-        title="Por hoje, você viu todo mundo."
-        text="A nommi só mostra gente de verdade, então a fila acaba rápido no começo. Chame alguém que você gosta e volte amanhã."
+        title={doDia && doDia.restantes === 0 ? "Por hoje é só." : "Por hoje, você viu todo mundo."}
+        text={
+          doDia && doDia.restantes === 0
+            ? fraseTetoDePerfis(doDia.pro)
+            : "A nommi só mostra gente de verdade, então a fila acaba rápido no começo. Chame alguém que você gosta e volte amanhã."
+        }
       >
+        {doDia && doDia.restantes === 0 && !doDia.pro && (
+          <Button asChild>
+            <Link to="/pro">
+              <Icon name="spark" />
+              Conhecer o Pro
+            </Link>
+          </Button>
+        )}
         <Button asChild>
           <Link to="/convidar">
             <Icon name="send" />
