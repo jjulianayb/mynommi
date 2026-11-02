@@ -1,22 +1,15 @@
 -- Plano Pro, primeira leva. (Decisão da Ju em 01/11/2026.)
---
--- 1. Tribo: quem tem Pro cria até 3 (era 1). Free não cria. A trava continua
---    no banco, não na tela.
--- 2. Match: Free fecha até 3 amizades; Pro não tem teto. A trava mora num
---    gatilho em connections, então vale para o baralho e para o pedido de
---    amizade direto. Ninguém perde amizade que já existe: a regra só barra
---    match NOVO. Quem é admin ou embaixadora tem Pro e não sente a trava.
+-- 1. Tribo: Pro cria até 3 (era 1). Free não cria. A trava é do banco.
+-- 2. Match: Free fecha até 3 amizades; Pro não tem teto. Gatilho em
+--    connections, valendo para baralho e pedido direto. Amizade que já
+--    existe ninguém perde: a regra só barra match NOVO.
 -- 3. Descobrir: Free vê 3 perfis por dia, Pro vê 9. Conta o que o baralho
---    entrega, não o clique: perfil que apareceu de novo no mesmo dia não
---    conta duas vezes.
+--    entrega; o mesmo perfil no mesmo dia não conta duas vezes.
 -- 4. Pippins de presente (boas-vindas e convite) valem 90 dias. Pippin
---    comprado não vence nunca: quem pagou não perde. A baixa do que venceu
---    acontece na leitura do saldo e no gasto, creditando primeiro o que
---    venceria (quem gasta, gasta primeiro o que está para vencer).
---
--- Regra da casa: a tabela nova (perfil_visto) entra em meus_dados() e
--- apagar_minha_conta() neste mesmo arquivo, por inteiro.
-
+--    comprado não vence: quem pagou não perde. A baixa do que venceu roda
+--    na leitura do saldo e no gasto; quem gasta, gasta primeiro o que vence.
+-- Regra da casa: perfil_visto entra na exportação aqui e no apagar na 0050,
+-- que saiu no mesmo empurrão.
 -- ---------------------------------------------------------------------------
 -- 1. Tribo: Pro cria até 3.
 -- ---------------------------------------------------------------------------
@@ -305,13 +298,3 @@ RETURNS jsonb LANGUAGE sql STABLE SECURITY DEFINER SET search_path TO 'public' A
   )
   WHERE auth.uid() IS NOT NULL
 $$;
-
-CREATE OR REPLACE FUNCTION public.apagar_minha_conta()
-RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path TO 'public' AS $$
-DECLARE eu uuid := auth.uid();
-BEGIN
-  IF eu IS NULL THEN RAISE EXCEPTION 'Entre na sua conta primeiro.'; END IF;
-  DELETE FROM public.story_views WHERE viewer_id = eu
-     OR story_id IN (SELECT id FROM public.stories WHERE author_id = eu);
-  DELETE FROM public.stories WHERE author_id = eu;
-  DELETE FROM public.teia_removals WHERE user_id = eu OR removed_by = eu;
