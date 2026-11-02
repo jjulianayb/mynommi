@@ -11,3 +11,8 @@
 .pippo-painel li small{display:block;font-size:12.5px;color:var(--muted-foreground);line-height:1.4}
 .pippo-tour{min-height:44px;border:0;border-radius:999px;background:var(--primary);color:#fff;font-weight:700;cursor:pointer}
 .tour-mao{position:fixed;z-index:3;width:128px;height:auto;pointer-events:none;filter:drop-shadow(0 8px 12px rgba(0,0,0,.35));transition:top .25s ease,left .25s ease,transform .25s ease}
+.tour-seta{position:fixed;z-index:3;width:28px;height:28px;pointer-events:none;animation:tour-seta 1s ease-in-out infinite}
+.tour-seta::before{content:"";position:absolute;left:3px;border:11px solid transparent}
+.tour-seta.para-cima::before{top:-2px;border-bottom:18px solid var(--sunshine);border-top:0}
+.tour-seta.para-baixo::before{top:4px;border-top:18px solid var(--sunshine);border-bottom:0}
+@keyframes tour-seta{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
