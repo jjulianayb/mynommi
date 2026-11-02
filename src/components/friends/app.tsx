@@ -650,7 +650,7 @@ export function Discover() {
       <>
         <Title title="Encontre sua tribo" />
         <p className="intro">
-          Veja do que a pessoa gosta. Se vocês dois quiserem se conhecer, já são amizade.
+          Gente que combina com você, pelo que vocês têm em comum. Quando o sim é dos dois lados, a conversa abre.
         </p>
         <Combinar me={cloudUser.id} />
         <details className="descobrir-busca">

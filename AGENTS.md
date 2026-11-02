@@ -402,3 +402,10 @@
 
 ## Pippo tem direito de uso (02/11)
 - A Ju **pagou pelo influencer**, feito para a nommi, e tem mais imagens dele. Usar como mascote e como guia está resolvido — era a minha única ressalva.
+
+## "Vocês dois" e "já são amizade" (02/11)
+- A Ju apontou a chamada do Descobrir — *"Veja do que a pessoa gosta. Se vocês dois quiserem se conhecer, já são amizade."* — como o pior texto da tela. Dois defeitos: **"vocês dois" é masculino** (a nommi não sabe nem pergunta o gênero de ninguém) e **"já são amizade"** usa amizade como status, não como coisa.
+- "Vocês dois" aparecia em **oito lugares**: chamada do Descobrir, carta do match, `porqueApareceu`, `recadoDaResposta`, o tour e a chegada. Todos reescritos para "vocês" ou "o sim é dos dois lados".
+- A chamada virou: *"Gente que combina com você, pelo que vocês têm em comum. Quando o sim é dos dois lados, a conversa abre."*
+- `src/test/voz.test.ts` barra "vocês dois" e "já são amizade" em componentes **e** em libs.
+- Teste de texto exato é obstáculo, não rede: `combinar.test.ts` travava a frase palavra por palavra e quebrou nas duas reescritas de hoje. Onde o sentido é o que importa, o teste confere o sentido.

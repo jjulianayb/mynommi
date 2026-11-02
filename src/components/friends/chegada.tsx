@@ -23,7 +23,7 @@ const PASSOS = [
     icon: "heart",
     titulo: "Amizade acontece de dois jeitos",
     texto:
-      "No match, quando vocês dois querem se conhecer. E na tribo, conversando — sem precisar marcar nada.",
+      "No match, quando o sim é dos dois lados. E na tribo, conversando, sem precisar marcar nada.",
   },
   {
     icon: "pin",

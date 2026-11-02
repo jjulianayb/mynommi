@@ -33,8 +33,8 @@ const base: Candidata = {
 
 describe("porque apareceu", () => {
   it("diz os interesses em comum quando existem", () => {
-    expect(porqueApareceu(base)).toBe("Vocês dois gostam de Café e Cinema");
-    expect(porqueApareceu({ ...base, emComum: ["Café"] })).toBe("Vocês dois gostam de Café");
+    expect(porqueApareceu(base)).toBe("Vocês gostam de Café e Cinema");
+    expect(porqueApareceu({ ...base, emComum: ["Café"] })).toBe("Vocês gostam de Café");
     expect(porqueApareceu({ ...base, emComum: ["a", "b", "c", "d"] })).toContain("a, b, c");
   });
   it("cai para a cidade quando não há interesse em comum", () => {

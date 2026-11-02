@@ -84,9 +84,9 @@ export const toCandidata = (r: Linha): Candidata => ({
 export function porqueApareceu(c: Candidata): string {
   const n = c.emComum.length;
   if (n >= 3) return `Vocês gostam das mesmas coisas: ${c.emComum.slice(0, 3).join(", ")}`;
-  if (n === 2) return `Vocês dois gostam de ${c.emComum[0]} e ${c.emComum[1]}`;
-  if (n === 1) return `Vocês dois gostam de ${c.emComum[0]}`;
-  if (c.selosEmComum.length > 0) return `Os amigos de vocês dois dizem: ${c.selosEmComum[0]}`;
+  if (n === 2) return `Vocês gostam de ${c.emComum[0]} e ${c.emComum[1]}`;
+  if (n === 1) return `Vocês gostam de ${c.emComum[0]}`;
+  if (c.selosEmComum.length > 0) return `Os amigos de vocês dizem a mesma coisa: ${c.selosEmComum[0]}`;
   if (c.tribosEmComum > 0)
     return c.tribosEmComum === 1
       ? "Vocês estão na mesma tribo"
@@ -101,7 +101,7 @@ export function recadoDaResposta(r: Resposta, nome: string): string {
     return "No plano grátis dá para combinar com até 3 pessoas. Com o Pro, match não tem teto.";
   if (r === "match") return `Deu match com ${nome}.`;
   if (r === "guardado")
-    return "Guardamos sua resposta. Se a pessoa também quiser, vocês dois ficam sabendo.";
+    return "Guardado. Se o sim for dos dois lados, vocês ficam sabendo na hora.";
   if (r === "passou") return "Tudo bem. Vamos ver outra pessoa.";
   return "Não deu para enviar agora.";
 }

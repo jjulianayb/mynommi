@@ -147,7 +147,7 @@ export function Combinar({ me }: { me: string }) {
             ))}
           </p>
         ) : (
-          <p className="deu-match-sub">Já são amizade. A conversa está aberta.</p>
+          <p className="deu-match-sub">A conversa de vocês já está aberta.</p>
         )}
         <div className="deu-match-acoes">
           <Button asChild>
@@ -323,7 +323,7 @@ export function Combinar({ me }: { me: string }) {
               </p>
               {pessoa.emComum.length > 0 && (
                 <p className="combinar-chamada">
-                  Vocês dois gostam de {pessoa.emComum.slice(0, 3).join(", ")}
+                  Vocês gostam de {pessoa.emComum.slice(0, 3).join(", ")}
                 </p>
               )}
               {tagsP.length > 0 && (

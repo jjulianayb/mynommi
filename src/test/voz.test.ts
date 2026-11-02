@@ -78,3 +78,28 @@ describe("o nome do grupo na tela é tribo", () => {
     }
   });
 });
+
+/**
+ * "Vocês dois" aparecia em oito lugares — na chamada do Descobrir, na carta do
+ * match, no tour e no recado de resposta guardada. Além de truncado, é
+ * masculino: a nommi fala com quem está lendo, e não sabe (nem pergunta) o
+ * gênero de ninguém.
+ *
+ * E "já são amizade" usava amizade como status, não como coisa — "se vocês dois
+ * quiserem se conhecer, já são amizade" foi o texto que a Ju apontou como o
+ * pior da tela.
+ */
+describe("a nommi não fala com a pessoa no masculino nem no feminino", () => {
+  const LIBS = "src/lib";
+  const todos = [
+    ...arquivos,
+    ...readdirSync(LIBS)
+      .filter((f) => f.endsWith(".ts"))
+      .map((f) => ({ nome: f, texto: readFileSync(`${LIBS}/${f}`, "utf8") })),
+  ];
+  it.each(["vocês dois", "já são amizade"])("não diz %s", (frase) => {
+    for (const a of todos) {
+      expect(a.texto.toLowerCase().includes(frase), a.nome).toBe(false);
+    }
+  });
+});

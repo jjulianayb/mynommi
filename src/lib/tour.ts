@@ -19,7 +19,7 @@ export const PASSOS_DO_TOUR: PassoDoTour[] = [
     alvo: '[data-tour="pessoas"]',
     titulo: "Gente para você conhecer",
     texto:
-      "Estes são os rostos de quem está na nommi perto de você. Embaixo de cada um aparece o que vocês dois gostam.",
+      "Estes são os rostos de quem está na nommi perto de você. Embaixo de cada um aparece o que vocês têm em comum.",
     preferido: "abaixo",
   },
   {
