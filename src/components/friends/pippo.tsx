@@ -1,3 +1,7 @@
+/*
+ * Origem das imagens do Pippo: personagem gerado e construído pela própria Ju.
+ * Confirmado por ela em 02/11 às 14:13, com uso liberado como rosto da nommi.
+ */
 import "./pippo.css";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
