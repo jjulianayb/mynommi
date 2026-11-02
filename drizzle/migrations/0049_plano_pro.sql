@@ -79,6 +79,9 @@ DROP POLICY IF EXISTS "Vejo os meus vistos" ON public.perfil_visto;
 CREATE POLICY "Vejo os meus vistos" ON public.perfil_visto FOR SELECT TO authenticated
   USING (user_id = auth.uid());
 
+-- O baralho muda de cara (agora registra a vista), então a função velha sai
+-- antes da nova entrar: o Postgres não troca o tipo de retorno com REPLACE.
+DROP FUNCTION IF EXISTS public.pessoas_para_combinar(integer);
 CREATE OR REPLACE FUNCTION public.pessoas_para_combinar(_limite integer DEFAULT 20)
 RETURNS TABLE (
   user_id uuid, nickname text, avatar_url text, cover_path text, city text, about text,
