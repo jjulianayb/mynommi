@@ -859,6 +859,81 @@ export type Database = {
         }
         Relationships: []
       }
+      push_config: {
+        Row: {
+          chave: string
+          valor: string
+        }
+        Insert: {
+          chave: string
+          valor: string
+        }
+        Update: {
+          chave?: string
+          valor?: string
+        }
+        Relationships: []
+      }
+      push_envios: {
+        Row: {
+          created_at: string
+          endpoint: string | null
+          erro: string | null
+          id: number
+          status: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          endpoint?: string | null
+          erro?: string | null
+          id?: never
+          status?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          endpoint?: string | null
+          erro?: string | null
+          id?: never
+          status?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          last_seen_at: string
+          p256dh: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          last_seen_at?: string
+          p256dh: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          last_seen_at?: string
+          p256dh?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       radar_presence: {
         Row: {
           activity: string
@@ -1482,6 +1557,7 @@ export type Database = {
         }[]
       }
       gastar_figurinha: { Args: never; Returns: boolean }
+      gente_na_nommi: { Args: never; Returns: number }
       grant_purchased_credits: {
         Args: {
           _amount: number
@@ -1905,6 +1981,7 @@ export type Database = {
         Returns: boolean
       }
       tem_premium: { Args: { _quem?: string }; Returns: boolean }
+      teto_do_descobrir: { Args: { _quem?: string }; Returns: number }
       texto_comparavel: { Args: { _t: string }; Returns: string }
       texto_simples: { Args: { _t: string }; Returns: string }
       tribo_e_aberta: { Args: { _teia: number }; Returns: boolean }
