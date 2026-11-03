@@ -16,7 +16,6 @@ import { EscolherFundo } from "./escolher-fundo";
 import { FotoInstantanea } from "./foto-instantanea";
 import { CameraStory } from "./camera-story";
 import { useStories } from "@/lib/stories";
-import "./my-nommi.css";
 import { apagarFotoAntiga, enviarFotoDePerfil } from "@/lib/foto-perfil";
 import { saveCloudProfile } from "@/lib/real-profiles";
 import { EscolherInteresses } from "./escolher-interesses";
@@ -83,6 +82,9 @@ export function MyNommi({ me }: { me: string }) {
 
   return (
     <section className={"mynommi tom-" + tomDoFundo(pagina.background)}>
+      {/* O atalho de trocar foto fica no cantinho do avatar, como o botão de
+          enquadrar, sem empurrar o nome nem a capa. */}
+      <style>{`.mynommi-foto-wrap .photo-label{position:absolute;left:-8px;bottom:-4px;padding:6px 10px;font-size:11px!important;line-height:1.2;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.18);z-index:2}`}</style>
       <div
         className={"mynommi-fundo" + (fundoEhFoto(pagina.background) ? " foto" : "")}
         style={estiloDoFundo(pagina.background)}
