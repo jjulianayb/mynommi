@@ -22,12 +22,15 @@ export function CoverEditor({
   current,
   onSaved,
   label,
+  onUploaded,
 }: {
   target: Target;
   slot: CoverSlot;
   current: string;
   onSaved: (value: string) => void;
   label?: string;
+  /** Aviso extra quando a pessoa enviou uma foto nova (abre o ajuste na hora). */
+  onUploaded?: (value: string) => void;
 }) {
   const { notify } = useFriends();
   const [open, setOpen] = useState(false);
@@ -35,7 +38,7 @@ export function CoverEditor({
   const [error, setError] = useState("");
   const title = slot === "cover" ? "Capa" : "Plano de fundo";
 
-  async function save(value: string) {
+  async function save(value: string): Promise<boolean> {
     setBusy(true);
     const ok =
       target.kind === "perfil"
@@ -44,11 +47,12 @@ export function CoverEditor({
     setBusy(false);
     if (!ok) {
       setError("Não foi possível salvar agora.");
-      return;
+      return false;
     }
     onSaved(value);
     notify(title + (value ? " atualizada." : " voltou ao padrão."));
     setOpen(false);
+    return true;
   }
 
   return (
@@ -97,7 +101,7 @@ export function CoverEditor({
                   setError("A imagem não subiu. Tente outra.");
                   return;
                 }
-                await save(path);
+                if (await save(path)) onUploaded?.(path);
               }}
             />
           </label>
