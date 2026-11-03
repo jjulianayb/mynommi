@@ -1264,6 +1264,7 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 /* Celular: nome e botões não brigam pela mesma linha; nada passa da tela */
 @media(max-width:600px){
   .mynommi-topo{flex-wrap:wrap}
+  .mynommi-nome{flex:1 1 140px}
   .mynommi-topo>button,.mynommi-topo>a{margin-left:auto}
   .mynommi-nome h1{overflow-wrap:anywhere}
 }
