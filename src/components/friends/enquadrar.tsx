@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { enderecoDaImagem } from "@/lib/covers";
 import {
@@ -23,6 +23,8 @@ export function AjustarEnquadramento({
   valor,
   onSalvo,
   compacto = false,
+  autoAbrir = false,
+  onAutoFechou,
 }: {
   me: string;
   alvo: "capa" | "foto";
@@ -30,15 +32,26 @@ export function AjustarEnquadramento({
   valor: Enquadramento;
   onSalvo: () => void;
   compacto?: boolean;
+  /** Abre sozinho (ex.: logo depois de enviar a foto nova). */
+  autoAbrir?: boolean;
+  onAutoFechou?: () => void;
 }) {
   const { notify } = useFriends();
-  const [aberto, setAberto] = useState(false);
+  const [abertoManual, setAbertoManual] = useState(false);
+  const aberto = abertoManual || autoAbrir;
+  useEffect(() => {
+    if (autoAbrir) setFoco(CENTRO);
+  }, [autoAbrir]);
+  function fechar() {
+    setAbertoManual(false);
+    if (autoAbrir) onAutoFechou?.();
+  }
   const [foco, setFoco] = useState<Enquadramento>(valor ?? CENTRO);
   const [salvando, setSalvando] = useState(false);
   const arrasto = useRef<{ x: number; y: number; w: number; h: number } | null>(null);
   const src = enderecoDaImagem(imagem);
 
-  if (!imagem) return null;
+  if (!imagem && !autoAbrir) return null;
 
   return (
     <>
@@ -50,7 +63,7 @@ export function AjustarEnquadramento({
         aria-label={alvo === "capa" ? "Ajustar a capa" : "Ajustar a foto"}
         onClick={() => {
           setFoco(valor ?? CENTRO);
-          setAberto(true);
+          setAbertoManual(true);
         }}
       >
         <Icon name="image" />
@@ -59,7 +72,7 @@ export function AjustarEnquadramento({
 
       {aberto && (
         <Sheet
-          onClose={() => setAberto(false)}
+          onClose={fechar}
           title={alvo === "capa" ? "Ajustar a capa" : "Ajustar a foto"}
         >
           <p className="small-note">
@@ -113,7 +126,7 @@ export function AjustarEnquadramento({
                 setSalvando(false);
                 notify(ok ? "Pronto, ficou assim." : "Não deu para salvar agora.");
                 if (ok) {
-                  setAberto(false);
+                  fechar();
                   onSalvo();
                 }
               }}
