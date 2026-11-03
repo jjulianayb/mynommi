@@ -1256,3 +1256,15 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .stats>button.stats-open{padding:15px 5px;min-width:0;background:transparent;border:0;font:inherit;cursor:pointer;text-align:center}
 .stats>button.stats-open span{color:var(--primary);font-weight:700}
 .stats>button.stats-open:active{transform:scale(.97)}
+
+/* Fundo escuro: os cartões claros continuam com texto escuro */
+.mynommi.tom-escuro .stats,.mynommi.tom-escuro .mynommi-falta,.mynommi.tom-escuro .estrelas-painel,.mynommi.tom-escuro .selo,.mynommi.tom-escuro .photo-label,.mynommi.tom-escuro .interest-tags span{color:#23201C}
+.mynommi.tom-escuro .nomi-sheet,.mynommi.tom-escuro .nomi-sheet h1,.mynommi.tom-escuro .nomi-sheet h2{color:var(--foreground)}
+.mynommi.tom-escuro .mynommi-nome p{color:#C9DACF}
+/* Celular: nome e botões não brigam pela mesma linha; nada passa da tela */
+@media(max-width:600px){
+  .mynommi-topo{flex-wrap:wrap}
+  .mynommi-topo>button,.mynommi-topo>a{margin-left:auto}
+  .mynommi-nome h1{overflow-wrap:anywhere}
+}
+.videos-acoes{display:inline-flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
