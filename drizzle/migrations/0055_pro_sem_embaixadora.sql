@@ -34,12 +34,17 @@ RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER SET search_path TO 'public'
       OR EXISTS (SELECT 1 FROM public.pro_concedido p WHERE p.user_id = coalesce(_quem, auth.uid()))
 $$;
 
--- O que o público vê: é embaixadora? é pro? Número e data ficam no banco.
-CREATE OR REPLACE FUNCTION public.selo_de(_quem uuid)
-RETURNS TABLE (embaixadora boolean, pro boolean)
+-- O que o público vê: é embaixadora? é pro? o pro foi dado na mão?
+-- Número e data ficam no banco. Quem recebeu o pro_concedido mostra o aro
+-- dourado sem texto — mesmo que também seja embaixadora (caso da Ana
+-- Flávia, que pediu para não ver mais "Embaixadora" escrito; Ju, 03/11).
+DROP FUNCTION IF EXISTS public.selo_de(uuid);
+CREATE FUNCTION public.selo_de(_quem uuid)
+RETURNS TABLE (embaixadora boolean, pro boolean, concedido boolean)
 LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $$
   SELECT EXISTS (SELECT 1 FROM public.embaixadoras e WHERE e.user_id = _quem),
-         public.tem_premium(_quem)
+         public.tem_premium(_quem),
+         EXISTS (SELECT 1 FROM public.pro_concedido p WHERE p.user_id = _quem)
 $$;
 REVOKE ALL ON FUNCTION public.selo_de(uuid) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.selo_de(uuid) TO authenticated;
