@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  SELO_VAZIO,
   TITULO_VAZIO,
   convidaMais,
   fraseDosConvites,
+  mostraAroPro,
   selodeEmbaixadora,
   type Titulo,
 } from "@/lib/embaixadora";
@@ -40,5 +42,18 @@ describe("o contador conta quem ficou, não quem foi chamado", () => {
   });
   it("quem está começando é lembrado do que o convite dá de verdade", () => {
     expect(convidaMais(0)).toContain("conectada");
+  });
+});
+
+describe("o aro pro, dourado e sem texto", () => {
+  it("aparece para quem é pro sem ser embaixadora", () => {
+    expect(mostraAroPro({ ...SELO_VAZIO, pro: true })).toBe(true);
+  });
+  it("embaixadora fica só com o selo dela, sem aro por cima", () => {
+    expect(mostraAroPro({ embaixadora: true, pro: true })).toBe(false);
+  });
+  it("quem não é pro não tem aro nenhum", () => {
+    expect(mostraAroPro(SELO_VAZIO)).toBe(false);
+    expect(mostraAroPro({ embaixadora: true, pro: false })).toBe(false);
   });
 });
