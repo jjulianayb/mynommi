@@ -21,6 +21,7 @@ import {
 } from "@/lib/posts";
 import { AVISO_DO_VIDEO, videoPodeNaoTocar } from "@/lib/foto-do-post";
 import { useProfileStats, formatCount, useFollow } from "@/lib/follows";
+import type { TipoVinculo } from "@/lib/vinculos";
 import { useWall, MAX_WALL } from "@/lib/wall";
 import { useRoles, whenLabel, spotsLabel, goingBlocker, loadGoing, type Role } from "@/lib/roles";
 import { useBlocks, reportTarget, REPORT_REASONS, type ReportReason } from "@/lib/safety";
@@ -678,23 +679,39 @@ export function RolesList({
   );
 }
 
-export function StatsLine({ userId }: { userId: string }) {
+export function StatsLine({
+  userId,
+  onOpen,
+}: {
+  userId: string;
+  /** Quando vem (só no Meu Nommi), seguidores/seguindo/amigos viram botões que abrem a lista. */
+  onOpen?: (tipo: TipoVinculo) => void;
+}) {
   const { stats } = useProfileStats(userId);
   if (!stats || !stats.visible) return null;
+  const vinculo = (n: number, rotulo: string, tipo: TipoVinculo) =>
+    onOpen ? (
+      <button
+        key={tipo}
+        type="button"
+        className="stats-open"
+        onClick={() => onOpen(tipo)}
+        aria-label={"Ver " + rotulo}
+      >
+        <b>{formatCount(n)}</b>
+        <span>{rotulo}</span>
+      </button>
+    ) : (
+      <div key={tipo}>
+        <b>{formatCount(n)}</b>
+        <span>{rotulo}</span>
+      </div>
+    );
   return (
     <div className="stats">
-      <div>
-        <b>{formatCount(stats.followers)}</b>
-        <span>seguidores</span>
-      </div>
-      <div>
-        <b>{formatCount(stats.following)}</b>
-        <span>seguindo</span>
-      </div>
-      <div>
-        <b>{formatCount(stats.connections)}</b>
-        <span>amigos</span>
-      </div>
+      {vinculo(stats.followers, "seguidores", "seguidores")}
+      {vinculo(stats.following, "seguindo", "seguindo")}
+      {vinculo(stats.connections, "amigos", "amigos")}
       <div>
         <b>{formatCount(stats.tribos)}</b>
         <span>tribos</span>
