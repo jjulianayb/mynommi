@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Search, SlidersHorizontal, ArrowRight, MessageCircle, MapPin, Heart, X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCombinar, porqueApareceu, recadoDaResposta } from "@/lib/combinar";
+import { ChipIcone } from "./combinar";
 import { useConversas } from "@/lib/direct-messages";
 import { useChegada } from "@/lib/chegada";
 import { useRealTeias } from "@/lib/real-teias";

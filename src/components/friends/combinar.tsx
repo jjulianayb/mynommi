@@ -92,7 +92,7 @@ export function fotoDoChip(i: string): string | null {
   const k = i.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   return FOTO_DO_CHIP.find(([r]) => r.test(k))?.[1] ?? null;
 }
-function ChipIcone({ i }: { i: string }) {
+export function ChipIcone({ i }: { i: string }) {
   const f = fotoDoChip(i);
   return f ? <img className="dc-chip-foto" src={f} alt="" aria-hidden="true" /> : <Icon name={iconeDoInteresse(i)} />;
 }
