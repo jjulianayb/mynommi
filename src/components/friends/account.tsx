@@ -199,7 +199,11 @@ export function Account({
             ? "ou crie com e-mail"
             : "ou com e-mail"}
       </p>
-      <form className="account-form" onSubmit={submit}>
+      {/* noValidate: a validação nativa do navegador falha em silêncio na
+              janelinha do WhatsApp (o balão não aparece e o botão parece
+              morto — foi o loop da Jaque). Toda regra já tem mensagem própria
+              no quadro vermelho acima do botão. */}
+      <form className="account-form" onSubmit={submit} noValidate>
         <label>
           E-mail
           <input
