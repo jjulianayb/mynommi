@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   SEGUNDOS_DE_APRESENTACAO,
@@ -31,6 +31,8 @@ export function MeuVideo({
   const { notify } = useFriends();
   const [url, setUrl] = useState("");
   const [gravando, setGravando] = useState(false);
+  const [enviando, setEnviando] = useState(false);
+  const seletorArquivo = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     void enderecoDoVideo(path).then(setUrl);
@@ -41,10 +43,48 @@ export function MeuVideo({
       <div className="section-heading">
         <h2>{souDono ? "Meu vídeo" : `${nome.split(" ")[0]} em 30 segundos`}</h2>
         {souDono && (
-          <Button variant="ghost" size="sm" onClick={() => setGravando(true)}>
-            <Icon name="image" />
-            {path ? "Regravar" : "Gravar"}
-          </Button>
+          <span className="videos-acoes">
+            <Button variant="ghost" size="sm" onClick={() => setGravando(true)}>
+              <Icon name="image" />
+              {path ? "Regravar" : "Gravar"}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              disabled={enviando}
+              onClick={() => seletorArquivo.current?.click()}
+            >
+              <Icon name="plus" />
+              {enviando ? "Enviando…" : "Do celular"}
+            </Button>
+            <input
+              ref={seletorArquivo}
+              type="file"
+              accept="video/*"
+              hidden
+              onChange={async (e) => {
+                const f = e.target.files?.[0];
+                e.target.value = "";
+                if (!f) return;
+                if (f.type && !f.type.startsWith("video/")) {
+                  notify("Escolha um arquivo de vídeo.");
+                  return;
+                }
+                setEnviando(true);
+                const ext = (f.name.split(".").pop() || "mp4").toLowerCase();
+                const envio = await enviarVideo(me, f, ext);
+                if (!envio.ok) {
+                  setEnviando(false);
+                  notify(envio.erro);
+                  return;
+                }
+                const ok = await salvarMeuVideo(me, envio.path);
+                setEnviando(false);
+                notify(ok ? "Vídeo no ar na sua página." : "Não deu para salvar agora.");
+                if (ok) onMudou();
+              }}
+            />
+          </span>
         )}
       </div>
 
