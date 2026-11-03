@@ -45,18 +45,23 @@ export function selodeEmbaixadora(t: Titulo): string {
  * Selo de outra pessoa: é embaixadora? é pro? Número e data ficam no banco:
  * a API responde só os dois "é" ou "não é" (0055).
  */
-export type Selo = { embaixadora: boolean; pro: boolean };
+export type Selo = { embaixadora: boolean; pro: boolean; concedido: boolean };
 
-export const SELO_VAZIO: Selo = { embaixadora: false, pro: false };
+export const SELO_VAZIO: Selo = { embaixadora: false, pro: false, concedido: false };
 
 /**
- * O aro dourado com coroa é o selo do Pro dado na mão, sem texto nenhum
- * (decisão da Ju, 03/11). Quem é embaixadora já tem o selo dela com nome;
- * o aro aparece só para quem é pro sem ser embaixadora, para as duas
- * marcas não brigarem no mesmo rosto.
+ * O aro dourado com coroa, sem texto nenhum, é o selo de quem recebeu o Pro
+ * dado na mão (decisão da Ju, 03/11). Ele vale inclusive para quem também é
+ * embaixadora: a Ana Flávia é as duas coisas e pediu o aro no lugar do
+ * "Embaixadora" escrito. Por isso o aro olha o pro_concedido, não o pro.
  */
 export function mostraAroPro(selo: Selo): boolean {
-  return selo.pro && !selo.embaixadora;
+  return selo.concedido;
+}
+
+/** O selo "Embaixadora" escrito some de quem ganhou o aro no lugar. */
+export function mostraSeloEmbaixadora(selo: Selo): boolean {
+  return selo.embaixadora && !selo.concedido;
 }
 
 export function useSeloDe(quem: string | undefined, ativo: boolean) {
@@ -73,7 +78,11 @@ export function useSeloDe(quem: string | undefined, ativo: boolean) {
       const { data } = await db.rpc("selo_de", { _quem: quem });
       if (!alive) return;
       const linha = ((data as Selo[] | null) ?? [])[0];
-      setSelo(linha ? { embaixadora: !!linha.embaixadora, pro: !!linha.pro } : SELO_VAZIO);
+      setSelo(
+        linha
+          ? { embaixadora: !!linha.embaixadora, pro: !!linha.pro, concedido: !!linha.concedido }
+          : SELO_VAZIO,
+      );
       setReady(true);
     })();
     return () => {
