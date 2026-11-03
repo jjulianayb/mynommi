@@ -15,7 +15,8 @@ import {
   type Conhecida,
 } from "@/lib/combinar";
 import { fraseTetoDePerfis } from "@/lib/plano";
-import { Icon, SemFoto } from "./art";
+import { useSeloDe, mostraAroPro } from "@/lib/embaixadora";
+import { Icon, SemFoto, AroPro } from "./art";
 import { Esqueleto, EmptyState } from "./surfaces";
 import { BannerTribos, TrilhoMinhasTribos } from "./descobrir-tribos";
 import { SafetyMenu } from "./social-feed";
@@ -36,7 +37,8 @@ function Face({ c, size }: { c: Candidata; size: number }) {
   // Foto quebrada (URL velha, arquivo apagado) cai no bonequinho, nunca no
   // ícone de imagem quebrada do navegador.
   const [quebrou, setQuebrou] = useState(false);
-  return c.avatar && !quebrou ? (
+  const selo = useSeloDe(c.userId, true);
+  const rosto = c.avatar && !quebrou ? (
     <img
       className="real-face"
       src={c.avatar}
@@ -49,6 +51,7 @@ function Face({ c, size }: { c: Candidata; size: number }) {
   ) : (
     <SemFoto nome={c.nome} size={size} />
   );
+  return mostraAroPro(selo) ? <AroPro>{rosto}</AroPro> : rosto;
 }
 
 /**
