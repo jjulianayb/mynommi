@@ -6,6 +6,7 @@ import { Esqueleto, EmptyState, Sheet } from "./surfaces";
 import { useFriends } from "./store";
 import { CoverEditor } from "./cover-editor";
 import { StatsLine, Feed, WallPanel } from "./social-feed";
+import { MOSTRAR_SECOES_DE_AMIGOS } from "@/lib/flags";
 import { MinhasEstrelas } from "./presenca";
 import { useEstrelas } from "@/lib/presenca";
 import { coverStyle } from "@/lib/covers";
@@ -296,17 +297,21 @@ export function MyNommi({ me }: { me: string }) {
         />
       </Secao>
 
-      <Secao titulo="Amigos falando de você" aberta>
-        <VideosDeAmigos me={me} dono={me} nome={pagina.nickname} souAmiga={false} />
-      </Secao>
+      {MOSTRAR_SECOES_DE_AMIGOS && (
+        <>
+          <Secao titulo="Amigos falando de você" aberta>
+            <VideosDeAmigos me={me} dono={me} nome={pagina.nickname} souAmiga={false} />
+          </Secao>
 
-      <Secao titulo="O que seus amigos dizem" aberta>
-        <Selos me={me} dono={me} nome={pagina.nickname} souAmiga={false} />
-      </Secao>
+          <Secao titulo="O que seus amigos dizem" aberta>
+            <Selos me={me} dono={me} nome={pagina.nickname} souAmiga={false} />
+          </Secao>
 
-      <Secao titulo="Recados dos amigos" aberta>
-        <WallPanel me={me} ownerId={me} nickname={pagina.nickname} canWrite={false} />
-      </Secao>
+          <Secao titulo="Recados dos amigos" aberta>
+            <WallPanel me={me} ownerId={me} nickname={pagina.nickname} canWrite={false} />
+          </Secao>
+        </>
+      )}
 
       <Secao titulo="O que eu publiquei" aberta>
         <Feed
