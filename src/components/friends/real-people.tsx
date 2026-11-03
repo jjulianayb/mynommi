@@ -9,7 +9,7 @@ import { useDemoSession } from "./session";
 import { supabase } from "@/integrations/supabase/client";
 import { useConnections, connectionState, otherId } from "@/lib/connections";
 import { usePeopleSearch, usePublicProfile, type PublicProfile } from "@/lib/real-profiles";
-import { useSeloDe, mostraAroPro } from "@/lib/embaixadora";
+import { useSeloDe, mostraAroPro, mostraSeloEmbaixadora } from "@/lib/embaixadora";
 import { StatsLine, FollowButton, WallPanel, Feed, SafetyMenu } from "./social-feed";
 import { Selos } from "./selos";
 import { MeuVideo, VideosDeAmigos } from "./videos-do-perfil";
@@ -164,7 +164,7 @@ export function PublicNommi({ id }: { id: string }) {
         )}
         <div className="profile-name">
           <h1>{profile.nickname}</h1>
-          {selo.embaixadora && (
+          {mostraSeloEmbaixadora(selo) && (
             <span className="selo-embaixadora" title="Chegou no começo da nommi">
               <Icon name="crown" />
               Embaixadora
