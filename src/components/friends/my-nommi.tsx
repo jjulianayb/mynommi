@@ -13,6 +13,11 @@ import { paraCss } from "@/lib/enquadrar";
 import { estiloDoFundo, fundoEhFoto, tomDoFundo } from "@/lib/fundos";
 import { figurinhaDe } from "@/lib/figurinhas";
 import { EscolherFundo } from "./escolher-fundo";
+import { FotoInstantanea } from "./foto-instantanea";
+import { CameraStory } from "./camera-story";
+import { useStories } from "@/lib/stories";
+import { apagarFotoAntiga, enviarFotoDePerfil } from "@/lib/foto-perfil";
+import { saveCloudProfile } from "@/lib/real-profiles";
 import { EscolherInteresses } from "./escolher-interesses";
 import { Selos } from "./selos";
 import { useMeuTitulo } from "@/lib/embaixadora";
@@ -60,6 +65,8 @@ export function MyNommi({ me }: { me: string }) {
   const { titulo } = useMeuTitulo(true);
   const [editando, setEditando] = useState(false);
   const [mexendoInteresses, setMexendoInteresses] = useState(false);
+  const [postandoStory, setPostandoStory] = useState(false);
+  const { publish: publicarStory } = useStories(me);
   const { estrelas } = useEstrelas(me);
   if (!ready) return <Esqueleto tipo="perfil" />;
   if (!pagina)
@@ -105,6 +112,17 @@ export function MyNommi({ me }: { me: string }) {
       <div className="mynommi-topo">
         <span className="mynommi-foto-wrap">
           <Face avatar={pagina.avatar} nome={pagina.nickname} foco={pagina.fotoFoco} />
+          <FotoInstantanea
+            onPronta={async (jpeg) => {
+              // Atalho direto: troca a foto sem passar pelo Editar. Mesmo
+              // caminho do settings — sobe o arquivo e guarda o endereço.
+              const anterior = pagina.avatar;
+              const caminho = await enviarFotoDePerfil(me, jpeg);
+              const ok = await saveCloudProfile(me, { avatar_url: caminho ?? jpeg });
+              if (ok && caminho) void apagarFotoAntiga(anterior);
+              void reload();
+            }}
+          />
           {pagina.avatar && (
             <AjustarEnquadramento
               me={me}
@@ -131,6 +149,10 @@ export function MyNommi({ me }: { me: string }) {
             </p>
           )}
         </div>
+        <Button variant="secondary" size="sm" onClick={() => setPostandoStory(true)}>
+          <Icon name="plus" />
+          Story
+        </Button>
         <Button asChild variant="secondary" size="sm">
           <Link to="/configuracoes" search={{ section: "perfil" }}>
             <Icon name="settings" />
@@ -138,6 +160,9 @@ export function MyNommi({ me }: { me: string }) {
           </Link>
         </Button>
       </div>
+      {postandoStory && (
+        <CameraStory onClose={() => setPostandoStory(false)} onPublish={publicarStory} />
+      )}
 
       {falta.length > 0 && (
         <div className="mynommi-falta">
