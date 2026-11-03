@@ -1,0 +1,3 @@
+/* Atalho de trocar foto direto no avatar do Meu nommi: fica no cantinho,
+   como o botão de enquadrar, sem empurrar o nome nem a capa. */
+.mynommi-foto-wrap .photo-label{position:absolute;left:-8px;bottom:-4px;padding:6px 10px;font-size:11px!important;line-height:1.2;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.18);z-index:2}
