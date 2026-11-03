@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { personPhoto } from "@/lib/friends-photos";
 import { corDoNome, desenhoDaFigura, figuraValida, iniciais, type Figura } from "@/lib/sem-foto";
@@ -126,6 +127,21 @@ export function Icon({ name, className = "" }: { name: string; className?: strin
       aria-hidden="true"
       dangerouslySetInnerHTML={{ __html: icons[name] || icons["star"] || "" }}
     />
+  );
+}
+/**
+ * Aro Pro: anel dourado com uma coroa pequena em volta do rosto, sem texto
+ * nenhum (decisão da Ju, 03/11). É o selo de quem recebeu o Pro na mão:
+ * todo mundo vê no match e no perfil, e ninguém precisa ler nada.
+ */
+export function AroPro({ children }: { children: ReactNode }) {
+  return (
+    <span className="aro-pro">
+      {children}
+      <span className="coroa-pro" aria-hidden="true">
+        <Icon name="crown" />
+      </span>
+    </span>
   );
 }
 export function Avatar({ id = 3, size = 48 }: { id?: number; size?: number }) {
