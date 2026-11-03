@@ -21,7 +21,7 @@ import { apagarFotoAntiga, enviarFotoDePerfil } from "@/lib/foto-perfil";
 import { saveCloudProfile } from "@/lib/real-profiles";
 import { EscolherInteresses } from "./escolher-interesses";
 import { Selos } from "./selos";
-import { useMeuTitulo } from "@/lib/embaixadora";
+import { useMeuTitulo, useSeloDe, mostraAroPro, mostraSeloEmbaixadora } from "@/lib/embaixadora";
 import { MeuVideo, VideosDeAmigos } from "./videos-do-perfil";
 import { VinculosSheet } from "./vinculos-sheet";
 import type { TipoVinculo } from "@/lib/vinculos";
@@ -87,6 +87,7 @@ function Secao({
 export function MyNommi({ me }: { me: string }) {
   const { pagina, ready, reload } = usePaginaPessoal(me);
   const { titulo } = useMeuTitulo(true);
+  const seloMe = useSeloDe(me, true);
   const [editando, setEditando] = useState(false);
   const [listaVinculos, setListaVinculos] = useState<TipoVinculo | null>(null);
   const [mexendoInteresses, setMexendoInteresses] = useState(false);
@@ -143,7 +144,7 @@ export function MyNommi({ me }: { me: string }) {
 
       <div className="mynommi-topo">
         <span className="mynommi-foto-wrap">
-          {titulo.premium && !titulo.embaixadora ? (
+          {mostraAroPro(seloMe) ? (
             <AroPro>
               <Face avatar={pagina.avatar} nome={pagina.nickname} foco={pagina.fotoFoco} />
             </AroPro>
@@ -174,7 +175,7 @@ export function MyNommi({ me }: { me: string }) {
         </span>
         <div className="mynommi-nome">
           <h1>{pagina.nickname}</h1>
-          {titulo.embaixadora && (
+          {mostraSeloEmbaixadora(seloMe) && (
             <span className="selo-embaixadora" title="Chegou no começo da nommi">
               <Icon name="crown" />
               Embaixadora
