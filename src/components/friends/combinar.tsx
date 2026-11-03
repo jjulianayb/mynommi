@@ -76,11 +76,19 @@ function FotoMini({ k }: { k: Conhecida }) {
 const FOTO_DO_CHIP: [RegExp, string][] = [
   [/cinema|filme|serie/, "/capas-tribos/cinema-e-series.png"],
   [/music|show|cant|karaok|samba|rock/, "/capas-tribos/musica.png"],
-  [/viag|trilha|praia|mochil/, "/capas-tribos/viagens.png"],
+  [/praia|piscina/, "/capas-tribos/praia.png"],
+  [/viag|trilha|mochil/, "/capas-tribos/viagens.png"],
   [/bem.?estar|yoga|medit|corrid|caminh|saude/, "/capas-tribos/bem-estar.png"],
   [/livro|leitur|literat/, "/capas-tribos/livros.png"],
+  [/cafe|cafeter/, "/capas-tribos/cafe.png"],
+  [/churras/, "/capas-tribos/churrasco.png"],
+  [/culin|cozinh|comida|doce|gastronom|feira/, "/capas-tribos/culinaria.png"],
+  [/futebol|volei|basquete|academia|muscula|ciclis|pedal|bike|esporte|skate|surf/, "/capas-tribos/esportes.png"],
+  [/pet|cachorr|gato|animal/, "/capas-tribos/pets.png"],
+  [/game|jogo|tecnolog|podcast/, "/capas-tribos/games.png"],
+  [/danc|festa|forro|salsa|sertanej/, "/capas-tribos/danca.png"],
 ];
-function fotoDoChip(i: string): string | null {
+export function fotoDoChip(i: string): string | null {
   const k = i.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   return FOTO_DO_CHIP.find(([r]) => r.test(k))?.[1] ?? null;
 }
