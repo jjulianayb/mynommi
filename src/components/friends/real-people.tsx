@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import { coverStyle } from "@/lib/covers";
 import { Button } from "@/components/ui/button";
-import { SemFoto, Avatar, Icon } from "./art";
+import { SemFoto, Avatar, Icon, AroPro } from "./art";
 import { Esqueleto, EmptyState } from "./surfaces";
 import { useFriends } from "./store";
 import { useDemoSession } from "./session";
 import { supabase } from "@/integrations/supabase/client";
 import { useConnections, connectionState, otherId } from "@/lib/connections";
 import { usePeopleSearch, usePublicProfile, type PublicProfile } from "@/lib/real-profiles";
-import { useSeloDe } from "@/lib/embaixadora";
+import { useSeloDe, mostraAroPro } from "@/lib/embaixadora";
 import { StatsLine, FollowButton, WallPanel, Feed, SafetyMenu } from "./social-feed";
 import { Selos } from "./selos";
 import { MeuVideo, VideosDeAmigos } from "./videos-do-perfil";
@@ -155,7 +155,13 @@ export function PublicNommi({ id }: { id: string }) {
         </Link>
       </Button>
       <div className="profile-info">
-        <Face p={profile} size={108} />
+        {mostraAroPro(selo) ? (
+          <AroPro>
+            <Face p={profile} size={108} />
+          </AroPro>
+        ) : (
+          <Face p={profile} size={108} />
+        )}
         <div className="profile-name">
           <h1>{profile.nickname}</h1>
           {selo.embaixadora && (
