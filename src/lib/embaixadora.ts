@@ -42,30 +42,45 @@ export function selodeEmbaixadora(t: Titulo): string {
 }
 
 /**
- * Selo de outra pessoa: diz só se é embaixadora, nunca o número.
- * Número e data ficam no banco (0046): a API responde só "é" ou "não é".
+ * Selo de outra pessoa: é embaixadora? é pro? Número e data ficam no banco:
+ * a API responde só os dois "é" ou "não é" (0055).
  */
+export type Selo = { embaixadora: boolean; pro: boolean };
+
+export const SELO_VAZIO: Selo = { embaixadora: false, pro: false };
+
+/**
+ * O aro dourado com coroa é o selo do Pro dado na mão, sem texto nenhum
+ * (decisão da Ju, 03/11). Quem é embaixadora já tem o selo dela com nome;
+ * o aro aparece só para quem é pro sem ser embaixadora, para as duas
+ * marcas não brigarem no mesmo rosto.
+ */
+export function mostraAroPro(selo: Selo): boolean {
+  return selo.pro && !selo.embaixadora;
+}
+
 export function useSeloDe(quem: string | undefined, ativo: boolean) {
-  const [embaixadora, setEmbaixadora] = useState(false);
+  const [selo, setSelo] = useState<Selo>(SELO_VAZIO);
   const [ready, setReady] = useState(false);
   useEffect(() => {
     if (!ativo || !quem) {
-      setEmbaixadora(false);
+      setSelo(SELO_VAZIO);
       setReady(true);
       return;
     }
     let alive = true;
     void (async () => {
-      const { data } = await db.rpc("e_embaixadora", { _quem: quem });
+      const { data } = await db.rpc("selo_de", { _quem: quem });
       if (!alive) return;
-      setEmbaixadora(data === true);
+      const linha = ((data as Selo[] | null) ?? [])[0];
+      setSelo(linha ? { embaixadora: !!linha.embaixadora, pro: !!linha.pro } : SELO_VAZIO);
       setReady(true);
     })();
     return () => {
       alive = false;
     };
   }, [quem, ativo]);
-  return { embaixadora, ready };
+  return { ...selo, ready };
 }
 
 /**
