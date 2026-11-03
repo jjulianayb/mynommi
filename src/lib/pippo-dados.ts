@@ -1,3 +1,5 @@
+// Dados ao vivo para o Pippo (clima e dólar). Redeploy 02/11: força hash novo do bundle.
+
 /**
  * Respostas do Pippo com dados de verdade da internet, sem chave e sem custo:
  * - Clima: previsão do CPTEC/INPE via BrasilAPI (gratuita, sem chave, CORS aberto).
