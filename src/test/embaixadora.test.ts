@@ -5,6 +5,7 @@ import {
   convidaMais,
   fraseDosConvites,
   mostraAroPro,
+  mostraSeloEmbaixadora,
   selodeEmbaixadora,
   type Titulo,
 } from "@/lib/embaixadora";
@@ -46,14 +47,21 @@ describe("o contador conta quem ficou, não quem foi chamado", () => {
 });
 
 describe("o aro pro, dourado e sem texto", () => {
-  it("aparece para quem é pro sem ser embaixadora", () => {
-    expect(mostraAroPro({ ...SELO_VAZIO, pro: true })).toBe(true);
+  it("aparece para quem recebeu o pro dado na mão", () => {
+    expect(mostraAroPro({ ...SELO_VAZIO, pro: true, concedido: true })).toBe(true);
   });
-  it("embaixadora fica só com o selo dela, sem aro por cima", () => {
-    expect(mostraAroPro({ embaixadora: true, pro: true })).toBe(false);
+  it("vale também para quem é embaixadora: o aro toma o lugar do selo escrito", () => {
+    const ana = { embaixadora: true, pro: true, concedido: true };
+    expect(mostraAroPro(ana)).toBe(true);
+    expect(mostraSeloEmbaixadora(ana)).toBe(false);
   });
-  it("quem não é pro não tem aro nenhum", () => {
+  it("quem é só embaixadora mantém o selo escrito, sem aro", () => {
+    const ju = { embaixadora: true, pro: true, concedido: false };
+    expect(mostraAroPro(ju)).toBe(false);
+    expect(mostraSeloEmbaixadora(ju)).toBe(true);
+  });
+  it("quem não é pro não tem aro nem selo", () => {
     expect(mostraAroPro(SELO_VAZIO)).toBe(false);
-    expect(mostraAroPro({ embaixadora: true, pro: false })).toBe(false);
+    expect(mostraSeloEmbaixadora(SELO_VAZIO)).toBe(false);
   });
 });
