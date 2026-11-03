@@ -91,6 +91,7 @@ export function MyNommi({ me }: { me: string }) {
   const [listaVinculos, setListaVinculos] = useState<TipoVinculo | null>(null);
   const [mexendoInteresses, setMexendoInteresses] = useState(false);
   const [postandoStory, setPostandoStory] = useState(false);
+  const [ajustarCapaAgora, setAjustarCapaAgora] = useState(0);
   const { publish: publicarStory } = useStories(me);
   const { estrelas } = useEstrelas(me);
   if (!ready) return <Esqueleto tipo="perfil" />;
@@ -126,6 +127,8 @@ export function MyNommi({ me }: { me: string }) {
             imagem={pagina.cover}
             valor={pagina.capaFoco}
             onSalvo={() => void reload()}
+            autoAbrir={ajustarCapaAgora > 0}
+            onAutoFechou={() => setAjustarCapaAgora(0)}
           />
           <CoverEditor
             target={{ kind: "perfil", userId: me }}
@@ -133,6 +136,7 @@ export function MyNommi({ me }: { me: string }) {
             current={pagina.cover}
             onSaved={() => void reload()}
             label="Capa"
+            onUploaded={() => setAjustarCapaAgora(Date.now())}
           />
         </span>
       </div>
