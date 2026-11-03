@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,6 +26,33 @@ export function Apresentacao({ me, aoFechar }: { me: string; aoFechar: () => voi
   const [passo, setPasso] = useState(0);
   const [respostas, setRespostas] = useState<Partial<Record<Etapa["chave"], string>>>({});
   const [salvando, setSalvando] = useState(false);
+  const [erro, setErro] = useState("");
+
+  // Quem já contou algo em Meu nommi não recomeça do zero: as respostas
+  // guardadas aparecem preenchidas, prontas para confirmar ou mudar.
+  useEffect(() => {
+    let vivo = true;
+    void (async () => {
+      const { data } = await db
+        .from("profiles")
+        .select("about,looking_for,topa,nao_topa")
+        .eq("id", me)
+        .maybeSingle();
+      if (!vivo || !data) return;
+      const p = data as Record<string, string | null>;
+      setRespostas((r) => {
+        const novo = { ...r };
+        if (!novo.historia && p["about"]) novo.historia = p["about"];
+        if (!novo.procura && p["looking_for"]) novo.procura = p["looking_for"];
+        if (!novo.topa && p["topa"]) novo.topa = p["topa"];
+        if (!novo.naoTopa && p["nao_topa"]) novo.naoTopa = p["nao_topa"];
+        return novo;
+      });
+    })();
+    return () => {
+      vivo = false;
+    };
+  }, [me]);
 
   const etapa = ETAPAS[passo];
   const noFim = passo >= ETAPAS.length;
@@ -33,11 +60,17 @@ export function Apresentacao({ me, aoFechar }: { me: string; aoFechar: () => voi
   async function encerrar(comoFoi: "feita" | "pulou") {
     setSalvando(true);
     const campos = respostasParaSalvar(respostas);
-    await db
+    setErro("");
+    const { error } = await db
       .from("profiles")
       .update({ ...campos, apresentacao: comoFoi })
       .eq("id", me);
     setSalvando(false);
+    if (error) {
+      // Sem isso, a tela fechava como se tivesse salvo e pedia tudo de novo.
+      setErro("Não deu para guardar agora. Confira a internet e tente de novo.");
+      return;
+    }
     aoFechar();
   }
 
@@ -100,6 +133,11 @@ export function Apresentacao({ me, aoFechar }: { me: string; aoFechar: () => voi
           )
         )}
 
+        {erro && (
+          <p role="alert" className="form-error">
+            {erro}
+          </p>
+        )}
         <button
           type="button"
           className="apresentacao-depois"
