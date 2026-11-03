@@ -119,6 +119,12 @@ export function Settings({ section }: { section: string }) {
   const [name, setName] = useState(state.nickname);
   const [city, setCity] = useState(state.city);
   const [about, setAbout] = useState(state.about ?? "");
+  const [aboutEditado, setAboutEditado] = useState(false);
+  // O perfil chega da nuvem depois da tela abrir. Preenche o campo quando ele
+  // chega, sem atropelar o que a pessoa já digitou.
+  useEffect(() => {
+    if (!aboutEditado) setAbout(state.about ?? "");
+  }, [state.about, aboutEditado]);
   const [confirm, setConfirm] = useState(false);
   const [confirmation, setConfirmation] = useState("");
   const [error, setError] = useState("");
@@ -165,7 +171,7 @@ export function Settings({ section }: { section: string }) {
               setError(result.error.issues[0]?.message || "Confira seus dados.");
               return;
             }
-            const extra = { about: about.trim().slice(0, 140) };
+            const extra = { about: about.trim().slice(0, MAX_SOBRE) };
             if (cloud) {
               void saveCloudProfile(cloudUser!.id, { ...result.data, ...extra }).then((ok) => {
                 if (ok) {
@@ -272,7 +278,10 @@ export function Settings({ section }: { section: string }) {
             <textarea
               className="input"
               value={about}
-              onChange={(e) => setAbout(e.target.value)}
+              onChange={(e) => {
+              setAbout(e.target.value);
+              setAboutEditado(true);
+            }}
               maxLength={MAX_SOBRE}
               rows={6}
               placeholder="Conta um pouco da sua história, do que você gosta de fazer, do tipo de amizade que você quer encontrar por aqui."
