@@ -23,6 +23,8 @@ import { EscolherInteresses } from "./escolher-interesses";
 import { Selos } from "./selos";
 import { useMeuTitulo } from "@/lib/embaixadora";
 import { MeuVideo, VideosDeAmigos } from "./videos-do-perfil";
+import { VinculosSheet } from "./vinculos-sheet";
+import type { TipoVinculo } from "@/lib/vinculos";
 import { AjustarEnquadramento } from "./enquadrar";
 import {
   usePaginaPessoal,
@@ -86,6 +88,7 @@ export function MyNommi({ me }: { me: string }) {
   const { pagina, ready, reload } = usePaginaPessoal(me);
   const { titulo } = useMeuTitulo(true);
   const [editando, setEditando] = useState(false);
+  const [listaVinculos, setListaVinculos] = useState<TipoVinculo | null>(null);
   const [mexendoInteresses, setMexendoInteresses] = useState(false);
   const [postandoStory, setPostandoStory] = useState(false);
   const { publish: publicarStory } = useStories(me);
@@ -205,7 +208,7 @@ export function MyNommi({ me }: { me: string }) {
         </div>
       )}
 
-      <StatsLine userId={me} />
+      <StatsLine userId={me} onOpen={setListaVinculos} />
       <MinhasEstrelas
         saldo={estrelas.saldo}
         ganhasSemana={estrelas.ganhasSemana}
@@ -332,6 +335,9 @@ export function MyNommi({ me }: { me: string }) {
             void reload();
           }}
         />
+      )}
+      {listaVinculos && (
+        <VinculosSheet me={me} tipo={listaVinculos} onClose={() => setListaVinculos(null)} />
       )}
     </section>
   );
