@@ -1253,3 +1253,6 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .midia-falhou{display:grid;place-items:center;text-align:center;padding:18px 14px;min-height:120px;
   background:var(--butter);color:var(--muted-foreground);border:1px dashed var(--border);border-radius:16px}
 .midia-falhou small{font-size:12.5px;line-height:1.5;max-width:30ch}
+.stats>button.stats-open{padding:15px 5px;min-width:0;background:transparent;border:0;font:inherit;cursor:pointer;text-align:center}
+.stats>button.stats-open span{color:var(--primary);font-weight:700}
+.stats>button.stats-open:active{transform:scale(.97)}
