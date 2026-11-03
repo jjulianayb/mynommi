@@ -22,9 +22,12 @@ import {
   baloes,
   papoPara,
   respostaPara,
+
   respostaPorId,
   type RespostaDoPippo,
 } from "@/lib/pippo-respostas";
+import { climaAgora, dolarAgora, perguntaDeDados } from "@/lib/pippo-dados";
+import type { PerguntaDeDados } from "@/lib/pippo-dados";
 
 /** O Pippo de frente, recortado, com fundo transparente. Usado no cantinho e no tour. */
 export { frontalPippo };
@@ -262,6 +265,30 @@ export function PippoAjudante({
     });
   };
 
+  const responderComDados = (pergunta: string, dados: PerguntaDeDados) => {
+    setFalas((f) => [...f, { de: "voce", texto: pergunta }]);
+    setSugestoes([]);
+    setTodas(false);
+    setDigitando(true);
+    const busca = dados.tipo === "dolar" ? dolarAgora() : climaAgora(dados.cidade);
+    void busca.then((baloesDele) => {
+      let espera = 650;
+      baloesDele.forEach((b, i) => {
+        const ultimo = i === baloesDele.length - 1;
+        timers.current.push(
+          setTimeout(() => {
+            setFalas((f) => [...f, { de: "pippo", texto: b }]);
+            if (ultimo) {
+              setDigitando(false);
+              setSugestoes(COMECO_DO_PIPPO);
+            } else setDigitando(true);
+          }, espera),
+        );
+        espera += 500 + Math.min(900, b.length * 14);
+      });
+    });
+  };
+
   const aoAtivarAvisos = () => {
     if (!me || digitando) return;
     setFalas((f) => [...f, { de: "voce", texto: "Ativar avisos" }]);
@@ -357,8 +384,13 @@ export function PippoAjudante({
               e.preventDefault();
               const t = texto.trim();
               if (!t || digitando) return;
-              responder(t, respostaPara(t));
               setTexto("");
+              const dados = perguntaDeDados(t);
+              if (dados) {
+                responderComDados(t, dados);
+                return;
+              }
+              responder(t, respostaPara(t));
             }}
           >
             <input
