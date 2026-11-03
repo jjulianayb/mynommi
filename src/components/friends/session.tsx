@@ -69,7 +69,7 @@ export function DemoSessionProvider({ children }: { children: ReactNode }) {
         .maybeSingle();
       if (!alive || request !== version) return;
       let p = profile;
-      const meta = u.user_metadata;
+      const meta: Record<string, unknown> = u.user_metadata ?? {};
       // Complete profile fields collected at signup using existing owner-editable columns only.
       if (meta["nommi_profile_pending"] === true) {
         const r = signupDetails({
