@@ -220,7 +220,7 @@ export function CommunityDetail({
             aria-selected={tab === t}
             onClick={() => setTab(t)}
           >
-            {t}
+            {t === "Membros" ? `Quem faz parte (${memberCount})` : t}
           </Button>
         ))}
       </div>
