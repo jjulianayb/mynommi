@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { SemFoto, Avatar, Icon } from "./art";
+import { SemFoto, Avatar, Icon, AroPro } from "./art";
 import { Esqueleto, EmptyState, Sheet } from "./surfaces";
 import { useFriends } from "./store";
 import { CoverEditor } from "./cover-editor";
@@ -143,7 +143,13 @@ export function MyNommi({ me }: { me: string }) {
 
       <div className="mynommi-topo">
         <span className="mynommi-foto-wrap">
-          <Face avatar={pagina.avatar} nome={pagina.nickname} foco={pagina.fotoFoco} />
+          {titulo.premium && !titulo.embaixadora ? (
+            <AroPro>
+              <Face avatar={pagina.avatar} nome={pagina.nickname} foco={pagina.fotoFoco} />
+            </AroPro>
+          ) : (
+            <Face avatar={pagina.avatar} nome={pagina.nickname} foco={pagina.fotoFoco} />
+          )}
           <FotoInstantanea
             onPronta={async (jpeg) => {
               // Atalho direto: troca a foto sem passar pelo Editar. Mesmo
