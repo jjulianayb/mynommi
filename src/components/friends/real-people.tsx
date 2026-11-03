@@ -13,6 +13,7 @@ import { useSeloDe } from "@/lib/embaixadora";
 import { StatsLine, FollowButton, WallPanel, Feed, SafetyMenu } from "./social-feed";
 import { Selos } from "./selos";
 import { MeuVideo, VideosDeAmigos } from "./videos-do-perfil";
+import { MOSTRAR_SECOES_DE_AMIGOS } from "@/lib/flags";
 import { connectionState as _cs } from "@/lib/connections";
 import { enderecoDaImagem } from "@/lib/covers";
 
@@ -199,7 +200,7 @@ export function PublicNommi({ id }: { id: string }) {
             onMudou={() => undefined}
           />
         )}
-        {cloudUser && (
+        {cloudUser && MOSTRAR_SECOES_DE_AMIGOS && (
           <VideosDeAmigos
             me={cloudUser.id}
             dono={profile.id}
@@ -214,7 +215,7 @@ export function PublicNommi({ id }: { id: string }) {
             }
           />
         )}
-        {cloudUser && (
+        {cloudUser && MOSTRAR_SECOES_DE_AMIGOS && (
           <Selos
             me={cloudUser.id}
             dono={profile.id}
@@ -298,6 +299,7 @@ export function PublicNommi({ id }: { id: string }) {
               </div>
             );
           })()}
+        {MOSTRAR_SECOES_DE_AMIGOS && (
         <WallPanel
           me={cloudUser!.id}
           ownerId={profile.id}
@@ -307,6 +309,7 @@ export function PublicNommi({ id }: { id: string }) {
             con.rows.some((r) => r.status === "aceita" && otherId(r, cloudUser!.id) === profile.id)
           }
         />
+        )}
         <h2 className="settings-subtitle">Posts</h2>
         <Feed
           me={cloudUser!.id}
