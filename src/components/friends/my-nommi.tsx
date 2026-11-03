@@ -59,6 +59,27 @@ function Face({
   );
 }
 
+/** Seção dobrável da página: o título fica sempre visível e o conteúdo abre
+    no toque. Começa aberta quando já tem conteúdo, fechada quando vazia. */
+function Secao({
+  titulo,
+  aberta,
+  children,
+}: {
+  titulo: string;
+  aberta?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <details className="mynommi-secao" open={aberta}>
+      <summary>
+        <span>{titulo}</span>
+      </summary>
+      <div className="mynommi-secao-corpo">{children}</div>
+    </details>
+  );
+}
+
 /** A página pessoal: é por ela que alguém decide se quer se conectar com você. */
 export function MyNommi({ me }: { me: string }) {
   const { pagina, ready, reload } = usePaginaPessoal(me);
@@ -84,7 +105,7 @@ export function MyNommi({ me }: { me: string }) {
     <section className={"mynommi tom-" + tomDoFundo(pagina.background)}>
       {/* O atalho de trocar foto fica no cantinho do avatar, como o botão de
           enquadrar, sem empurrar o nome nem a capa. */}
-      <style>{`.mynommi-foto-wrap .photo-label{position:absolute;left:-8px;bottom:-4px;padding:6px 10px;font-size:11px!important;line-height:1.2;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.18);z-index:2}`}</style>
+      <style>{`.mynommi-foto-wrap .photo-label{position:absolute;left:-8px;bottom:-4px;padding:6px 10px;font-size:11px!important;line-height:1.2;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.18);z-index:2}.mynommi-secao{margin:26px 0 14px}.mynommi-secao>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;font-size:20px;font-weight:700;list-style:none}.mynommi-secao>summary::-webkit-details-marker{display:none}.mynommi-secao>summary::after{content:"";width:10px;height:10px;border-right:2.5px solid currentColor;border-bottom:2.5px solid currentColor;transform:rotate(45deg);transition:transform .15s;flex:none;margin-right:6px}.mynommi-secao[open]>summary::after{transform:rotate(-135deg)}.mynommi-secao-corpo{padding-top:14px}.mynommi-secao .section-heading{margin:0 0 12px}.mynommi-secao .section-heading h2{display:none}.mynommi-secao-acoes{display:flex;justify-content:flex-end;margin-bottom:8px}`}</style>
       <div
         className={"mynommi-fundo" + (fundoEhFoto(pagina.background) ? " foto" : "")}
         style={estiloDoFundo(pagina.background)}
@@ -198,14 +219,14 @@ export function MyNommi({ me }: { me: string }) {
       )}
       {pagina.about && <p className="mynommi-sobre">{pagina.about}</p>}
 
-      <div className="section-heading">
-        <h2>Meus interesses</h2>
-        <Button variant="ghost" size="sm" onClick={() => setMexendoInteresses((v) => !v)}>
-          <Icon name={mexendoInteresses ? "close" : "plus"} />
-          {mexendoInteresses ? "Fechar" : "Mexer"}
-        </Button>
-      </div>
-      {mexendoInteresses ? (
+      <Secao titulo="Meus interesses" aberta={pagina.interests.length > 0 || mexendoInteresses}>
+        <div className="mynommi-secao-acoes">
+          <Button variant="ghost" size="sm" onClick={() => setMexendoInteresses((v) => !v)}>
+            <Icon name={mexendoInteresses ? "close" : "plus"} />
+            {mexendoInteresses ? "Fechar" : "Mexer"}
+          </Button>
+        </div>
+        {mexendoInteresses ? (
         <EscolherInteresses
           me={me}
           atuais={pagina.interests}
@@ -223,19 +244,20 @@ export function MyNommi({ me }: { me: string }) {
           ))}
         </div>
       ) : (
-        <p className="small-note">
-          Você ainda não marcou nenhum interesse. É por eles que o match acontece.
-        </p>
-      )}
+          <p className="small-note">
+            Você ainda não marcou nenhum interesse. É por eles que o match acontece.
+          </p>
+        )}
+      </Secao>
 
-      <div className="section-heading">
-        <h2>Lugares que eu curto</h2>
-        <Button variant="ghost" size="sm" onClick={() => setEditando(true)}>
-          <Icon name="plus" />
-          Editar
-        </Button>
-      </div>
-      {pagina.places.length ? (
+      <Secao titulo="Lugares que eu curto" aberta={pagina.places.length > 0}>
+        <div className="mynommi-secao-acoes">
+          <Button variant="ghost" size="sm" onClick={() => setEditando(true)}>
+            <Icon name="plus" />
+            Editar
+          </Button>
+        </div>
+        {pagina.places.length ? (
         <div className="interest-tags">
           {pagina.places.map((p) => (
             <span key={p}>
@@ -245,46 +267,56 @@ export function MyNommi({ me }: { me: string }) {
           ))}
         </div>
       ) : (
-        <p className="small-note">
-          Diga três lugares que você frequenta. É o que faz alguém pensar “eu também vou lá”.
-        </p>
-      )}
+          <p className="small-note">
+            Diga três lugares que você frequenta. É o que faz alguém pensar “eu também vou lá”.
+          </p>
+        )}
+      </Secao>
 
-      <h2 className="settings-subtitle">Plano de fundo</h2>
-      <EscolherFundo me={me} atual={pagina.background} onSalvo={() => void reload()} />
-      <details className="descobrir-busca">
-        <summary>Prefiro usar uma foto minha de fundo</summary>
-        <CoverEditor
-          target={{ kind: "perfil", userId: me }}
-          slot="background"
-          current={pagina.background}
-          onSaved={() => void reload()}
+      <Secao titulo="Plano de fundo">
+        <EscolherFundo me={me} atual={pagina.background} onSalvo={() => void reload()} />
+        <details className="descobrir-busca">
+          <summary>Prefiro usar uma foto minha de fundo</summary>
+          <CoverEditor
+            target={{ kind: "perfil", userId: me }}
+            slot="background"
+            current={pagina.background}
+            onSaved={() => void reload()}
+          />
+        </details>
+      </Secao>
+
+      <Secao titulo="Meu vídeo" aberta={!!pagina.video}>
+        <MeuVideo
+          me={me}
+          path={pagina.video ?? ""}
+          souDono
+          nome={pagina.nickname}
+          onMudou={() => void reload()}
         />
-      </details>
+      </Secao>
 
-      <MeuVideo
-        me={me}
-        path={pagina.video ?? ""}
-        souDono
-        nome={pagina.nickname}
-        onMudou={() => void reload()}
-      />
+      <Secao titulo="Amigos falando de você" aberta>
+        <VideosDeAmigos me={me} dono={me} nome={pagina.nickname} souAmiga={false} />
+      </Secao>
 
-      <VideosDeAmigos me={me} dono={me} nome={pagina.nickname} souAmiga={false} />
+      <Secao titulo="O que seus amigos dizem" aberta>
+        <Selos me={me} dono={me} nome={pagina.nickname} souAmiga={false} />
+      </Secao>
 
-      <Selos me={me} dono={me} nome={pagina.nickname} souAmiga={false} />
+      <Secao titulo="Recados dos amigos" aberta>
+        <WallPanel me={me} ownerId={me} nickname={pagina.nickname} canWrite={false} />
+      </Secao>
 
-      <h2 className="settings-subtitle">Recados dos amigos</h2>
-      <WallPanel me={me} ownerId={me} nickname={pagina.nickname} canWrite={false} />
-
-      <h2 className="settings-subtitle">O que eu publiquei</h2>
-      <Feed
+      <Secao titulo="O que eu publiquei" aberta>
+        <Feed
         me={me}
         nickname={pagina.nickname}
         scope={{ authorId: me }}
         emptyTitle="Você ainda não publicou nada."
         emptyText="Conte como foi um rolê e sua página ganha vida."
-      />
+        />
+      </Secao>
 
       {editando && (
         <EditarPagina
