@@ -41,7 +41,13 @@ export async function enviarVideo(
   const up = await supabase.storage
     .from(BALDE)
     .upload(path, arquivo, { contentType: arquivo.type || "video/webm" });
-  if (up.error) return { ok: false, erro: "O vídeo não subiu. Tente de novo." };
+  if (up.error) {
+    // O motivo real fica visível: sem ele, cada falha de envio vira adivinhação
+    // e ninguém consegue ajudar a pessoa.
+    console.warn("[nommi] vídeo não subiu:", up.error);
+    const motivo = up.error.message ? ` (${up.error.message})` : "";
+    return { ok: false, erro: `O vídeo não subiu${motivo}. Tente de novo.` };
+  }
   return { ok: true, path };
 }
 
