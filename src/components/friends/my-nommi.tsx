@@ -16,6 +16,7 @@ import { EscolherFundo } from "./escolher-fundo";
 import { FotoInstantanea } from "./foto-instantanea";
 import { CameraStory } from "./camera-story";
 import { useStories } from "@/lib/stories";
+import "./my-nommi.css";
 import { apagarFotoAntiga, enviarFotoDePerfil } from "@/lib/foto-perfil";
 import { saveCloudProfile } from "@/lib/real-profiles";
 import { EscolherInteresses } from "./escolher-interesses";
