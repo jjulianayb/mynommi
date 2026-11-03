@@ -72,6 +72,23 @@ function FotoMini({ k }: { k: Conhecida }) {
   );
 }
 
+/** Fotinha do chip: as capas recortadas do mockup, por palavra do interesse. */
+const FOTO_DO_CHIP: [RegExp, string][] = [
+  [/cinema|filme|serie/, "/capas-tribos/cinema-e-series.png"],
+  [/music|show|cant|karaok|samba|rock/, "/capas-tribos/musica.png"],
+  [/viag|trilha|praia|mochil/, "/capas-tribos/viagens.png"],
+  [/bem.?estar|yoga|medit|corrid|caminh|saude/, "/capas-tribos/bem-estar.png"],
+  [/livro|leitur|literat/, "/capas-tribos/livros.png"],
+];
+function fotoDoChip(i: string): string | null {
+  const k = i.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  return FOTO_DO_CHIP.find(([r]) => r.test(k))?.[1] ?? null;
+}
+function ChipIcone({ i }: { i: string }) {
+  const f = fotoDoChip(i);
+  return f ? <img className="dc-chip-foto" src={f} alt="" aria-hidden="true" /> : <Icon name={iconeDoInteresse(i)} />;
+}
+
 const SAIDA_DA_CARTA_MS = 170;
 
 /** A comemoração do match sai sozinha, sem precisar de toque. */
@@ -113,10 +130,11 @@ export function Combinar({ me }: { me: string }) {
    * e encolhe um pouco, e a do centro fica maior — o efeito do mockup da Ju
    * (02/11). Feito no scroll, então o deslize acompanha o dedo.
    */
-  const carrosselRef = useRef<HTMLDivElement>(null);
+  const telaRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const el = carrosselRef.current;
-    if (!el) return;
+    const tela = telaRef.current;
+    if (!tela) return;
+    const limpar = [...tela.querySelectorAll<HTMLDivElement>(".dc-carrossel")].map((el) => {
     let quadro = 0;
     const aplicar = () => {
       quadro = 0;
@@ -141,7 +159,9 @@ export function Combinar({ me }: { me: string }) {
       window.removeEventListener("resize", aoRolar);
       if (quadro) cancelAnimationFrame(quadro);
     };
-  }, [vista.length]);
+    });
+    return () => limpar.forEach((f) => f());
+  }, [vista.length, conhecidas.length, ready]);
 
   // A comemoração do match não tranca mais a fila: ela aparece por alguns
   // segundos e sai sozinha, e quem quiser falar agora tem o botão ali.
@@ -200,45 +220,41 @@ export function Combinar({ me }: { me: string }) {
   );
 
   const trilhoConhecidas = conhecidas.length > 0 && (
-    <section className="dc-conhecidas" aria-label="Continue suas conexões">
-      <h3 className="dc-secao-titulo">Continue suas conexões</h3>
-      <div className="dc-trilho">
+    <section className="dc-conhecidas" aria-label="Suas conexões">
+      <h3 className="dc-secao-titulo">Suas conexões</h3>
+      <p className="dc-conhecidas-sub">Quem já se conectou com você. Puxa uma conversa.</p>
+      <div className="dc-carrossel dc-baralho-amigos" role="list">
         {conhecidas.map((k: Conhecida) => (
-          <article key={k.userId} className="dc-mini">
-            <Link
-              to="/nommi/$id"
-              params={{ id: k.userId }}
-              className="dc-mini-foto"
-              aria-label={"Ver o perfil de " + k.nome}
-            >
-  <FotoMini k={k} />
-            </Link>
-            <h4>{k.nome}</h4>
-            <p>{k.cidade || "Brasil"}</p>
-            {k.tribosEmComum.length > 0 && (
-              <p className="dc-mini-tribos">
-                <Icon name="teia" />
-                {k.tribosEmComum.length === 1
-                  ? `1 tribo em comum: ${k.tribosEmComum[0]}`
-                  : `${k.tribosEmComum.length} tribos em comum`}
-              </p>
-            )}
-            {k.interesses.length > 0 && (
-              <div className="dc-tags">
-                {k.interesses.slice(0, 2).map((i) => (
-                  <span key={i}>
-                    <Icon name={iconeDoInteresse(i)} />
-                    {i}
-                  </span>
-                ))}
+          <article key={k.userId} className="dc-pessoa" role="listitem">
+            <div className="dc-foto">
+              <FotoMini k={k} />
+              <span className="dc-foto-sombra" aria-hidden="true" />
+              <div className="dc-info">
+                <h2 className="dc-nome">
+                  <Link to="/nommi/$id" params={{ id: k.userId }}>{k.nome}</Link>
+                </h2>
+                <p className="dc-cidade">
+                  <Icon name="pin" />
+                  {k.cidade || "Brasil"}
+                  {k.tribosEmComum.length > 0 &&
+                    ` · ${k.tribosEmComum.length} ${k.tribosEmComum.length === 1 ? "tribo" : "tribos"} em comum`}
+                </p>
+                {k.interesses.length > 0 && (
+                  <div className="dc-tags">
+                    {k.interesses.slice(0, 3).map((i) => (
+                      <span key={i}>
+                        <Icon name={iconeDoInteresse(i)} />
+                        {i}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <Link to="/conversas/$id" params={{ id: k.userId }} className="dc-conectar">
+                  <Icon name="chat" />
+                  Conversar
+                </Link>
               </div>
-            )}
-            <Button asChild className="dc-conversar">
-              <Link to="/conversas/$id" params={{ id: k.userId }}>
-                <Icon name="chat" />
-                Conversar
-              </Link>
-            </Button>
+            </div>
           </article>
         ))}
       </div>
@@ -252,7 +268,7 @@ export function Combinar({ me }: { me: string }) {
     <div className="dc-filtros" role="group" aria-label="Filtrar por interesse">
       <button
         type="button"
-        className={"dc-chip" + (filtro === null ? " ativa" : "")}
+        className={"dc-chip" + (filtro === null ? " selected" : "")}
         onClick={() => setFiltro(null)}
       >
         Todas
@@ -261,10 +277,10 @@ export function Combinar({ me }: { me: string }) {
         <button
           key={i}
           type="button"
-          className={"dc-chip" + (filtro === i ? " ativa" : "")}
+          className={"dc-chip" + (filtro === i ? " selected" : "")}
           onClick={() => setFiltro(filtro === i ? null : i)}
         >
-          <Icon name={iconeDoInteresse(i)} />
+          <ChipIcone i={i} />
           {i}
         </button>
       ))}
@@ -273,7 +289,7 @@ export function Combinar({ me }: { me: string }) {
 
   if (!c)
     return (
-      <>
+      <div ref={telaRef}>
         {comemoracao}
       {/* Sem cartas, a explicação vem PRIMEIRO. Antes a pessoa rolava tribos,
           banner e conexões inteiros antes de descobrir por que não havia
@@ -309,14 +325,14 @@ export function Combinar({ me }: { me: string }) {
           <Link to="/grupos">Entrar numa tribo</Link>
         </Button>
       </EmptyState>
+      {trilhoConhecidas}
       {trilhoMinhasTribos}
       {bannerTribos}
-      {trilhoConhecidas}
-      </>
+      </div>
     );
 
   return (
-    <section className="combinar dc-combinar">
+    <section className="combinar dc-combinar" ref={telaRef}>
       {comemoracao}
       {faixaFiltros}
 
@@ -336,7 +352,6 @@ export function Combinar({ me }: { me: string }) {
         className="dc-carrossel"
         role="list"
         aria-label="Pessoas que podem combinar com você"
-        ref={carrosselRef}
       >
         {vista.map((pessoa) => {
           const listaP = interessesOrdenados(pessoa);
