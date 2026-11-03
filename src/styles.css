@@ -1172,12 +1172,12 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 /* Selo de embaixadora: dourado da coroa Premium, igual para todas, sem número */
 .selo-embaixadora{display:inline-flex;align-items:center;gap:5px;width:max-content;padding:3px 10px;border-radius:999px;background:linear-gradient(135deg,var(--butter),#fff);border:1px solid var(--sunshine);font-size:12px;font-weight:800;color:#8a6d00}
 .selo-embaixadora .friend-icon{width:14px;height:14px;color:#b8860b;fill:#ffd34d}
-/* Aro Pro: anel dourado com coroa, sem texto — selo do Pro dado na mão (0055) */
+/* Aro Pro: anel dourado fino com coroinha embaixo, sem texto e sem bolha — selo do Pro dado na mão (0055; ajuste da Ju, 03/11) */
 .aro-pro{position:relative;display:inline-block;border-radius:50%;flex:none}
-.aro-pro::before{content:"";position:absolute;inset:-4px;border-radius:50%;background:conic-gradient(from 210deg,#a67c00,#ffd700,#fff7c0,#ffd700,#a67c00);z-index:0}
+.aro-pro::before{content:"";position:absolute;inset:-2px;border-radius:50%;background:conic-gradient(from 210deg,#b8912b,#e3c565,#f0dfa8,#e3c565,#b8912b);z-index:0}
 .aro-pro>*{position:relative;z-index:1;border-radius:50%}
-.coroa-pro{position:absolute;top:-11px;right:-7px;z-index:2;width:30px;height:30px;border-radius:50%;background:linear-gradient(160deg,#ffe066,#d4a017);display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.35)}
-.coroa-pro .friend-icon{width:17px;height:17px;color:#5c4300;fill:#ffd34d}
+.coroa-pro{position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);z-index:2;display:flex;align-items:center;justify-content:center}
+.coroa-pro .friend-icon{width:16px;height:16px;color:#b8912b;fill:#e9cf8f;stroke-width:2.2}
 .titulo-conta{font-size:15px;font-weight:700;line-height:1.35;margin:0}
 .titulo-recado{font-size:12.5px;color:var(--muted-foreground);line-height:1.5;margin:0}
 
