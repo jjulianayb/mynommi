@@ -475,3 +475,29 @@
   1. **Anunciado como `video/mp4`** (`tipoParaSubir`). `.mov` e `.mp4` são o **mesmo recipiente** (ISO BMFF) com assinatura diferente: o Chrome do Android recusa de cara qualquer coisa anunciada como `video/quicktime`, mas toca o conteúdo quando vem como `video/mp4`. Isso faz o vídeo de iPhone tocar no Android na maioria dos casos.
   2. **Um aviso honesto**, não uma promessa: iPhone novo grava em HEVC, que o Android não decodifica, e nada aqui conserta isso. Converter vídeo no navegador é outra ordem de trabalho. O teste exige que o aviso diga que **dá para publicar** e que **não** mostre nome técnico de formato.
 - Com o `VideoQueFalha` do mesmo dia, quem não consegue tocar vê um recado em vez de um quadro preto.
+
+## Curtir mensagem, e o Pippo como personagem na tribo (0058)
+- **O número que explica o porquê: 41 pessoas na Tribo do Pippo e zero mensagens.** Uma sala com quarenta pessoas caladas não vira conversa sozinha — ninguém quer ser o primeiro. A Ju pediu as duas coisas que destravam isso: um personagem que fala e um jeito de responder sem escrever.
+- **O curtir vale mais do que parece.** Escrever numa sala com quarenta pessoas é exposição; **tocar num coração não é.** É a participação de menor atrito que existe, e é o que faz quem arriscou a primeira mensagem não levar silêncio de volta.
+- `reacoes_de_mensagem` tem **duas colunas com chave estrangeira de verdade** (`mensagem_tribo`, `mensagem_conversa`) em vez de uma coluna "onde" com o id solto. Paga duas coisas: a reação **morre junto com a mensagem** (cascade) e a leitura embutida do Supabase funciona, o que evita uma consulta por mensagem na tela. O `CHECK` garante uma e só uma.
+- Um coração por pessoa por mensagem, toca de novo e tira — é o que a Ju pediu ("like e dislike" = ligar e desligar) e é o que o Instagram faz. Índice único parcial em cada coluna.
+- **O coração é verde da marca.** `--coral` é só alerta, e curtir não é alerta; a regra de não introduzir cor nova continua. Tem teste barrando `--coral` e cor na mão nas regras do coração.
+- **Área de toque de 44 px por `::after`**, com o desenho em 16 px. A regra dos 44 px é sobre o dedo; um coração desenhado com 44 px ao lado de cada mensagem tomaria a conversa. Tem teste.
+- `curtir()` muda a tela **antes** da resposta do servidor e desfaz se o banco recusar: curtir que espera a rede não parece curtir, parece formulário.
+- **Os textos do Pippo moram no banco** (`assuntos_do_pippo`), não no navegador. Se a tela mandasse o texto, qualquer pessoa poderia fazer o Pippo dizer qualquer coisa. `pippo_puxa_assunto()` não recebe argumento nenhum.
+- **Quem dispara é a visita, não um horário marcado.** Pergunta lançada às três da manhã numa sala vazia é pergunta perdida, e personagem que fala quando tem gente parece mais com gente. Também é um agendador a menos para quebrar sem ninguém ver. O intervalo (20 h) é do banco; a tela pode chamar à vontade.
+- `LOCK TABLE ... SHARE ROW EXCLUSIVE` no `pippo_puxa_assunto()`: duas pessoas abrindo a tribo no mesmo segundo não geram dois assuntos. Mesma razão do `virar_embaixadora()`.
+- Acabando a lista, ela **recomeça** em vez de o Pippo emudecer. Vinte assuntos dão três semanas.
+- As perguntas são desenhadas para três coisas: responder em uma linha, revelar algo que dê gancho para outra pessoa, e **não encostar em nada íntimo** (mesma regra da apresentação, 0038).
+- `pippo_recebe_quem_chega` é gatilho em `teia_members`: quem chega encontra uma mensagem **com o nome dela**, na frente dos outros, e tem o que responder. Conta de teste não é recebida.
+- **Decisão da Ju (04/11): o Pippo não é "guia", é personagem dentro da tribo.** O que continua valendo da ressalva antiga: ele **não entra no baralho do Descobrir** e **não conta nos números reais** (é `is_test` + `profile_mode='privado'`). Mascote declarado é legítimo; mascote que passa por usuário comum para dar sensação de movimento é perfil falso com outro nome.
+
+## O mesmo rosto para quarenta pessoas (04/11)
+- A bolha de quem não era você, na conversa da tribo, era `<Avatar id={7} />` — **uma pessoa do conjunto da apresentação**, fixa no código. Numa tribo com quarenta pessoas, todas apareciam com o mesmo rosto de uma desconhecida. O Pippo também.
+- É o bug do Felipe (26/10) outra vez, agora dentro do chat: `personPhoto` só pode ser usado para gente da apresentação, nunca como padrão de conta real.
+- `useSharedTeia` passou a buscar `profiles.avatar_url` de quem escreveu e a `Message` carrega `authorAvatar`/`senderId`. Sem foto é `<SemFoto>` com a inicial, nunca o rosto de outra pessoa. `Avatar id={7}` sobrou **uma vez só**, no caminho da apresentação, e o teste exige exatamente uma.
+- Cuidado ao escrever esse teste: ele conta ocorrências no arquivo, e o comentário que explica o bug cita o código antigo. Por isso o teste tira comentário antes de contar.
+
+## Tipos do Supabase na mão (04/11)
+- `mcp__Supabase__generate_typescript_types` responde "You do not have permission" nesta conta, então `src/integrations/supabase/types.ts` é **editado à mão** quando entra tabela ou função nova. Sem isso o `tsc` recusa `.from("tabela_nova")` e `rpc("funcao_nova")`, e `tsc` quebrado derruba a publicação pela Lovable.
+- Conferir antes de inserir: `gente_na_nommi` e `teto_do_descobrir` já estavam lá (outro agente), e declarar de novo dá "Duplicate identifier".

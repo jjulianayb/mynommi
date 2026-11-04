@@ -70,6 +70,12 @@ import {
   type Message,
   type Invite,
 } from "@/lib/friends-data";
+import {
+  recadoDoCoracao,
+  rotuloDeCoracoes,
+  useDoisToques,
+} from "@/lib/coracao-na-mensagem";
+import { TRIBO_DO_PIPPO_ID, usePippoPuxaAssunto } from "@/lib/pippo-tribo";
 import { roles } from "./profile-social";
 import { withBoosts, SAMPLE_BOOSTED_PEOPLE } from "@/lib/credits";
 import { InviteCard, PlanFilterBar, type PlanFiltersValue } from "./invites";
@@ -783,7 +789,14 @@ function DemoDiscover() {
     </>
   );
 }
-function MessageList({ messages }: { messages: Message[] }) {
+function MessageList({
+  messages,
+  onCurtir,
+}: {
+  messages: Message[];
+  /** Só em conta real. Sem isto a bolha não ganha coração nenhum. */
+  onCurtir?: (mensagemId: string) => void;
+}) {
   const end = useRef<HTMLDivElement>(null);
   useEffect(() => {
     end.current?.scrollIntoView({ block: "nearest" });
@@ -791,30 +804,99 @@ function MessageList({ messages }: { messages: Message[] }) {
   return (
     <div className="message-list">
       {messages.map((m, i) => (
-        <div
-          className={
-            "message-row " + (m.mine ? "mine" : "") + (m.text ? "" : " sticker-message-row")
-          }
-          key={i}
-        >
-          {!m.mine && <Avatar id={7} size={28} />}
-          <div className="message-content">
-            {m.author && <small>{m.author}</small>}
-            {m.text ? (
-              <p className="bubble">{m.text}</p>
-            ) : (
-              <>
-                <ChatSticker id={m.sticker ?? 0} custom={m.custom} />
-                {!m.mine && <SaveStickerButton message={m} />}
-              </>
-            )}
-            <time className="message-time">{m.time ?? "09:41"}</time>
-          </div>
-        </div>
+        <MessageRow key={m.id ?? i} m={m} {...(onCurtir ? { onCurtir } : {})} />
       ))}
       <div ref={end} />
     </div>
   );
+}
+
+function MessageRow({ m, onCurtir }: { m: Message; onCurtir?: (mensagemId: string) => void }) {
+  const podeCurtir = !!onCurtir && !!m.id;
+  const [pulsa, setPulsa] = useState(false);
+  function curtir() {
+    if (!podeCurtir) return;
+    // A animação só na hora de dar, nunca na de tirar: coração saltando ao
+    // descurtir diz o contrário do que acabou de acontecer.
+    if (!m.euCurti) {
+      setPulsa(true);
+      window.setTimeout(() => setPulsa(false), 520);
+    }
+    onCurtir!(m.id!);
+  }
+  const doisToques = useDoisToques(curtir);
+  const coracoes = m.coracoes ?? 0;
+
+  return (
+    <div
+      className={"message-row " + (m.mine ? "mine" : "") + (m.text ? "" : " sticker-message-row")}
+    >
+      {!m.mine && <RostoDeQuemFalou m={m} />}
+      <div
+        className="message-content"
+        {...(podeCurtir ? { onClick: doisToques, onDoubleClick: curtir } : {})}
+      >
+        {m.author && <small>{m.author}</small>}
+        {m.text ? (
+          <p className="bubble">{m.text}</p>
+        ) : (
+          <>
+            <ChatSticker id={m.sticker ?? 0} custom={m.custom} />
+            {!m.mine && <SaveStickerButton message={m} />}
+          </>
+        )}
+        <div className="message-pe">
+          <time className="message-time">{m.time ?? "09:41"}</time>
+          {podeCurtir && (
+            <button
+              type="button"
+              className={
+                "msg-coracao" + (m.euCurti ? " curti" : "") + (pulsa ? " pulsa" : "")
+              }
+              aria-pressed={!!m.euCurti}
+              aria-label={recadoDoCoracao(!!m.euCurti, coracoes)}
+              onClick={(e) => {
+                // O botão não pode disparar o toque duplo da bolha também.
+                e.stopPropagation();
+                curtir();
+              }}
+            >
+              {/* Um ícone só: quem preenche o coração é o CSS de `.curti`.
+                  Nome de ícone que não existe cai no `star` sem avisar. */}
+              <Icon name="heart" />
+              {rotuloDeCoracoes(coracoes) && <span>{rotuloDeCoracoes(coracoes)}</span>}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * O rosto de quem falou.
+ *
+ * Era `<Avatar id={7} />` para todo mundo — uma pessoa do conjunto da
+ * apresentação. Numa tribo com quarenta pessoas, todas apareciam com o mesmo
+ * rosto de uma desconhecida, o Pippo incluído. Mesmo bug que o Felipe viu no
+ * perfil dele em 26/10, só que dentro do chat.
+ */
+function RostoDeQuemFalou({ m }: { m: Message }) {
+  if (m.authorAvatar)
+    return (
+      <img
+        className="message-face"
+        src={m.authorAvatar}
+        alt=""
+        width={28}
+        height={28}
+        loading="lazy"
+      />
+    );
+  // Sem foto é a inicial da pessoa, nunca a foto de outra.
+  if (m.senderId) return <SemFoto nome={m.author ?? ""} size={28} />;
+  // Apresentação: aqui o conjunto de rostos é de propósito.
+  return <Avatar id={7} size={28} />;
 }
 function Composer({ onSend }: { onSend: (m: Message) => void }) {
   const [text, setText] = useState("");
@@ -1396,6 +1478,9 @@ export function GroupDetail({ id }: { id: number }) {
   useEffect(() => {
     if (cloud && id >= 100000) void marcarTriboVista(id);
   }, [cloud, id]);
+  // O Pippo puxa assunto quando alguém abre a tribo dele. O banco decide se é
+  // hora (20 h de intervalo) e qual é o assunto; a tela só avisa que tem gente.
+  usePippoPuxaAssunto(id, cloud && shared.ready, cloud && shared.joined, shared.recarregar);
   const amCreator = !!cloudUser && realTeia.row?.created_by === cloudUser.id;
   const g =
     (cloud && realTeia.row
@@ -1691,7 +1776,10 @@ export function GroupDetail({ id }: { id: number }) {
                       : shared.members.length + " nommi nesta tribo, em qualquer celular."}
                   </p>
                 )}
-                <MessageList messages={cloud ? shared.messages : state.groupMessages[id] || []} />
+                <MessageList
+                  messages={cloud ? shared.messages : state.groupMessages[id] || []}
+                  {...(cloud ? { onCurtir: shared.curtir } : {})}
+                />
                 <Composer
                   onSend={(m) => {
                     if (cloud) {

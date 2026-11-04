@@ -1275,3 +1275,24 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
   .mynommi-nome h1{overflow-wrap:anywhere}
 }
 .videos-acoes{display:inline-flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+
+/* Curtir mensagem (04/11). O coração é verde da marca: a regra da casa é não
+   introduzir cor nova, e --coral é só alerta — curtir não é alerta. */
+.message-pe{display:flex;align-items:center;gap:6px;margin-top:4px}
+.message-pe .message-time{margin-top:0;flex:1}
+.friends-app .msg-coracao{position:relative;display:inline-flex;align-items:center;gap:4px;min-height:0;padding:4px;background:none;border:none;border-radius:999px;color:var(--muted-foreground);font-size:11px;line-height:1;cursor:pointer}
+.friends-app .msg-coracao .friend-icon{width:16px;height:16px;fill:none}
+/* A área de toque chega a 44 px sem o botão empurrar a bolha: a regra dos
+   44 px é sobre o dedo, e um coração desenhado com 44 px ao lado de cada
+   mensagem tomaria a conversa. */
+.friends-app .msg-coracao::after{content:"";position:absolute;inset:50% auto auto 50%;width:44px;height:44px;transform:translate(-50%,-50%)}
+.friends-app .msg-coracao.curti{color:var(--primary)}
+.friends-app .msg-coracao.curti .friend-icon{fill:currentColor}
+.friends-app .msg-coracao.pulsa .friend-icon{animation:coracao-pulsa .5s ease-out}
+@keyframes coracao-pulsa{0%{transform:scale(1)}40%{transform:scale(1.45)}100%{transform:scale(1)}}
+/* O rosto de quem falou na tribo. Era Avatar id={7} para todo mundo: numa
+   tribo de quarenta pessoas, todas com a mesma cara de uma desconhecida. */
+.friends-app .message-face{width:28px;height:28px;border-radius:50%;object-fit:cover;flex:none}
+@media (prefers-reduced-motion:reduce){
+  .friends-app .msg-coracao.pulsa .friend-icon{animation:none}
+}

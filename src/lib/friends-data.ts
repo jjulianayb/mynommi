@@ -238,6 +238,20 @@ export type Message = {
   mine: boolean;
   author?: string;
   time?: string;
+  /**
+   * Os campos abaixo só existem em conta real (a apresentação não tem id de
+   * linha nem perfil por trás), por isso todos são opcionais.
+   */
+  /** Id da linha em teia_messages. Sem ele não há o que curtir. */
+  id?: string;
+  /** Quem escreveu, para a foto certa aparecer. */
+  senderId?: string;
+  /** Endereço da foto de quem escreveu, já resolvido. */
+  authorAvatar?: string;
+  /** Quantos corações a mensagem tem. Número real, sempre. */
+  coracoes?: number;
+  /** Se eu dei o meu. */
+  euCurti?: boolean;
 };
 export type Challenge = {
   id: number;

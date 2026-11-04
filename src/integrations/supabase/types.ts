@@ -56,6 +56,27 @@ export type Database = {
         }
         Relationships: []
       }
+      assuntos_do_pippo: {
+        Row: {
+          id: number
+          texto: string
+          tipo: string
+          usado_em: string | null
+        }
+        Insert: {
+          id?: never
+          texto: string
+          tipo: string
+          usado_em?: string | null
+        }
+        Update: {
+          id?: never
+          texto?: string
+          tipo?: string
+          usado_em?: string | null
+        }
+        Relationships: []
+      }
       attendances: {
         Row: {
           confirmed_at: string | null
@@ -970,6 +991,45 @@ export type Database = {
         }
         Relationships: []
       }
+      reacoes_de_mensagem: {
+        Row: {
+          created_at: string
+          mensagem_conversa: string | null
+          mensagem_tribo: string | null
+          tipo: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          mensagem_conversa?: string | null
+          mensagem_tribo?: string | null
+          tipo?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          mensagem_conversa?: string | null
+          mensagem_tribo?: string | null
+          tipo?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reacoes_de_mensagem_mensagem_tribo_fkey"
+            columns: ["mensagem_tribo"]
+            isOneToOne: false
+            referencedRelation: "teia_messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reacoes_de_mensagem_mensagem_conversa_fkey"
+            columns: ["mensagem_conversa"]
+            isOneToOne: false
+            referencedRelation: "direct_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reports: {
         Row: {
           created_at: string
@@ -1787,6 +1847,14 @@ export type Database = {
           interesse: string
           peso: number
         }[]
+      }
+      pippo_puxa_assunto: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      posso_ver_a_mensagem: {
+        Args: { _conversa: string; _tribo: string }
+        Returns: boolean
       }
       pessoas_para_combinar: {
         Args: { _limite?: number }
