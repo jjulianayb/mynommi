@@ -21,7 +21,7 @@ import { apagarFotoAntiga, enviarFotoDePerfil } from "@/lib/foto-perfil";
 import { saveCloudProfile } from "@/lib/real-profiles";
 import { EscolherInteresses } from "./escolher-interesses";
 import { Selos } from "./selos";
-import { useMeuTitulo, useSeloDe, mostraAroPro, mostraSeloEmbaixadora } from "@/lib/embaixadora";
+import { useMeuTitulo, useSeloDe, mostraAroPro } from "@/lib/embaixadora";
 import { MeuVideo, VideosDeAmigos } from "./videos-do-perfil";
 import { VinculosSheet } from "./vinculos-sheet";
 import type { TipoVinculo } from "@/lib/vinculos";
@@ -175,12 +175,7 @@ export function MyNommi({ me }: { me: string }) {
         </span>
         <div className="mynommi-nome">
           <h1>{pagina.nickname}</h1>
-          {mostraSeloEmbaixadora(seloMe) && (
-            <span className="selo-embaixadora" title="Chegou no começo da nommi">
-              <Icon name="crown" />
-              Embaixadora
-            </span>
-          )}
+
           {pagina.city && (
             <p>
               <Icon name="pin" />
