@@ -3,7 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useFriends } from "./store";
 import { demoState, emptyState } from "@/lib/friends-data";
-import { signupDetails } from "@/lib/nommi-access";
+import { essentialDetails } from "@/lib/nommi-access";
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import { enderecoDaImagem } from "@/lib/covers";
@@ -72,7 +72,7 @@ export function DemoSessionProvider({ children }: { children: ReactNode }) {
       const meta: Record<string, unknown> = u.user_metadata ?? {};
       // Complete profile fields collected at signup using existing owner-editable columns only.
       if (meta["nommi_profile_pending"] === true) {
-        const r = signupDetails({
+        const r = essentialDetails({
           nickname: typeof meta["nickname"] === "string" ? meta["nickname"] : "",
           city: typeof meta["city"] === "string" ? meta["city"] : "",
           birthday: typeof meta["birthday"] === "string" ? meta["birthday"] : "",
@@ -106,7 +106,7 @@ export function DemoSessionProvider({ children }: { children: ReactNode }) {
       const birthday = typeof meta["birthday"] === "string" ? meta["birthday"] : "";
       const complete =
         !!p &&
-        !!signupDetails({ nickname: p.nickname, city: p.city, birthday, interests: p.interests })
+        !!essentialDetails({ nickname: p.nickname, city: p.city, birthday, interests: p.interests })
           .data;
       setCloudUser({
         id: u.id,
