@@ -429,7 +429,7 @@ export function MyFriends() {
           ))}
         </div>
       ) : (
-        <p className="small-note">Nenhum pedido supabase.</p>
+        <p className="small-note">Nenhum pedido por aqui ainda.</p>
       )}
       <h2 className="settings-subtitle">Amigos ({friends.length})</h2>
       {friends.length ? (
