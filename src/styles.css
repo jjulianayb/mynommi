@@ -549,7 +549,7 @@ a.community-member>.friend-icon:last-child{width:16px;color:var(--muted-foregrou
 .secret-anon-face .friend-icon{width:16px;color:var(--muted-foreground)}
 
 /* Fundo do Rio nas telas de entrada e cadastro */
-.com-cenario{position:relative;min-height:100dvh;isolation:isolate}
+.com-cenario{position:relative;min-height:100dvh;isolation:isolate;overflow:clip}
 .cenario-fundo{position:fixed;inset:0;background-image:var(--cenario-entrada);background-size:cover;background-position:center 60%;z-index:-2;animation:aproxima-lento 40s ease-in-out infinite alternate}
 .cenario-veu{position:fixed;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.72) 45%,rgba(0,0,0,.88) 100%);z-index:-1}
 .cenario-conteudo{position:relative;color:var(--nommi-off,#FAF9F6)}
