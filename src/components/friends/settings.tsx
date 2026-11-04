@@ -681,8 +681,8 @@ export function Legal({ kind }: { kind: "terms" | "privacy" | "help" }) {
           <details open>
             <summary>Como começa uma conversa?</summary>
             <p>
-              A conversa direta abre depois de duas pessoas participarem de um encontro na mesma
-              tribo.
+              A conversa direta abre quando as duas pessoas se conectam no Descobrir. Vocês também
+              podem conversar depois de participar de um encontro na mesma tribo.
             </p>
           </details>
           <details>
