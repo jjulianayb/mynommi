@@ -11,12 +11,15 @@ const db = supabase as unknown as SupabaseClient;
  */
 export function usePrecisaApresentar(ativo: boolean, userId: string | null) {
   const [precisa, setPrecisa] = useState(false);
+  const [pronto, setPronto] = useState(false);
 
   useEffect(() => {
     if (!ativo || !userId) {
       setPrecisa(false);
+      setPronto(false);
       return;
     }
+    setPronto(false);
     let vivo = true;
     void (async () => {
       const { data } = await db
@@ -27,6 +30,7 @@ export function usePrecisaApresentar(ativo: boolean, userId: string | null) {
       if (!vivo) return;
       const estado = (data as { apresentacao?: string } | null)?.apresentacao ?? "pendente";
       setPrecisa(estado === "pendente");
+      setPronto(true);
     })();
     return () => {
       vivo = false;
@@ -34,5 +38,5 @@ export function usePrecisaApresentar(ativo: boolean, userId: string | null) {
   }, [ativo, userId]);
 
   const encerrar = useCallback(() => setPrecisa(false), []);
-  return { precisa, encerrar };
+  return { precisa, pronto, encerrar };
 }
