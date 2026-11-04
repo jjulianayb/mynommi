@@ -1701,7 +1701,7 @@ export function GroupDetail({ id }: { id: number }) {
                       }
                       void shared.send(m).then((ok) => {
                         if (!ok)
-                          notify("Não deu para enviar. Confira a internet e tente de supabase.");
+                          notify("Não deu para enviar. Confira a internet e tente de novo.");
                       });
                       return;
                     }
@@ -1755,4 +1755,4 @@ export function GroupDetail({ id }: { id: number }) {
       />
     </>
   );
-                        }
+}
