@@ -12,12 +12,7 @@ import { faltamParaAPorta } from "@/lib/porta-que-abre";
 import { useMinhasTribos } from "@/lib/minhas-tribos";
 import { Icon } from "./art";
 import { useFriends } from "./store";
-import {
-  convidaMais,
-  fraseDosConvites,
-  selodeEmbaixadora,
-  useMeuTitulo,
-} from "@/lib/embaixadora";
+import { convidaMais, fraseDosConvites, useMeuTitulo } from "@/lib/embaixadora";
 
 /**
  * Convidar em lote.
@@ -53,13 +48,7 @@ export function ConvidarEmLote({ me, nickname }: { me: string; nickname: string 
   return (
     <section className="lote">
       {ready && (
-        <div className={"titulo-cartao" + (titulo.embaixadora ? " embaixadora" : "")}>
-          {titulo.embaixadora && (
-            <p className="titulo-selo">
-              <Icon name="crown" />
-              {selodeEmbaixadora(titulo)}
-            </p>
-          )}
+        <div className="titulo-cartao">
           <p className="titulo-conta">{fraseDosConvites(titulo.vingaram)}</p>
           <p className="titulo-recado">{convidaMais(titulo.vingaram)}</p>
         </div>
