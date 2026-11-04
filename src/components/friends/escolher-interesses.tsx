@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -27,6 +28,48 @@ export function EscolherInteresses({
   const { notify } = useFriends();
   const [escolhidos, setEscolhidos] = useState<string[]>(atuais);
   const [salvando, setSalvando] = useState(false);
+  const [buscando, setBuscando] = useState(false);
+  const [falha, setFalha] = useState(false);
+  const [pessoas, setPessoas] = useState<{ id: string; nickname: string; interests: string[] }[]>(
+    [],
+  );
+  useEffect(() => {
+    let alive = true;
+    if (!escolhidos.length) {
+      setPessoas([]);
+      return;
+    }
+    setBuscando(true);
+    setFalha(false);
+    const t = setTimeout(async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id,nickname,interests")
+        .eq("profile_mode", "publico")
+        .eq("is_business", false)
+        .eq("is_test", false)
+        .neq("id", me)
+        .overlaps("interests", escolhidos)
+        .limit(20);
+      if (alive) {
+        setBuscando(false);
+        setFalha(!!error);
+        setPessoas(
+          (data ?? [])
+            .sort(
+              (a, b) =>
+                b.interests.filter((i) => escolhidos.includes(i)).length -
+                a.interests.filter((i) => escolhidos.includes(i)).length,
+            )
+            .slice(0, 4),
+        );
+      }
+    }, 350);
+    return () => {
+      alive = false;
+      clearTimeout(t);
+    };
+  }, [escolhidos, me]);
   const cheio = escolhidos.length >= MAX_INTERESSES;
 
   const marcado = (nome: string) => escolhidos.some((e) => mesmoInteresse(e, nome));
@@ -71,6 +114,35 @@ export function EscolherInteresses({
         {cheio && " — tire um para colocar outro."}
       </p>
 
+      {escolhidos.length > 0 && (
+        <section aria-live="polite" className="interesses-sugestoes">
+          <h3>Vocês têm isso em comum</h3>
+          <p className="small-note">
+            As sugestões mudam enquanto você escolhe. Salve antes de sair desta tela.
+          </p>
+          {buscando ? (
+            <p className="small-note">Procurando interesses em comum…</p>
+          ) : falha ? (
+            <p className="small-note">
+              Não deu para buscar pessoas agora. Seus interesses ainda podem ser salvos.
+            </p>
+          ) : pessoas.length ? (
+            pessoas.map((p) => (
+              <Link key={p.id} to="/nommi/$id" params={{ id: p.id }} className="conversation">
+                <div>
+                  <strong>{p.nickname}</strong>
+                  <p>{p.interests.filter((i) => escolhidos.includes(i)).join(" · ")}</p>
+                </div>
+              </Link>
+            ))
+          ) : (
+            <p className="small-note">
+              Ainda não encontramos alguém com essas escolhas. Marque outros interesses ou volte
+              depois.
+            </p>
+          )}
+        </section>
+      )}
       {gruposDeFigurinhas().map((g) => (
         <div className="figurinhas-grupo" key={g}>
           <h3>{g}</h3>
