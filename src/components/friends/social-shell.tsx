@@ -78,10 +78,11 @@ export function SocialShell({ children }: { children: ReactNode }) {
   );
   // O tour só começa na página inicial, onde estão as coisas que ele aponta.
   useEffect(() => {
-    if (!real || pathname !== "/" || tourJaVisto(cloudUser?.id ?? null)) return;
+    if (!real || !aceite.pronto || aceite.pendente || !apresentar.pronto || apresentar.precisa ||
+        pathname !== "/" || tourJaVisto(cloudUser?.id ?? null)) return;
     const t = setTimeout(() => setTourAberto(true), 900);
     return () => clearTimeout(t);
-  }, [real, pathname, cloudUser?.id]);
+  }, [real, pathname, cloudUser?.id, aceite.pronto, aceite.pendente, apresentar.pronto, apresentar.precisa]);
   useEffect(() => {
     setCreate(false);
     setDrawer(false);
@@ -264,7 +265,7 @@ export function SocialShell({ children }: { children: ReactNode }) {
             }}
           />
         )}
-      {tourAberto && cloudUser && <Tour me={cloudUser.id} onFim={() => setTourAberto(false)} />}
+      {tourAberto && cloudUser && aceite.pronto && !aceite.pendente && apresentar.pronto && !apresentar.precisa && <Tour me={cloudUser.id} onFim={() => setTourAberto(false)} />}
       {drawer && (
         <Sheet title="Seu nommi" side="right" onClose={() => setDrawer(false)}>
           <nav aria-label="Menu secundário" className="drawer-navigation">
