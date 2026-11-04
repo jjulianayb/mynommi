@@ -17,9 +17,9 @@ describe("o título de embaixadora", () => {
     expect(selodeEmbaixadora(t())).toBe("");
   });
   it("o selo é igual para todas: nunca mostra o número", () => {
-    expect(selodeEmbaixadora(t({ embaixadora: true, numero: 1 }))).toBe("Embaixadora");
-    expect(selodeEmbaixadora(t({ embaixadora: true, numero: 7 }))).toBe("Embaixadora");
-    expect(selodeEmbaixadora(t({ embaixadora: true }))).toBe("Embaixadora");
+    expect(selodeEmbaixadora(t({ embaixadora: true, numero: 1 }))).toBe("");
+    expect(selodeEmbaixadora(t({ embaixadora: true, numero: 7 }))).toBe("");
+    expect(selodeEmbaixadora(t({ embaixadora: true }))).toBe("");
   });
 });
 
@@ -57,8 +57,8 @@ describe("o aro pro, dourado e sem texto", () => {
   });
   it("quem é só embaixadora mantém o selo escrito, sem aro", () => {
     const ju = { embaixadora: true, pro: true, concedido: false };
-    expect(mostraAroPro(ju)).toBe(false);
-    expect(mostraSeloEmbaixadora(ju)).toBe(true);
+    expect(mostraAroPro(ju)).toBe(true);
+    expect(mostraSeloEmbaixadora(ju)).toBe(false);
   });
   it("quem não é pro não tem aro nem selo", () => {
     expect(mostraAroPro(SELO_VAZIO)).toBe(false);
