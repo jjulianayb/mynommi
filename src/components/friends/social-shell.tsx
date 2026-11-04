@@ -78,11 +78,27 @@ export function SocialShell({ children }: { children: ReactNode }) {
   );
   // O tour só começa na página inicial, onde estão as coisas que ele aponta.
   useEffect(() => {
-    if (!real || !aceite.pronto || aceite.pendente || !apresentar.pronto || apresentar.precisa ||
-        pathname !== "/" || tourJaVisto(cloudUser?.id ?? null)) return;
+    if (
+      !real ||
+      !aceite.pronto ||
+      aceite.pendente ||
+      !apresentar.pronto ||
+      apresentar.precisa ||
+      pathname !== "/" ||
+      tourJaVisto(cloudUser?.id ?? null)
+    )
+      return;
     const t = setTimeout(() => setTourAberto(true), 900);
     return () => clearTimeout(t);
-  }, [real, pathname, cloudUser?.id, aceite.pronto, aceite.pendente, apresentar.pronto, apresentar.precisa]);
+  }, [
+    real,
+    pathname,
+    cloudUser?.id,
+    aceite.pronto,
+    aceite.pendente,
+    apresentar.pronto,
+    apresentar.precisa,
+  ]);
   useEffect(() => {
     setCreate(false);
     setDrawer(false);
@@ -158,7 +174,7 @@ export function SocialShell({ children }: { children: ReactNode }) {
       {aceite.pronto && aceite.pendente && !legalPaths.includes(pathname) && (
         <AvisoDeAceite onAceitar={aceite.aceitar} />
       )}
-      {apresentar.precisa && cloudUser && (
+      {apresentar.precisa && cloudUser && pathname === "/" && (
         <Apresentacao me={cloudUser.id} aoFechar={apresentar.encerrar} />
       )}
       <header className="app-header">
@@ -265,7 +281,12 @@ export function SocialShell({ children }: { children: ReactNode }) {
             }}
           />
         )}
-      {tourAberto && cloudUser && aceite.pronto && !aceite.pendente && apresentar.pronto && !apresentar.precisa && <Tour me={cloudUser.id} onFim={() => setTourAberto(false)} />}
+      {tourAberto &&
+        cloudUser &&
+        aceite.pronto &&
+        !aceite.pendente &&
+        apresentar.pronto &&
+        !apresentar.precisa && <Tour me={cloudUser.id} onFim={() => setTourAberto(false)} />}
       {drawer && (
         <Sheet title="Seu nommi" side="right" onClose={() => setDrawer(false)}>
           <nav aria-label="Menu secundário" className="drawer-navigation">
