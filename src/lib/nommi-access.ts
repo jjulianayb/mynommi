@@ -64,3 +64,35 @@ export function isRealHost(user: { isBusiness: boolean } | null, demoMode: boole
 export function presentationDemo(search: string) {
   return new URLSearchParams(search).get("demo") === "1";
 }
+
+/** Para a conta existir: apelido e maioridade. Cidade e interesses vêm no perfil. */
+export function essentialDetails(
+  input: { nickname: string; birthday: string; city?: string; interests?: string[] },
+  today = new Date(),
+) {
+  const nickname = input.nickname.trim();
+  if (
+    !/^\d{4}-\d{2}-\d{2}$/.test(input.birthday) ||
+    !Number.isFinite(Date.parse(input.birthday + "T12:00:00Z")) ||
+    new Date(input.birthday + "T12:00:00Z").toISOString().slice(0, 10) !== input.birthday
+  )
+    return { error: "Confira sua data de nascimento." };
+  if (nickname.length < 2 || nickname.length > 30)
+    return { error: "Use um apelido de 2 a 30 letras." };
+  const age = ageOn(input.birthday, today);
+  if (age < 18 || age > 120)
+    return {
+      error:
+        age >= 0 && age < 18
+          ? "O Nommi é para quem tem 18 anos ou mais."
+          : "Confira sua data de nascimento.",
+    };
+  return {
+    data: {
+      nickname,
+      birthday: input.birthday,
+      city: (input.city ?? "").trim().slice(0, 80),
+      interests: input.interests ?? [],
+    },
+  };
+}
