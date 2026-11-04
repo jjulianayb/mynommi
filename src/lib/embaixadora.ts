@@ -5,22 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 /** embaixadoras e meu_titulo ainda não estão em types.ts. */
 const db = supabase as unknown as SupabaseClient;
 
-/**
- * Embaixadora: quem chegou no começo.
- *
- * O título é permanente e o número nunca se repete nem muda de dono. Mas o
- * número é só dela, não da vitrine: o selo que aparece no app é igual para
- * todas, sem número — assim ninguém identifica quem chegou primeiro
- * (decisão da Ju, 01/11).
- *
- * O que ele dá hoje é acesso às funcionalidades que um dia serão pagas.
- * Quem decide isso é `tem_premium()` no banco, num lugar só: nenhuma tela
- * pergunta "pagou?" por conta própria.
- *
- * O que ele **não** dá: aparecer mais no match, nem nada que crie duas classes
- * de gente. Numa rede de amizade isso se sente na hora.
- */
-
+/** Pro usa somente aro dourado e coroa, sem título público. */
 export type Titulo = {
   embaixadora: boolean;
   numero: number | null;
@@ -36,9 +21,8 @@ export const TITULO_VAZIO: Titulo = {
 };
 
 /** Como o título aparece na página: um selo só, igual para todas. */
-export function selodeEmbaixadora(t: Titulo): string {
-  if (!t.embaixadora) return "";
-  return "Embaixadora";
+export function selodeEmbaixadora(_t: Titulo): string {
+  return "";
 }
 
 /**
@@ -49,19 +33,13 @@ export type Selo = { embaixadora: boolean; pro: boolean; concedido: boolean };
 
 export const SELO_VAZIO: Selo = { embaixadora: false, pro: false, concedido: false };
 
-/**
- * O aro dourado com coroa, sem texto nenhum, é o selo de quem recebeu o Pro
- * dado na mão (decisão da Ju, 03/11). Ele vale inclusive para quem também é
- * embaixadora: a Ana Flávia é as duas coisas e pediu o aro no lugar do
- * "Embaixadora" escrito. Por isso o aro olha o pro_concedido, não o pro.
- */
+/** Todo Pro tem a coroa; conta comum não tem selo. */
 export function mostraAroPro(selo: Selo): boolean {
-  return selo.concedido;
+  return selo.pro;
 }
-
-/** O selo "Embaixadora" escrito some de quem ganhou o aro no lugar. */
-export function mostraSeloEmbaixadora(selo: Selo): boolean {
-  return selo.embaixadora && !selo.concedido;
+/** Compatibilidade sem exibir o título antigo. */
+export function mostraSeloEmbaixadora(_selo: Selo): boolean {
+  return false;
 }
 
 export function useSeloDe(quem: string | undefined, ativo: boolean) {
