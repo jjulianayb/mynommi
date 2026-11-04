@@ -49,6 +49,16 @@ export function Account({
     setBusy(true);
     try {
       if (business) localStorage.setItem("nommi-business-intent", "1");
+      if (provider === "google") {
+        // OAuth nativo do Supabase: volta direto para o Nommi, sem passar
+        // pela tela do Lovable (oauth.lovable.app) no meio do caminho.
+        const { error: oauthError } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: { redirectTo: window.location.origin + "/conta" },
+        });
+        if (oauthError) setError(recadoDoLoginSocial(dentroDeApp));
+        return;
+      }
       const r = await lovable.auth.signInWithOAuth(provider, {
         redirect_uri: window.location.origin,
       });
