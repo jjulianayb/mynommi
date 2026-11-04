@@ -4,16 +4,12 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { emailSchema, passwordSchema } from "@/lib/nomi-validation";
-import { SIGNUP_INTERESTS, signupDetails } from "@/lib/nommi-access";
-import {
-  RECADO_DO_NAVEGADOR,
-  ehNavegadorDeApp,
-  recadoDoLoginSocial,
-} from "@/lib/navegador";
+import { essentialDetails } from "@/lib/nommi-access";
+import { RECADO_DO_NAVEGADOR, ehNavegadorDeApp, recadoDoLoginSocial } from "@/lib/navegador";
 import { irParaOEnderecoCerto } from "@/lib/endereco";
-import { INTERESSES_NO_CADASTRO } from "@/lib/perfil-texto";
 import { Icon } from "./art";
 import { Brand } from "./surfaces";
+import { useFriends } from "./store";
 import { useDemoSession } from "./session";
 
 export function Account({
@@ -31,8 +27,7 @@ export function Account({
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
   const [birthday, setBirthday] = useState("");
-  const [city, setCity] = useState("");
-  const [interests, setInterests] = useState<string[]>([]);
+
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
@@ -84,7 +79,7 @@ export function Account({
     setBusy(true);
     try {
       if (mode === "criar") {
-        const details = signupDetails({ nickname, city, birthday, interests });
+        const details = essentialDetails({ nickname, birthday });
         if (!details.data) {
           setError(details.error ?? "Confira seus dados.");
           return;
@@ -132,8 +127,8 @@ export function Account({
         <Brand />
         <h1>Um pulinho no seu e-mail.</h1>
         <p className="intro">
-          Confira o link enviado para <b>{email}</b>. Depois da confirmação, seu primeiro rolê
-          espera aqui.
+          Confira o link enviado para <b>{email}</b>. Depois da confirmação, você vai conhecer seu
+          perfil.
         </p>
         <Button
           className="wide"
@@ -154,7 +149,7 @@ export function Account({
         <h1>{mode === "entrar" ? "Bom te ver por aqui." : "Qual é o seu nommi?"}</h1>
         <p className="intro">
           {mode === "criar"
-            ? "Três coisas que você curte. Um bom começo de conversa."
+            ? "Crie sua conta. Depois, seu perfil e quem combina com você."
             : "O próximo “bora?” pode estar bem perto."}
         </p>
       </div>
@@ -243,27 +238,9 @@ export function Account({
           </Link>
         )}
         {mode === "criar" && (
-          <ul
-            className="small-note"
-            aria-label="Dicas de senha"
-            style={{ listStyle: "none", padding: 0, margin: "-4px 0 4px", display: "grid", gap: 4 }}
-          >
-            {passwordChecks(password).map((c) => (
-              <li
-                key={c.label}
-                style={{
-                  color: c.ok ? "var(--brand-green, var(--primary))" : undefined,
-                  fontWeight: c.ok ? 600 : 400,
-                }}
-              >
-                {c.ok ? "✓" : "○"} {c.label}
-              </li>
-            ))}
-            <li>
-              Dica: junte palavras e números que só você sabe, como Cafe-Domingo-27. Evite 12345678,
-              seu nome ou sua data.
-            </li>
-          </ul>
+          <p className="small-note">
+            Use pelo menos 8 caracteres. Prefira uma senha que você não usa em outro lugar.
+          </p>
         )}
         {mode === "criar" && (
           <>
@@ -290,40 +267,10 @@ export function Account({
                   required
                 />
               </label>
-              <label>
-                Cidade
-                <input
-                  className="input"
-                  maxLength={80}
-                  autoComplete="address-level2"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  required
-                />
-              </label>
             </div>
-            <fieldset>
-              <legend>
-                De 3 a 6 interesses <small>{interests.length} escolhidos</small>
-              </legend>
-              <div className="chips">
-                {SIGNUP_INTERESTS.map((i) => (
-                  <Button
-                    type="button"
-                    key={i}
-                    variant="outline"
-                    className={"chip " + (interests.includes(i) ? "selected" : "")}
-                    disabled={interests.length >= INTERESSES_NO_CADASTRO.maximo && !interests.includes(i)}
-                    aria-pressed={interests.includes(i)}
-                    onClick={() =>
-                      setInterests((v) => (v.includes(i) ? v.filter((x) => x !== i) : [...v, i]))
-                    }
-                  >
-                    {i}
-                  </Button>
-                ))}
-              </div>
-            </fieldset>
+            <p className="small-note">
+              Cidade, foto e interesses você escolhe depois, no seu perfil.
+            </p>
             <label className="checkbox-line">
               <input
                 type="checkbox"
@@ -391,10 +338,10 @@ function signupErrorMessage(err: {
 function CompleteAccount() {
   const { cloudUser, signOut } = useDemoSession();
   const navigate = useNavigate();
-  const [nickname, setNickname] = useState("");
+  const { state } = useFriends();
+  const [nickname, setNickname] = useState(state.nickname);
   const [birthday, setBirthday] = useState("");
-  const [city, setCity] = useState("");
-  const [interests, setInterests] = useState<string[]>([]);
+
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   if (!cloudUser) return null;
@@ -405,8 +352,8 @@ function CompleteAccount() {
         <h1>Seu nommi está pronto.</h1>
         <p className="intro">Tem um lugar na roda esperando por você.</p>
         <Button asChild className="wide">
-          <Link to={cloudUser.isBusiness ? "/parceiro" : "/"}>
-            Ver meu próximo rolê
+          <Link to={cloudUser.isBusiness ? "/parceiro" : "/perfil"}>
+            Ver meu perfil
             <Icon name="arrow" />
           </Link>
         </Button>
@@ -420,10 +367,16 @@ function CompleteAccount() {
       <Brand />
       <h1>Só falta o seu nommi.</h1>
       <form
+        noValidate
         className="account-form"
         onSubmit={async (e) => {
           e.preventDefault();
-          const r = signupDetails({ nickname, birthday, city, interests });
+          const r = essentialDetails({
+            nickname,
+            birthday,
+            city: state.city,
+            interests: state.interests,
+          });
           if (!r.data) {
             setError(r.error ?? "Confira seus dados.");
             return;
@@ -446,7 +399,7 @@ function CompleteAccount() {
             setError("Não foi possível concluir. Tente de novo.");
             return;
           }
-          void navigate({ to: cloudUser.isBusiness ? "/parceiro" : "/" });
+          void navigate({ to: cloudUser.isBusiness ? "/parceiro" : "/perfil" });
         }}
       >
         <label>
@@ -469,44 +422,13 @@ function CompleteAccount() {
             required
           />
         </label>
-        <label>
-          Cidade
-          <input
-            className="input"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            required
-            maxLength={80}
-          />
-        </label>
-        <fieldset>
-          <legend>
-              De 3 a 6 interesses <small>{interests.length} escolhidos</small>
-            </legend>
-          <div className="chips">
-            {SIGNUP_INTERESTS.map((i) => (
-              <Button
-                type="button"
-                key={i}
-                variant="outline"
-                className={"chip " + (interests.includes(i) ? "selected" : "")}
-                disabled={interests.length >= INTERESSES_NO_CADASTRO.maximo && !interests.includes(i)}
-                onClick={() =>
-                  setInterests((v) => (v.includes(i) ? v.filter((x) => x !== i) : [...v, i]))
-                }
-              >
-                {i}
-              </Button>
-            ))}
-          </div>
-        </fieldset>
         {error && (
           <p role="alert" className="form-error">
             {error}
           </p>
         )}
         <Button className="wide" disabled={busy}>
-          {busy ? "Salvando…" : "Ver meu primeiro rolê"}
+          {busy ? "Salvando…" : "Ver meu perfil"}
           <Icon name="teia" />
         </Button>
       </form>
