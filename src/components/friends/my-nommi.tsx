@@ -203,7 +203,19 @@ export function MyNommi({ me }: { me: string }) {
         <CameraStory onClose={() => setPostandoStory(false)} onPublish={publicarStory} />
       )}
 
-      {falta.length > 0 && (
+      {pagina.interests.length === 0 && !mexendoInteresses && (
+        <div className="mynommi-falta">
+          <h2>Este é o seu nommi.</h2>
+          <p>
+            Agora escolha o que você curte para encontrar pessoas com interesses em comum. Foto e
+            história podem ficar para depois.
+          </p>
+          <Button onClick={() => setMexendoInteresses(true)}>
+            Escolher meus interesses <Icon name="arrow" />
+          </Button>
+        </div>
+      )}
+      {falta.length > 0 && pagina.interests.length > 0 && (
         <div className="mynommi-falta">
           <div className="mynommi-barra">
             <span style={{ width: pronto + "%" }} />
@@ -242,23 +254,22 @@ export function MyNommi({ me }: { me: string }) {
           </Button>
         </div>
         {mexendoInteresses ? (
-        <EscolherInteresses
-          me={me}
-          atuais={pagina.interests}
-          onSalvo={() => {
-            setMexendoInteresses(false);
-            void reload();
-          }}
-        />
-      ) : pagina.interests.length > 0 ? (
-        <div className="meus-interesses">
-          {pagina.interests.map((i) => (
-            <span key={i}>
-              {figurinhaDe(i)} {i}
-            </span>
-          ))}
-        </div>
-      ) : (
+          <EscolherInteresses
+            me={me}
+            atuais={pagina.interests}
+            onSalvo={() => {
+              void reload();
+            }}
+          />
+        ) : pagina.interests.length > 0 ? (
+          <div className="meus-interesses">
+            {pagina.interests.map((i) => (
+              <span key={i}>
+                {figurinhaDe(i)} {i}
+              </span>
+            ))}
+          </div>
+        ) : (
           <p className="small-note">
             Você ainda não marcou nenhum interesse. É por eles que o match acontece.
           </p>
@@ -273,15 +284,15 @@ export function MyNommi({ me }: { me: string }) {
           </Button>
         </div>
         {pagina.places.length ? (
-        <div className="interest-tags">
-          {pagina.places.map((p) => (
-            <span key={p}>
-              <Icon name="pin" />
-              {p}
-            </span>
-          ))}
-        </div>
-      ) : (
+          <div className="interest-tags">
+            {pagina.places.map((p) => (
+              <span key={p}>
+                <Icon name="pin" />
+                {p}
+              </span>
+            ))}
+          </div>
+        ) : (
           <p className="small-note">
             Diga três lugares que você frequenta. É o que faz alguém pensar “eu também vou lá”.
           </p>
@@ -329,11 +340,11 @@ export function MyNommi({ me }: { me: string }) {
 
       <Secao titulo="O que eu publiquei" aberta>
         <Feed
-        me={me}
-        nickname={pagina.nickname}
-        scope={{ authorId: me }}
-        emptyTitle="Você ainda não publicou nada."
-        emptyText="Conte como foi um rolê e sua página ganha vida."
+          me={me}
+          nickname={pagina.nickname}
+          scope={{ authorId: me }}
+          emptyTitle="Você ainda não publicou nada."
+          emptyText="Conte como foi um rolê e sua página ganha vida."
         />
       </Secao>
 
