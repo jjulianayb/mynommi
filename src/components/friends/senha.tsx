@@ -1,3 +1,4 @@
+import { hasRecoveryReturn } from "@/lib/recovery-state";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
@@ -20,7 +21,7 @@ export function RecuperarSenha() {
   const [pronto, setPronto] = useState(false);
 
   useEffect(() => {
-    setModo(modoDaRecuperacao(window.location.hash, window.location.search));
+    setModo(hasRecoveryReturn() ? "escolher" : modoDaRecuperacao(window.location.hash, window.location.search));
     const { data } = supabase.auth.onAuthStateChange((evento) => {
       if (evento === "PASSWORD_RECOVERY") setModo("escolher");
     });
@@ -82,7 +83,7 @@ export function RecuperarSenha() {
       <div className="entry-layout account-page">
         <Brand />
         <h1>Escolha sua senha nova.</h1>
-        <form className="account-form" onSubmit={trocar}>
+        <form noValidate className="account-form" onSubmit={trocar}>
           <label>
             Senha nova
             <input
@@ -135,7 +136,7 @@ export function RecuperarSenha() {
       <Brand />
       <h1>Esqueceu a senha?</h1>
       <p className="intro">Diga seu e-mail que a gente manda um link para você escolher outra.</p>
-      <form className="account-form" onSubmit={pedir}>
+      <form noValidate className="account-form" onSubmit={pedir}>
         <label>
           Seu e-mail
           <input
