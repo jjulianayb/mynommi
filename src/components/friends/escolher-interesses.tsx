@@ -114,6 +114,9 @@ export function EscolherInteresses({
         {cheio && " — tire um para colocar outro."}
       </p>
 
+      <Button type="button" onClick={() => void salvar()} disabled={salvando}>
+        {salvando ? "Salvando…" : "Salvar meus interesses"}
+      </Button>
       {escolhidos.length > 0 && (
         <section aria-live="polite" className="interesses-sugestoes">
           <h3>Vocês têm isso em comum</h3>
