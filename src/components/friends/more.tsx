@@ -688,9 +688,9 @@ export function Pro() {
         </article>
       </div>
       <p className="small-note pro-discreet">
-        A assinatura do Pro ainda não está à venda. Quem é Embaixadora já tem tudo isso, para
-        sempre, de presente. Na fila para o Pro: figurinhas personalizáveis, Espiadinha, quem
-        visitou o seu nommi e descontos de anfitriões.
+        A assinatura do Pro ainda não está à venda. Quem já recebeu Pro de presente mantém seus
+        benefícios. Na fila para o Pro: figurinhas personalizáveis, Espiadinha, quem visitou o seu
+        nommi e descontos de anfitriões.
       </p>
       <Button asChild variant="secondary" className="wide">
         <Link to="/perfil">
