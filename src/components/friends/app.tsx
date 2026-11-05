@@ -2,6 +2,7 @@ import { CommunityDetail } from "./community-detail";
 import { useDemoSession } from "./session";
 import { useSharedTeia } from "@/lib/shared-teias";
 import { ConvitePippo } from "@/components/friends/convite-pippo";
+import { PippoRosto } from "@/components/friends/pippo";
 import {
   useRealTeias,
   useRealTeia,
@@ -1629,10 +1630,19 @@ export function GroupDetail({ id, boasvindas }: { id: number; boasvindas?: boole
              presa numa tribo só. A porta para as outras fica à vista. */
           boasvindas ? (
             <section className="boasvindas-tribo" aria-label="Boas-vindas à tribo">
-              <h2>Você já está dentro.</h2>
+              <div className="pippo-recepcao">
+                <PippoRosto altura={72} />
+                <div>
+                  <h2>Você já está dentro.</h2>
+                  <p>
+                    Oi, eu sou o Pippo! Cadastro feito, inscrição garantida: você já faz parte desta tribo. Espie a
+                    conversa e diga oi.
+                  </p>
+                </div>
+              </div>
               <p>
-                Chegou por um convite e já faz parte desta tribo. Espie a conversa, diga oi. E quando quiser, conheça
-                outras tribos também: a porta fica aberta.
+                E o seu cadastro vale por todo o Nommi: outras tribos, joguinhos comigo e gente nova todo dia. Eu fico
+                no Início. Qualquer dúvida, me chama.
               </p>
               <div className="boasvindas-acoes">
                 <Button asChild variant="outline">
