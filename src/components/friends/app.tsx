@@ -2,7 +2,14 @@ import { CommunityDetail } from "./community-detail";
 import { useDemoSession } from "./session";
 import { useSharedTeia } from "@/lib/shared-teias";
 import { ConvitePippo } from "@/components/friends/convite-pippo";
-import { useRealTeias, useRealTeia, toTeia, sortByCity, TRIBOS_ABERTAS_INICIAIS, tribosAbertasVisiveis } from "@/lib/real-teias";
+import {
+  useRealTeias,
+  useRealTeia,
+  toTeia,
+  sortByCity,
+  TRIBOS_ABERTAS_INICIAIS,
+  tribosAbertasVisiveis,
+} from "@/lib/real-teias";
 import { RadarSection } from "./radar-section";
 import { Feed, CreatePostForm, RolesList, RoleCard } from "./social-feed";
 import { InstallBanner } from "./install-banner";
@@ -71,11 +78,7 @@ import {
   type Message,
   type Invite,
 } from "@/lib/friends-data";
-import {
-  recadoDoCoracao,
-  rotuloDeCoracoes,
-  useDoisToques,
-} from "@/lib/coracao-na-mensagem";
+import { recadoDoCoracao, rotuloDeCoracoes, useDoisToques } from "@/lib/coracao-na-mensagem";
 import { TRIBO_DO_PIPPO_ID, usePippoPuxaAssunto } from "@/lib/pippo-tribo";
 import { roles } from "./profile-social";
 import { withBoosts, SAMPLE_BOOSTED_PEOPLE } from "@/lib/credits";
@@ -107,12 +110,7 @@ export function FriendsShell({ children }: { children: ReactNode }) {
         <aside className="desktop-nav">
           <p className="eyebrow">SEU CÍRCULO, DO SEU JEITO</p>
           {navigation.map((n) => (
-            <Link
-              key={n.to}
-              to={n.to}
-              activeOptions={{ exact: true }}
-              activeProps={{ className: "selected" }}
-            >
+            <Link key={n.to} to={n.to} activeOptions={{ exact: true }} activeProps={{ className: "selected" }}>
               <Icon name={n.icon} />
               {n.label}
             </Link>
@@ -153,12 +151,7 @@ export function FriendsShell({ children }: { children: ReactNode }) {
       </div>
       <nav className="bottom-nav" aria-label="Navegação principal">
         {navigation.map((n) => (
-          <Link
-            key={n.to}
-            to={n.to}
-            activeOptions={{ exact: true }}
-            activeProps={{ className: "selected" }}
-          >
+          <Link key={n.to} to={n.to} activeOptions={{ exact: true }} activeProps={{ className: "selected" }}>
             <Icon name={n.icon} />
             <span>{n.label}</span>
           </Link>
@@ -167,15 +160,7 @@ export function FriendsShell({ children }: { children: ReactNode }) {
     </div>
   );
 }
-function Title({
-  title,
-  kicker,
-  children,
-}: {
-  title: string;
-  kicker?: string;
-  children?: ReactNode;
-}) {
+function Title({ title, kicker, children }: { title: string; kicker?: string; children?: ReactNode }) {
   return (
     <div className="page-title">
       <div>
@@ -193,15 +178,7 @@ function ToneIcon({ icon, tone }: { icon: string; tone: string }) {
     </span>
   );
 }
-function Chips({
-  items,
-  selected,
-  onSelect,
-}: {
-  items: string[];
-  selected: string[];
-  onSelect: (s: string) => void;
-}) {
+function Chips({ items, selected, onSelect }: { items: string[]; selected: string[]; onSelect: (s: string) => void }) {
   return (
     <div className="chips">
       {items.map((s) => (
@@ -236,8 +213,7 @@ function Safety({ person }: { person: number }) {
         variant="ghost"
         onClick={() => {
           const reason = window.prompt("Qual é o motivo da denúncia?");
-          if (reason?.trim())
-            notify("Denúncia registrada nesta demonstração. Valeu por cuidar da tribo.");
+          if (reason?.trim()) notify("Denúncia registrada nesta demonstração. Valeu por cuidar da tribo.");
         }}
       >
         <Icon name="flag" />
@@ -359,9 +335,7 @@ export function Home() {
   const { demoMode, cloudUser } = useDemoSession();
   const realHome = !!cloudUser && !demoMode;
   const chegada = useChegada(realHome ? cloudUser!.id : null);
-  const minhasTribos = chegada.sugeridas.length
-    ? chegada.sugeridas.filter((t) => t.iAmMember).length
-    : 0;
+  const minhasTribos = chegada.sugeridas.length ? chegada.sugeridas.filter((t) => t.iAmMember).length : 0;
   const [verInicio, setVerInicio] = useState(() => chegadaJaVista(cloudUser?.id ?? null));
   const navigate = useNavigate();
   const [today, setToday] = useState("");
@@ -371,15 +345,13 @@ export function Home() {
   const question = today ? questionFor(today) : null;
   const answered = (state.dailyAnswers ?? []).find((a) => a.date === today);
   const recommended =
-    [...openTeias, ...allTeias].find((t) =>
-      state.interests.some((i) => t.name.toLowerCase().includes(i)),
-    ) ?? openTeias[0];
+    [...openTeias, ...allTeias].find((t) => state.interests.some((i) => t.name.toLowerCase().includes(i))) ??
+    openTeias[0];
   const member = recommended ? isMember(state, recommended.id) : false;
   const attending = recommended
     ? recommended.ids.filter(
         (id) =>
-          visibleInListings(people.find((p) => p.id === id) ?? { id }, state.matches) &&
-          !state.blocked.includes(id),
+          visibleInListings(people.find((p) => p.id === id) ?? { id }, state.matches) && !state.blocked.includes(id),
       )
     : [];
   const city = state.city || "Brasil";
@@ -387,10 +359,7 @@ export function Home() {
     ? people
         .filter(
           (p) =>
-            p.id !== 3 &&
-            p.city === state.city &&
-            visibleInListings(p, state.matches) &&
-            !state.blocked.includes(p.id),
+            p.id !== 3 && p.city === state.city && visibleInListings(p, state.matches) && !state.blocked.includes(p.id),
         )
         .slice(0, 6)
     : [];
@@ -401,9 +370,7 @@ export function Home() {
       <VitrineTop nickname={state.nickname} city={city} avatar={state.photo} />
       {realHome && <StoriesStrip me={cloudUser!.id} nickname={state.nickname || "nommi"} />}
       {realHome && <ConvitePippo me={cloudUser!.id} nickname={state.nickname || "nommi"} />}
-      {realHome && (filter === "Todas" || filter === "Amizade") && (
-        <PessoasParaVoce me={cloudUser!.id} />
-      )}
+      {realHome && (filter === "Todas" || filter === "Amizade") && <PessoasParaVoce me={cloudUser!.id} />}
       {mostrarChegada && (
         <section className="chegada-card">
           <header>
@@ -412,10 +379,7 @@ export function Home() {
               Agora não
             </button>
           </header>
-          <Chegada
-            me={cloudUser!.id}
-            onPronto={() => esconderChegada(cloudUser!.id, setVerInicio)}
-          />
+          <Chegada me={cloudUser!.id} onPronto={() => esconderChegada(cloudUser!.id, setVerInicio)} />
         </section>
       )}
       {!realHome && (filter === "Todas" || filter === "Amizade") && (
@@ -602,10 +566,7 @@ export function Home() {
                 if (!text) return;
                 setState((s) => ({
                   ...s,
-                  dailyAnswers: [
-                    { date: today, text },
-                    ...(s.dailyAnswers ?? []).filter((a) => a.date !== today),
-                  ],
+                  dailyAnswers: [{ date: today, text }, ...(s.dailyAnswers ?? []).filter((a) => a.date !== today)],
                 }));
                 setAnswer("");
                 notify("Resposta guardada neste aparelho.");
@@ -829,14 +790,9 @@ function MessageRow({ m, onCurtir }: { m: Message; onCurtir?: (mensagemId: strin
   const coracoes = m.coracoes ?? 0;
 
   return (
-    <div
-      className={"message-row " + (m.mine ? "mine" : "") + (m.text ? "" : " sticker-message-row")}
-    >
+    <div className={"message-row " + (m.mine ? "mine" : "") + (m.text ? "" : " sticker-message-row")}>
       {!m.mine && <RostoDeQuemFalou m={m} />}
-      <div
-        className="message-content"
-        {...(podeCurtir ? { onClick: doisToques, onDoubleClick: curtir } : {})}
-      >
+      <div className="message-content" {...(podeCurtir ? { onClick: doisToques, onDoubleClick: curtir } : {})}>
         {m.author && <small>{m.author}</small>}
         {m.text ? (
           <p className="bubble">{m.text}</p>
@@ -851,9 +807,7 @@ function MessageRow({ m, onCurtir }: { m: Message; onCurtir?: (mensagemId: strin
           {podeCurtir && (
             <button
               type="button"
-              className={
-                "msg-coracao" + (m.euCurti ? " curti" : "") + (pulsa ? " pulsa" : "")
-              }
+              className={"msg-coracao" + (m.euCurti ? " curti" : "") + (pulsa ? " pulsa" : "")}
               aria-pressed={!!m.euCurti}
               aria-label={recadoDoCoracao(!!m.euCurti, coracoes)}
               onClick={(e) => {
@@ -884,16 +838,7 @@ function MessageRow({ m, onCurtir }: { m: Message; onCurtir?: (mensagemId: strin
  */
 function RostoDeQuemFalou({ m }: { m: Message }) {
   if (m.authorAvatar)
-    return (
-      <img
-        className="message-face"
-        src={m.authorAvatar}
-        alt=""
-        width={28}
-        height={28}
-        loading="lazy"
-      />
-    );
+    return <img className="message-face" src={m.authorAvatar} alt="" width={28} height={28} loading="lazy" />;
   // Sem foto é a inicial da pessoa, nunca a foto de outra.
   if (m.senderId) return <SemFoto nome={m.author ?? ""} size={28} />;
   // Apresentação: aqui o conjunto de rostos é de propósito.
@@ -967,12 +912,7 @@ function Invite({ name, onClose }: { name: string; onClose: () => void }) {
   const { state, notify } = useFriends();
   return (
     <div className="modal-backdrop">
-      <section
-        className="simple-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Convidar para a tribo"
-      >
+      <section className="simple-modal" role="dialog" aria-modal="true" aria-label="Convidar para a tribo">
         <div className="section-heading">
           <h2>Convidar {name}</h2>
           <Button variant="ghost" size="icon" onClick={onClose} aria-label="Fechar convite">
@@ -1012,9 +952,7 @@ export function Conversations({ personId }: { personId?: number | undefined }) {
 function DemoConversations({ personId }: { personId?: number | undefined }) {
   const { state, setState } = useFriends();
   const [invite, setInvite] = useState(false);
-  const p = people.find(
-    (p) => p.id === personId && hasSharedTeia(state, p.id) && !state.blocked.includes(p.id),
-  );
+  const p = people.find((p) => p.id === personId && hasSharedTeia(state, p.id) && !state.blocked.includes(p.id));
   return (
     <>
       <Title title="Conversas" />
@@ -1079,18 +1017,14 @@ function DemoConversations({ personId }: { personId?: number | undefined }) {
                     <h3>{p.name}</h3>
                     <p>
                       {state.messages[p.id]?.at(-1)?.text ||
-                        (state.messages[p.id]?.length
-                          ? "Figurinha"
-                          : "Tribo em comum. Bora dizer oi?")}
+                        (state.messages[p.id]?.length ? "Figurinha" : "Tribo em comum. Bora dizer oi?")}
                     </p>
                   </div>
                   <Icon name="arrow" />
                 </Link>
               ))}
           </div>
-          <p className="small-note">
-            A conversa direta fica disponível depois de um encontro na mesma tribo.
-          </p>
+          <p className="small-note">A conversa direta fica disponível depois de um encontro na mesma tribo.</p>
         </>
       )}
     </>
@@ -1164,10 +1098,7 @@ function RealGroups({ userId }: { userId: string }) {
           {mine.map((r) => (
             <article className="group-card card-vivo" key={r.id}>
               <div className="row">
-                <ToneIcon
-                  icon={r.kind === "role" ? "pin" : "teia"}
-                  tone={r.kind === "role" ? "yellow" : "teal"}
-                />
+                <ToneIcon icon={r.kind === "role" ? "pin" : "teia"} tone={r.kind === "role" ? "yellow" : "teal"} />
                 <div>
                   <h3>
                     {r.name}
@@ -1177,17 +1108,13 @@ function RealGroups({ userId }: { userId: string }) {
                         da nommi
                       </span>
                     )}
-                    {r.audience === "mulheres" && (
-                      <span className="tribo-publico">espaço de mulheres</span>
-                    )}
+                    {r.audience === "mulheres" && <span className="tribo-publico">espaço de mulheres</span>}
                   </h3>
                   <p>
                     {r.kind === "role" ? "Rolê aberto" : r.mode}
                     {r.city ? " · " + r.city : ""}
                     {r.when_text ? " · " + r.when_text : ""}
-                    {r.member_count
-                      ? " · " + r.member_count + (r.member_count === 1 ? " pessoa" : " pessoas")
-                      : ""}
+                    {r.member_count ? " · " + r.member_count + (r.member_count === 1 ? " pessoa" : " pessoas") : ""}
                   </p>
                 </div>
               </div>
@@ -1239,10 +1166,7 @@ function RealGroups({ userId }: { userId: string }) {
           {tribosAbertasVisiveis(open, verMaisTribos).map((r) => (
             <article className="group-card card-vivo" key={r.id}>
               <div className="row">
-                <ToneIcon
-                  icon={r.kind === "role" ? "pin" : "teia"}
-                  tone={r.kind === "role" ? "yellow" : "teal"}
-                />
+                <ToneIcon icon={r.kind === "role" ? "pin" : "teia"} tone={r.kind === "role" ? "yellow" : "teal"} />
                 <div>
                   <h3>
                     {r.name}
@@ -1252,18 +1176,14 @@ function RealGroups({ userId }: { userId: string }) {
                         da nommi
                       </span>
                     )}
-                    {r.audience === "mulheres" && (
-                      <span className="tribo-publico">espaço de mulheres</span>
-                    )}
+                    {r.audience === "mulheres" && <span className="tribo-publico">espaço de mulheres</span>}
                   </h3>
                   <p>
                     {r.kind === "role" ? "Rolê aberto" : r.mode}
                     {r.city ? " · " + r.city : ""}
                     {r.place ? " · " + r.place : ""}
                     {r.when_text ? " · " + r.when_text : ""}
-                    {r.member_count
-                      ? " · " + r.member_count + (r.member_count === 1 ? " pessoa" : " pessoas")
-                      : ""}
+                    {r.member_count ? " · " + r.member_count + (r.member_count === 1 ? " pessoa" : " pessoas") : ""}
                   </p>
                 </div>
               </div>
@@ -1273,9 +1193,7 @@ function RealGroups({ userId }: { userId: string }) {
                   <Icon name="lock" /> {r.rule}
                 </p>
               )}
-              {!r.official && r.creator_nickname && (
-                <p className="small-note">Criada por {r.creator_nickname}</p>
-              )}
+              {!r.official && r.creator_nickname && <p className="small-note">Criada por {r.creator_nickname}</p>}
               <div className="group-card-bottom">
                 <BotaoDaPorta
                   me={userId}
@@ -1323,10 +1241,7 @@ function DemoGroups() {
   useEffect(() => {
     if (hash === "teias-abertas")
       setTimeout(
-        () =>
-          document
-            .getElementById("teias-abertas")
-            ?.scrollIntoView({ behavior: "smooth", block: "start" }),
+        () => document.getElementById("teias-abertas")?.scrollIntoView({ behavior: "smooth", block: "start" }),
         60,
       );
   }, [hash]);
@@ -1359,10 +1274,7 @@ function DemoGroups() {
           text="Os encontros da sua cidade vão aparecer aqui quando as tribos compartilhadas estiverem prontas."
         />
       )}
-      <section
-        id="teias-abertas"
-        className={"open-teias" + (hash === "teias-abertas" ? " highlight" : "")}
-      >
+      <section id="teias-abertas" className={"open-teias" + (hash === "teias-abertas" ? " highlight" : "")}>
         <div className="section-heading">
           <h2>Tribos abertas para entrar</h2>
         </div>
@@ -1452,11 +1364,7 @@ function DemoGroups() {
         </Button>
       </div>
       {demoMode && state.pro && (
-        <Button
-          onClick={() =>
-            notify("O teste Pro está ativo. A criação real de tribos fica para a próxima etapa.")
-          }
-        >
+        <Button onClick={() => notify("O teste Pro está ativo. A criação real de tribos fica para a próxima etapa.")}>
           <Icon name="plus" />
           Nova tribo Pro
         </Button>
@@ -1464,15 +1372,11 @@ function DemoGroups() {
     </>
   );
 }
-export function GroupDetail({ id }: { id: number }) {
+export function GroupDetail({ id, boasvindas }: { id: number; boasvindas?: boolean }) {
   const { state, setState, notify } = useFriends();
   const { demoMode, cloudUser } = useDemoSession();
   const cloud = !!cloudUser && !demoMode;
-  const shared = useSharedTeia(
-    id,
-    cloud ? (cloudUser?.id ?? null) : null,
-    state.nickname || "nommi",
-  );
+  const shared = useSharedTeia(id, cloud ? (cloudUser?.id ?? null) : null, state.nickname || "nommi");
   const realTeia = useRealTeia(id, cloud && id >= 100000);
   const covers = useTeiaCovers(cloud && id >= 100000 ? id : null);
   // Entrou na tribo: daqui para trás está tudo lido, e o Início para de marcar novo.
@@ -1483,10 +1387,10 @@ export function GroupDetail({ id }: { id: number }) {
   // hora (20 h de intervalo) e qual é o assunto; a tela só avisa que tem gente.
   usePippoPuxaAssunto(id, cloud && shared.ready, cloud && shared.joined, shared.recarregar);
   const amCreator = !!cloudUser && realTeia.row?.created_by === cloudUser.id;
+  const navigate = useNavigate();
   const g =
-    (cloud && realTeia.row
-      ? { ...toTeia(realTeia.row), members: shared.members.length }
-      : undefined) ?? (demoMode ? teiaFor(state, id) : undefined);
+    (cloud && realTeia.row ? { ...toTeia(realTeia.row), members: shared.members.length } : undefined) ??
+    (demoMode ? teiaFor(state, id) : undefined);
   const member = cloud ? shared.joined : isMember(state, id);
   const [joining, setJoining] = useState(false);
   const [kind, setKind] = useState("Karaokê");
@@ -1504,9 +1408,7 @@ export function GroupDetail({ id }: { id: number }) {
     const code = "CHK-" + challengeId + "-4821";
     setState((s) => ({
       ...s,
-      challenges: s.challenges.map((c) =>
-        c.id === challengeId ? { ...c, status: "pending", code } : c,
-      ),
+      challenges: s.challenges.map((c) => (c.id === challengeId ? { ...c, status: "pending", code } : c)),
     }));
     notify("Check-in enviado: " + code + ". Aguardando confirmação do Anfitrião.");
   }
@@ -1516,9 +1418,7 @@ export function GroupDetail({ id }: { id: number }) {
       setJoining(true);
       try {
         const ok = await shared.join();
-        notify(
-          ok ? "Você entrou! Diga oi para a tribo." : "Não deu para entrar agora. Tente de novo.",
-        );
+        notify(ok ? "Você entrou! Diga oi para a tribo." : "Não deu para entrar agora. Tente de novo.");
       } finally {
         setJoining(false);
       }
@@ -1567,129 +1467,115 @@ export function GroupDetail({ id }: { id: number }) {
               />
             )}
             {demoMode && (
-            <div className="goal-band">
-              <div className="row">
-                <Icon name="gift" />
-                <h2>Próxima parada: day spa</h2>
-                <b>{state.points[id] ?? 0} / 50</b>
+              <div className="goal-band">
+                <div className="row">
+                  <Icon name="gift" />
+                  <h2>Próxima parada: day spa</h2>
+                  <b>{state.points[id] ?? 0} / 50</b>
+                </div>
+                <progress max="50" value={state.points[id] ?? 0} />
+                <p>
+                  {(state.points[id] ?? 0) >= 50
+                    ? "Bônus liberado: day spa com a tribo!"
+                    : "Mais " + (50 - (state.points[id] ?? 0)) + " pontos para o dia de beleza com a tribo."}
+                </p>
               </div>
-              <progress max="50" value={state.points[id] ?? 0} />
-              <p>
-                {(state.points[id] ?? 0) >= 50
-                  ? "Bônus liberado: day spa com a tribo!"
-                  : "Mais " +
-                    (50 - (state.points[id] ?? 0)) +
-                    " pontos para o dia de beleza com a tribo."}
-              </p>
-            </div>
             )}
             {demoMode && (
-            <section>
-              <FirstMeetNotice />
-              <h2>Desafios da tribo</h2>
-              {state.challenges
-                .filter((c) => c.group === id)
-                .map((c) => (
-                  <article className="challenge" key={c.id}>
-                    <ToneIcon icon={getPartner(c.partner).icon} tone={getPartner(c.partner).tone} />
-                    <div>
-                      <h3>{c.name}</h3>
-                      <p>
-                        +{c.points} pontos · {getPartner(c.partner).name}
-                      </p>
-                      {c.code && (
-                        <small>
-                          Código: <b>{c.code}</b>
-                        </small>
-                      )}
-                    </div>
+              <section>
+                <FirstMeetNotice />
+                <h2>Desafios da tribo</h2>
+                {state.challenges
+                  .filter((c) => c.group === id)
+                  .map((c) => (
+                    <article className="challenge" key={c.id}>
+                      <ToneIcon icon={getPartner(c.partner).icon} tone={getPartner(c.partner).tone} />
+                      <div>
+                        <h3>{c.name}</h3>
+                        <p>
+                          +{c.points} pontos · {getPartner(c.partner).name}
+                        </p>
+                        {c.code && (
+                          <small>
+                            Código: <b>{c.code}</b>
+                          </small>
+                        )}
+                      </div>
+                      <Button
+                        variant={c.status === "open" ? "default" : "secondary"}
+                        disabled={c.status !== "open"}
+                        onClick={() => checkIn(c.id)}
+                      >
+                        {c.status === "open" ? "Check-in" : c.status === "pending" ? "Aguardando" : "Confirmado"}
+                      </Button>
+                    </article>
+                  ))}
+                {!state.challenges.some((c) => c.group === id) && (
+                  <p>Ainda não há desafios. Que tal combinar o primeiro?</p>
+                )}
+                <form
+                  className="challenge-form"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    setState((s) => ({
+                      ...s,
+                      challenges: [
+                        ...s.challenges,
+                        {
+                          id: Math.max(0, ...s.challenges.map((c) => c.id)) + 1,
+                          group: id,
+                          name: kind + " da tribo",
+                          points,
+                          partner,
+                          status: "open",
+                        },
+                      ],
+                    }));
+                    notify("Desafio lançado! Já está na lista da tribo.");
+                  }}
+                >
+                  <h3>Lançar novo desafio</h3>
+                  <Chips items={["Karaokê", "Vinho", "Day spa", "Trilha"]} selected={[kind]} onSelect={setKind} />
+                  <div className="point-control">
+                    <span>Pontos</span>
                     <Button
-                      variant={c.status === "open" ? "default" : "secondary"}
-                      disabled={c.status !== "open"}
-                      onClick={() => checkIn(c.id)}
+                      type="button"
+                      variant="secondary"
+                      size="icon"
+                      aria-label="Diminuir pontos"
+                      disabled={points <= 10}
+                      onClick={() => setPoints((p) => p - 10)}
                     >
-                      {c.status === "open"
-                        ? "Check-in"
-                        : c.status === "pending"
-                          ? "Aguardando"
-                          : "Confirmado"}
+                      −
                     </Button>
-                  </article>
-                ))}
-              {!state.challenges.some((c) => c.group === id) && (
-                <p>Ainda não há desafios. Que tal combinar o primeiro?</p>
-              )}
-              <form
-                className="challenge-form"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setState((s) => ({
-                    ...s,
-                    challenges: [
-                      ...s.challenges,
-                      {
-                        id: Math.max(0, ...s.challenges.map((c) => c.id)) + 1,
-                        group: id,
-                        name: kind + " da tribo",
-                        points,
-                        partner,
-                        status: "open",
-                      },
-                    ],
-                  }));
-                  notify("Desafio lançado! Já está na lista da tribo.");
-                }}
-              >
-                <h3>Lançar novo desafio</h3>
-                <Chips
-                  items={["Karaokê", "Vinho", "Day spa", "Trilha"]}
-                  selected={[kind]}
-                  onSelect={setKind}
-                />
-                <div className="point-control">
-                  <span>Pontos</span>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="icon"
-                    aria-label="Diminuir pontos"
-                    disabled={points <= 10}
-                    onClick={() => setPoints((p) => p - 10)}
-                  >
-                    −
+                    <b>{points}</b>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="icon"
+                      aria-label="Aumentar pontos"
+                      disabled={points >= 40}
+                      onClick={() => setPoints((p) => p + 10)}
+                    >
+                      <Icon name="plus" />
+                    </Button>
+                  </div>
+                  <label>
+                    Anfitrião associado
+                    <select className="input" value={partner} onChange={(e) => setPartner(Number(e.target.value))}>
+                      {partners.map((p, i) => (
+                        <option value={i} key={p.name}>
+                          {p.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <Button className="wide">
+                    <Icon name="spark" />
+                    Lançar desafio
                   </Button>
-                  <b>{points}</b>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="icon"
-                    aria-label="Aumentar pontos"
-                    disabled={points >= 40}
-                    onClick={() => setPoints((p) => p + 10)}
-                  >
-                    <Icon name="plus" />
-                  </Button>
-                </div>
-                <label>
-                  Anfitrião associado
-                  <select
-                    className="input"
-                    value={partner}
-                    onChange={(e) => setPartner(Number(e.target.value))}
-                  >
-                    {partners.map((p, i) => (
-                      <option value={i} key={p.name}>
-                        {p.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <Button className="wide">
-                  <Icon name="spark" />
-                  Lançar desafio
-                </Button>
-              </form>
-            </section>
+                </form>
+              </section>
             )}
           </>
         }
@@ -1704,11 +1590,7 @@ export function GroupDetail({ id }: { id: number }) {
             />
           ) : undefined
         }
-        pedidos={
-          amCreator && cloudUser ? (
-            <PedidosDaTribo teiaId={id} souCriadora={amCreator} />
-          ) : undefined
-        }
+        pedidos={amCreator && cloudUser ? <PedidosDaTribo teiaId={id} souCriadora={amCreator} /> : undefined}
         identidade={
           cloud && realTeia.row ? (
             <IdentidadeDaTribo
@@ -1740,6 +1622,40 @@ export function GroupDetail({ id }: { id: number }) {
               }}
               aoSalvar={() => void realTeia.recarregar?.()}
             />
+          ) : undefined
+        }
+        boasVindas={
+          /* Chegou por um convite: a tribo é dela agora, mas ninguém fica
+             presa numa tribo só. A porta para as outras fica à vista. */
+          boasvindas ? (
+            <section className="boasvindas-tribo" aria-label="Boas-vindas à tribo">
+              <h2>Você já está dentro.</h2>
+              <p>
+                Chegou por um convite e já faz parte desta tribo. Espie a conversa, diga oi. E quando quiser, conheça
+                outras tribos também: a porta fica aberta.
+              </p>
+              <div className="boasvindas-acoes">
+                <Button asChild variant="outline">
+                  <Link to="/grupos">
+                    Explorar outras tribos
+                    <Icon name="arrow" />
+                  </Link>
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() =>
+                    void navigate({
+                      to: "/grupos/$id",
+                      params: { id: String(id) },
+                      search: {},
+                      replace: true,
+                    })
+                  }
+                >
+                  Ficar nesta tribo
+                </Button>
+              </div>
+            </section>
           ) : undefined
         }
         convidar={
@@ -1804,8 +1720,7 @@ export function GroupDetail({ id }: { id: number }) {
                         return;
                       }
                       void shared.send(m).then((ok) => {
-                        if (!ok)
-                          notify("Não deu para enviar. Confira a internet e tente de novo.");
+                        if (!ok) notify("Não deu para enviar. Confira a internet e tente de novo.");
                       });
                       return;
                     }
@@ -1819,18 +1734,13 @@ export function GroupDetail({ id }: { id: number }) {
                   }}
                 />
                 <div className="safety-actions">
-                  <Button
-                    variant="ghost"
-                    onClick={() => notify("Denúncia da tribo registrada nesta demonstração.")}
-                  >
+                  <Button variant="ghost" onClick={() => notify("Denúncia da tribo registrada nesta demonstração.")}>
                     <Icon name="flag" />
                     Denunciar
                   </Button>
                   <Button
                     variant="ghost"
-                    onClick={() =>
-                      notify("Notificações e convites desta tribo bloqueados nesta demonstração.")
-                    }
+                    onClick={() => notify("Notificações e convites desta tribo bloqueados nesta demonstração.")}
                   >
                     <Icon name="block" />
                     Bloquear
@@ -1842,10 +1752,7 @@ export function GroupDetail({ id }: { id: number }) {
                 <h2>Conversa da tribo</h2>
                 <EmptyState
                   title="Entre para ver a conversa."
-                  text={
-                    "Entrar é um toque, sem aprovação." +
-                    (g.rule ? " Regra da tribo: " + g.rule + "." : "")
-                  }
+                  text={"Entrar é um toque, sem aprovação." + (g.rule ? " Regra da tribo: " + g.rule + "." : "")}
                 >
                   <Button onClick={() => void enter()} disabled={joining}>
                     <Icon name="plus" />
