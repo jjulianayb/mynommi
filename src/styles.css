@@ -6382,6 +6382,17 @@ blockquote small {
   min-height: 44px;
   border-radius: 999px;
 }
+.pippo-recepcao {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 12px 0;
+}
+.pippo-recepcao p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
 .community-description {
   font-size: 14px;
   line-height: 1.7;
