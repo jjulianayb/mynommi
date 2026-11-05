@@ -1,11 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import {
-  DOIS_TOQUES_MS,
-  ehDoisToques,
-  recadoDoCoracao,
-  rotuloDeCoracoes,
-} from "@/lib/coracao-na-mensagem";
+import { DOIS_TOQUES_MS, ehDoisToques, recadoDoCoracao, rotuloDeCoracoes } from "@/lib/coracao-na-mensagem";
 import { toMessage } from "@/lib/shared-teias";
 
 /**
@@ -76,10 +71,7 @@ describe("a mensagem que vem do banco", () => {
   };
 
   it("conta os corações e sabe se o meu está lá", () => {
-    const m = toMessage(
-      { ...linha, reacoes_de_mensagem: [{ user_id: "eu" }, { user_id: "x" }] },
-      "eu",
-    );
+    const m = toMessage({ ...linha, reacoes_de_mensagem: [{ user_id: "eu" }, { user_id: "x" }] }, "eu");
     expect(m.coracoes).toBe(2);
     expect(m.euCurti).toBe(true);
   });
@@ -120,7 +112,28 @@ describe("a mensagem que vem do banco", () => {
 
 describe("a tela", () => {
   const app = readFileSync("src/components/friends/app.tsx", "utf8");
-  const css = readFileSync("src/styles.css", "utf8");
+  /**
+   * O editor do Lovable reformata o styles.css a cada save (prettier dele), e o
+   * formato que sobra no repositório não é mais o minificado original. O que
+   * estes testes protegem é a regra (seletor, propriedade, valor, ordem), não a
+   * diagramação: leia o CSS já normalizado para a asserção não depender de
+   * espaço, quebra de linha ou ponto e vírgula final.
+   */
+  function lerCss(caminho = "src/styles.css"): string {
+    return readFileSync(caminho, "utf8")
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/\s+/g, " ")
+      .replace(/\s*\{\s*/g, "{")
+      .replace(/\s*\}\s*/g, "}")
+      .replace(/:\s+/g, ":")
+      .replace(/,\s+/g, ",")
+      .replace(/\s*>\s*/g, ">")
+      .replace(/;\s*/g, ";")
+      .replace(/;}/g, "}")
+      .replace(/}/g, "}\n");
+  }
+
+  const css = lerCss();
 
   it("não desenha mais o mesmo rosto para todo mundo na tribo", () => {
     // Avatar id={7} só pode sobrar no caminho da apresentação, que é onde o
