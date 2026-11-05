@@ -106,9 +106,10 @@ export function PaginaDaTribo({ id }: { id: string }) {
             ? "Esta tribo é fechada: depois de criar a conta, você pede para entrar e quem criou responde."
             : "Depois de criar a conta, você entra direto."}
         </p>
-        <Link to="/conta" className="muted">
+        {/* Leva o id da tribo junto: quem já tem conta também entra nela. */}
+        <a href={`/conta?tribo=${tribo.id}`} className="muted">
           Já tenho conta
-        </Link>
+        </a>
       </section>
     </article>
   );
