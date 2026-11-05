@@ -55,6 +55,7 @@ import { SemFoto, Avatar, Icon, Sticker, Cover } from "./art";
 import { useFriends } from "./store";
 import { IdentidadeDaTribo, RolesDaTribo } from "./identidade-da-tribo";
 import { PersonalizarTribo } from "./personalizar-tribo";
+import { ConvidarTribo } from "./convidar-tribo";
 import { ChatSticker, ChatStickerTray, SaveStickerButton } from "./chat-stickers";
 import {
   people,
@@ -1738,6 +1739,21 @@ export function GroupDetail({ id }: { id: number }) {
                 link_publico: realTeia.row.link_publico === true,
               }}
               aoSalvar={() => void realTeia.recarregar?.()}
+            />
+          ) : undefined
+        }
+        convidar={
+          /* Convidar direto da tribo: o link já leva a pessoa para dentro
+             desta tribo depois do cadastro. Rolê não é tribo. */
+          cloud && cloudUser && realTeia.row?.kind === "teia" ? (
+            <ConvidarTribo
+              me={cloudUser.id}
+              nickname={state.nickname || "Uma amiga"}
+              triboId={id}
+              nome={realTeia.row?.name ?? ""}
+              cidade={realTeia.row?.city ?? ""}
+              souCriadora={amCreator}
+              paginaNoAr={realTeia.row?.link_publico === true}
             />
           ) : undefined
         }
