@@ -19,17 +19,12 @@ import { useAceite } from "@/lib/aceite";
 import { AvisoDeAceite } from "./aceite";
 import { Apresentacao } from "./apresentacao";
 import { usePrecisaApresentar } from "@/lib/usar-apresentacao";
-import {
-  recadoDaChegada,
-  useConviteNaChegada,
-  useGuardarConviteDaUrl,
-} from "@/lib/convite-que-chega";
+import { recadoDaChegada, useConviteNaChegada, useGuardarConviteDaUrl } from "@/lib/convite-que-chega";
 import { useFriends } from "./store";
 
 /** Cada item da navegação vira um alvo do tour. */
 const alvoDoItem = (to: string) =>
-  ({ "/": "inicio", "/descobrir": "descobrir", "/grupos": "tribos", "/perfil": "meu-nommi" })[to] ??
-  undefined;
+  ({ "/": "inicio", "/descobrir": "descobrir", "/grupos": "tribos", "/perfil": "meu-nommi" })[to] ?? undefined;
 const entryPaths = ["/conta", "/cadastro", "/login", "/login-parceiro", "/recuperar-senha"];
 const legalPaths = ["/termos", "/privacidade", "/ajuda"];
 /**
@@ -69,7 +64,7 @@ export function SocialShell({ children }: { children: ReactNode }) {
     if (recado) notify(recado);
     // O link promete cair dentro da tribo: depois de usar o convite, é para
     // lá que a pessoa vai, e não para o início.
-    if (r.tribo) void navigate({ to: "/grupos/$id", params: { id: String(r.tribo) } });
+    if (r.tribo) void navigate({ to: "/grupos/$id", params: { id: String(r.tribo) }, search: { boasvindas: true } });
   });
   // Ninguém usa a nommi sem ter lido o texto que está no ar. As telas de termos
   // e privacidade ficam livres, senão a pessoa não consegue ler o que vai aceitar.
@@ -94,15 +89,7 @@ export function SocialShell({ children }: { children: ReactNode }) {
       return;
     const t = setTimeout(() => setTourAberto(true), 900);
     return () => clearTimeout(t);
-  }, [
-    real,
-    pathname,
-    cloudUser?.id,
-    aceite.pronto,
-    aceite.pendente,
-    apresentar.pronto,
-    apresentar.precisa,
-  ]);
+  }, [real, pathname, cloudUser?.id, aceite.pronto, aceite.pendente, apresentar.pronto, apresentar.precisa]);
   useEffect(() => {
     setCreate(false);
     setDrawer(false);
@@ -116,17 +103,10 @@ export function SocialShell({ children }: { children: ReactNode }) {
         </div>
       </div>
     );
-  if (
-    entryPaths.includes(pathname) ||
-    (!session && (legalPaths.includes(pathname) || paginaDeTribo(pathname)))
-  )
+  if (entryPaths.includes(pathname) || (!session && (legalPaths.includes(pathname) || paginaDeTribo(pathname))))
     return (
       <div className="friends-app public-app com-cenario">
-        <div
-          className="cenario-fundo"
-          aria-hidden="true"
-          style={{ backgroundImage: `url(${rioPhoto})` }}
-        />
+        <div className="cenario-fundo" aria-hidden="true" style={{ backgroundImage: `url(${rioPhoto})` }} />
         <div className="cenario-veu" aria-hidden="true" />
         <div className="cenario-brilhos" aria-hidden="true">
           <span />
@@ -144,12 +124,7 @@ export function SocialShell({ children }: { children: ReactNode }) {
     ) : (
       <Navigate to="/conta" replace />
     );
-  if (
-    cloudUser &&
-    !cloudUser.profileComplete &&
-    !legalPaths.includes(pathname) &&
-    pathname !== "/admin"
-  )
+  if (cloudUser && !cloudUser.profileComplete && !legalPaths.includes(pathname) && pathname !== "/admin")
     return <Navigate to="/conta" replace />;
   if (["/parceiro", "/carteira"].includes(pathname) && !isRealHost(cloudUser, demoMode))
     return (
@@ -257,12 +232,7 @@ export function SocialShell({ children }: { children: ReactNode }) {
         </Button>
         {items.slice(2).map((n) => (
           <Button key={n.to} asChild variant="ghost" data-tour={alvoDoItem(n.to)}>
-            <Link
-              to={n.to}
-              search={{}}
-              activeOptions={{ exact: true }}
-              activeProps={{ className: "selected" }}
-            >
+            <Link to={n.to} search={{}} activeOptions={{ exact: true }} activeProps={{ className: "selected" }}>
               <Icon name={n.icon} />
               <span>{n.label}</span>
             </Link>
@@ -285,12 +255,9 @@ export function SocialShell({ children }: { children: ReactNode }) {
             }}
           />
         )}
-      {tourAberto &&
-        cloudUser &&
-        aceite.pronto &&
-        !aceite.pendente &&
-        apresentar.pronto &&
-        !apresentar.precisa && <Tour me={cloudUser.id} onFim={() => setTourAberto(false)} />}
+      {tourAberto && cloudUser && aceite.pronto && !aceite.pendente && apresentar.pronto && !apresentar.precisa && (
+        <Tour me={cloudUser.id} onFim={() => setTourAberto(false)} />
+      )}
       {drawer && (
         <Sheet title="Seu nommi" side="right" onClose={() => setDrawer(false)}>
           <nav aria-label="Menu secundário" className="drawer-navigation">
