@@ -1,7 +1,28 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
-const css = readFileSync("src/styles.css", "utf8");
+/**
+ * O editor do Lovable reformata o styles.css a cada save (prettier dele), e o
+ * formato que sobra no repositório não é mais o minificado original. O que
+ * estes testes protegem é a regra (seletor, propriedade, valor, ordem), não a
+ * diagramação: leia o CSS já normalizado para a asserção não depender de
+ * espaço, quebra de linha ou ponto e vírgula final.
+ */
+function lerCss(caminho = "src/styles.css"): string {
+  return readFileSync(caminho, "utf8")
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/\s+/g, " ")
+    .replace(/\s*\{\s*/g, "{")
+    .replace(/\s*\}\s*/g, "}")
+    .replace(/:\s+/g, ":")
+    .replace(/,\s+/g, ",")
+    .replace(/\s*>\s*/g, ">")
+    .replace(/;\s*/g, ";")
+    .replace(/;}/g, "}")
+    .replace(/}/g, "}\n");
+}
+
+const css = lerCss();
 
 const regra = (seletor: string) => {
   const esc = seletor.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -34,14 +55,14 @@ describe("superfície clara declara a própria cor de texto", () => {
   });
   it("o chip do cadastro, sobre a foto do Rio, continua com texto escuro", () => {
     const r = regra(".cenario-conteudo .chip");
-    expect(r).toContain("color:#1E2A24");
+    expect(r.toLowerCase()).toContain("color:#1e2a24");
   });
   it("o disparo da câmera tem contorno próprio, com força maior que o reset de botão", () => {
     expect(regra(".camera-disparo")).toContain("background:#fff");
     const forte = regra(".friends-app .camera-disparo");
     expect(forte).toMatch(/box-shadow:0 0 0 3px/);
     expect(forte).toContain("width:74px");
-    const reset = css.indexOf(".friends-app button {");
+    const reset = css.indexOf(".friends-app button{");
     expect(css.indexOf(".friends-app .camera-disparo")).toBeGreaterThan(reset);
   });
 });
