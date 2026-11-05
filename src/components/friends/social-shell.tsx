@@ -1,5 +1,5 @@
 import { useState, useEffect, type ReactNode } from "react";
-import { Link, Navigate, useLocation } from "@tanstack/react-router";
+import { Link, Navigate, useLocation, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Icon } from "./art";
 import { Sheet, LoadingState, Brand } from "./surfaces";
@@ -48,6 +48,7 @@ export function SocialShell({ children }: { children: ReactNode }) {
   const naoLidas = useNaoLidas(cloudUser && !demoMode ? cloudUser.id : null);
   const avisosNovos = useAvisosNaoLidos(cloudUser && !demoMode ? cloudUser.id : null);
   const { pathname, searchStr } = useLocation();
+  const navigate = useNavigate();
   const [create, setCreate] = useState(false);
   const [drawer, setDrawer] = useState(false);
   const [tourAberto, setTourAberto] = useState(false);
@@ -63,9 +64,12 @@ export function SocialShell({ children }: { children: ReactNode }) {
   // O convite é usado assim que a conta existe: é o que cria a amizade com quem
   // convidou e leva a pessoa para dentro da tribo do link. Antes disso, o link
   // de convite carregava o código e ninguém o lia.
-  useConviteNaChegada(real, state.nickname, (r) => {
+  useConviteNaChegada(real, cloudUser?.id ?? null, state.nickname, (r) => {
     const recado = recadoDaChegada(r);
     if (recado) notify(recado);
+    // O link promete cair dentro da tribo: depois de usar o convite, é para
+    // lá que a pessoa vai, e não para o início.
+    if (r.tribo) void navigate({ to: "/grupos/$id", params: { id: String(r.tribo) } });
   });
   // Ninguém usa a nommi sem ter lido o texto que está no ar. As telas de termos
   // e privacidade ficam livres, senão a pessoa não consegue ler o que vai aceitar.
