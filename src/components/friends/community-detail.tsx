@@ -118,6 +118,7 @@ export function CommunityDetail({
   secrets,
   identidade,
   daDona,
+  convidar,
 }: {
   tribo: Tribo;
   member: boolean;
@@ -138,6 +139,8 @@ export function CommunityDetail({
   identidade?: ReactNode;
   /** A tela de personalizar. Só vem preenchida para quem criou a tribo. */
   daDona?: ReactNode;
+  /** O botão de convidar com o link desta tribo. Só em tribo de verdade. */
+  convidar?: ReactNode;
 }) {
   const [tab, setTab] = useState("Posts");
   const memberCount = demoMode ? tribo.members : members.length;
@@ -174,10 +177,13 @@ export function CommunityDetail({
               {tribo.mode}
             </p>
           </div>
-          <Button onClick={member ? () => setTab("Posts") : onJoin} disabled={joining}>
-            <Icon name={member ? "check" : "plus"} />
-            {joining ? "Entrando…" : member ? "Na tribo" : "Entrar"}
-          </Button>
+          <div className="community-acoes">
+            {convidar}
+            <Button onClick={member ? () => setTab("Posts") : onJoin} disabled={joining}>
+              <Icon name={member ? "check" : "plus"} />
+              {joining ? "Entrando…" : member ? "Na tribo" : "Entrar"}
+            </Button>
+          </div>
         </div>
         {tribo.about && <p className="community-description">{tribo.about}</p>}
         <p className="community-description">
