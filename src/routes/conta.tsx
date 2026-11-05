@@ -1,9 +1,427 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { Account } from '@/components/friends/account';
-export const Route = createFileRoute('/conta')({
- validateSearch: (s:Record<string,unknown>):{modo?:'entrar'|'criar';anfitriao?:boolean}=>({modo:s['modo']==='criar'?'criar':'entrar',anfitriao:s['anfitriao']===true||s['anfitriao']==='true'}),
- head: () => ({ meta: [{title:'Entrar ou criar conta — Nommi'},{name:'description',content:'Crie sua conta Nommi de pessoa ou de empresa com e-mail, Google ou Apple.'},{property:'og:title',content:'Entrar ou criar conta — Nommi'},{property:'og:description',content:'Crie sua conta Nommi de pessoa ou de empresa com e-mail, Google ou Apple.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}] }),
- component: Page,
-});
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
+import { emailSchema, passwordSchema } from "@/lib/nomi-validation";
+import { essentialDetails } from "@/lib/nommi-access";
+import { RECADO_DO_NAVEGADOR, ehNavegadorDeApp, recadoDoLoginSocial } from "@/lib/navegador";
+import { irParaOEnderecoCerto } from "@/lib/endereco";
+import { conviteGuardado } from "@/lib/convite-que-chega";
+import { PippoRosto } from "./pippo";
+import { Icon } from "./art";
+import { Brand } from "./surfaces";
+import { useFriends } from "./store";
+import { useDemoSession } from "./session";
 
-function Page(){const s=Route.useSearch();return <Account key={String(s['modo'])+String(s['anfitriao'])} initialMode={s['modo']??'entrar'} initialBusiness={s['anfitriao']??false}/>;}
+export function Account({
+  initialMode = "entrar",
+  initialBusiness = false,
+}: {
+  initialMode?: "entrar" | "criar";
+  initialBusiness?: boolean;
+}) {
+  const { cloudUser, signOut } = useDemoSession();
+  const navigate = useNavigate();
+  const [mode, setMode] = useState(initialMode);
+  const [business, setBusiness] = useState(initialBusiness);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [birthday, setBirthday] = useState("");
+
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [sent, setSent] = useState(false);
+  const [terms, setTerms] = useState(false);
+  // Link de WhatsApp abre numa janelinha embutida onde o login do Google não
+  // completa. Reconhecer antes evita a tela de erro que ninguém entende.
+  const [dentroDeApp, setDentroDeApp] = useState(false);
+  // Quem chega por um convite é recebida pelo Pippo durante o cadastro.
+  const [convitePendente, setConvitePendente] = useState(false);
+  useEffect(() => {
+    irParaOEnderecoCerto();
+    setDentroDeApp(ehNavegadorDeApp(navigator.userAgent));
+    setConvitePendente(conviteGuardado() !== null);
+  }, []);
+  async function social(provider: "google" | "apple") {
+    setError("");
+    setBusy(true);
+    try {
+      if (business) localStorage.setItem("nommi-business-intent", "1");
+      if (provider === "google") {
+        // OAuth nativo do Supabase: volta direto para o Nommi, sem passar
+        // pela tela do Lovable (oauth.lovable.app) no meio do caminho.
+        const { error: oauthError } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: { redirectTo: window.location.origin + "/conta" },
+        });
+        if (oauthError) setError(recadoDoLoginSocial(dentroDeApp));
+        return;
+      }
+      const r = await lovable.auth.signInWithOAuth(provider, {
+        redirect_uri: window.location.origin,
+      });
+      if (r.error) setError(recadoDoLoginSocial(dentroDeApp));
+      else if (!r.redirected) void navigate({ to: "/conta" });
+    } catch {
+      setError(recadoDoLoginSocial(dentroDeApp));
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    const em = emailSchema.safeParse(email);
+    const pw = passwordSchema.safeParse(password);
+    if (!em.success || !pw.success) {
+      setError(em.error?.issues[0]?.message ?? pw.error?.issues[0]?.message ?? "Confira seu acesso.");
+      return;
+    }
+    setBusy(true);
+    try {
+      if (mode === "criar") {
+        const details = essentialDetails({ nickname, birthday });
+        if (!details.data) {
+          setError(details.error ?? "Confira seus dados.");
+          return;
+        }
+        if (!terms) {
+          setError("Aceite os Termos e a Privacidade para continuar.");
+          return;
+        }
+        const { error: err } = await supabase.auth.signUp({
+          email: em.data,
+          password,
+          options: {
+            emailRedirectTo: window.location.origin + "/conta",
+            data: { ...details.data, is_business: business, nommi_profile_pending: true },
+          },
+        });
+        if (err) {
+          setError(signupErrorMessage(err));
+          return;
+        }
+        setPassword("");
+        setSent(true);
+        return;
+      }
+      const { error: err } = await supabase.auth.signInWithPassword({ email: em.data, password });
+      if (err) {
+        setError(
+          err.message.toLowerCase().includes("confirm")
+            ? "Confirme seu e-mail pelo link que enviamos."
+            : "E-mail ou senha não conferem.",
+        );
+        return;
+      }
+      void navigate({ to: "/conta" });
+    } catch {
+      setError("A conexão deu uma pausa. Tente de novo.");
+    } finally {
+      setBusy(false);
+    }
+  }
+  if (cloudUser) return <CompleteAccount />;
+  if (sent)
+    return (
+      <div className="entry-layout">
+        <Brand />
+        <h1>Um pulinho no seu e-mail.</h1>
+        <p className="intro">
+          Confira o link enviado para <b>{email}</b>. Depois da confirmação, você vai conhecer seu perfil.
+        </p>
+        {convitePendente && (
+          <div className="pippo-recepcao">
+            <PippoRosto altura={64} />
+            <p>Falta só esse pulinho. Confirmou o e-mail, você já cai dentro da tribo. Te espero lá!</p>
+          </div>
+        )}
+        <Button
+          className="wide"
+          onClick={() => {
+            setSent(false);
+            setMode("entrar");
+          }}
+        >
+          Já confirmei, entrar
+        </Button>
+      </div>
+    );
+  return (
+    <div className="entry-layout account-page">
+      <Brand />
+      <div className="account-heading">
+        <Icon name="teia" />
+        <h1>{mode === "entrar" ? "Bom te ver por aqui." : "Qual é o seu nommi?"}</h1>
+        <p className="intro">
+          {mode === "criar"
+            ? "Crie sua conta. Depois, seu perfil e quem combina com você."
+            : "O próximo “bora?” pode estar bem perto."}
+        </p>
+      </div>
+      {mode === "criar" && !business && convitePendente && (
+        <div className="pippo-recepcao">
+          <PippoRosto altura={64} />
+          <p>
+            Oi, eu sou o Pippo! Você veio por um convite. Faz seu cadastro aqui embaixo, rapidinho. Ele é seu
+            passaporte: quando terminar, você já cai dentro da tribo. E ainda pode explorar todas as outras.
+          </p>
+        </div>
+      )}
+      <div className="chips" role="radiogroup" aria-label="Tipo de conta">
+        {[false, true].map((b) => (
+          <Button
+            key={String(b)}
+            type="button"
+            variant="outline"
+            role="radio"
+            aria-checked={business === b}
+            className={"chip " + (business === b ? "selected" : "")}
+            onClick={() => setBusiness(b)}
+          >
+            {b ? "Sou anfitrião" : "Sou nommi"}
+          </Button>
+        ))}
+      </div>
+      {dentroDeApp ? (
+        <div className="aviso-janelinha">
+          <Icon name="lock" />
+          <p>{RECADO_DO_NAVEGADOR}</p>
+        </div>
+      ) : (
+        <>
+          <Button type="button" variant="secondary" className="wide" disabled={busy} onClick={() => social("google")}>
+            Continuar com Google
+          </Button>
+          <Button type="button" variant="secondary" className="wide" disabled={busy} onClick={() => social("apple")}>
+            Continuar com Apple
+          </Button>
+        </>
+      )}
+      <p className="small-note account-or">
+        {dentroDeApp
+          ? mode === "criar"
+            ? "crie sua conta com e-mail"
+            : "entre com e-mail"
+          : mode === "criar"
+            ? "ou crie com e-mail"
+            : "ou com e-mail"}
+      </p>
+      {/* noValidate: a validação nativa do navegador falha em silêncio na
+              janelinha do WhatsApp (o balão não aparece e o botão parece
+              morto — foi o loop da Jaque). Toda regra já tem mensagem própria
+              no quadro vermelho acima do botão. */}
+      <form className="account-form" onSubmit={submit} noValidate>
+        <label>
+          E-mail
+          <input
+            className="input"
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </label>
+        <label>
+          Senha
+          <input
+            className="input"
+            type="password"
+            minLength={8}
+            autoComplete={mode === "criar" ? "new-password" : "current-password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </label>
+        {mode === "entrar" && (
+          <Link className="forgot-link" to="/recuperar-senha">
+            Esqueci minha senha
+          </Link>
+        )}
+        {mode === "criar" && (
+          <p className="small-note">Use pelo menos 8 caracteres. Prefira uma senha que você não usa em outro lugar.</p>
+        )}
+        {mode === "criar" && (
+          <>
+            <label>
+              {business ? "Seu nommi ou nome do lugar" : "Seu nommi (apelido)"}
+              <input
+                className="input"
+                maxLength={30}
+                autoComplete="nickname"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                required
+              />
+            </label>
+            <div className="account-fields">
+              <label>
+                Data de nascimento
+                <input
+                  className="input"
+                  type="date"
+                  autoComplete="bday"
+                  value={birthday}
+                  onChange={(e) => setBirthday(e.target.value)}
+                  required
+                />
+              </label>
+            </div>
+            <p className="small-note">Cidade, foto e interesses você escolhe depois, no seu perfil.</p>
+            <label className="checkbox-line">
+              <input type="checkbox" checked={terms} onChange={(e) => setTerms(e.target.checked)} required />
+              <span>
+                Aceito os <Link to="/termos">Termos</Link> e a <Link to="/privacidade">Privacidade</Link>.
+              </span>
+            </label>
+          </>
+        )}
+        {error && (
+          <p role="alert" className="form-error">
+            {error}
+          </p>
+        )}
+        <Button className="wide" disabled={busy}>
+          {busy ? "Só um instante…" : mode === "criar" ? "Criar conta" : "Entrar"}
+          <Icon name="arrow" />
+        </Button>
+      </form>
+      <Button
+        type="button"
+        variant="ghost"
+        className="wide"
+        onClick={() => {
+          setMode(mode === "entrar" ? "criar" : "entrar");
+          setError("");
+        }}
+      >
+        {mode === "entrar" ? "Ainda não tenho conta" : "Já tenho conta"}
+      </Button>
+      <Button asChild variant="ghost" className="wide">
+        <Link to="/">Voltar</Link>
+      </Button>
+    </div>
+  );
+}
+export function passwordChecks(p: string) {
+  return [
+    { label: "Pelo menos 8 caracteres", ok: p.length >= 8 },
+    { label: "Uma letra maiúscula e uma minúscula", ok: /[A-Z]/.test(p) && /[a-z]/.test(p) },
+    { label: "Pelo menos um número", ok: /[0-9]/.test(p) },
+    { label: "Um símbolo (ex.: ! @ # -)", ok: /[^A-Za-z0-9]/.test(p) },
+  ];
+}
+function signupErrorMessage(err: { message: string; code?: string | undefined; status?: number | undefined }) {
+  const m = err.message.toLowerCase();
+  if (err.code === "weak_password" || m.includes("weak") || m.includes("pwned"))
+    return "Essa senha é muito comum ou fácil de adivinhar. Siga as dicas abaixo do campo de senha e tente outra.";
+  if (m.includes("registered") || err.code === "user_already_exists") return "Este e-mail já tem conta. Use Entrar.";
+  if (err.status === 429 || m.includes("rate"))
+    return "Muitas tentativas seguidas. Espere alguns minutos e tente de novo, ou use Google ou Apple.";
+  if (m.includes("email")) return "Confira o e-mail digitado e tente de novo.";
+  return "Não foi possível criar a conta agora. Tente de novo ou use Google ou Apple.";
+}
+function CompleteAccount() {
+  const { cloudUser, signOut } = useDemoSession();
+  const navigate = useNavigate();
+  const { state } = useFriends();
+  const [nickname, setNickname] = useState(state.nickname);
+  const [birthday, setBirthday] = useState("");
+
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  if (!cloudUser) return null;
+  if (cloudUser.profileComplete)
+    return (
+      <div className="entry-layout">
+        <Brand />
+        <h1>Seu nommi está pronto.</h1>
+        <p className="intro">Tem um lugar na roda esperando por você.</p>
+        <Button asChild className="wide">
+          <Link to={cloudUser.isBusiness ? "/parceiro" : "/perfil"}>
+            Ver meu perfil
+            <Icon name="arrow" />
+          </Link>
+        </Button>
+        <Button variant="ghost" className="wide" onClick={() => signOut()}>
+          Sair
+        </Button>
+      </div>
+    );
+  return (
+    <div className="entry-layout account-page">
+      <Brand />
+      <h1>Só falta o seu nommi.</h1>
+      <form
+        noValidate
+        className="account-form"
+        onSubmit={async (e) => {
+          e.preventDefault();
+          const r = essentialDetails({
+            nickname,
+            birthday,
+            city: state.city,
+            interests: state.interests,
+          });
+          if (!r.data) {
+            setError(r.error ?? "Confira seus dados.");
+            return;
+          }
+          setBusy(true);
+          const { error: err } = await supabase
+            .from("profiles")
+            .update({ nickname: r.data.nickname, city: r.data.city, interests: r.data.interests })
+            .eq("id", cloudUser.id);
+          if (err) {
+            setError("Não foi possível salvar. Tente de novo.");
+            setBusy(false);
+            return;
+          }
+          const { error: authError } = await supabase.auth.updateUser({
+            data: { ...r.data, nommi_profile_pending: false },
+          });
+          setBusy(false);
+          if (authError) {
+            setError("Não foi possível concluir. Tente de novo.");
+            return;
+          }
+          void navigate({ to: cloudUser.isBusiness ? "/parceiro" : "/perfil" });
+        }}
+      >
+        <label>
+          Seu nommi
+          <input
+            className="input"
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
+            required
+            maxLength={30}
+          />
+        </label>
+        <label>
+          Data de nascimento
+          <input
+            className="input"
+            type="date"
+            value={birthday}
+            onChange={(e) => setBirthday(e.target.value)}
+            required
+          />
+        </label>
+        {error && (
+          <p role="alert" className="form-error">
+            {error}
+          </p>
+        )}
+        <Button className="wide" disabled={busy}>
+          {busy ? "Salvando…" : "Ver meu perfil"}
+          <Icon name="teia" />
+        </Button>
+      </form>
+    </div>
+  );
+}
