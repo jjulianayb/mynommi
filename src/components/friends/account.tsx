@@ -7,6 +7,8 @@ import { emailSchema, passwordSchema } from "@/lib/nomi-validation";
 import { essentialDetails } from "@/lib/nommi-access";
 import { RECADO_DO_NAVEGADOR, ehNavegadorDeApp, recadoDoLoginSocial } from "@/lib/navegador";
 import { irParaOEnderecoCerto } from "@/lib/endereco";
+import { conviteGuardado } from "@/lib/convite-que-chega";
+import { PippoRosto } from "./pippo";
 import { Icon } from "./art";
 import { Brand } from "./surfaces";
 import { useFriends } from "./store";
@@ -35,9 +37,12 @@ export function Account({
   // Link de WhatsApp abre numa janelinha embutida onde o login do Google não
   // completa. Reconhecer antes evita a tela de erro que ninguém entende.
   const [dentroDeApp, setDentroDeApp] = useState(false);
+  // Quem chega por um convite é recebida pelo Pippo durante o cadastro.
+  const [convitePendente, setConvitePendente] = useState(false);
   useEffect(() => {
     irParaOEnderecoCerto();
     setDentroDeApp(ehNavegadorDeApp(navigator.userAgent));
+    setConvitePendente(conviteGuardado() !== null);
   }, []);
   async function social(provider: "google" | "apple") {
     setError("");
@@ -71,9 +76,7 @@ export function Account({
     const em = emailSchema.safeParse(email);
     const pw = passwordSchema.safeParse(password);
     if (!em.success || !pw.success) {
-      setError(
-        em.error?.issues[0]?.message ?? pw.error?.issues[0]?.message ?? "Confira seu acesso.",
-      );
+      setError(em.error?.issues[0]?.message ?? pw.error?.issues[0]?.message ?? "Confira seu acesso.");
       return;
     }
     setBusy(true);
@@ -127,9 +130,14 @@ export function Account({
         <Brand />
         <h1>Um pulinho no seu e-mail.</h1>
         <p className="intro">
-          Confira o link enviado para <b>{email}</b>. Depois da confirmação, você vai conhecer seu
-          perfil.
+          Confira o link enviado para <b>{email}</b>. Depois da confirmação, você vai conhecer seu perfil.
         </p>
+        {convitePendente && (
+          <div className="pippo-recepcao">
+            <PippoRosto altura={64} />
+            <p>Falta só esse pulinho. Confirmou o e-mail, você já cai dentro da tribo. Te espero lá!</p>
+          </div>
+        )}
         <Button
           className="wide"
           onClick={() => {
@@ -153,6 +161,15 @@ export function Account({
             : "O próximo “bora?” pode estar bem perto."}
         </p>
       </div>
+      {mode === "criar" && !business && convitePendente && (
+        <div className="pippo-recepcao">
+          <PippoRosto altura={64} />
+          <p>
+            Oi, eu sou o Pippo! Você veio por um convite. Faz seu cadastro aqui embaixo, rapidinho. Ele é seu
+            passaporte: quando terminar, você já cai dentro da tribo. E ainda pode explorar todas as outras.
+          </p>
+        </div>
+      )}
       <div className="chips" role="radiogroup" aria-label="Tipo de conta">
         {[false, true].map((b) => (
           <Button
@@ -175,22 +192,10 @@ export function Account({
         </div>
       ) : (
         <>
-          <Button
-            type="button"
-            variant="secondary"
-            className="wide"
-            disabled={busy}
-            onClick={() => social("google")}
-          >
+          <Button type="button" variant="secondary" className="wide" disabled={busy} onClick={() => social("google")}>
             Continuar com Google
           </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            className="wide"
-            disabled={busy}
-            onClick={() => social("apple")}
-          >
+          <Button type="button" variant="secondary" className="wide" disabled={busy} onClick={() => social("apple")}>
             Continuar com Apple
           </Button>
         </>
@@ -238,9 +243,7 @@ export function Account({
           </Link>
         )}
         {mode === "criar" && (
-          <p className="small-note">
-            Use pelo menos 8 caracteres. Prefira uma senha que você não usa em outro lugar.
-          </p>
+          <p className="small-note">Use pelo menos 8 caracteres. Prefira uma senha que você não usa em outro lugar.</p>
         )}
         {mode === "criar" && (
           <>
@@ -268,19 +271,11 @@ export function Account({
                 />
               </label>
             </div>
-            <p className="small-note">
-              Cidade, foto e interesses você escolhe depois, no seu perfil.
-            </p>
+            <p className="small-note">Cidade, foto e interesses você escolhe depois, no seu perfil.</p>
             <label className="checkbox-line">
-              <input
-                type="checkbox"
-                checked={terms}
-                onChange={(e) => setTerms(e.target.checked)}
-                required
-              />
+              <input type="checkbox" checked={terms} onChange={(e) => setTerms(e.target.checked)} required />
               <span>
-                Aceito os <Link to="/termos">Termos</Link> e a{" "}
-                <Link to="/privacidade">Privacidade</Link>.
+                Aceito os <Link to="/termos">Termos</Link> e a <Link to="/privacidade">Privacidade</Link>.
               </span>
             </label>
           </>
@@ -320,16 +315,11 @@ export function passwordChecks(p: string) {
     { label: "Um símbolo (ex.: ! @ # -)", ok: /[^A-Za-z0-9]/.test(p) },
   ];
 }
-function signupErrorMessage(err: {
-  message: string;
-  code?: string | undefined;
-  status?: number | undefined;
-}) {
+function signupErrorMessage(err: { message: string; code?: string | undefined; status?: number | undefined }) {
   const m = err.message.toLowerCase();
   if (err.code === "weak_password" || m.includes("weak") || m.includes("pwned"))
     return "Essa senha é muito comum ou fácil de adivinhar. Siga as dicas abaixo do campo de senha e tente outra.";
-  if (m.includes("registered") || err.code === "user_already_exists")
-    return "Este e-mail já tem conta. Use Entrar.";
+  if (m.includes("registered") || err.code === "user_already_exists") return "Este e-mail já tem conta. Use Entrar.";
   if (err.status === 429 || m.includes("rate"))
     return "Muitas tentativas seguidas. Espere alguns minutos e tente de novo, ou use Google ou Apple.";
   if (m.includes("email")) return "Confira o e-mail digitado e tente de novo.";
