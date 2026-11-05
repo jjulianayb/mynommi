@@ -158,7 +158,7 @@ export function Admin() {
     <>
       <div className="page-title">
         <div>
-          <p className="eyebrow">ADMINISTRAÇÃO</p>
+          <p className="eyebrow">Administração</p>
           <h1>Painel Nommi</h1>
         </div>
       </div>

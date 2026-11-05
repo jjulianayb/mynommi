@@ -87,7 +87,7 @@ export function ClubCatalog() {
     <>
       <div className="page-title">
         <div>
-          <p className="eyebrow">OS ANFITRIÕES CAPRICHARAM</p>
+          
           <h1>Clube Nommi</h1>
         </div>
         <span className="tone-icon yellow">

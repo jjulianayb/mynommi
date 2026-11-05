@@ -109,7 +109,6 @@ export function FriendsShell({ children }: { children: ReactNode }) {
       </header>
       <div className="app-body">
         <aside className="desktop-nav">
-          <p className="eyebrow">SEU CÍRCULO, DO SEU JEITO</p>
           {navigation.map((n) => (
             <Link key={n.to} to={n.to} activeOptions={{ exact: true }} activeProps={{ className: "selected" }}>
               <Icon name={n.icon} />
@@ -486,7 +485,7 @@ export function Home() {
       {demoMode && recommended && (filter === "Todas" || filter === "Eventos") && (
         <section className="today-role">
           <div className="today-role-copy">
-            <span className="eyebrow">SUGESTÃO DA APRESENTAÇÃO</span>
+            <span className="eyebrow">Sugestão da apresentação</span>
             <h2>{recommended.name}</h2>
             <p>{(recommended.place ?? "Online") + " · " + (recommended.time ?? "Sem pressa")}</p>
             <Button

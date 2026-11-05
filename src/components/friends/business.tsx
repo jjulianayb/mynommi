@@ -91,7 +91,7 @@ function CloudWallet({ userId }: { userId: string }) {
   }
   return (
     <>
-      <Heading title="Carteira" label="PIPPINS · SUA CONTA" />
+      <Heading title="Carteira" />
       <p className="intro">Seu saldo fica guardado na sua conta e vale em qualquer aparelho.</p>
       <section className="card wallet-balance">
         <span className="tone-icon yellow">
@@ -167,11 +167,10 @@ function CloudWallet({ userId }: { userId: string }) {
   );
 }
 
-function Heading({ title, label }: { title: string; label?: string }) {
+function Heading({ title }: { title: string }) {
   return (
     <div className="page-title">
       <div>
-        {label && <p className="eyebrow">{label}</p>}
         <h1>{title}</h1>
       </div>
     </div>
@@ -210,7 +209,7 @@ function DemoWallet() {
   }
   return (
     <>
-      <Heading title="Carteira" label="PIPPINS" />
+      <Heading title="Carteira" />
       <p className="intro">
         Use Pippins para aparecer para mais gente com interesses em comum. Sem ranking: o destaque
         só coloca você um pouco mais perto de quem combina.
@@ -411,7 +410,7 @@ export function Company({ id }: { id: number }) {
           <Icon name={p.icon} />
         </span>
         <div>
-          <p className="eyebrow">{p.category.toUpperCase()} · ANFITRIÃO NOMMI</p>
+          <p className="eyebrow">{p.category} · Anfitrião nommi</p>
           <h1>{p.name}</h1>
           <p className="small-note">Região aproximada · Belo Horizonte</p>
         </div>

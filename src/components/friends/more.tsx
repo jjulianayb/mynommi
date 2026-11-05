@@ -22,11 +22,10 @@ import { PartnerCommunity } from "./business";
 import { PartnerIdeas } from "./meetup-ideas";
 import profileCover from "@/assets/moments/trilha.jpg";
 import { people, groups, partners, money, getPartner, getGroup } from "@/lib/friends-data";
-function Heading({ title, label }: { title: string; label?: string }) {
+function Heading({ title }: { title: string }) {
   return (
     <div className="page-title">
       <div>
-        {label && <p className="eyebrow">{label}</p>}
         <h1>{title}</h1>
       </div>
     </div>
@@ -532,7 +531,7 @@ export function Signup() {
   }
   return (
     <div className="signup-wrap">
-      <Heading title="Vamos montar seu perfil" label="AMIZADES COMEÇAM COM UM OI" />
+      <Heading title="Vamos montar seu perfil" />
       <div className="signup-avatar">
         <SemFoto size={96} />
         <Sticker id={0} size={66} />
@@ -657,7 +656,7 @@ export function Signup() {
 export function Pro() {
   return (
     <>
-      <Heading title="Nommi Pro" label="GRÁTIS E PRO" />
+      <Heading title="Nommi Pro" />
       <p className="intro">
         O grátis continua de graça. O Pro é para quem quer mais nommi no mesmo dia.
       </p>
@@ -704,7 +703,7 @@ export function Pro() {
 export function Partner() {
   return (
     <>
-      <Heading title="Meu espaço de Anfitrião" label="QUEM RECEBE A TEIA" />
+      <Heading title="Meu espaço de Anfitrião" />
       <p className="intro">Seu lugar, o que a tribo curte e uma boa desculpa pra se reunir.</p>
       <PartnerIdeas />
       <div className="section-heading">

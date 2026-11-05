@@ -50,30 +50,64 @@ describe("a tela não explica a política da nommi para quem está usando", () =
   });
 });
 
+/**
+ * Texto que a pessoa lê na tela.
+ *
+ * A versão anterior disto casava aspas **de duas em duas** ao longo do
+ * arquivo inteiro. Quando o número de aspas antes desalinha, o par deixa de
+ * ser uma string e passa a ser o miolo entre duas — e a string de verdade é
+ * pulada. Foi assim que `label="QUEM RECEBE A TEIA"` ficou meses na tela com
+ * o teste passando. Teste que dá falsa confiança é pior que teste nenhum.
+ *
+ * Agora a extração é ancorada: valor de prop que aparece na tela, e texto
+ * solto entre tags. Nada de contar aspas.
+ */
+const PROPS_VISIVEIS =
+  /\b(?:title|label|placeholder|alt|text|intro|rotulo|emptyTitle|emptyText|aria-label)=\{?"([^"]{3,})"/g;
+const TEXTO_ENTRE_TAGS = />\s*([A-Za-zÀ-ÿ][^<>{}]{3,})\s*</g;
+
+function textoVisivel(fonte: string): string[] {
+  const achados = [
+    ...[...fonte.matchAll(PROPS_VISIVEIS)].map((m) => m[1] as string),
+    ...[...fonte.matchAll(TEXTO_ENTRE_TAGS)].map((m) => m[1] as string),
+  ];
+  return achados.map((t) => t.trim()).filter((t) => t.length > 2);
+}
+
 describe("o nome do grupo na tela é tribo", () => {
-  // Decisão antiga da Ju. No banco e nas rotas continua "teia"; na tela, não.
-  // "SUAS TEIAS" aparecia em caixa alta por cima de "Suas tribos", as duas
-  // palavras na mesma linha, contradizendo a decisão dela.
+  // Decisão antiga da Ju, repetida por ela em 04/11: não existe mais teia, é
+  // tribo. No banco e nas rotas o nome antigo continua, porque renomear
+  // tabela quebraria o que já está gravado — mas na tela, nunca.
   it("nenhum texto visível diz teia", () => {
     for (const a of arquivos) {
-      const visiveis = [...a.texto.matchAll(/"([^"]{4,})"/g)]
-        .map((m) => m[1] as string)
-        // Casar aspas de dois em dois pega também o **miolo entre** dois
-        // valores (`, teia: ` em `{ roles: "x", teia: "y" }`), que é código e
-        // não texto. Por isso: tem que começar com letra, e chave de objeto
-        // fica de fora — `teia: "todos"` é dado de visibilidade já gravado, e
-        // renomear quebraria o que está salvo.
-        .filter(
-          (t) =>
-            /\s/.test(t) &&
-            /^[A-Za-zÀ-ÿ]/.test(t) &&
-            !t.includes("/") &&
-            !t.includes("-") &&
-            !/^[a-z_]+:/.test(t) &&
-            !/^[a-z_]+ [a-z_]+$/.test(t),
-        );
-      for (const t of visiveis) {
+      for (const t of textoVisivel(a.texto)) {
         expect(/\bteias?\b/i.test(t), `${a.nome}: ${t}`).toBe(false);
+      }
+    }
+  });
+
+  it("o teste enxerga o que está na tela", () => {
+    // Prova de que a extração funciona: se ela voltar vazia, o teste acima
+    // passa sem olhar nada — que foi exatamente o defeito anterior.
+    const amostra = textoVisivel('<Heading title="Meu espaço" label="QUEM RECEBE A TEIA" />');
+    expect(amostra).toContain("QUEM RECEBE A TEIA");
+  });
+});
+
+describe("nenhum rótulo em caixa alta por cima dos títulos", () => {
+  /**
+   * A Ju detestou isso em 02/11 ("não transmite credibilidade"). Eu tirei os
+   * seis que usavam a prop `kicker` do `Title` e **não vi que o `Heading`
+   * tinha outra prop fazendo a mesma coisa** — sobraram cinco, inclusive
+   * "QUEM RECEBE A TEIA". Agora o teste olha o resultado na tela, não o nome
+   * da prop: qualquer frase em caixa alta cai aqui, venha de onde vier.
+   */
+  it("nenhuma frase visível é toda em maiúscula", () => {
+    for (const a of arquivos) {
+      for (const t of textoVisivel(a.texto)) {
+        if (!/\s/.test(t)) continue; // palavra solta pode ser sigla
+        if (!/[A-ZÀ-Ý]/.test(t)) continue;
+        expect(t === t.toUpperCase(), `${a.nome}: ${t}`).toBe(false);
       }
     }
   });

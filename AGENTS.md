@@ -501,3 +501,17 @@
 ## Tipos do Supabase na mão (04/11)
 - `mcp__Supabase__generate_typescript_types` responde "You do not have permission" nesta conta, então `src/integrations/supabase/types.ts` é **editado à mão** quando entra tabela ou função nova. Sem isso o `tsc` recusa `.from("tabela_nova")` e `rpc("funcao_nova")`, e `tsc` quebrado derruba a publicação pela Lovable.
 - Conferir antes de inserir: `gente_na_nommi` e `teto_do_descobrir` já estavam lá (outro agente), e declarar de novo dá "Duplicate identifier".
+
+## "Esquece a palavra teia" (04/11) — e o teste que não pegava
+- A Ju repetiu, firme: **não existe mais teia, é tribo.** Vale para tudo que ela lê — na conversa comigo e na tela. No banco e nas rotas o nome antigo continua (tabelas `teias`/`teia_members`/`teia_messages`, ids de fundo `teia-manha`): **renomear quebraria o que já está gravado**, e 42 pessoas têm `background_path` apontando para esses ids. Se alguém mandar a Lovable "tirar teia de tudo", é isso que quebra.
+- Para a estampa da marca (a malha de linhas e nós), usar **"a trama da nommi"**. Era o último lugar onde a palavra antiga escapava na minha fala.
+- **O teste que deveria pegar isso não pegava.** `voz.test.ts` casava aspas **de duas em duas** ao longo do arquivo; quando o número de aspas antes desalinha, o "par" passa a ser o miolo entre duas strings e a string de verdade é pulada. Foi assim que `label="QUEM RECEBE A TEIA"` ficou meses na tela com a suíte verde.
+- Agora a extração é **ancorada**: valor de prop visível (`title|label|placeholder|alt|text|intro|rotulo|emptyTitle|emptyText|aria-label`) e texto solto entre tags. Nada de contar aspas. E há um teste que prova que a extração **enxerga** — se ela voltar vazia, o teste de conteúdo passa sem olhar nada, que foi exatamente o defeito.
+- **Regra geral:** todo teste que varre texto precisa de um caso que prove que ele está lendo alguma coisa. Teste que dá falsa confiança é pior que teste nenhum.
+
+## Os rótulos em caixa alta eram onze, não seis (04/11)
+- Em 02/11 a Ju detestou "GENTE DE VERDADE" por cima de "Encontre sua tribo". Eu tirei **seis** e achei que tinha acabado — mas só tinha olhado a prop `kicker` do `Title`. Havia **outros três mecanismos** fazendo a mesma coisa: `label` no `Heading` (que existe duplicado em `more.tsx` e `business.tsx`), `className="eyebrow"` escrito à mão, e `discovery-eyebrow` no Descobrir.
+- Sobravam onze. Entre eles "QUEM RECEBE A TEIA", que juntava os dois problemas numa frase só.
+- **Lição:** corrigir pelo nome da prop não resolve; o teste tem que olhar o **resultado na tela**. O teste novo barra qualquer frase visível toda em maiúscula, venha de onde vier. Palavra solta passa, porque pode ser sigla.
+- O que era slogan saiu inteiro (quatro no Descobrir, um no Clube, um no Anfitrião). O que era informação de verdade perdeu a caixa alta e continua: "Administração", "Sugestão da apresentação", "<categoria> · Anfitrião nommi".
+- A prop `label` do `Heading` foi **removida do componente**, nos dois arquivos: prop sem uso é prop que volta por descuido.
