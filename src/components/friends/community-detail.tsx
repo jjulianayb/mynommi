@@ -17,15 +17,7 @@ function communityPhoto(tribo: Tribo) {
   return momentPhoto.trilha;
 }
 
-function DemoPost({
-  tribo,
-  text,
-  nickname,
-}: {
-  tribo: Tribo;
-  text?: string | undefined;
-  nickname: string;
-}) {
+function DemoPost({ tribo, text, nickname }: { tribo: Tribo; text?: string | undefined; nickname: string }) {
   const [liked, setLiked] = useState(false);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState<string[]>([]);
@@ -40,9 +32,7 @@ function DemoPost({
         </div>
         <Icon name="teia" />
       </header>
-      <p>
-        {text ?? "Uma boa companhia transforma qualquer passeio. Quem vem no próximo encontro?"}
-      </p>
+      <p>{text ?? "Uma boa companhia transforma qualquer passeio. Quem vem no próximo encontro?"}</p>
       <div className="community-post-gallery">
         <img src={communityPhoto(tribo)} alt="Encontro ilustrativo da tribo" />
         <img src={momentPhoto.trilha} alt="Paisagem de uma trilha" />
@@ -119,6 +109,7 @@ export function CommunityDetail({
   identidade,
   daDona,
   convidar,
+  boasVindas,
 }: {
   tribo: Tribo;
   member: boolean;
@@ -141,6 +132,8 @@ export function CommunityDetail({
   daDona?: ReactNode;
   /** O botão de convidar com o link desta tribo. Só em tribo de verdade. */
   convidar?: ReactNode;
+  /** O cartão de quem acabou de chegar por um convite: porta aberta para outras tribos. */
+  boasVindas?: ReactNode;
 }) {
   const [tab, setTab] = useState("Posts");
   const memberCount = demoMode ? tribo.members : members.length;
@@ -149,9 +142,7 @@ export function CommunityDetail({
       <div className="community-cover" style={coverPath ? coverStyle(coverPath) : undefined}>
         {!coverPath && <img src={communityPhoto(tribo)} alt="Capa ilustrativa da tribo" />}
         {!coverPath && (
-          <span className="community-cover-caption">
-            {demoMode ? "Apresentação" : "Imagem ilustrativa"}
-          </span>
+          <span className="community-cover-caption">{demoMode ? "Apresentação" : "Imagem ilustrativa"}</span>
         )}
         {coverEditor && <span className="community-cover-edit">{coverEditor}</span>}
       </div>
@@ -207,6 +198,7 @@ export function CommunityDetail({
           </div>
         )}
       </section>
+      {boasVindas}
       {identidade}
       <div role="tablist" aria-label="Conteúdo da tribo" className="community-tabs">
         {[
@@ -291,9 +283,7 @@ export function CommunityDetail({
                     </Link>
                   ))}
             </div>
-            {!member && !demoMode && (
-              <p className="small-note">Entre na tribo para conhecer os participantes.</p>
-            )}
+            {!member && !demoMode && <p className="small-note">Entre na tribo para conhecer os participantes.</p>}
           </>
         )}
         {tab === "Só entre nós" && secrets}
