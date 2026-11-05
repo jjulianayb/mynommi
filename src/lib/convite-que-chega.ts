@@ -93,7 +93,7 @@ export function enderecoSemConvite(href: string): string {
   }
 }
 
-export type Resultado = { usou: boolean; entrouNaTribo: boolean };
+export type Resultado = { usou: boolean; entrouNaTribo: boolean; tribo?: number | null };
 
 /**
  * Usa o convite guardado, uma vez.
@@ -108,9 +108,9 @@ export type Resultado = { usou: boolean; entrouNaTribo: boolean };
  * entrar nunca desfaz o convite: a amizade com quem convidou é o que mais
  * importa.
  */
-export async function usarConviteGuardado(apelido: string): Promise<Resultado> {
+export async function usarConviteGuardado(me: string, apelido: string): Promise<Resultado> {
   const c = conviteGuardado();
-  if (!c) return { usou: false, entrouNaTribo: false };
+  if (!c) return { usou: false, entrouNaTribo: false, tribo: null };
   limparConvite();
 
   // Sem código não há convite para usar: é alguém que chegou pela página
@@ -123,12 +123,16 @@ export async function usarConviteGuardado(apelido: string): Promise<Resultado> {
 
   let entrouNaTribo = false;
   if (c.tribo) {
-    const { error } = await db
-      .from("teia_members")
-      .insert({ teia_key: String(c.tribo), nickname: apelido });
+    // Sem user_id a linha nem existe (a coluna é obrigatória e a permissão
+    // exige que seja o próprio auth.uid()): sem isto o link levava para o
+    // cadastro, mas ninguém caía dentro da tribo.
+    const { error } = await db.from("teia_members").upsert(
+      { teia_key: String(c.tribo), user_id: me, nickname: apelido.slice(0, 40) },
+      { onConflict: "teia_key,user_id", ignoreDuplicates: true },
+    );
     entrouNaTribo = !error;
   }
-  return { usou, entrouNaTribo };
+  return { usou, entrouNaTribo, tribo: c.tribo };
 }
 
 /** O recado de quem acabou de chegar por um convite. */
@@ -161,16 +165,20 @@ export function useGuardarConviteDaUrl(): void {
 /** Usa o convite guardado logo depois de a conta existir. Só uma vez por sessão. */
 export function useConviteNaChegada(
   pronto: boolean,
+  me: string | null,
   apelido: string,
   aoUsar?: (r: Resultado) => void,
 ): void {
   const feito = useRef(false);
   useEffect(() => {
-    if (!pronto || feito.current || !conviteGuardado()) return;
+    // Espera a conta e o apelido: sem conta não há quem entrar na tribo, e sem
+    // apelido a pessoa entrava sem nome. O convite guardado não estraga: se
+    // faltar algum dos dois nesta sessão, ele é usado na próxima.
+    if (!pronto || !me || !apelido || feito.current || !conviteGuardado()) return;
     feito.current = true;
     void (async () => {
-      const r = await usarConviteGuardado(apelido);
-      if (r.usou || r.entrouNaTribo) aoUsar?.(r);
+      const r = await usarConviteGuardado(me, apelido);
+      if (r.usou || r.entrouNaTribo || r.tribo) aoUsar?.(r);
     })();
-  }, [pronto, apelido, aoUsar]);
+  }, [pronto, me, apelido, aoUsar]);
 }
