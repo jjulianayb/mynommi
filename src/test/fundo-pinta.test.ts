@@ -2,7 +2,28 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { FUNDOS, estiloDoFundo } from "@/lib/fundos";
 
-const css = readFileSync("src/styles.css", "utf8");
+/**
+ * O editor do Lovable reformata o styles.css a cada save (prettier dele), e o
+ * formato que sobra no repositório não é mais o minificado original. O que
+ * estes testes protegem é a regra (seletor, propriedade, valor, ordem), não a
+ * diagramação: leia o CSS já normalizado para a asserção não depender de
+ * espaço, quebra de linha ou ponto e vírgula final.
+ */
+function lerCss(caminho = "src/styles.css"): string {
+  return readFileSync(caminho, "utf8")
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/\s+/g, " ")
+    .replace(/\s*\{\s*/g, "{")
+    .replace(/\s*\}\s*/g, "}")
+    .replace(/:\s+/g, ":")
+    .replace(/,\s+/g, ",")
+    .replace(/\s*>\s*/g, ">")
+    .replace(/;\s*/g, ";")
+    .replace(/;}/g, "}")
+    .replace(/}/g, "}\n");
+}
+
+const css = lerCss();
 
 /**
  * O fundo da página pessoal ficou semanas sem pintar nada. O motivo não estava
