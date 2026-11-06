@@ -34,7 +34,55 @@ export async function registrarServiceWorker(): Promise<void> {
   }
 }
 
+/**
+ * O que o Pippo faz quanto aos avisos, e qual marca isso gasta.
+ *
+ * **O bug que isto fecha (06/11): 42 contas, zero avisos ligados.** A marca de
+ * "já falei disso" era gravada **antes** de decidir o que mostrar. Ninguém
+ * chega com o app já na tela inicial, então a primeira visita caía sempre no
+ * ramo "instala primeiro" e queimava a marca. Quando a pessoa instalava
+ * depois, o efeito saía na primeira linha e **a oferta de ligar nunca mais
+ * aparecia**.
+ *
+ * Por isso cada caminho tem a sua marca: ensinar a instalar não gasta a
+ * chance de oferecer.
+ */
+export type PassoDoAviso = "oferecer" | "ensinar-instalar" | "nada";
+
+export function passoDoAviso(instalado: boolean, estado: EstadoAvisos): PassoDoAviso {
+  if (instalado && estado === "disponivel") return "oferecer";
+  // Sem o app na tela inicial não adianta oferecer: no iPhone a notificação
+  // só existe assim, e é regra da Apple, não escolha nossa.
+  if (!instalado) return "ensinar-instalar";
+  // Já ligado, já negado, ou navegador sem suporte: não há o que dizer.
+  return "nada";
+}
+
+/** A marca é por caminho, nunca uma só para os dois. */
+export function marcaDoAviso(passo: PassoDoAviso, me: string): string | null {
+  if (passo === "oferecer") return "nommi-pippo-avisos-" + me;
+  if (passo === "ensinar-instalar") return "nommi-pippo-instalar-" + me;
+  return null;
+}
+
 export type ResultadoAtivacao = "ativo" | "negado" | "erro";
+
+/**
+ * Quanto tempo esperar o service worker ficar pronto.
+ *
+ * `navigator.serviceWorker.ready` é uma promessa que **nunca rejeita**: se o
+ * registro falhou, ela simplesmente não resolve nunca. Sem prazo, quem tocasse
+ * em "ligar os avisos" ficaria esperando para sempre, sem erro e sem recado —
+ * e o `catch` lá embaixo nunca dispararia, porque nada foi lançado.
+ */
+export const PRAZO_DO_SW_MS = 8000;
+
+export async function prontoComPrazo(prazo = PRAZO_DO_SW_MS): Promise<ServiceWorkerRegistration | null> {
+  return Promise.race([
+    navigator.serviceWorker.ready,
+    new Promise<null>((resolve) => setTimeout(() => resolve(null), prazo)),
+  ]);
+}
 
 /** Liga os avisos: pede a permissão do navegador e guarda a inscrição na conta. */
 export async function ativarAvisos(me: string): Promise<ResultadoAtivacao> {
@@ -42,7 +90,8 @@ export async function ativarAvisos(me: string): Promise<ResultadoAtivacao> {
     const perm = await Notification.requestPermission();
     if (perm !== "granted") return "negado";
     await registrarServiceWorker();
-    const reg = await navigator.serviceWorker.ready;
+    const reg = await prontoComPrazo();
+    if (!reg) return "erro";
     const sub = await reg.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: deBase64Url(VAPID_PUBLICO) as BufferSource,

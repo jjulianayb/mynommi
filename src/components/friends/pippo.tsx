@@ -8,7 +8,7 @@ import { Link } from "@tanstack/react-router";
 import frontalPippo from "@/assets/pippo/1-pippo-frontal.png";
 import apontaPippo from "@/assets/pippo/1-pippo-aponta.png";
 import { installSteps, isStandalone, platformOf } from "@/lib/install";
-import { ativarAvisos, estadoDosAvisos } from "@/lib/push";
+import { ativarAvisos, estadoDosAvisos, marcaDoAviso, passoDoAviso } from "@/lib/push";
 import { supabase } from "@/integrations/supabase/client";
 import { TRIBO_DO_PIPPO_ID } from "@/lib/pippo-tribo";
 import {
@@ -134,17 +134,32 @@ export function PippoAjudante({
   // Já ligado, negado ou sem suporte: não incomoda.
   useEffect(() => {
     if (!me) return;
-    const marca = "nommi-pippo-avisos-" + me;
+    /**
+     * Duas marcas, e é por isso que elas existem separadas.
+     *
+     * Antes era uma só, gravada **antes** de decidir o que mostrar. Como
+     * ninguém chega com o app já na tela inicial, a primeira visita caía
+     * sempre no ramo "instala primeiro" — e queimava a marca. Quando a pessoa
+     * instalava depois, este efeito saía na primeira linha e **a oferta de
+     * ligar os avisos nunca mais aparecia**. É a explicação de 42 contas e
+     * zero avisos ligados.
+     *
+     * Agora cada ramo tem a sua: ensinar a instalar não gasta a chance de
+     * oferecer, e a oferta espera a pessoa estar instalada.
+     */
+    const instalado = isStandalone(window as Parameters<typeof isStandalone>[0]);
+    const estado = estadoDosAvisos();
+    const passo = passoDoAviso(instalado, estado);
+    const marca = marcaDoAviso(passo, me);
+    if (!marca) return;
     try {
       if (window.localStorage.getItem(marca)) return;
       window.localStorage.setItem(marca, "1");
     } catch {
       return;
     }
-    const instalado = isStandalone(window as Parameters<typeof isStandalone>[0]);
-    const estado = estadoDosAvisos();
     let falasNovas: Fala[];
-    if (instalado && estado === "disponivel") {
+    if (passo === "oferecer") {
       falasNovas = [
         { de: "pippo", texto: "Novidade: agora eu te aviso quando chegar coisa nova por aqui." },
         { de: "pippo", texto: "É um toque só, e você desliga quando quiser.", acao: "ativar-avisos" },

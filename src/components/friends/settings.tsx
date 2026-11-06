@@ -1,5 +1,7 @@
 import { createRealTeia } from "@/lib/real-teias";
 import { useMeuTitulo } from "@/lib/embaixadora";
+import { ativarAvisos, estadoDosAvisos } from "@/lib/push";
+import { isStandalone } from "@/lib/install";
 import { createRole, MIN_CAPACITY, MAX_CAPACITY } from "@/lib/roles";
 import { saveCloudProfile } from "@/lib/real-profiles";
 import { hasSharedTeia, teiasFor } from "@/lib/tribos";
@@ -111,6 +113,90 @@ function ShowCountsToggle({ me }: { me: string }) {
     </div>
   );
 }
+
+/**
+ * Ligar os avisos, num lugar fixo.
+ *
+ * Até 06/11 isto só existia dentro do balão do Pippo, que aparece **uma vez**.
+ * Quem não visse na hora, ou visse antes de instalar o app, não tinha mais por
+ * onde ligar: 42 contas, zero avisos. Recurso que depende de um balão
+ * aparecer na hora certa é recurso que não existe.
+ *
+ * Configurações é onde as pessoas procuram notificação. Aqui o estado é lido
+ * a cada abertura, então ele acompanha a realidade do aparelho.
+ */
+function AvisosNoCelular({ me }: { me: string }) {
+  const { notify } = useFriends();
+  const [estado, setEstado] = useState(() => estadoDosAvisos());
+  const [indo, setIndo] = useState(false);
+  const instalado = isStandalone(window as Parameters<typeof isStandalone>[0]);
+
+  if (estado === "ativo")
+    return (
+      <div className="entry-tip">
+        <Icon name="bell" />
+        <p>Os avisos estão ligados neste aparelho. Para desligar, use os ajustes do seu celular.</p>
+      </div>
+    );
+
+  // No iPhone a notificação só funciona com o app na tela inicial. É regra da
+  // Apple, não escolha nossa — e sem dizer isso a pessoa tenta e não entende.
+  if (!instalado)
+    return (
+      <div className="entry-tip">
+        <Icon name="bell" />
+        <p>
+          Para receber aviso quando chegar mensagem, primeiro coloque a nommi na tela inicial do
+          seu celular. Depois volte aqui que o botão aparece.
+        </p>
+      </div>
+    );
+
+  if (estado === "sem-suporte")
+    return (
+      <div className="entry-tip">
+        <Icon name="bell" />
+        <p>Este navegador não entrega aviso. Abrindo a nommi pela tela inicial, costuma funcionar.</p>
+      </div>
+    );
+
+  if (estado === "negado")
+    return (
+      <div className="entry-tip">
+        <Icon name="bell" />
+        <p>
+          Os avisos estão bloqueados para a nommi. Dá para liberar nos ajustes do seu celular, na
+          parte de notificações.
+        </p>
+      </div>
+    );
+
+  return (
+    <Button
+      variant="secondary"
+      className="wide"
+      disabled={indo}
+      onClick={() => {
+        setIndo(true);
+        void ativarAvisos(me).then((r) => {
+          setIndo(false);
+          setEstado(estadoDosAvisos());
+          notify(
+            r === "ativo"
+              ? "Pronto. Agora a nommi te avisa."
+              : r === "negado"
+                ? "Sem problema. Dá para ligar depois, aqui mesmo."
+                : "Não consegui ligar agora. Tente de novo daqui a pouco.",
+          );
+        });
+      }}
+    >
+      {indo ? "Ligando…" : "Receber aviso no celular"}
+      <Icon name="bell" />
+    </Button>
+  );
+}
+
 export function Settings({ section }: { section: string }) {
   const { state, setState, notify } = useFriends();
   const { erase, signOut, cloudUser, demoMode } = useDemoSession();
@@ -345,6 +431,7 @@ export function Settings({ section }: { section: string }) {
                 : "Os dados desta apresentação ficam neste navegador. Conta real guarda no servidor."}
             </p>
           </div>
+          {cloud && <AvisosNoCelular me={cloudUser!.id} />}
           <Button asChild variant="secondary" className="wide">
             <Link to="/privacidade">
               Ler Política de Privacidade

@@ -524,3 +524,12 @@
 - Receber tem prioridade sobre puxar assunto, e **as duas nunca saem juntas**: duas falas seguidas do Pippo é o mascote monopolizando a sala.
 - Não precisou de tabela para lembrar quem já foi recebido: "quem entrou depois da última fala do Pippo" responde isso com dado que já existe — e ainda agrupa sozinho.
 - Conta de teste foi removida da Tribo do Pippo: o número de membros na tela é sempre real (41 → 40).
+
+## 42 contas, zero avisos ligados (06/11, bug grave)
+- O push foi construído em 04/11 e **ninguém nunca ligou**. Não era falta de interesse: era inalcançável.
+- **A causa.** O balão do Pippo gravava a marca de "já falei disso" **antes** de decidir o que mostrar. Como ninguém chega com o app já na tela inicial, a primeira visita caía sempre no ramo "instala primeiro" — e queimava a marca. Quando a pessoa instalava depois, o efeito saía na primeira linha e **a oferta de ligar nunca mais aparecia.** Uma linha de ordem.
+- Agora cada caminho tem a sua marca (`passoDoAviso()` + `marcaDoAviso()`, funções puras em `push.ts`): ensinar a instalar não gasta a chance de oferecer. O teste cobre o caminho completo — ensina, não repete, instala, oferece, liga, cala — e foi conferido reintroduzindo o bug.
+- **Segundo defeito, calado:** `await navigator.serviceWorker.ready` depois de um registro que falhou **nunca resolve** — essa promessa não rejeita. Quem tocasse em "ligar" ficaria esperando para sempre, sem erro e sem recado, e o `catch` nunca dispararia porque nada foi lançado. Agora é `Promise.race` com prazo (`prontoComPrazo`), e o teste barra o `await` solto voltar.
+- **Terceiro, e o mais estrutural:** ligar os avisos só existia **dentro de um balão que aparece uma vez**. Recurso que depende de um balão aparecer na hora certa é recurso que não existe. Agora há botão fixo em Configurações → Privacidade, que lê o estado do aparelho a cada abertura em vez de confiar num valor gravado.
+- O botão explica a regra da Apple quando o app não está na tela inicial: **no iPhone a notificação só funciona instalada**. Sem dizer isso, a pessoa tenta e não entende.
+- **Lição que vale para qualquer recurso novo:** oferta de uma vez só, guardada por marca, é frágil — basta a ordem dos estados mudar para ela se perder. Todo recurso precisa de uma porta fixa, num lugar onde as pessoas procuram.
