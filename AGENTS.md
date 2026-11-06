@@ -515,3 +515,12 @@
 - **Lição:** corrigir pelo nome da prop não resolve; o teste tem que olhar o **resultado na tela**. O teste novo barra qualquer frase visível toda em maiúscula, venha de onde vier. Palavra solta passa, porque pode ser sigla.
 - O que era slogan saiu inteiro (quatro no Descobrir, um no Clube, um no Anfitrião). O que era informação de verdade perdeu a caixa alta e continua: "Administração", "Sugestão da apresentação", "<categoria> · Anfitrião nommi".
 - A prop `label` do `Heading` foi **removida do componente**, nos dois arquivos: prop sem uso é prop que volta por descuido.
+
+## O Pippo dando boas-vindas a conta de teste (0060, bug de 06/11)
+- A Tribo do Pippo tinha 40 pessoas reais e **seis mensagens, todas do Pippo recebendo conta de teste**: "Olha quem chegou: Teste de fluxo!", "Teste sem selo", "Teste C", "Teste Delta". As contas foram apagadas depois, então sobrou o Pippo cumprimentando gente que não existe. Quem abrisse a tribo veria um robô falando com robôs — **pior que sala vazia**, e encostando na linha de prova social falsa.
+- **Causa, e é a segunda vez:** eu conferi `is_test` dentro do gatilho de INSERT de `teia_members`, mas a marca de teste é posta **depois** de o perfil nascer. No instante da entrada a coluna ainda é falsa. Foi exatamente assim que duas contas de teste pegaram os números 1 e 3 de Embaixadora, em 30/10.
+- **Regra que fica: nunca decidir nada no instante em que o perfil é criado ou entra em algo.** `is_test` só é confiável depois. Se a decisão precisa dessa marca, ela tem que acontecer mais tarde — numa visita, não num gatilho.
+- A correção muda o **momento**, não só a guarda: receber quem chegou virou parte de `pippo_puxa_assunto()`, que roda quando alguém **abre** a tribo. Três ganhos: a marca de teste já está posta; a mensagem cai quando há gente para ler (boas-vindas às 3 da manhã numa sala vazia não recebe ninguém); e quem chegou junto entra numa frase só, em vez de uma mensagem por pessoa.
+- Receber tem prioridade sobre puxar assunto, e **as duas nunca saem juntas**: duas falas seguidas do Pippo é o mascote monopolizando a sala.
+- Não precisou de tabela para lembrar quem já foi recebido: "quem entrou depois da última fala do Pippo" responde isso com dado que já existe — e ainda agrupa sozinho.
+- Conta de teste foi removida da Tribo do Pippo: o número de membros na tela é sempre real (41 → 40).
