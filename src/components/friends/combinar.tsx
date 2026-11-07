@@ -243,6 +243,12 @@ export function Combinar({ me }: { me: string }) {
         {conhecidas.map((k: Conhecida) => (
           <article key={k.userId} className="dc-pessoa" role="listitem">
             <div className="dc-foto">
+              <Link
+                to="/nommi/$id"
+                params={{ id: k.userId }}
+                className="dc-foto-link"
+                aria-label={"Ver o nommi de " + k.nome}
+              />
               <FotoMini k={k} />
               <span className="dc-foto-sombra" aria-hidden="true" />
               <div className="dc-info">
@@ -389,6 +395,12 @@ export function Combinar({ me }: { me: string }) {
           return (
             <article key={pessoa.userId} className="dc-pessoa" role="listitem">
               <div className="dc-foto">
+                <Link
+                  to="/nommi/$id"
+                  params={{ id: pessoa.userId }}
+                  className="dc-foto-link"
+                  aria-label={"Ver o nommi de " + pessoa.nome}
+                />
                 <Face c={pessoa} size={320} />
                 <span className="dc-foto-sombra" aria-hidden="true" />
                 <div className="dc-topo-esq">
