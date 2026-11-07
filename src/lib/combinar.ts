@@ -118,6 +118,21 @@ export function recadoDaResposta(r: Resposta, nome: string): string {
   return "Não deu para enviar agora.";
 }
 
+/**
+ * As opções do filtro do Descobrir são os interesses da PRÓPRIA pessoa —
+ * são eles que ela reconhece e que a promessa "pelo que vocês têm em comum"
+ * descreve. Antes vinha a união dos interesses de todo o baralho, e a fila
+ * oferecia filtrar por coisas que a pessoa nunca escolheu ("viagens",
+ * "cerveja"), enquanto escondia interesses dela que não couberam no corte.
+ *
+ * A fonte é o `emComum` de cada carta (o meu interesse que aquela carta
+ * também tem): interesse meu que ninguém da fila tem não vira opção, porque
+ * só mostraria uma fila vazia. A ordem segue a fila, que já vem por afinidade.
+ */
+export function opcoesDeFiltro(fila: Candidata[]): string[] {
+  return [...new Set(fila.flatMap((x) => x.emComum))].slice(0, 8);
+}
+
 /** Interesses em comum na frente, o resto depois: é o que a pessoa olha primeiro. */
 export function interessesOrdenados(c: Candidata): { nome: string; comum: boolean }[] {
   const comuns = new Set(c.emComum);

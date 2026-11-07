@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import {
   figurinhaDe,
   figurinhasDoGrupo,
@@ -42,20 +43,18 @@ export function EscolherInteresses({
     setBuscando(true);
     setFalha(false);
     const t = setTimeout(async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("id,nickname,interests")
-        .eq("profile_mode", "publico")
-        .eq("is_business", false)
-        .eq("is_test", false)
-        .neq("id", me)
-        .overlaps("interests", escolhidos)
-        .limit(20);
+      // is_test saiu do alcance da API (0062): o filtro mora no servidor agora.
+      // RPC nova ainda não está nos tipos gerados — mesmo padrão do combinar.ts.
+      const { data, error } = await (supabase as unknown as SupabaseClient).rpc(
+        "quem_combina_comigo",
+        { _ints: escolhidos },
+      );
+      const achadas = (data as { id: string; nickname: string; interests: string[] }[] | null) ?? [];
       if (alive) {
         setBuscando(false);
         setFalha(!!error);
         setPessoas(
-          (data ?? [])
+          achadas
             .sort(
               (a, b) =>
                 b.interests.filter((i) => escolhidos.includes(i)).length -

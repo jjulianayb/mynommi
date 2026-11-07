@@ -7,6 +7,7 @@ import { iconeDoInteresse } from "@/lib/figurinhas";
 
 import {
   interessesOrdenados,
+  opcoesDeFiltro,
   porqueApareceu,
   recadoDaResposta,
   useCombinar,
@@ -114,7 +115,7 @@ export function Combinar({ me }: { me: string }) {
   const [deuMatch, setDeuMatch] = useState<Candidata | null>(null);
   const vista = filtro ? fila.filter((x) => x.interesses.includes(filtro)) : fila;
   const c = vista[0];
-  const opcoesFiltro = [...new Set(fila.flatMap((x) => x.interesses))].slice(0, 8);
+  const opcoesFiltro = opcoesDeFiltro(fila);
 
   /**
    * Decidir não espera a rede.

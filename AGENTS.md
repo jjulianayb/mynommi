@@ -533,3 +533,17 @@
 - **Terceiro, e o mais estrutural:** ligar os avisos só existia **dentro de um balão que aparece uma vez**. Recurso que depende de um balão aparecer na hora certa é recurso que não existe. Agora há botão fixo em Configurações → Privacidade, que lê o estado do aparelho a cada abertura em vez de confiar num valor gravado.
 - O botão explica a regra da Apple quando o app não está na tela inicial: **no iPhone a notificação só funciona instalada**. Sem dizer isso, a pessoa tenta e não entende.
 - **Lição que vale para qualquer recurso novo:** oferta de uma vez só, guardada por marca, é frágil — basta a ordem dos estados mudar para ela se perder. Todo recurso precisa de uma porta fixa, num lugar onde as pessoas procuram.
+
+## Privacidade: a linha inteira de profiles vazava pela API (0061, 0062)
+- **O vazamento.** O `GRANT SELECT` de `profiles` era da **tabela inteira**. A RLS decide quais *linhas* aparecem, mas qualquer linha visível entregava as **34 colunas** no payload: `nascimento` (mesmo com `mostrar_idade` desligado), `instagram`, `visto_em` (último acesso), `visibility` (as próprias configurações de privacidade da pessoa), `is_test`, `wall_approval`, `mostrar_idade`, `mostrar_online`. `select=*` num perfil público devolvia data de nascimento real.
+- **A correção é o GRANT por coluna**, mesmo padrão que a 0025 já usava para UPDATE. Agora: 34 colunas na tabela, **26 legíveis**, as 8 sensíveis fora do alcance. RLS não mudou, UPDATE não mudou, nenhum dado foi movido. Conferido com `has_column_privilege`, que é a fonte da verdade — melhor prova que print de DevTools.
+- Idade e "online" têm chave própria na tela (`mostrar_idade`, `mostrar_online`): deixar a coluna legível **furava a escolha da pessoa pela API**, mesmo com a tela respeitando.
+- `pagina_pessoal` só devolve `instagram` para a própria dona: é canal fora do app.
+- **Perfil privado de amizade aceita ficava inacessível** — conversa não abria, selo de recados não zerava, `/nommi/$id` quebrava. A saída fácil seria alargar a RLS para "público OU amigo", mas isso reabriria as 34 colunas. Em vez disso, `perfil_de_amigo()` (0061) devolve **só as colunas mínimas** nesse caso.
+- A tela de escolher interesses filtrava `is_test` **no cliente** — coluna que saiu do alcance. Virou `quem_combina_comigo()`, com o filtro no servidor.
+
+## Plano escrito por outro agente bate em função que mudou depois (06/11)
+- O plano das 0061/0062 veio do Instinct e estava correto na análise — minha varredura confirmou que a única leitura de coluna revogada no cliente era a que ele já consertava.
+- **Mas a `pagina_pessoal` dele tinha 19 colunas e a de produção tem 20.** Outro agente acrescentou `avatar_figura` no fim depois que o plano foi escrito. Aplicar como estava **derrubaria o bonequinho de quem não tem foto** — quase toda a base. E `CREATE OR REPLACE` não avisa disso de um jeito óbvio: ele recusa com "cannot change return type", que é fácil de "resolver" com um `DROP` sem olhar o que se perde.
+- **Regra:** antes de substituir função que já existe, ler `pg_get_function_result()` e comparar. Plano de outro agente é análise para conferir, não SQL para colar — ele foi escrito contra um retrato do banco que pode ter envelhecido.
+- O lote inteiro reverteu no erro, então o estado ficou limpo para reaplicar. Vale conferir isso (`has_column_privilege`) em vez de supor.

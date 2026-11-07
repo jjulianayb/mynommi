@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 export type PublicProfile = {
   id: string;
@@ -84,10 +85,20 @@ export function usePublicProfile(id: string, enabled: boolean) {
     if (!enabled) return;
     let alive = true;
     void (async () => {
-      const [{ data: p }, { data: t }] = await Promise.all([
+      let [{ data: p }, { data: t }] = await Promise.all([
         supabase.from("profiles").select(COLS).eq("id", id).maybeSingle(),
         supabase.rpc("list_teias", { _creator: id }),
       ]);
+      // Perfil privado de uma amizade aceita: a tabela esconde a linha (RLS),
+      // mas a amiga pode ver o básico — a RPC perfil_de_amigo devolve só as
+      // colunas seguras nesse caso (0061).
+      if (!p) {
+        const { data: pa } = await (supabase as unknown as SupabaseClient).rpc(
+          "perfil_de_amigo",
+          { _id: id },
+        );
+        p = (((pa as PublicProfile[] | null) ?? [])[0] ?? null) as typeof p;
+      }
       if (alive)
         setState({
           ready: true,

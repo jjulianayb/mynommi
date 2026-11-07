@@ -21,8 +21,21 @@ export function DirectChatPage({ id }: { id: string }) {
       .select("nickname,avatar_url")
       .eq("id", id)
       .maybeSingle()
-      .then(({ data }) => {
-        setQuem((data as { nickname: string; avatar_url: string } | null) ?? null);
+      .then(async ({ data }) => {
+        if (data) {
+          setQuem(data as { nickname: string; avatar_url: string });
+          setReady(true);
+          return;
+        }
+        // Perfil privado de uma amizade aceita: a linha não vem pela tabela
+        // (RLS), mas nome e foto já aparecem na lista de conversas — mesma
+        // informação, mesma fonte. Sem isso a conversa não abre e o selo de
+        // recados novos nunca zera.
+        const { data: convs } = await supabase.rpc("minhas_conversas");
+        const c = (
+          (convs as { outro_id: string; nickname: string; avatar_url: string }[] | null) ?? []
+        ).find((x) => x.outro_id === id);
+        setQuem(c ? { nickname: c.nickname, avatar_url: c.avatar_url } : null);
         setReady(true);
       });
   }, [id, real]);

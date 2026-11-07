@@ -285,8 +285,16 @@ export function PublicNommi({ id }: { id: string }) {
                 )}
                 {!own && <FollowButton me={cloudUser!.id} target={profile.id} />}
                 {st === "amigos" && (
+                  <Button asChild>
+                    <Link to="/conversas/$id" params={{ id: profile.id }}>
+                      <Icon name="chat" />
+                      Conversar
+                    </Link>
+                  </Button>
+                )}
+                {st === "amigos" && (
                   <Button
-                    variant="secondary"
+                    variant="ghost"
                     onClick={async () => {
                       if (confirm("Desfazer a amizade com " + profile.nickname + "?")) {
                         await con.remove(row!.id);
