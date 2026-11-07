@@ -547,3 +547,43 @@
 - **Mas a `pagina_pessoal` dele tinha 19 colunas e a de produção tem 20.** Outro agente acrescentou `avatar_figura` no fim depois que o plano foi escrito. Aplicar como estava **derrubaria o bonequinho de quem não tem foto** — quase toda a base. E `CREATE OR REPLACE` não avisa disso de um jeito óbvio: ele recusa com "cannot change return type", que é fácil de "resolver" com um `DROP` sem olhar o que se perde.
 - **Regra:** antes de substituir função que já existe, ler `pg_get_function_result()` e comparar. Plano de outro agente é análise para conferir, não SQL para colar — ele foi escrito contra um retrato do banco que pode ter envelhecido.
 - O lote inteiro reverteu no erro, então o estado ficou limpo para reaplicar. Vale conferir isso (`has_column_privilege`) em vez de supor.
+
+## Quem mexe em quê (07/11) — combinado com a Ju
+
+**São três quem escreve neste repositório**, não dois: o Claude, o Instinct, e o
+agente dentro do editor da Lovable (`gpt-engineer-app[bot]`, commits "Changes"
+e "Work in progress"). O terceiro é o que mais commita e **o único que não roda
+a suíte de testes** — depois de uma sessão no editor da Lovable, alguém roda
+`npx tsc --noEmit` e `npx vitest run` antes de publicar.
+
+A divisão é **por arquivo**, não por tarefa. Dividir por tarefa já custou o
+dobro do trabalho duas vezes (a carta do Descobrir e o Pippo guia, construídos
+em paralelo no mesmo dia), e o merge é quem cobra a conta.
+
+### Aparência — Instinct e o editor da Lovable
+- `src/components/friends/*.tsx` das telas
+- o CSS de cada componente (`combinar.css`, `pippo.css`, e os próximos)
+- `src/assets/**`
+
+### Banco, privacidade, bug e teste — Claude
+- `drizzle/migrations/**` — **todas.** O número já colidiu três vezes (0042,
+  0054, 0055), e cada colisão custa uma hora. Se outro agente precisar de uma
+  migração, ele escreve o SQL e o Claude numera e aplica.
+- `src/lib/**`, `src/test/**`
+- `src/integrations/supabase/types.ts` (editado à mão; quem cria tabela ou RPC
+  é quem mantém)
+
+### Os três que não dão para dividir
+- **`src/styles.css` está congelado.** 11.617 linhas e todo mundo acrescentando
+  no fim é colisão garantida. **Nada novo entra aqui**: CSS novo vai num
+  arquivo ao lado do componente, como `combinar.css` já faz. Mexer no que já
+  está lá, só para corrigir.
+- **`app.tsx`** (1.778 linhas, tudo passa por ele): um de cada vez, avisando
+  antes. Precisa ser quebrado em algum momento.
+- **`AGENTS.md`**: dos dois, sempre acrescentando no fim.
+
+### Antes de começar qualquer tarefa
+`git fetch` e olhar o estado da Lovable. Plano escrito por outro agente é
+**análise para conferir, não SQL para colar**: ele foi escrito contra um
+retrato do banco que pode ter envelhecido. Foi assim que a `pagina_pessoal` de
+um plano quase derrubou `avatar_figura` (ver a seção de 06/11).
