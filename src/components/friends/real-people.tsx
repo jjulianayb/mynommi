@@ -9,6 +9,7 @@ import { useDemoSession } from "./session";
 import { supabase } from "@/integrations/supabase/client";
 import { useConnections, connectionState, otherId } from "@/lib/connections";
 import { usePeopleSearch, usePublicProfile, type PublicProfile } from "@/lib/real-profiles";
+import { rotuloEstadoCivil, iconeEstadoCivil } from "@/lib/pagina-pessoal";
 import { useSeloDe, mostraAroPro } from "@/lib/embaixadora";
 import { StatsLine, FollowButton, WallPanel, Feed, SafetyMenu } from "./social-feed";
 import { Selos } from "./selos";
@@ -80,9 +81,7 @@ export function PeopleSearch({ userId }: { userId: string }) {
                   <p>
                     {p.city || "Cidade não informada"}
                     {common.length
-                      ? " · " +
-                        common.length +
-                        (common.length === 1 ? " interesse em comum" : " interesses em comum")
+                      ? " · " + common.length + (common.length === 1 ? " interesse em comum" : " interesses em comum")
                       : ""}
                   </p>
                 </div>
@@ -92,9 +91,7 @@ export function PeopleSearch({ userId }: { userId: string }) {
           })}
         </div>
       )}
-      <p className="small-note">
-        Só aparecem perfis públicos. E-mail e telefone nunca são mostrados.
-      </p>
+      <p className="small-note">Só aparecem perfis públicos. E-mail e telefone nunca são mostrados.</p>
     </section>
   );
 }
@@ -107,9 +104,7 @@ function ProfileCover({ userId }: { userId: string }) {
       .select("cover_path")
       .eq("id", userId)
       .maybeSingle()
-      .then((r: { data: unknown }) =>
-        setCover((r.data as { cover_path?: string } | null)?.cover_path ?? ""),
-      );
+      .then((r: { data: unknown }) => setCover((r.data as { cover_path?: string } | null)?.cover_path ?? ""));
   }, [userId]);
   return <div className="profile-cover-custom" style={coverStyle(cover) as React.CSSProperties} />;
 }
@@ -123,10 +118,7 @@ export function PublicNommi({ id }: { id: string }) {
   const con = useConnections(enabled ? cloudUser!.id : null);
   if (!enabled)
     return (
-      <EmptyState
-        title="Entre na sua conta para ver este nommi."
-        text="Entra na sua conta pra ver quem é."
-      >
+      <EmptyState title="Entre na sua conta para ver este nommi." text="Entra na sua conta pra ver quem é.">
         <Button asChild>
           <Link to="/conta">Entrar</Link>
         </Button>
@@ -135,10 +127,7 @@ export function PublicNommi({ id }: { id: string }) {
   if (!ready) return <Esqueleto tipo="perfil" />;
   if (!profile)
     return (
-      <EmptyState
-        title="Este nommi não está disponível."
-        text="O perfil pode ser privado ou não existir mais."
-      >
+      <EmptyState title="Este nommi não está disponível." text="O perfil pode ser privado ou não existir mais.">
         <Button asChild variant="secondary">
           <Link to="/descobrir">Voltar para Descobrir</Link>
         </Button>
@@ -163,23 +152,37 @@ export function PublicNommi({ id }: { id: string }) {
           <Face p={profile} size={108} />
         )}
         <div className="profile-name">
-          <h1>{profile.nickname}</h1>
+          {/* Idade só aparece se a pessoa escolheu mostrar (mostrar_idade). */}
+          <h1>
+            {profile.nickname}
+            {profile.idade ? `, ${profile.idade}` : ""}
+          </h1>
 
-          {!own && (
-            <SafetyMenu
-              me={cloudUser!.id}
-              targetUserId={profile.id}
-              targetUserName={profile.nickname}
-            />
-          )}
+          {!own && <SafetyMenu me={cloudUser!.id} targetUserId={profile.id} targetUserName={profile.nickname} />}
         </div>
         <StatsLine userId={profile.id} />
-        {profile.city && (
+        {(profile.city || profile.estado || profile.estado_civil) && (
           <div className="profile-meta">
-            <span>
-              <Icon name="pin" />
-              {profile.city}
-            </span>
+            {(profile.city || profile.estado) && (
+              <span>
+                <Icon name="pin" />
+                {profile.city}
+                {profile.estado ? ` - ${profile.estado}` : ""}
+              </span>
+            )}
+            {profile.estado_civil && (
+              <span>
+                <span aria-hidden="true">{iconeEstadoCivil(profile.estado_civil)}</span>
+                {rotuloEstadoCivil(profile.estado_civil)}
+              </span>
+            )}
+          </div>
+        )}
+        {profile.procurando && profile.procurando.length > 0 && (
+          <div className="interest-tags">
+            {profile.procurando.map((t) => (
+              <span key={t}>Procuro: {t}</span>
+            ))}
           </div>
         )}
         {profile.about && <p>{profile.about}</p>}
@@ -313,12 +316,7 @@ export function PublicNommi({ id }: { id: string }) {
             me={cloudUser!.id}
             ownerId={profile.id}
             nickname={state.nickname || "nommi"}
-            canWrite={
-              !own &&
-              con.rows.some(
-                (r) => r.status === "aceita" && otherId(r, cloudUser!.id) === profile.id,
-              )
-            }
+            canWrite={!own && con.rows.some((r) => r.status === "aceita" && otherId(r, cloudUser!.id) === profile.id)}
           />
         )}
         <h2 className="settings-subtitle">Posts</h2>
@@ -333,12 +331,7 @@ export function PublicNommi({ id }: { id: string }) {
         {tribos.length ? (
           <div className="people-list">
             {tribos.map((t) => (
-              <Link
-                key={t.id}
-                to="/grupos/$id"
-                params={{ id: String(t.id) }}
-                className="conversation"
-              >
+              <Link key={t.id} to="/grupos/$id" params={{ id: String(t.id) }} className="conversation">
                 <div>
                   <h3>{t.name}</h3>
                   <p>
@@ -369,10 +362,7 @@ function useProfiles(ids: string[]) {
       .select("id,nickname,city,about,interests,avatar_url")
       .in("id", key.split(","))
       .then(({ data }) => {
-        if (alive)
-          setMap(
-            Object.fromEntries(((data as PublicProfile[] | null) ?? []).map((p) => [p.id, p])),
-          );
+        if (alive) setMap(Object.fromEntries(((data as PublicProfile[] | null) ?? []).map((p) => [p.id, p])));
       });
     return () => {
       alive = false;
@@ -389,10 +379,7 @@ export function MyFriends() {
   const people = useProfiles(me ? con.rows.map((r) => otherId(r, me)) : []);
   if (!me)
     return (
-      <EmptyState
-        title="Entre na sua conta para ver seus amigos."
-        text="Amizades reais ficam guardadas na sua conta."
-      >
+      <EmptyState title="Entre na sua conta para ver seus amigos." text="Amizades reais ficam guardadas na sua conta.">
         <Button asChild>
           <Link to="/conta">Entrar</Link>
         </Button>
@@ -400,8 +387,7 @@ export function MyFriends() {
     );
   if (!con.ready) return <p className="small-note">Carregando…</p>;
   const name = (id: string) => people[id]?.nickname || "Um nommi";
-  const face = (id: string) =>
-    people[id] ? <Face p={people[id]} size={48} /> : <SemFoto size={48} />;
+  const face = (id: string) => (people[id] ? <Face p={people[id]} size={48} /> : <SemFoto size={48} />);
   const received = con.rows.filter((r) => r.status === "pendente" && r.addressee_id === me);
   const sent = con.rows.filter((r) => r.status === "pendente" && r.requester_id === me);
   const friends = con.rows.filter((r) => r.status === "aceita");
@@ -454,10 +440,7 @@ export function MyFriends() {
           })}
         </div>
       ) : (
-        <EmptyState
-          title="Você ainda não tem amigos aqui."
-          text="Procure pessoas em Descobrir e toque em Conectar."
-        >
+        <EmptyState title="Você ainda não tem amigos aqui." text="Procure pessoas em Descobrir e toque em Conectar.">
           <Button asChild variant="secondary">
             <Link to="/descobrir">Ir para Descobrir</Link>
           </Button>
