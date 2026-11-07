@@ -13,7 +13,7 @@ import { usePosts } from "@/lib/posts";
  */
 
 const TONS_DOS_SELOS = ["coral", "menta", "lavanda", "sol"] as const;
-const ICONES_DOS_SELOS = ["heart", "spark", "star", "smile"] as const;
+const ICONES_DOS_SELOS = ["heart", "spark", "crown", "star"] as const;
 
 export function InteressesChips({ interesses, onEditar }: { interesses: string[]; onEditar: () => void }) {
   if (interesses.length === 0)
@@ -57,6 +57,7 @@ export function AmigosDescrevem({ dono }: { dono: string }) {
         <div className="pv-selos-trilho">
           {selos.map((s, n) => (
             <span key={s.selo} className={"pv-selo " + TONS_DOS_SELOS[n % TONS_DOS_SELOS.length]}>
+              <Icon name={ICONES_DOS_SELOS[n % ICONES_DOS_SELOS.length]} />
               {s.selo}
               {s.quantos > 1 && <small>×{s.quantos}</small>}
             </span>
@@ -72,7 +73,7 @@ export function ConexaoBuscada({ frase, tags, onEditar }: { frase: string; tags:
   return (
     <section className="pv-bloco pv-conexao">
       <span className="pv-conexao-icone">
-        <Icon name="heart" />
+        <Icon name="users" />
       </span>
       <div>
         <h2>Que tipo de conexão estou buscando?</h2>
