@@ -17,6 +17,12 @@ export type Candidata = {
   objetivos: string[];
   lugares: string[];
   procurando: string;
+  /** Etiquetas fixas de "o que estou procurando" (0064): opt-in, até 3. */
+  procurandoTags: string[];
+  /** UF, só quando a dona deixou cidade/UF visíveis (mostrar_cidade). */
+  estado: string;
+  /** Estado civil, só quando a dona deixou visível (mostrar_estado_civil). */
+  estadoCivil: string;
   verificada: boolean;
   emComum: string[];
   afinidade: number;
@@ -37,6 +43,26 @@ export type Candidata = {
   selosDoPovo: string[];
 };
 export type Resposta = "match" | "guardado" | "passou" | "limite" | "erro";
+
+/**
+ * As opções fixas de "o que estou procurando" (0064). A lista mora no
+ * cliente e no CHECK da tabela: mexer numa sem a outra quebra a validação.
+ */
+export const OPCOES_PROCURANDO = [
+  "galera com os mesmos interesses",
+  "uma amiga para conversar",
+  "amizades para sair",
+  "bate-papo leve",
+  "gente na minha cidade",
+] as const;
+
+/** Filtros do Descobrir (0064): cada um casa só o valor que a dona exibe. */
+export type FiltrosCombinar = {
+  procurando?: string[] | undefined;
+  uf?: string | undefined;
+  idadeMin?: number | undefined;
+  idadeMax?: number | undefined;
+};
 
 type Linha = {
   user_id: string;
@@ -62,6 +88,9 @@ type Linha = {
   selos_do_povo?: string[] | null;
   avatar_x?: number | null;
   avatar_y?: number | null;
+  estado?: string | null;
+  procurando?: string[] | null;
+  estado_civil?: string | null;
 };
 
 export const toCandidata = (r: Linha): Candidata => ({
@@ -75,6 +104,9 @@ export const toCandidata = (r: Linha): Candidata => ({
   objetivos: r.goals ?? [],
   lugares: r.places ?? [],
   procurando: r.looking_for || "",
+  procurandoTags: r.procurando ?? [],
+  estado: r.estado || "",
+  estadoCivil: r.estado_civil || "",
   verificada: r.person_verified === true,
   emComum: r.em_comum ?? [],
   afinidade: r.afinidade ?? 0,
@@ -100,20 +132,16 @@ export function porqueApareceu(c: Candidata): string {
   if (n === 1) return `Vocês gostam de ${c.emComum[0]}`;
   if (c.selosEmComum.length > 0) return `Os amigos de vocês dizem a mesma coisa: ${c.selosEmComum[0]}`;
   if (c.tribosEmComum > 0)
-    return c.tribosEmComum === 1
-      ? "Vocês estão na mesma tribo"
-      : `Vocês estão em ${c.tribosEmComum} tribos juntas`;
+    return c.tribosEmComum === 1 ? "Vocês estão na mesma tribo" : `Vocês estão em ${c.tribosEmComum} tribos juntas`;
   if (c.mesmaCidade && c.cidade) return `Está em ${c.cidade}, como você`;
   return "Chegou agora na nommi";
 }
 
 /** O que dizer depois da resposta. Ninguém é avisado de que foi passado. */
 export function recadoDaResposta(r: Resposta, nome: string): string {
-  if (r === "limite")
-    return "No plano grátis dá para combinar com até 3 pessoas. Com o Pro, match não tem teto.";
+  if (r === "limite") return "No plano grátis dá para combinar com até 3 pessoas. Com o Pro, match não tem teto.";
   if (r === "match") return `Deu match com ${nome}.`;
-  if (r === "guardado")
-    return "Guardado. Se o sim for dos dois lados, vocês ficam sabendo na hora.";
+  if (r === "guardado") return "Guardado. Se o sim for dos dois lados, vocês ficam sabendo na hora.";
   if (r === "passou") return "Tudo bem. Vamos ver outra pessoa.";
   return "Não deu para enviar agora.";
 }
@@ -149,7 +177,6 @@ export function decisaoDoArrasto(dx: number, largura: number): "sim" | "nao" | n
   if (dx <= -limite) return "nao";
   return null;
 }
-
 
 export type Conhecida = {
   userId: string;
@@ -190,24 +217,20 @@ export function useConhecidas(me: string | null) {
       }
       // A leitura passa pelo pagina_pessoal: a política de privacidade mora
       // lá, e perfis trancados (privado) voltam vazios e somem do trilho.
-      const paginas = await Promise.all(
-        ids.map((id) => db.rpc("pagina_pessoal", { _user: id })),
-      );
+      const paginas = await Promise.all(ids.map((id) => db.rpc("pagina_pessoal", { _user: id })));
       setLista(
         paginas
           .map(({ data }) => {
-            const x = (
-              (data as
-                | {
-                    id: string;
-                    nickname: string | null;
-                    city: string | null;
-                    interests: string[] | null;
-                    avatar_url: string | null;
-                    tribos_em_comum: string[] | null;
-                  }[]
-                | null) ?? []
-            )[0];
+            const x = ((data as
+              | {
+                  id: string;
+                  nickname: string | null;
+                  city: string | null;
+                  interests: string[] | null;
+                  avatar_url: string | null;
+                  tribos_em_comum: string[] | null;
+                }[]
+              | null) ?? [])[0];
             if (!x) return null;
             return {
               userId: x.id,
@@ -225,32 +248,37 @@ export function useConhecidas(me: string | null) {
   }, [me]);
   return { lista, ready };
 }
-export function useCombinar(souReal: boolean) {
+export function useCombinar(souReal: boolean, filtros: FiltrosCombinar = {}) {
   const [fila, setFila] = useState<Candidata[]>([]);
   const [curiosidade, setCuriosidade] = useState(0);
   const [doDia, setDoDia] = useState<{ teto: number; restantes: number; pro: boolean } | null>(null);
   const [ready, setReady] = useState(false);
+  const chaveFiltros = JSON.stringify(filtros);
 
   const carregar = useCallback(async () => {
     if (!souReal) {
       setReady(true);
       return;
     }
+    const f = JSON.parse(chaveFiltros) as FiltrosCombinar;
     const [p, q, d] = await Promise.all([
-      db.rpc("pessoas_para_combinar", { _limite: 30 }),
+      db.rpc("pessoas_para_combinar", {
+        _limite: 30,
+        _procurando: f.procurando && f.procurando.length > 0 ? f.procurando : null,
+        _uf: f.uf || null,
+        _estado_civil: null,
+        _idade_min: f.idadeMin ?? null,
+        _idade_max: f.idadeMax ?? null,
+      }),
       db.rpc("quem_tem_curiosidade"),
       db.rpc("perfis_do_dia"),
     ]);
     setFila(((p.data as Linha[] | null) ?? []).map(toCandidata));
     setCuriosidade(typeof q.data === "number" ? q.data : 0);
     const linhaDia = ((d.data as { teto: number; restantes: number; pro: boolean }[] | null) ?? [])[0];
-    setDoDia(
-      linhaDia
-        ? { teto: linhaDia.teto, restantes: linhaDia.restantes, pro: !!linhaDia.pro }
-        : null,
-    );
+    setDoDia(linhaDia ? { teto: linhaDia.teto, restantes: linhaDia.restantes, pro: !!linhaDia.pro } : null);
     setReady(true);
-  }, [souReal]);
+  }, [souReal, chaveFiltros]);
   useEffect(() => {
     void carregar();
   }, [carregar]);
