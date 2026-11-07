@@ -11,6 +11,8 @@ export type PaginaPessoal = {
   places: string[];
   lookingFor: string;
   instagram: string;
+  /** Só a dona lê o próprio número (igual ao instagram); vem "" para os outros. */
+  celular: string;
   avatar: string;
   cover: string;
   background: string;
@@ -22,7 +24,78 @@ export type PaginaPessoal = {
   figura: string;
   capaFoco: { x: number; y: number };
   fotoFoco: { x: number; y: number };
+  /** 0064: card completo. Cada um vem vazio/null quando a dona não deixou
+   *  exibir — e as chaves só chegam para a própria pessoa. */
+  estado: string;
+  procurando: string[];
+  estadoCivil: string;
+  idade: number | null;
+  mostrarCidade: boolean;
+  mostrarEstadoCivil: boolean;
+  mostrarIdade: boolean;
+  mostrarOnline: boolean;
 };
+
+/** As 27 UFs, para o seletor do perfil. */
+export const UFS = [
+  "AC",
+  "AL",
+  "AP",
+  "AM",
+  "BA",
+  "CE",
+  "DF",
+  "ES",
+  "GO",
+  "MA",
+  "MT",
+  "MS",
+  "MG",
+  "PA",
+  "PB",
+  "PR",
+  "PE",
+  "PI",
+  "RJ",
+  "RN",
+  "RS",
+  "RO",
+  "RR",
+  "SC",
+  "SP",
+  "SE",
+  "TO",
+] as const;
+
+/** Opções de estado civil (0064): as 5 que a Ju escolheu em 07/11 — a
+ *  quinta, "prefiro não dizer", é a opção vazia do seletor e guarda "".
+ *  A mesma lista está no CHECK da tabela. */
+export const OPCOES_ESTADO_CIVIL = ["solteira", "casada", "comprometida", "divorciada"] as const;
+
+/** Rótulo de exibição: as mesmas 5 opções da Ju, com o toque leve que ela
+ *  pediu, sem mudar o significado de nenhuma. */
+export function rotuloEstadoCivil(v: string): string {
+  const rotulos: Record<string, string> = {
+    solteira: "Solteira e de bem com a vida",
+    casada: "Casada",
+    comprometida: "Comprometida (coração ocupado)",
+    divorciada: "Divorciada e recomeçando",
+  };
+  return rotulos[v] ?? v;
+}
+
+/** Ícone do estado civil no card (proposta da Ju, 07/12, aguardando o ok dela).
+ *  Configurável: trocar aqui troca no card e no perfil. "Prefiro não dizer"
+ *  não tem entrada de propósito: não mostra nada. */
+export const ICONE_ESTADO_CIVIL: Record<string, string> = {
+  solteira: "\u{1F64B}",
+  casada: "\u{1F48D}",
+  comprometida: "\u{1F49E}",
+  divorciada: "\u{1F98B}",
+};
+export function iconeEstadoCivil(v: string): string {
+  return ICONE_ESTADO_CIVIL[v] ?? "";
+}
 
 export const MAX_PLACES = 8;
 export const MAX_LOOKING = 140;
@@ -54,10 +127,7 @@ export function cleanPlaces(list: string[]): string[] {
 
 /** O quanto a página está preenchida, de 0 a 100: serve para convidar a completar. */
 export function completeness(
-  p: Pick<
-    PaginaPessoal,
-    "avatar" | "about" | "interests" | "places" | "lookingFor" | "city" | "cover"
-  >,
+  p: Pick<PaginaPessoal, "avatar" | "about" | "interests" | "places" | "lookingFor" | "city" | "cover">,
 ): number {
   const itens = [
     !!p.avatar,
@@ -73,10 +143,7 @@ export function completeness(
 
 /** O que ainda falta, em palavras, para quem quiser completar. */
 export function missingParts(
-  p: Pick<
-    PaginaPessoal,
-    "avatar" | "about" | "interests" | "places" | "lookingFor" | "city" | "cover"
-  >,
+  p: Pick<PaginaPessoal, "avatar" | "about" | "interests" | "places" | "lookingFor" | "city" | "cover">,
 ): string[] {
   const faltas: string[] = [];
   if (!p.avatar) faltas.push("uma foto sua");
@@ -98,6 +165,7 @@ type Row = {
   places: string[] | null;
   looking_for: string;
   instagram: string;
+  celular?: string | null;
   avatar_url: string;
   cover_path: string;
   background_path: string;
@@ -111,6 +179,14 @@ type Row = {
   cover_y?: number | null;
   avatar_x?: number | null;
   avatar_y?: number | null;
+  estado?: string | null;
+  procurando?: string[] | null;
+  estado_civil?: string | null;
+  idade?: number | null;
+  mostrar_cidade?: boolean | null;
+  mostrar_estado_civil?: boolean | null;
+  mostrar_idade?: boolean | null;
+  mostrar_online?: boolean | null;
 };
 export const toPagina = (r: Row): PaginaPessoal => ({
   id: r.id,
@@ -121,6 +197,7 @@ export const toPagina = (r: Row): PaginaPessoal => ({
   places: r.places ?? [],
   lookingFor: r.looking_for ?? "",
   instagram: r.instagram ?? "",
+  celular: r.celular ?? "",
   avatar: enderecoDaImagem(r.avatar_url ?? ""),
   cover: r.cover_path ?? "",
   background: r.background_path ?? "",
@@ -132,6 +209,14 @@ export const toPagina = (r: Row): PaginaPessoal => ({
   figura: r.avatar_figura ?? "",
   capaFoco: { x: r.cover_x ?? 50, y: r.cover_y ?? 50 },
   fotoFoco: { x: r.avatar_x ?? 50, y: r.avatar_y ?? 50 },
+  estado: r.estado ?? "",
+  procurando: r.procurando ?? [],
+  estadoCivil: r.estado_civil ?? "",
+  idade: typeof r.idade === "number" ? r.idade : null,
+  mostrarCidade: r.mostrar_cidade === true,
+  mostrarEstadoCivil: r.mostrar_estado_civil === true,
+  mostrarIdade: r.mostrar_idade === true,
+  mostrarOnline: r.mostrar_online === true,
 });
 
 export function usePaginaPessoal(userId: string | null) {
@@ -153,14 +238,56 @@ export function usePaginaPessoal(userId: string | null) {
 /** Salva o que só existe na página pessoal: lugares, o que procura e o @ do Instagram. */
 export async function savePagina(
   userId: string,
-  dados: { places?: string[]; lookingFor?: string; instagram?: string },
+  dados: {
+    places?: string[];
+    lookingFor?: string;
+    instagram?: string;
+    celular?: string;
+    estado?: string;
+    procurando?: string[];
+    estadoCivil?: string;
+    mostrarCidade?: boolean;
+    mostrarEstadoCivil?: boolean;
+    mostrarIdade?: boolean;
+    mostrarOnline?: boolean;
+  },
 ) {
-  const update: { places?: string[]; looking_for?: string; instagram?: string } = {};
+  // estado, procurando, estado_civil e os mostrar_* ainda não estão em types.ts
+  const update: {
+    places?: string[];
+    looking_for?: string;
+    instagram?: string;
+    celular?: string;
+    estado?: string;
+    procurando?: string[];
+    estado_civil?: string;
+    mostrar_cidade?: boolean;
+    mostrar_estado_civil?: boolean;
+    mostrar_idade?: boolean;
+    mostrar_online?: boolean;
+  } = {};
   if (dados.places) update.places = cleanPlaces(dados.places);
-  if (dados.lookingFor !== undefined)
-    update.looking_for = dados.lookingFor.trim().slice(0, MAX_LOOKING);
+  if (dados.lookingFor !== undefined) update.looking_for = dados.lookingFor.trim().slice(0, MAX_LOOKING);
   if (dados.instagram !== undefined) update.instagram = cleanInstagram(dados.instagram);
+  if (dados.celular !== undefined)
+    update.celular = dados.celular
+      .replace(/[^0-9()+\- ]/g, "")
+      .trim()
+      .slice(0, 20);
+  if (dados.estado !== undefined)
+    update.estado = UFS.includes(dados.estado as (typeof UFS)[number]) ? dados.estado : "";
+  if (dados.procurando) update.procurando = dados.procurando.slice(0, 3);
+  if (dados.estadoCivil !== undefined)
+    update.estado_civil = OPCOES_ESTADO_CIVIL.includes(dados.estadoCivil as (typeof OPCOES_ESTADO_CIVIL)[number])
+      ? dados.estadoCivil
+      : "";
+  if (dados.mostrarCidade !== undefined) update.mostrar_cidade = dados.mostrarCidade;
+  if (dados.mostrarEstadoCivil !== undefined) update.mostrar_estado_civil = dados.mostrarEstadoCivil;
+  if (dados.mostrarIdade !== undefined) update.mostrar_idade = dados.mostrarIdade;
+  if (dados.mostrarOnline !== undefined) update.mostrar_online = dados.mostrarOnline;
   if (!Object.keys(update).length) return true;
-  const { error } = await supabase.from("profiles").update(update).eq("id", userId);
+  const { error } = await (supabase.from("profiles") as ReturnType<typeof supabase.from>)
+    .update(update)
+    .eq("id", userId);
   return !error;
 }
