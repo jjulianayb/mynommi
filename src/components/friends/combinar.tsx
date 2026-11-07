@@ -6,6 +6,7 @@ import { paraCss } from "@/lib/enquadrar";
 import { iconeDoInteresse } from "@/lib/figurinhas";
 
 import {
+  OPCOES_PROCURANDO,
   interessesOrdenados,
   opcoesDeFiltro,
   porqueApareceu,
@@ -16,6 +17,7 @@ import {
   type Conhecida,
 } from "@/lib/combinar";
 import { fraseTetoDePerfis } from "@/lib/plano";
+import { rotuloEstadoCivil, iconeEstadoCivil } from "@/lib/pagina-pessoal";
 import { useSeloDe, mostraAroPro } from "@/lib/embaixadora";
 import { Icon, SemFoto, AroPro } from "./art";
 import { Esqueleto, EmptyState } from "./surfaces";
@@ -39,19 +41,20 @@ function Face({ c, size }: { c: Candidata; size: number }) {
   // ícone de imagem quebrada do navegador.
   const [quebrou, setQuebrou] = useState(false);
   const selo = useSeloDe(c.userId, true);
-  const rosto = c.avatar && !quebrou ? (
-    <img
-      className="real-face"
-      src={c.avatar}
-      width={size}
-      height={size}
-      style={{ width: size, height: size, objectPosition: paraCss(c.fotoFoco) }}
-      alt={"Foto de " + c.nome}
-      onError={() => setQuebrou(true)}
-    />
-  ) : (
-    <SemFoto nome={c.nome} size={size} />
-  );
+  const rosto =
+    c.avatar && !quebrou ? (
+      <img
+        className="real-face"
+        src={c.avatar}
+        width={size}
+        height={size}
+        style={{ width: size, height: size, objectPosition: paraCss(c.fotoFoco) }}
+        alt={"Foto de " + c.nome}
+        onError={() => setQuebrou(true)}
+      />
+    ) : (
+      <SemFoto nome={c.nome} size={size} />
+    );
   return mostraAroPro(selo) ? <AroPro>{rosto}</AroPro> : rosto;
 }
 
@@ -66,11 +69,7 @@ function Face({ c, size }: { c: Candidata; size: number }) {
 function FotoMini({ k }: { k: Conhecida }) {
   const [quebrou, setQuebrou] = useState(false);
   return k.avatar && !quebrou ? (
-    <img
-      src={k.avatar}
-      alt={"Foto de " + k.nome}
-      onError={() => setQuebrou(true)}
-    />
+    <img src={k.avatar} alt={"Foto de " + k.nome} onError={() => setQuebrou(true)} />
   ) : (
     <SemFoto nome={k.nome} size={112} />
   );
@@ -93,7 +92,10 @@ const FOTO_DO_CHIP: [RegExp, string][] = [
   [/danc|festa|forro|salsa|sertanej/, "/capas-tribos/danca.png"],
 ];
 export function fotoDoChip(i: string): string | null {
-  const k = i.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const k = i
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
   return FOTO_DO_CHIP.find(([r]) => r.test(k))?.[1] ?? null;
 }
 export function ChipIcone({ i }: { i: string }) {
@@ -109,7 +111,10 @@ const TEMPO_DA_COMEMORACAO_MS = 3600;
 /** O match: o que vocês têm em comum vem antes do rosto. */
 export function Combinar({ me }: { me: string }) {
   const { notify } = useFriends();
-  const { fila, curiosidade, doDia, ready, responder, recarregar } = useCombinar(Boolean(me));
+  const [filtroProcurando, setFiltroProcurando] = useState<string | null>(null);
+  const { fila, curiosidade, doDia, ready, responder, recarregar } = useCombinar(Boolean(me), {
+    procurando: filtroProcurando ? [filtroProcurando] : undefined,
+  });
   const { lista: conhecidas } = useConhecidas(me || null);
   const [filtro, setFiltro] = useState<string | null>(null);
   const [deuMatch, setDeuMatch] = useState<Candidata | null>(null);
@@ -136,7 +141,6 @@ export function Combinar({ me }: { me: string }) {
     })();
   }
 
-
   /**
    * Profundidade do carrossel: conforme a carta sai do centro ela gira, desce
    * e encolhe um pouco, e a do centro fica maior — o efeito do mockup da Ju
@@ -147,30 +151,30 @@ export function Combinar({ me }: { me: string }) {
     const tela = telaRef.current;
     if (!tela) return;
     const limpar = [...tela.querySelectorAll<HTMLDivElement>(".dc-carrossel")].map((el) => {
-    let quadro = 0;
-    const aplicar = () => {
-      quadro = 0;
-      const caixa = el.getBoundingClientRect();
-      const centro = caixa.left + el.clientWidth / 2;
-      el.querySelectorAll<HTMLElement>(".dc-pessoa").forEach((carta) => {
-        const r = carta.getBoundingClientRect();
-        const d = Math.max(-1.4, Math.min(1.4, (r.left + r.width / 2 - centro) / r.width));
-        const a = Math.abs(d);
-        carta.style.transform = `rotate(${d * 6}deg) translateY(${a * 26}px) scale(${1 - a * 0.08})`;
-        carta.style.zIndex = String(10 - Math.round(a * 8));
-      });
-    };
-    const aoRolar = () => {
-      if (!quadro) quadro = requestAnimationFrame(aplicar);
-    };
-    aplicar();
-    el.addEventListener("scroll", aoRolar, { passive: true });
-    window.addEventListener("resize", aoRolar);
-    return () => {
-      el.removeEventListener("scroll", aoRolar);
-      window.removeEventListener("resize", aoRolar);
-      if (quadro) cancelAnimationFrame(quadro);
-    };
+      let quadro = 0;
+      const aplicar = () => {
+        quadro = 0;
+        const caixa = el.getBoundingClientRect();
+        const centro = caixa.left + el.clientWidth / 2;
+        el.querySelectorAll<HTMLElement>(".dc-pessoa").forEach((carta) => {
+          const r = carta.getBoundingClientRect();
+          const d = Math.max(-1.4, Math.min(1.4, (r.left + r.width / 2 - centro) / r.width));
+          const a = Math.abs(d);
+          carta.style.transform = `rotate(${d * 6}deg) translateY(${a * 26}px) scale(${1 - a * 0.08})`;
+          carta.style.zIndex = String(10 - Math.round(a * 8));
+        });
+      };
+      const aoRolar = () => {
+        if (!quadro) quadro = requestAnimationFrame(aplicar);
+      };
+      aplicar();
+      el.addEventListener("scroll", aoRolar, { passive: true });
+      window.addEventListener("resize", aoRolar);
+      return () => {
+        el.removeEventListener("scroll", aoRolar);
+        window.removeEventListener("resize", aoRolar);
+        if (quadro) cancelAnimationFrame(quadro);
+      };
     });
     return () => limpar.forEach((f) => f());
   }, [vista.length, conhecidas.length, ready]);
@@ -186,49 +190,49 @@ export function Combinar({ me }: { me: string }) {
   if (!ready) return <Esqueleto tipo="cartoes" />;
 
   const comemoracao = deuMatch && (
-      <section className="deu-match" onClick={() => setDeuMatch(null)}>
-        <div className="deu-match-ceu" aria-hidden="true">
-          {CONFETE.map((c, i) => (
-            <span key={i} style={{ left: c.left, background: c.cor, animationDelay: c.atraso }} />
+    <section className="deu-match" onClick={() => setDeuMatch(null)}>
+      <div className="deu-match-ceu" aria-hidden="true">
+        {CONFETE.map((c, i) => (
+          <span key={i} style={{ left: c.left, background: c.cor, animationDelay: c.atraso }} />
+        ))}
+      </div>
+      <p className="deu-match-grito">Vocês deram match!</p>
+      <div className="deu-match-rostos">
+        <span className="deu-match-eu">
+          <SemFoto nome="você" size={104} />
+        </span>
+        <span className="deu-match-coracao">
+          <Icon name="heart" />
+        </span>
+        <span className="deu-match-ela">
+          <Face c={deuMatch} size={104} />
+        </span>
+      </div>
+      <h2>Você e {deuMatch.nome.split(" ")[0]} querem se conhecer</h2>
+      {deuMatch.emComum.length > 0 ? (
+        <p className="deu-match-comum">
+          {deuMatch.emComum.slice(0, 3).map((i) => (
+            <span key={i}>
+              <Icon name={iconeDoInteresse(i)} />
+              {i}
+            </span>
           ))}
-        </div>
-        <p className="deu-match-grito">Vocês deram match!</p>
-        <div className="deu-match-rostos">
-          <span className="deu-match-eu">
-            <SemFoto nome="você" size={104} />
-          </span>
-          <span className="deu-match-coracao">
-            <Icon name="heart" />
-          </span>
-          <span className="deu-match-ela">
-            <Face c={deuMatch} size={104} />
-          </span>
-        </div>
-        <h2>Você e {deuMatch.nome.split(" ")[0]} querem se conhecer</h2>
-        {deuMatch.emComum.length > 0 ? (
-          <p className="deu-match-comum">
-            {deuMatch.emComum.slice(0, 3).map((i) => (
-              <span key={i}>
-                <Icon name={iconeDoInteresse(i)} />
-                {i}
-              </span>
-            ))}
-          </p>
-        ) : (
-          <p className="deu-match-sub">A conversa de vocês já está aberta.</p>
-        )}
-        <div className="deu-match-acoes">
-          <Button asChild>
-            <Link to="/conversas/$id" params={{ id: deuMatch.userId }}>
-              <Icon name="chat" />
-              Falar agora
-            </Link>
-          </Button>
-          <Button variant="ghost" onClick={() => setDeuMatch(null)}>
-            Ver mais pessoas
-          </Button>
-        </div>
-      </section>
+        </p>
+      ) : (
+        <p className="deu-match-sub">A conversa de vocês já está aberta.</p>
+      )}
+      <div className="deu-match-acoes">
+        <Button asChild>
+          <Link to="/conversas/$id" params={{ id: deuMatch.userId }}>
+            <Icon name="chat" />
+            Falar agora
+          </Link>
+        </Button>
+        <Button variant="ghost" onClick={() => setDeuMatch(null)}>
+          Ver mais pessoas
+        </Button>
+      </div>
+    </section>
   );
 
   const trilhoConhecidas = conhecidas.length > 0 && (
@@ -243,7 +247,9 @@ export function Combinar({ me }: { me: string }) {
               <span className="dc-foto-sombra" aria-hidden="true" />
               <div className="dc-info">
                 <h2 className="dc-nome">
-                  <Link to="/nommi/$id" params={{ id: k.userId }}>{k.nome}</Link>
+                  <Link to="/nommi/$id" params={{ id: k.userId }}>
+                    {k.nome}
+                  </Link>
                 </h2>
                 <p className="dc-cidade">
                   <Icon name="pin" />
@@ -276,6 +282,22 @@ export function Combinar({ me }: { me: string }) {
   const trilhoMinhasTribos = <TrilhoMinhasTribos me={me} />;
   const bannerTribos = <BannerTribos />;
 
+  /** "O que estou procurando": filtro no servidor (0064), vale mesmo com a fila vazia. */
+  const faixaProcurando = (
+    <div className="dc-filtros dc-filtros-procurando" role="group" aria-label="Filtrar pelo que a pessoa procura">
+      {OPCOES_PROCURANDO.map((o) => (
+        <button
+          key={o}
+          type="button"
+          className={"dc-chip" + (filtroProcurando === o ? " selected" : "")}
+          onClick={() => setFiltroProcurando(filtroProcurando === o ? null : o)}
+        >
+          {o}
+        </button>
+      ))}
+    </div>
+  );
+
   const faixaFiltros = opcoesFiltro.length > 1 && (
     <div className="dc-filtros" role="group" aria-label="Filtrar por interesse">
       <button
@@ -303,49 +325,49 @@ export function Combinar({ me }: { me: string }) {
     return (
       <div ref={telaRef}>
         {comemoracao}
-      {/* Sem cartas, a explicação vem PRIMEIRO. Antes a pessoa rolava tribos,
+        {faixaProcurando}
+        {/* Sem cartas, a explicação vem PRIMEIRO. Antes a pessoa rolava tribos,
           banner e conexões inteiros antes de descobrir por que não havia
           ninguém — e no Descobrir, onde a promessa é conhecer gente, isso lê
           como se o app tivesse quebrado. */}
-      <EmptyState
-        title={
-          doDia && doDia.restantes === 0
-            ? "Suas apresentações de hoje acabaram."
-            : "Você conheceu todo mundo de hoje."
-        }
-        text={
-          doDia && doDia.restantes === 0
-            ? fraseTetoDePerfis(doDia.pro)
-            : "Amanhã a nommi te apresenta gente nova."
-        }
-      >
-        {doDia && doDia.restantes === 0 && !doDia.pro && (
+        <EmptyState
+          title={
+            doDia && doDia.restantes === 0
+              ? "Suas apresentações de hoje acabaram."
+              : "Você conheceu todo mundo de hoje."
+          }
+          text={
+            doDia && doDia.restantes === 0 ? fraseTetoDePerfis(doDia.pro) : "Amanhã a nommi te apresenta gente nova."
+          }
+        >
+          {doDia && doDia.restantes === 0 && !doDia.pro && (
+            <Button asChild>
+              <Link to="/pro">
+                <Icon name="spark" />
+                Conhecer o Pro
+              </Link>
+            </Button>
+          )}
           <Button asChild>
-            <Link to="/pro">
-              <Icon name="spark" />
-              Conhecer o Pro
+            <Link to="/convidar">
+              <Icon name="send" />
+              Convidar alguém
             </Link>
           </Button>
-        )}
-        <Button asChild>
-          <Link to="/convidar">
-            <Icon name="send" />
-            Convidar alguém
-          </Link>
-        </Button>
-        <Button asChild variant="secondary">
-          <Link to="/grupos">Entrar numa tribo</Link>
-        </Button>
-      </EmptyState>
-      {trilhoConhecidas}
-      {trilhoMinhasTribos}
-      {bannerTribos}
+          <Button asChild variant="secondary">
+            <Link to="/grupos">Entrar numa tribo</Link>
+          </Button>
+        </EmptyState>
+        {trilhoConhecidas}
+        {trilhoMinhasTribos}
+        {bannerTribos}
       </div>
     );
 
   return (
     <section className="combinar dc-combinar" ref={telaRef}>
       {comemoracao}
+      {faixaProcurando}
       {faixaFiltros}
 
       {curiosidade > 0 && (
@@ -360,11 +382,7 @@ export function Combinar({ me }: { me: string }) {
       {/* Carrossel de pessoas com profundidade: a carta do centro é maior,
           as vizinhas entram inclinadas e mais baixas (mockup da Ju 02/11).
           Conectar sai no coração ou na barra branca; o X passa para a próxima. */}
-      <div
-        className="dc-carrossel"
-        role="list"
-        aria-label="Pessoas que podem combinar com você"
-      >
+      <div className="dc-carrossel" role="list" aria-label="Pessoas que podem combinar com você">
         {vista.map((pessoa) => {
           const listaP = interessesOrdenados(pessoa);
           const tagsP = listaP.slice(0, 3);
@@ -382,11 +400,7 @@ export function Combinar({ me }: { me: string }) {
                   >
                     <Icon name="close" />
                   </button>
-                  <SafetyMenu
-                    me={me}
-                    targetUserId={pessoa.userId}
-                    targetUserName={pessoa.nome}
-                  />
+                  <SafetyMenu me={me} targetUserId={pessoa.userId} targetUserName={pessoa.nome} />
                 </div>
                 <button
                   type="button"
@@ -420,9 +434,22 @@ export function Combinar({ me }: { me: string }) {
                   <p className="dc-cidade">
                     <Icon name="pin" />
                     {pessoa.cidade || "Brasil"}
+                    {pessoa.estado ? ` - ${pessoa.estado}` : ""}
                     {pessoa.tribosEmComum > 0 &&
                       ` · ${pessoa.tribosEmComum} ${pessoa.tribosEmComum === 1 ? "tribo" : "tribos"} em comum`}
                   </p>
+                  {pessoa.estadoCivil && (
+                    <p className="dc-civil">
+                      <span aria-hidden="true">{iconeEstadoCivil(pessoa.estadoCivil)}</span>
+                      {rotuloEstadoCivil(pessoa.estadoCivil)}
+                    </p>
+                  )}
+                  {pessoa.procurandoTags.length > 0 && (
+                    <p className="dc-procurando">
+                      <Icon name="spark" />
+                      Procuro: {pessoa.procurandoTags.slice(0, 2).join(" · ")}
+                    </p>
+                  )}
                   {tagsP.length > 0 && (
                     <div className="dc-tags">
                       {tagsP.map((i) => (
@@ -433,11 +460,7 @@ export function Combinar({ me }: { me: string }) {
                       ))}
                     </div>
                   )}
-                  <button
-                    type="button"
-                    className="dc-conectar"
-                    onClick={() => void decidir(pessoa, true)}
-                  >
+                  <button type="button" className="dc-conectar" onClick={() => void decidir(pessoa, true)}>
                     <Icon name="users" />
                     Conectar
                   </button>
