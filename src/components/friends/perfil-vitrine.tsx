@@ -71,7 +71,7 @@ export function ConexaoBuscada({ frase, tags, onEditar }: { frase: string; tags:
   return (
     <section className="pv-bloco pv-conexao">
       <span className="pv-conexao-icone">
-        <Icon name="target" />
+        <Icon name="heart" />
       </span>
       <div>
         <h2>Que tipo de conexão estou buscando?</h2>
@@ -131,7 +131,7 @@ export function TribosEMomentos({ me }: { me: string }) {
       <section className="pv-bloco pv-mini">
         <div className="pv-cabeca">
           <h2>
-            <Icon name="camera" /> Meus momentos
+            <Icon name="image" /> Meus momentos
           </h2>
         </div>
         <div className="pv-grade">
