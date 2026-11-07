@@ -57,7 +57,7 @@ export function AmigosDescrevem({ dono }: { dono: string }) {
         <div className="pv-selos-trilho">
           {selos.map((s, n) => (
             <span key={s.selo} className={"pv-selo " + TONS_DOS_SELOS[n % TONS_DOS_SELOS.length]}>
-              <Icon name={ICONES_DOS_SELOS[n % ICONES_DOS_SELOS.length]} />
+              <Icon name={ICONES_DOS_SELOS[n % ICONES_DOS_SELOS.length] ?? "star"} />
               {s.selo}
               {s.quantos > 1 && <small>×{s.quantos}</small>}
             </span>
