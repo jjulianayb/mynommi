@@ -40,6 +40,7 @@ import {
   type PaginaPessoal,
 } from "@/lib/pagina-pessoal";
 import { OPCOES_PROCURANDO } from "@/lib/combinar";
+import { InteressesChips, AmigosDescrevem, ConexaoBuscada, TribosEMomentos } from "./perfil-vitrine";
 
 function Face({
   avatar,
@@ -181,7 +182,7 @@ export function MyNommi({ me }: { me: string }) {
         <Button asChild variant="secondary" size="sm">
           <Link to="/configuracoes" search={{ section: "perfil" }}>
             <Icon name="settings" />
-            Editar
+            Editar perfil
           </Link>
         </Button>
       </div>
@@ -218,15 +219,13 @@ export function MyNommi({ me }: { me: string }) {
       <StatsLine userId={me} onOpen={setListaVinculos} />
       <MinhasEstrelas saldo={estrelas.saldo} ganhasSemana={estrelas.ganhasSemana} presencas={estrelas.presencas} />
 
-      {pagina.lookingFor && (
-        <p className="mynommi-procuro">
-          <Icon name="spark" />
-          {pagina.lookingFor}
-        </p>
-      )}
       {pagina.about && <p className="mynommi-sobre">{pagina.about}</p>}
+      <InteressesChips interesses={pagina.interests} onEditar={() => setMexendoInteresses(true)} />
+      <AmigosDescrevem dono={me} />
+      <ConexaoBuscada frase={pagina.lookingFor} tags={pagina.procurando} onEditar={() => setEditando(true)} />
+      <TribosEMomentos me={me} />
 
-      <Secao titulo="Meus interesses" aberta={pagina.interests.length > 0 || mexendoInteresses}>
+      <Secao titulo="Mexer nos interesses" aberta={mexendoInteresses}>
         <div className="mynommi-secao-acoes">
           <Button variant="ghost" size="sm" onClick={() => setMexendoInteresses((v) => !v)}>
             <Icon name={mexendoInteresses ? "close" : "plus"} />

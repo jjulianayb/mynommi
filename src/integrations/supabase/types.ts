@@ -64,13 +64,13 @@ export type Database = {
           usado_em: string | null
         }
         Insert: {
-          id?: never
+          id?: number
           texto: string
           tipo: string
           usado_em?: string | null
         }
         Update: {
-          id?: never
+          id?: number
           texto?: string
           tipo?: string
           usado_em?: string | null
@@ -769,6 +769,24 @@ export type Database = {
           },
         ]
       }
+      pro_concedido: {
+        Row: {
+          concedido_em: string
+          motivo: string
+          user_id: string
+        }
+        Insert: {
+          concedido_em?: string
+          motivo?: string
+          user_id: string
+        }
+        Update: {
+          concedido_em?: string
+          motivo?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           about: string
@@ -778,11 +796,14 @@ export type Database = {
           avatar_x: number
           avatar_y: number
           background_path: string
+          celular: string
           city: string
           cover_path: string
           cover_x: number
           cover_y: number
           created_at: string
+          estado: string
+          estado_civil: string
           goals: string[]
           id: string
           instagram: string
@@ -790,6 +811,8 @@ export type Database = {
           is_business: boolean
           is_test: boolean
           looking_for: string
+          mostrar_cidade: boolean
+          mostrar_estado_civil: boolean
           mostrar_idade: boolean
           mostrar_online: boolean
           nao_topa: string
@@ -797,6 +820,7 @@ export type Database = {
           nickname: string
           person_verified: boolean
           places: string[]
+          procurando: string[]
           profile_mode: string
           show_counts: boolean
           topa: string
@@ -814,11 +838,14 @@ export type Database = {
           avatar_x?: number
           avatar_y?: number
           background_path?: string
+          celular?: string
           city?: string
           cover_path?: string
           cover_x?: number
           cover_y?: number
           created_at?: string
+          estado?: string
+          estado_civil?: string
           goals?: string[]
           id: string
           instagram?: string
@@ -826,6 +853,8 @@ export type Database = {
           is_business?: boolean
           is_test?: boolean
           looking_for?: string
+          mostrar_cidade?: boolean
+          mostrar_estado_civil?: boolean
           mostrar_idade?: boolean
           mostrar_online?: boolean
           nao_topa?: string
@@ -833,6 +862,7 @@ export type Database = {
           nickname?: string
           person_verified?: boolean
           places?: string[]
+          procurando?: string[]
           profile_mode?: string
           show_counts?: boolean
           topa?: string
@@ -850,11 +880,14 @@ export type Database = {
           avatar_x?: number
           avatar_y?: number
           background_path?: string
+          celular?: string
           city?: string
           cover_path?: string
           cover_x?: number
           cover_y?: number
           created_at?: string
+          estado?: string
+          estado_civil?: string
           goals?: string[]
           id?: string
           instagram?: string
@@ -862,6 +895,8 @@ export type Database = {
           is_business?: boolean
           is_test?: boolean
           looking_for?: string
+          mostrar_cidade?: boolean
+          mostrar_estado_civil?: boolean
           mostrar_idade?: boolean
           mostrar_online?: boolean
           nao_topa?: string
@@ -869,6 +904,7 @@ export type Database = {
           nickname?: string
           person_verified?: boolean
           places?: string[]
+          procurando?: string[]
           profile_mode?: string
           show_counts?: boolean
           topa?: string
@@ -1015,17 +1051,17 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "reacoes_de_mensagem_mensagem_tribo_fkey"
-            columns: ["mensagem_tribo"]
-            isOneToOne: false
-            referencedRelation: "teia_messages"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "reacoes_de_mensagem_mensagem_conversa_fkey"
             columns: ["mensagem_conversa"]
             isOneToOne: false
             referencedRelation: "direct_messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reacoes_de_mensagem_mensagem_tribo_fkey"
+            columns: ["mensagem_tribo"]
+            isOneToOne: false
+            referencedRelation: "teia_messages"
             referencedColumns: ["id"]
           },
         ]
@@ -1641,6 +1677,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      intervalo_do_pippo: { Args: never; Returns: string }
       is_blocked_between: { Args: { _a: string; _b: string }; Returns: boolean }
       is_teia_creator: {
         Args: { _teia: number; _user: string }
@@ -1783,18 +1820,27 @@ export type Database = {
           avatar_x: number
           avatar_y: number
           background_path: string
+          celular: string
           city: string
           cover_path: string
           cover_x: number
           cover_y: number
           desde: string
+          estado: string
+          estado_civil: string
           id: string
+          idade: number
           instagram: string
           interests: string[]
           looking_for: string
+          mostrar_cidade: boolean
+          mostrar_estado_civil: boolean
+          mostrar_idade: boolean
+          mostrar_online: boolean
           nickname: string
           person_verified: boolean
           places: string[]
+          procurando: string[]
           profile_mode: string
           tribos_em_comum: string[]
         }[]
@@ -1832,6 +1878,24 @@ export type Database = {
           user_id: string
         }[]
       }
+      perfil_de_amigo: {
+        Args: { _id: string }
+        Returns: {
+          about: string
+          avatar_figura: string
+          avatar_url: string
+          city: string
+          cover_path: string
+          estado: string
+          estado_civil: string
+          id: string
+          idade: number
+          interests: string[]
+          nickname: string
+          procurando: string[]
+          video_path: string
+        }[]
+      }
       perfis_do_dia: {
         Args: never
         Returns: {
@@ -1848,16 +1912,15 @@ export type Database = {
           peso: number
         }[]
       }
-      pippo_puxa_assunto: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      posso_ver_a_mensagem: {
-        Args: { _conversa: string; _tribo: string }
-        Returns: boolean
-      }
       pessoas_para_combinar: {
-        Args: { _limite?: number }
+        Args: {
+          _estado_civil?: string
+          _idade_max?: number
+          _idade_min?: number
+          _limite?: number
+          _procurando?: string[]
+          _uf?: string
+        }
         Returns: {
           about: string
           afinidade: number
@@ -1869,6 +1932,8 @@ export type Database = {
           cover_x: number
           cover_y: number
           em_comum: string[]
+          estado: string
+          estado_civil: string
           goals: string[]
           idade: number
           interests: string[]
@@ -1879,9 +1944,11 @@ export type Database = {
           online: boolean
           person_verified: boolean
           places: string[]
+          procurando: string[]
           user_id: string
         }[]
       }
+      pippo_puxa_assunto: { Args: never; Returns: string }
       pode_criar_role_na_tribo: {
         Args: { _quem: string; _tribo: number }
         Returns: boolean
@@ -1897,6 +1964,10 @@ export type Database = {
       pode_ganhar_estrela: { Args: { _user: string }; Returns: boolean }
       pode_selar: { Args: { _de: string; _dono: string }; Returns: boolean }
       posso_entrar_na_tribo: { Args: { _teia: number }; Returns: boolean }
+      posso_ver_a_mensagem: {
+        Args: { _conversa: string; _tribo: string }
+        Returns: boolean
+      }
       premiar_convite_se_vingou: { Args: { _quem: string }; Returns: undefined }
       presenca_do_anfitriao: { Args: { _teia: number }; Returns: string }
       profile_stats: {
@@ -1922,6 +1993,14 @@ export type Database = {
         }[]
       }
       purge_expired_stories: { Args: never; Returns: number }
+      quem_combina_comigo: {
+        Args: { _ints: string[] }
+        Returns: {
+          id: string
+          interests: string[]
+          nickname: string
+        }[]
+      }
       quem_eu_sigo: {
         Args: never
         Returns: {
@@ -2030,6 +2109,14 @@ export type Database = {
           id: string
           mine: boolean
           nickname: string
+        }[]
+      }
+      selo_de: {
+        Args: { _quem: string }
+        Returns: {
+          concedido: boolean
+          embaixadora: boolean
+          pro: boolean
         }[]
       }
       selos_do_perfil: {
