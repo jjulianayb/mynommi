@@ -216,14 +216,15 @@ export function MyNommi({ me }: { me: string }) {
         </div>
       )}
 
-      <StatsLine userId={me} onOpen={setListaVinculos} />
-      <MinhasEstrelas saldo={estrelas.saldo} ganhasSemana={estrelas.ganhasSemana} presencas={estrelas.presencas} />
-
-      {pagina.about && <p className="mynommi-sobre">{pagina.about}</p>}
-      <InteressesChips interesses={pagina.interests} onEditar={() => setMexendoInteresses(true)} />
-      <AmigosDescrevem dono={me} />
-      <ConexaoBuscada frase={pagina.lookingFor} tags={pagina.procurando} onEditar={() => setEditando(true)} />
-      <TribosEMomentos me={me} />
+      <div className="pv-vitrine">
+        {pagina.about && <p className="mynommi-sobre">{pagina.about}</p>}
+        <InteressesChips interesses={pagina.interests} onEditar={() => setMexendoInteresses(true)} />
+        <AmigosDescrevem dono={me} />
+        <ConexaoBuscada frase={pagina.lookingFor} tags={pagina.procurando} onEditar={() => setEditando(true)} />
+        <TribosEMomentos me={me} />
+        <StatsLine userId={me} onOpen={setListaVinculos} />
+        <MinhasEstrelas saldo={estrelas.saldo} ganhasSemana={estrelas.ganhasSemana} presencas={estrelas.presencas} />
+      </div>
 
       <Secao titulo="Mexer nos interesses" aberta={mexendoInteresses}>
         <div className="mynommi-secao-acoes">
