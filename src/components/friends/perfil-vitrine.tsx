@@ -13,6 +13,7 @@ import { usePosts } from "@/lib/posts";
  */
 
 const TONS_DOS_SELOS = ["coral", "menta", "lavanda", "sol"] as const;
+const ICONES_DOS_SELOS = ["heart", "spark", "star", "smile"] as const;
 
 export function InteressesChips({ interesses, onEditar }: { interesses: string[]; onEditar: () => void }) {
   if (interesses.length === 0)
