@@ -11,8 +11,14 @@ export type PublicProfile = {
   avatar_url: string;
   video_path?: string;
   avatar_figura?: string;
+  /** 0064: UF e procurando são lidos direto; estado civil e idade só chegam
+   *  pela perfil_de_amigo, e só com a chave da dona ligada. */
+  estado?: string;
+  procurando?: string[];
+  estado_civil?: string;
+  idade?: number | null;
 };
-const COLS = "id,nickname,city,about,interests,avatar_url,video_path,avatar_figura";
+const COLS = "id,nickname,city,about,interests,avatar_url,video_path,avatar_figura,estado,procurando";
 
 /** Limpa o termo de busca: sem caracteres que quebram o filtro, até 40 letras. */
 export function cleanQuery(q: string) {
@@ -32,12 +38,17 @@ export async function saveCloudProfile(
     about?: string;
     avatar_url?: string;
     avatar_figura?: string;
+    estado?: string;
+    procurando?: string[];
+    estado_civil?: string;
+    mostrar_estado_civil?: boolean;
+    mostrar_cidade?: boolean;
+    mostrar_idade?: boolean;
+    mostrar_online?: boolean;
   },
 ) {
   // avatar_figura ainda não está em types.ts
-  const { error } = await (supabase.from("profiles") as ReturnType<typeof supabase.from>)
-    .update(data)
-    .eq("id", userId);
+  const { error } = await (supabase.from("profiles") as ReturnType<typeof supabase.from>).update(data).eq("id", userId);
   return !error;
 }
 
@@ -85,19 +96,27 @@ export function usePublicProfile(id: string, enabled: boolean) {
     if (!enabled) return;
     let alive = true;
     void (async () => {
+      // estado e procurando ainda não estão em types.ts: mesma conversão do combinar.
+      const db = supabase as unknown as SupabaseClient;
       let [{ data: p }, { data: t }] = await Promise.all([
-        supabase.from("profiles").select(COLS).eq("id", id).maybeSingle(),
+        db.from("profiles").select(COLS).eq("id", id).maybeSingle(),
         supabase.rpc("list_teias", { _creator: id }),
       ]);
       // Perfil privado de uma amizade aceita: a tabela esconde a linha (RLS),
       // mas a amiga pode ver o básico — a RPC perfil_de_amigo devolve só as
-      // colunas seguras nesse caso (0061).
+      // colunas seguras nesse caso (0061). Ela também é a única fonte de
+      // idade e estado civil (0064): saem só com a chave da dona ligada, e
+      // a data de nascimento nunca trafega.
+      const { data: pa } = await (supabase as unknown as SupabaseClient).rpc("perfil_de_amigo", { _id: id });
+      const amigo = (((pa as PublicProfile[] | null) ?? [])[0] ?? null) as PublicProfile | null;
       if (!p) {
-        const { data: pa } = await (supabase as unknown as SupabaseClient).rpc(
-          "perfil_de_amigo",
-          { _id: id },
-        );
-        p = (((pa as PublicProfile[] | null) ?? [])[0] ?? null) as typeof p;
+        p = amigo as typeof p;
+      } else if (amigo) {
+        p = {
+          ...(p as PublicProfile),
+          estado_civil: amigo.estado_civil,
+          idade: amigo.idade,
+        } as unknown as typeof p;
       }
       if (alive)
         setState({
