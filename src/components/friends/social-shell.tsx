@@ -18,6 +18,98 @@ import { registrarServiceWorker } from "@/lib/push";
 import { useAceite } from "@/lib/aceite";
 import { AvisoDeAceite } from "./aceite";
 import { Apresentacao } from "./apresentacao";
+import { supabase } from "@/integrations/supabase/client";
+import { enviarFotoDePerfil } from "@/lib/foto-perfil";
+import { saveCloudProfile } from "@/lib/real-profiles";
+import { FotoInstantanea } from "./foto-instantanea";
+/** Cadastros a partir desta data precisam de foto. Ajustar no dia do deploy. */
+const CORTE_FOTO_OBRIGATORIA = "2026-11-08T00:00:00-03:00";
+
+type InfoFoto = { temFoto: boolean; contaNova: boolean };
+
+function useFotoDoPerfil(userId: string | null) {
+  const [info, setInfo] = useState<InfoFoto | null>(null);
+  useEffect(() => {
+    if (!userId) return;
+    let alive = true;
+    void (async () => {
+      const { data } = await supabase.from("profiles").select("avatar_url, created_at").eq("id", userId).maybeSingle();
+      if (!alive || !data) return;
+      const r = data as { avatar_url: string | null; created_at: string };
+      setInfo({
+        temFoto: !!r.avatar_url,
+        contaNova: r.created_at >= CORTE_FOTO_OBRIGATORIA,
+      });
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [userId]);
+  return info;
+}
+
+/** Tela cheia para a conta nova: só sai com a foto enviada. */
+function GateFoto({ me }: { me: string }) {
+  const [pronta, setPronta] = useState(false);
+  const [erro, setErro] = useState("");
+  if (pronta) return null;
+  return (
+    <div className="foto-gate" role="dialog" aria-modal="true" aria-label="Foto de perfil obrigatória">
+      <div className="foto-gate-caixa">
+        <h1>Só falta a sua foto</h1>
+        <p className="intro">
+          Na nommi, quem procura amizade precisa ver quem você é. Por isso a foto de perfil é obrigatória — e a sua
+          aparece só para quem está aqui pelo mesmo motivo.
+        </p>
+        <FotoInstantanea
+          rotulo="Enviar minha foto"
+          onPronta={async (jpeg) => {
+            setErro("");
+            const caminho = await enviarFotoDePerfil(me, jpeg);
+            const ok = await saveCloudProfile(me, { avatar_url: caminho ?? jpeg });
+            if (ok) setPronta(true);
+            else setErro("Não deu para salvar agora. Tenta de novo?");
+          }}
+        />
+        {erro && <p className="small-note">{erro}</p>}
+      </div>
+    </div>
+  );
+}
+
+/** Lembrete para quem já usava a nommi antes da regra: dispensável, sem bloqueio. */
+function LembreteFoto({ me }: { me: string }) {
+  const chave = `nommi-lembrete-foto-${me}`;
+  const [dispensado, setDispensado] = useState(
+    () => typeof localStorage !== "undefined" && localStorage.getItem(chave) === "1",
+  );
+  if (dispensado) return null;
+  return (
+    <div className="foto-lembrete" role="status">
+      <p>
+        <Icon name="image" />
+        Coloque uma foto sua: perfil com foto recebe muito mais conversa.
+      </p>
+      <div className="foto-lembrete-acoes">
+        <Button asChild size="sm">
+          <Link to="/perfil">Enviar foto</Link>
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={() => {
+            localStorage.setItem(chave, "1");
+            setDispensado(true);
+          }}
+        >
+          Agora não
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 import { usePrecisaApresentar } from "@/lib/usar-apresentacao";
 import { recadoDaChegada, useConviteNaChegada, useGuardarConviteDaUrl } from "@/lib/convite-que-chega";
 import { useFriends } from "./store";
@@ -75,6 +167,12 @@ export function SocialShell({ children }: { children: ReactNode }) {
     real && aceite.pronto && !aceite.pendente,
     cloudUser && !demoMode ? cloudUser.id : null,
   );
+  // Foto de perfil: obrigatória para cadastros novos, lembrete para quem já
+  // usava (direção da Ju, 07/11). Depois do aceite e da apresentação: um
+  // passo por vez, nunca duas telas por cima da outra.
+  const fotoInfo = useFotoDoPerfil(real ? (cloudUser?.id ?? null) : null);
+  const portasAbertas = aceite.pronto && !aceite.pendente && apresentar.pronto && !apresentar.precisa;
+  const exigeFoto = portasAbertas && !!fotoInfo && !fotoInfo.temFoto && fotoInfo.contaNova;
   // O tour só começa na página inicial, onde estão as coisas que ele aponta.
   useEffect(() => {
     if (
@@ -83,13 +181,14 @@ export function SocialShell({ children }: { children: ReactNode }) {
       aceite.pendente ||
       !apresentar.pronto ||
       apresentar.precisa ||
+      exigeFoto ||
       pathname !== "/" ||
       tourJaVisto(cloudUser?.id ?? null)
     )
       return;
     const t = setTimeout(() => setTourAberto(true), 900);
     return () => clearTimeout(t);
-  }, [real, pathname, cloudUser?.id, aceite.pronto, aceite.pendente, apresentar.pronto, apresentar.precisa]);
+  }, [real, pathname, cloudUser?.id, aceite.pronto, aceite.pendente, apresentar.pronto, apresentar.precisa, exigeFoto]);
   useEffect(() => {
     setCreate(false);
     setDrawer(false);
@@ -142,6 +241,8 @@ export function SocialShell({ children }: { children: ReactNode }) {
         </div>
       </div>
     );
+  const lembraFoto = portasAbertas && !!fotoInfo && !fotoInfo.temFoto && !fotoInfo.contaNova && pathname === "/";
+
   const items = [
     { to: "/" as const, label: "Início", icon: "home" },
     { to: "/descobrir" as const, label: "Descobrir", icon: "spark" },
@@ -156,6 +257,10 @@ export function SocialShell({ children }: { children: ReactNode }) {
       {apresentar.precisa && cloudUser && pathname === "/" && (
         <Apresentacao me={cloudUser.id} aoFechar={apresentar.encerrar} />
       )}
+      {exigeFoto && cloudUser && !legalPaths.includes(pathname) && pathname !== "/admin" && (
+        <GateFoto me={cloudUser.id} />
+      )}
+      {lembraFoto && cloudUser && <LembreteFoto me={cloudUser.id} />}
       <header className="app-header">
         <Link to="/" aria-label="Nommi, início">
           <Brand />
