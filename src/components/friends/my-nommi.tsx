@@ -34,8 +34,12 @@ import {
   cleanPlaces,
   MAX_PLACES,
   MAX_LOOKING,
+  UFS,
+  OPCOES_ESTADO_CIVIL,
+  rotuloEstadoCivil,
   type PaginaPessoal,
 } from "@/lib/pagina-pessoal";
+import { OPCOES_PROCURANDO } from "@/lib/combinar";
 
 function Face({
   avatar,
@@ -64,15 +68,7 @@ function Face({
 
 /** Seção dobrável da página: o título fica sempre visível e o conteúdo abre
     no toque. Começa aberta quando já tem conteúdo, fechada quando vazia. */
-function Secao({
-  titulo,
-  aberta,
-  children,
-}: {
-  titulo: string;
-  aberta?: boolean;
-  children: React.ReactNode;
-}) {
+function Secao({ titulo, aberta, children }: { titulo: string; aberta?: boolean; children: React.ReactNode }) {
   return (
     <details className="mynommi-secao" open={aberta}>
       <summary>
@@ -97,12 +93,7 @@ export function MyNommi({ me }: { me: string }) {
   const { estrelas } = useEstrelas(me);
   if (!ready) return <Esqueleto tipo="perfil" />;
   if (!pagina)
-    return (
-      <EmptyState
-        title="Sua página ainda não abriu."
-        text="Recarregue a tela ou entre de novo na sua conta."
-      />
-    );
+    return <EmptyState title="Sua página ainda não abriu." text="Recarregue a tela ou entre de novo na sua conta." />;
 
   const falta = missingParts(pagina);
   const pronto = completeness(pagina);
@@ -194,16 +185,14 @@ export function MyNommi({ me }: { me: string }) {
           </Link>
         </Button>
       </div>
-      {postandoStory && (
-        <CameraStory onClose={() => setPostandoStory(false)} onPublish={publicarStory} />
-      )}
+      {postandoStory && <CameraStory onClose={() => setPostandoStory(false)} onPublish={publicarStory} />}
 
       {pagina.interests.length === 0 && !mexendoInteresses && (
         <div className="mynommi-falta">
           <h2>Este é o seu nommi.</h2>
           <p>
-            Agora escolha o que você curte para encontrar pessoas com interesses em comum. Foto e
-            história podem ficar para depois.
+            Agora escolha o que você curte para encontrar pessoas com interesses em comum. Foto e história podem ficar
+            para depois.
           </p>
           <Button onClick={() => setMexendoInteresses(true)}>
             Escolher meus interesses <Icon name="arrow" />
@@ -216,8 +205,8 @@ export function MyNommi({ me }: { me: string }) {
             <span style={{ width: pronto + "%" }} />
           </div>
           <p>
-            <b>Sua página está {pronto}% pronta.</b> Quem chega aqui decide se quer te conhecer.
-            Falta {falta.slice(0, 2).join(" e ")}.
+            <b>Sua página está {pronto}% pronta.</b> Quem chega aqui decide se quer te conhecer. Falta{" "}
+            {falta.slice(0, 2).join(" e ")}.
           </p>
           <Button size="sm" onClick={() => setEditando(true)}>
             <Icon name="plus" />
@@ -227,11 +216,7 @@ export function MyNommi({ me }: { me: string }) {
       )}
 
       <StatsLine userId={me} onOpen={setListaVinculos} />
-      <MinhasEstrelas
-        saldo={estrelas.saldo}
-        ganhasSemana={estrelas.ganhasSemana}
-        presencas={estrelas.presencas}
-      />
+      <MinhasEstrelas saldo={estrelas.saldo} ganhasSemana={estrelas.ganhasSemana} presencas={estrelas.presencas} />
 
       {pagina.lookingFor && (
         <p className="mynommi-procuro">
@@ -265,9 +250,7 @@ export function MyNommi({ me }: { me: string }) {
             ))}
           </div>
         ) : (
-          <p className="small-note">
-            Você ainda não marcou nenhum interesse. É por eles que o match acontece.
-          </p>
+          <p className="small-note">Você ainda não marcou nenhum interesse. É por eles que o match acontece.</p>
         )}
       </Secao>
 
@@ -308,13 +291,7 @@ export function MyNommi({ me }: { me: string }) {
       </Secao>
 
       <Secao titulo="Meu vídeo" aberta={!!pagina.video}>
-        <MeuVideo
-          me={me}
-          path={pagina.video ?? ""}
-          souDono
-          nome={pagina.nickname}
-          onMudou={() => void reload()}
-        />
+        <MeuVideo me={me} path={pagina.video ?? ""} souDono nome={pagina.nickname} onMudou={() => void reload()} />
       </Secao>
 
       {MOSTRAR_SECOES_DE_AMIGOS && (
@@ -353,31 +330,86 @@ export function MyNommi({ me }: { me: string }) {
           }}
         />
       )}
-      {listaVinculos && (
-        <VinculosSheet me={me} tipo={listaVinculos} onClose={() => setListaVinculos(null)} />
-      )}
+      {listaVinculos && <VinculosSheet me={me} tipo={listaVinculos} onClose={() => setListaVinculos(null)} />}
     </section>
   );
 }
 
 /** O que só existe aqui: lugares, o que procuro e o @ do Instagram. */
-function EditarPagina({
-  me,
-  pagina,
-  onClose,
-}: {
-  me: string;
-  pagina: PaginaPessoal;
-  onClose: () => void;
-}) {
+function EditarPagina({ me, pagina, onClose }: { me: string; pagina: PaginaPessoal; onClose: () => void }) {
   const { notify } = useFriends();
   const [places, setPlaces] = useState<string[]>(pagina.places.length ? pagina.places : [""]);
   const [procuro, setProcuro] = useState(pagina.lookingFor);
   const [insta, setInsta] = useState(pagina.instagram);
+  const [celular, setCelular] = useState(pagina.celular);
+  const [uf, setUf] = useState(pagina.estado);
+  const [tags, setTags] = useState<string[]>(pagina.procurando);
+  const [civil, setCivil] = useState(pagina.estadoCivil);
+  const [verCidade, setVerCidade] = useState(pagina.mostrarCidade);
+  const [verCivil, setVerCivil] = useState(pagina.mostrarEstadoCivil);
+  const [verIdade, setVerIdade] = useState(pagina.mostrarIdade);
   const [busy, setBusy] = useState(false);
+
+  const alternaTag = (t: string) =>
+    setTags((atual) => (atual.includes(t) ? atual.filter((x) => x !== t) : atual.length < 3 ? [...atual, t] : atual));
 
   return (
     <Sheet title="Completar meu nommi" onClose={onClose}>
+      <label>
+        Seu estado (UF) <small>aparece no seu cartão junto da cidade</small>
+        <select className="input" value={uf} onChange={(e) => setUf(e.target.value)}>
+          <option value="">Escolher</option>
+          {UFS.map((u) => (
+            <option key={u} value={u}>
+              {u}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className="check-row">
+        <input type="checkbox" checked={verCidade} onChange={(e) => setVerCidade(e.target.checked)} />
+        Mostrar minha cidade e UF no meu cartão
+      </label>
+
+      <b className="partner-label">O que você está procurando</b>
+      <p className="small-note">Aparece no seu cartão e vira filtro no Descobrir. Até 3.</p>
+      <div className="dc-tags">
+        {OPCOES_PROCURANDO.map((o) => (
+          <button
+            key={o}
+            type="button"
+            className={"chip" + (tags.includes(o) ? " selected" : "")}
+            aria-pressed={tags.includes(o)}
+            onClick={() => alternaTag(o)}
+          >
+            {o}
+          </button>
+        ))}
+      </div>
+
+      <label>
+        Estado civil <small>opcional</small>
+        <select className="input" value={civil} onChange={(e) => setCivil(e.target.value)}>
+          <option value="">Prefiro não dizer</option>
+          {OPCOES_ESTADO_CIVIL.map((o) => (
+            <option key={o} value={o}>
+              {rotuloEstadoCivil(o)}
+            </option>
+          ))}
+        </select>
+      </label>
+      {civil && (
+        <label className="check-row">
+          <input type="checkbox" checked={verCivil} onChange={(e) => setVerCivil(e.target.checked)} />
+          Mostrar meu estado civil no meu cartão
+        </label>
+      )}
+
+      <label className="check-row">
+        <input type="checkbox" checked={verIdade} onChange={(e) => setVerIdade(e.target.checked)} />
+        Mostrar minha idade no meu cartão
+      </label>
+
       <label>
         O que você procura aqui <small>uma frase</small>
         <input
@@ -412,12 +444,7 @@ function EditarPagina({
         </div>
       ))}
       {places.length < MAX_PLACES && (
-        <Button
-          type="button"
-          variant="secondary"
-          size="sm"
-          onClick={() => setPlaces([...places, ""])}
-        >
+        <Button type="button" variant="secondary" size="sm" onClick={() => setPlaces([...places, ""])}>
           <Icon name="plus" />
           Mais um lugar
         </Button>
@@ -433,9 +460,20 @@ function EditarPagina({
           onChange={(e) => setInsta(e.target.value)}
         />
       </label>
-      <p className="small-note">
-        A nommi não confere esse perfil. Serve só para as pessoas te reconhecerem.
-      </p>
+      <p className="small-note">A nommi não confere esse perfil. Serve só para as pessoas te reconhecerem.</p>
+
+      <label>
+        Seu celular <small>opcional</small>
+        <input
+          className="input"
+          inputMode="tel"
+          maxLength={20}
+          value={celular}
+          placeholder="(31) 9 9999-9999"
+          onChange={(e) => setCelular(e.target.value)}
+        />
+      </label>
+      <p className="small-note">Seu número fica só com você. Ninguém vê e a nommi não compartilha.</p>
 
       <Button
         className="wide"
@@ -446,6 +484,13 @@ function EditarPagina({
             places: cleanPlaces(places),
             lookingFor: procuro,
             instagram: insta,
+            celular: celular,
+            estado: uf,
+            procurando: tags,
+            estadoCivil: civil,
+            mostrarCidade: verCidade,
+            mostrarEstadoCivil: verCivil,
+            mostrarIdade: verIdade,
           });
           setBusy(false);
           notify(ok ? "Sua página ficou mais completa." : "Não deu para salvar agora.");
