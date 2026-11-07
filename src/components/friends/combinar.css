@@ -669,3 +669,13 @@ a.dc-conectar {
     transition: none;
   }
 }
+
+/* Foto da carta abre o nommi da pessoa (pedido da Ju, 07/11). A camada fica
+   embaixo: a sombra já tem pointer-events:none e os botões (X, coração,
+   menu, info) vêm depois no DOM, então o toque na foto cai no link e os
+   botões continuam por cima. */
+.dc-foto > a.dc-foto-link {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
