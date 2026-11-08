@@ -600,4 +600,6 @@ um plano quase derrubou `avatar_figura` (ver a seção de 06/11).
 ## Ainda aberto: cidade e UF saem pela API (decisão da Ju)
 - `city` e `estado` continuam legíveis direto da tabela por qualquer conta logada, e a chave `mostrar_cidade` só é respeitada **dentro das RPCs**. Então quem desligou "mostrar cidade" tem a cidade escondida na tela e aberta na API.
 - Fechar é `REVOKE SELECT (city, estado)`, mas **quebra `usePeopleSearch`** (busca por nome/cidade), que lê a tabela direto. O Instinct deixou pronta a proposta de `busca_pessoas()` com a cidade mascarada — e com o detalhe certo: a busca por cidade **só casa quando `mostrar_cidade` está ligada**, senão a busca vira oráculo da cidade oculta.
-- Ordem segura: RPC + mudar a leitura no app **primeiro**, o revoke **por último**. Não aplicado: é decisão de produto da Ju, e cidade é o coração do Descobrir.
+- Ordem segura: RPC + mudar a leitura no app **primeiro**, o revoke **por último**.
+- **Decisão da Ju (07/11): fica como está.** Cidade é o coração do Descobrir e a tela acabou de ser mexida; o risco de mexer na leitura agora é maior que a exposição, que alcança só conta logada lendo cidade/UF de perfil público. **Não aplicar o revoke sem ela pedir** — nem "de passagem" numa outra migração.
+- O que continua verdadeiro e vale lembrar se o assunto voltar: a chave "mostrar cidade" esconde na tela e não esconde na API. Se um dia incomodar, o caminho barato não é o revoke, é **a frase da chave dizer só o que ela faz**.
