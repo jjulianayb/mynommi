@@ -17,7 +17,7 @@ import { registrarAcesso } from "@/lib/numeros";
 import { registrarServiceWorker } from "@/lib/push";
 import { useAceite } from "@/lib/aceite";
 import { AvisoDeAceite } from "./aceite";
-import { Apresentacao } from "./apresentacao";
+import { BoasVindas } from "./boas-vindas";
 import { supabase } from "@/integrations/supabase/client";
 import { enviarFotoDePerfil } from "@/lib/foto-perfil";
 import { saveCloudProfile } from "@/lib/real-profiles";
@@ -27,7 +27,7 @@ const CORTE_FOTO_OBRIGATORIA = "2026-11-08T00:00:00-03:00";
 
 type InfoFoto = { temFoto: boolean; contaNova: boolean };
 
-function useFotoDoPerfil(userId: string | null) {
+function useFotoDoPerfil(userId: string | null, giro: unknown = null) {
   const [info, setInfo] = useState<InfoFoto | null>(null);
   useEffect(() => {
     if (!userId) return;
@@ -44,7 +44,9 @@ function useFotoDoPerfil(userId: string | null) {
     return () => {
       alive = false;
     };
-  }, [userId]);
+    // "giro" recarrega a info quando a boas-vindas fecha: quem enviou a foto
+    // nela não pode cair no portão de foto logo em seguida.
+  }, [userId, giro]);
   return info;
 }
 
@@ -170,7 +172,7 @@ export function SocialShell({ children }: { children: ReactNode }) {
   // Foto de perfil: obrigatória para cadastros novos, lembrete para quem já
   // usava (direção da Ju, 07/11). Depois do aceite e da apresentação: um
   // passo por vez, nunca duas telas por cima da outra.
-  const fotoInfo = useFotoDoPerfil(real ? (cloudUser?.id ?? null) : null);
+  const fotoInfo = useFotoDoPerfil(real ? (cloudUser?.id ?? null) : null, apresentar.precisa);
   const portasAbertas = aceite.pronto && !aceite.pendente && apresentar.pronto && !apresentar.precisa;
   const exigeFoto = portasAbertas && !!fotoInfo && !fotoInfo.temFoto && fotoInfo.contaNova;
   // O tour só começa na página inicial, onde estão as coisas que ele aponta.
@@ -255,7 +257,7 @@ export function SocialShell({ children }: { children: ReactNode }) {
         <AvisoDeAceite onAceitar={aceite.aceitar} />
       )}
       {apresentar.precisa && cloudUser && pathname === "/" && (
-        <Apresentacao me={cloudUser.id} aoFechar={apresentar.encerrar} />
+        <BoasVindas me={cloudUser.id} aoFechar={apresentar.encerrar} />
       )}
       {exigeFoto && cloudUser && !legalPaths.includes(pathname) && pathname !== "/admin" && (
         <GateFoto me={cloudUser.id} />
