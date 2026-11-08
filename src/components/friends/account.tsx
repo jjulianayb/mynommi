@@ -9,6 +9,7 @@ import { RECADO_DO_NAVEGADOR, ehNavegadorDeApp, recadoDoLoginSocial } from "@/li
 import { irParaOEnderecoCerto } from "@/lib/endereco";
 import { conviteGuardado } from "@/lib/convite-que-chega";
 import { PippoRosto } from "./pippo";
+import { Cadastro } from "./cadastro";
 import { Icon } from "./art";
 import { Brand } from "./surfaces";
 import { useFriends } from "./store";
@@ -147,6 +148,29 @@ export function Account({
         >
           Já confirmei, entrar
         </Button>
+      </div>
+    );
+  // Cadastro de pessoa: telas cheias, uma pergunta por tela (pedido da Ju,
+  // 07/11). O bloco de entrada (marca, Google/Apple, anfitrião) só aparece na
+  // primeira tela, que o próprio passo a passo renderiza.
+  if (mode === "criar" && !business)
+    return (
+      <div className="entry-layout account-page">
+        <Cadastro
+          aoCriar={(em) => {
+            setEmail(em);
+            setSent(true);
+          }}
+          onSocial={(p) => void social(p)}
+          onAnfitriao={() => setBusiness(true)}
+          onEntrar={() => {
+            setMode("entrar");
+            setError("");
+          }}
+          dentroDeApp={dentroDeApp}
+          convitePendente={convitePendente}
+          busySocial={busy}
+        />
       </div>
     );
   return (
@@ -315,7 +339,7 @@ export function passwordChecks(p: string) {
     { label: "Um símbolo (ex.: ! @ # -)", ok: /[^A-Za-z0-9]/.test(p) },
   ];
 }
-function signupErrorMessage(err: { message: string; code?: string | undefined; status?: number | undefined }) {
+export function signupErrorMessage(err: { message: string; code?: string | undefined; status?: number | undefined }) {
   const m = err.message.toLowerCase();
   if (err.code === "weak_password" || m.includes("weak") || m.includes("pwned"))
     return "Essa senha é muito comum ou fácil de adivinhar. Siga as dicas abaixo do campo de senha e tente outra.";
