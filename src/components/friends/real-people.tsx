@@ -33,10 +33,18 @@ function Face({ p, size }: { p: PublicProfile; size: number }) {
   );
 }
 
-export function PeopleSearch({ userId }: { userId: string }) {
+export function PeopleSearch({
+  userId,
+  query,
+}: {
+  userId: string;
+  /** Quando o termo vem de fora (a barra do Descobrir), o campo próprio some. */
+  query?: string;
+}) {
   const { state } = useFriends();
   const [q, setQ] = useState("");
-  const { rows, loading } = usePeopleSearch(q, userId);
+  const termo = query !== undefined ? query : q;
+  const { rows, loading } = usePeopleSearch(termo, userId);
   const mine = new Set(state.interests ?? []);
   return (
     <section className="people-search">
@@ -46,23 +54,25 @@ export function PeopleSearch({ userId }: { userId: string }) {
           Meus amigos e pedidos
         </Link>
       </Button>
-      <label className="search-field">
-        <Icon name="users" />
-        <input
-          className="input"
-          type="search"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Buscar por apelido ou cidade"
-          aria-label="Buscar nommi por apelido ou cidade"
-          maxLength={40}
-        />
-      </label>
+      {query === undefined && (
+        <label className="search-field">
+          <Icon name="users" />
+          <input
+            className="input"
+            type="search"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Buscar por apelido ou cidade"
+            aria-label="Buscar nommi por apelido ou cidade"
+            maxLength={40}
+          />
+        </label>
+      )}
       {loading && !rows.length ? (
         <p className="small-note">Procurando…</p>
       ) : !rows.length ? (
         <EmptyState
-          title={q ? "Ninguém com esse nome ou cidade." : "Ainda há poucos nommi por aqui."}
+          title={termo ? "Ninguém com esse nome ou cidade." : "Ainda há poucos nommi por aqui."}
           text="Convide uma amizade para entrar no Nommi."
         >
           <Button asChild variant="secondary">
