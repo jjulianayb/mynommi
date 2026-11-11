@@ -603,3 +603,8 @@ um plano quase derrubou `avatar_figura` (ver a seção de 06/11).
 - Ordem segura: RPC + mudar a leitura no app **primeiro**, o revoke **por último**.
 - **Decisão da Ju (07/11): fica como está.** Cidade é o coração do Descobrir e a tela acabou de ser mexida; o risco de mexer na leitura agora é maior que a exposição, que alcança só conta logada lendo cidade/UF de perfil público. **Não aplicar o revoke sem ela pedir** — nem "de passagem" numa outra migração.
 - O que continua verdadeiro e vale lembrar se o assunto voltar: a chave "mostrar cidade" esconde na tela e não esconde na API. Se um dia incomodar, o caminho barato não é o revoke, é **a frase da chave dizer só o que ela faz**.
+
+## Busca de pessoas na cara do Descobrir (11/11, Instinct)
+- **app.tsx mexido pelo Instinct agora (aviso dado, janela curta).** O pedido da Ju: campo de busca igual Instagram — digita o nome e as contas aparecem. A busca já existia, mas escondida num `<details>` fechado no fim da página.
+- O que mudou: `Discover` ganhou um campo de busca visível logo abaixo do intro. Digitou, o baralho sai e entra o `PeopleSearch` com o termo (modo controlado novo, opcional); apagou, volta o baralho e o `<details>` de antes (que continua com o `PeopleSearch` próprio, sem termo externo). `real-people.tsx`: `PeopleSearch` aceita `query` opcional — com ela, o campo interno some.
+- Banco intocado: a busca continua a leitura direta da tabela que a Ju decidiu manter em 07/11 (só perfis públicos, sem bloqueado, sem conta de teste, sem e-mail/telefone). Nada de dado sensível na busca.
