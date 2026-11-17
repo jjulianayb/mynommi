@@ -30,9 +30,15 @@ export function portaDaTribo(opcoes: {
   meuPedido: MeuPedido;
   sensivel?: boolean | undefined;
   jaConsenti?: boolean | undefined;
-}): "dentro" | "entrar" | "pedir" | "esperando" | "recusado" | "consentir" {
+  fuiRemovida?: boolean | undefined;
+}): "dentro" | "entrar" | "pedir" | "esperando" | "recusado" | "consentir" | "removida" {
   const { souMembro, souCriadora, entrada, meuPedido } = opcoes;
   if (souMembro || souCriadora) return "dentro";
+  // Vem antes de tudo, inclusive do consentimento: pedir para alguém
+  // consentir numa tribo de onde ela foi removida é pedir à toa, e a trava do
+  // banco (0070) recusaria depois do sim. Também vem antes do pedido: tribo
+  // fechada não recebe pedido de quem foi removida.
+  if (opcoes.fuiRemovida) return "removida";
   // Tribo de política, religião ou orientação guarda dado sensível: a pessoa
   // precisa dizer sim a isso antes, e não junto com o aceite geral do cadastro.
   if (opcoes.sensivel && !opcoes.jaConsenti) return "consentir";
@@ -43,6 +49,11 @@ export function portaDaTribo(opcoes: {
 }
 
 export function recadoDaPorta(estado: ReturnType<typeof portaDaTribo>): string {
+  // Diz o que aconteceu e quem pode mudar isso, e não diz o motivo: o motivo é
+  // de quem cuida da tribo. Sem esta frase a pessoa leva um erro mudo e tenta
+  // dez vezes achando que é defeito do app.
+  if (estado === "removida")
+    return "Você não está mais nesta tribo. Só quem cuida dela pode te trazer de volta.";
   if (estado === "consentir")
     return "Esta tribo diz algo sobre você que a lei trata com mais cuidado. Entrar é escolha sua, e só sua.";
   if (estado === "esperando") return "Seu pedido está com quem cuida da tribo.";
@@ -53,6 +64,25 @@ export function recadoDaPorta(estado: ReturnType<typeof portaDaTribo>): string {
 
 export function useMinhaPorta(teiaId: number | null, me: string | null) {
   const [pedindo, setPedindo] = useState(false);
+  // A tela não precisa conhecer a RPC: recebe o booleano daqui e passa para
+  // portaDaTribo({ fuiRemovida }).
+  const [fuiRemovida, setFuiRemovida] = useState(false);
+
+  useEffect(() => {
+    if (!teiaId || !me) {
+      setFuiRemovida(false);
+      return;
+    }
+    let vivo = true;
+    void db
+      .rpc("fui_removida_da_tribo", { _teia: teiaId })
+      .then(({ data }) => {
+        if (vivo) setFuiRemovida(data === true);
+      });
+    return () => {
+      vivo = false;
+    };
+  }, [teiaId, me]);
 
   const pedir = useCallback(
     async (recado: string) => {
@@ -83,12 +113,14 @@ export function useMinhaPorta(teiaId: number | null, me: string | null) {
     return !error;
   }, [teiaId, me]);
 
-  return { pedir, desistir, pedindo };
+  return { pedir, desistir, pedindo, fuiRemovida };
 }
 
 export function usePedidosDaTribo(teiaId: number | null, souCriadora: boolean) {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [ready, setReady] = useState(false);
+  /** Por que a última resposta não foi aceita. Vazio quando deu certo. */
+  const [recado, setRecado] = useState("");
 
   const carregar = useCallback(async () => {
     if (!teiaId || !souCriadora) {
@@ -126,13 +158,24 @@ export function usePedidosDaTribo(teiaId: number | null, souCriadora: boolean) {
   const responder = useCallback(
     async (quem: string, aceitar: boolean) => {
       if (!teiaId) return false;
+      setRecado("");
       setPedidos((p) => p.filter((x) => x.userId !== quem));
       const { data, error } = await db.rpc("responder_pedido", {
         _teia: teiaId,
         _quem: quem,
         _aceitar: aceitar,
       });
+      // 'removida' (0070) não é falha de sistema: é um pedido antigo de alguém
+      // que foi removida da tribo **depois** de pedir. Devolve false como
+      // qualquer recusa, para a tela que já existe não mudar, e deixa o porquê
+      // em `recado` para quem quiser mostrar.
+      if (data === "removida") {
+        setRecado("Esta pessoa foi removida da tribo. Desfaça a remoção antes de aceitar.");
+        await carregar();
+        return false;
+      }
       if (error || data === "erro") {
+        setRecado("Não deu para responder agora.");
         await carregar();
         return false;
       }
@@ -141,5 +184,5 @@ export function usePedidosDaTribo(teiaId: number | null, souCriadora: boolean) {
     [teiaId, carregar],
   );
 
-  return { pedidos, ready, responder, recarregar: carregar };
+  return { pedidos, ready, responder, recado, recarregar: carregar };
 }

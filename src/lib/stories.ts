@@ -48,17 +48,39 @@ export function storyProblem(file: { type: string; size: number }): string | nul
 }
 export const storyKind = (type: string): "foto" | "video" =>
   type.startsWith("video/") ? "video" : "foto";
+/**
+ * Com que tipo o vídeo é anunciado ao navegador que vai tocar.
+ *
+ * `.mov` do iPhone, `.m4v` e `.3gp` são o **mesmo recipiente** do `.mp4`
+ * (ISO BMFF) com assinatura diferente: o Chrome do Android recusa de cara
+ * qualquer coisa anunciada como `video/quicktime`, mas toca o conteúdo quando
+ * vem como `video/mp4`. É a mesma decisão já tomada para a foto do post em
+ * 02/11 (`tipoParaSubir`), aqui para o story.
+ *
+ * Foto não é normalizada: ela sobe com o tipo que tem, porque quem converte é
+ * o canvas da câmera, antes de chegar aqui.
+ */
+export function tipoDoStory(type: string): string {
+  if (!type.startsWith("video/")) return type;
+  return type === "video/webm" ? "video/webm" : "video/mp4";
+}
+
+/**
+ * O caminho no balde. A extensão tem que bater com o tipo anunciado — era
+ * exatamente isso que estava errado: **todo** vídeo que não fosse mp4 virava
+ * `.webm`, inclusive o `.mov` do iPhone, que `storyProblem()` aceita. O
+ * arquivo subia com extensão que não corresponde ao conteúdo.
+ */
 export function storyPath(userId: string, type: string, now = Date.now()) {
-  const ext =
-    type === "image/png"
+  const ext = type.startsWith("video/")
+    ? tipoDoStory(type) === "video/webm"
+      ? "webm"
+      : "mp4"
+    : type === "image/png"
       ? "png"
       : type === "image/webp"
         ? "webp"
-        : type.startsWith("video/mp4")
-          ? "mp4"
-          : type.startsWith("video/")
-            ? "webm"
-            : "jpg";
+        : "jpg";
   return `${userId}/${now}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 }
 
@@ -183,7 +205,9 @@ export function useStories(me: string | null) {
     const problem = storyProblem(file);
     if (problem) return { ok: false as const, error: problem };
     const path = storyPath(me, file.type);
-    const up = await supabase.storage.from(BUCKET).upload(path, file, { contentType: file.type });
+    const up = await supabase.storage
+      .from(BUCKET)
+      .upload(path, file, { contentType: tipoDoStory(file.type) });
     if (up.error) return { ok: false as const, error: "O arquivo não subiu. Tente de novo." };
     const { error } = await supabase.from("stories").insert({
       author_id: me,
@@ -213,12 +237,26 @@ export function useStories(me: string | null) {
     );
   };
 
+  /**
+   * A linha sai **antes** do arquivo, e a ordem é o conserto.
+   *
+   * Era o contrário: apagava o arquivo do balde e só depois a linha. Se a
+   * segunda parte falhasse (permissão, rede, aba fechada no meio), o arquivo
+   * já tinha ido e a linha ficava — e `soComLink` esconde em silêncio todo
+   * story cujo arquivo não gera endereço. Dá exatamente a assinatura do caso
+   * da Ana em 01/11: linha no banco, arquivo sumido do balde, story invisível
+   * sem erro nenhum.
+   *
+   * Nesta ordem, falhar no meio deixa no máximo um arquivo órfão no balde, que
+   * ninguém vê e que não quebra tela nenhuma.
+   */
   const remove = async (story: Story) => {
     if (!me || !story.mine) return false;
-    await supabase.storage.from(BUCKET).remove([story.path]);
     const { error } = await supabase.from("stories").delete().eq("id", story.id);
+    if (error) return false;
+    await supabase.storage.from(BUCKET).remove([story.path]);
     await load();
-    return !error;
+    return true;
   };
 
   return { groups, ready, reload: load, publish, markSeen, remove };
