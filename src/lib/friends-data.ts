@@ -252,6 +252,8 @@ export type Message = {
   coracoes?: number;
   /** Se eu dei o meu. */
   euCurti?: boolean;
+  /** Quando o texto foi reescrito pelo autor. Carimbo do servidor (0071). */
+  editadoEm?: string;
 };
 export type Challenge = {
   id: number;

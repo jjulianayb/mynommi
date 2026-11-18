@@ -39,6 +39,8 @@ export type Post = {
   myReaction: Reaction | null;
   commentCount: number;
   mine: boolean;
+  /** Quando o autor reescreveu. Carimbo do servidor (0071); null se nunca mexeu. */
+  editadoEm: string | null;
 };
 export type PostComment = {
   id: string;
@@ -117,6 +119,7 @@ type Row = {
   body: string;
   location: string;
   created_at: string;
+  editado_em?: string | null;
   post_media?: { id: string; kind: "foto" | "video"; path: string; position: number }[];
   post_reactions?: { user_id: string; kind: Reaction }[];
   post_comments?: { count: number }[];
@@ -150,6 +153,7 @@ export function toPost(
     myReaction: mine,
     commentCount: r.post_comments?.[0]?.count ?? 0,
     mine: r.author_id === me,
+    editadoEm: r.editado_em ?? null,
   };
 }
 export const totalReactions = (p: Pick<Post, "reactions">) =>
@@ -161,7 +165,7 @@ export async function loadPosts(me: string, scope: FeedScope = {}, limit = 30): 
   let q = supabase
     .from("posts")
     .select(
-      "id,author_id,teia_id,body,location,created_at,post_media(id,kind,path,position),post_reactions(user_id,kind),post_comments(count)",
+      "id,author_id,teia_id,body,location,created_at,editado_em,post_media(id,kind,path,position),post_reactions(user_id,kind),post_comments(count)",
     )
     .eq("status", "publicado")
     .order("created_at", { ascending: false })
@@ -260,12 +264,49 @@ export async function createPost(me: string, input: NewPost): Promise<CreateResu
   return { ok: true, id };
 }
 
+/**
+ * Apaga o post. A **linha sai antes dos arquivos**, e a ordem é o conserto:
+ * era o contrário, e falhar no meio deixava o post de pé com as fotos já
+ * apagadas do balde — ou seja, um post com imagem quebrada que ninguém
+ * consegue arrumar. Mesmo bug que o `remove()` do story, corrigido em 17/11.
+ *
+ * Nesta ordem, falhar deixa no máximo arquivo órfão no balde: ninguém vê, e
+ * nenhuma tela quebra.
+ */
 export async function deletePost(id: string) {
   const { data } = await supabase.from("post_media").select("path").eq("post_id", id);
   const paths = ((data as { path: string }[] | null) ?? []).map((x) => x.path);
-  if (paths.length) await supabase.storage.from(BUCKET).remove(paths);
   const { error } = await supabase.from("posts").delete().eq("id", id);
-  return !error;
+  if (error) return false;
+  if (paths.length) await supabase.storage.from(BUCKET).remove(paths);
+  return true;
+}
+
+/**
+ * O autor reescreve o próprio texto. A permissão (0071) é só da coluna `body`
+ * e só do autor, e `editado_em` é carimbado por gatilho — data que o cliente
+ * escreve é data que o cliente mente.
+ *
+ * Post removido pela moderação não é editável: a política olha a linha velha.
+ * Nesse caso nenhuma linha muda e a resposta é a mesma de "não deu".
+ */
+export async function editPost(
+  id: string,
+  body: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const limpo = cleanBody(body);
+  if (!limpo) return { ok: false, error: "Escreva algo antes de salvar." };
+  const { data, error } = await supabase
+    .from("posts")
+    .update({ body: limpo })
+    .eq("id", id)
+    .select("id");
+  if (error) return { ok: false, error: "Não foi possível salvar a edição." };
+  // Zero linhas = a política recusou (não é seu, ou foi removido pela
+  // moderação). Sem o `select` isso voltaria como sucesso silencioso.
+  if (!data || (data as unknown[]).length === 0)
+    return { ok: false, error: "Esta publicação não pode mais ser editada." };
+  return { ok: true };
 }
 
 /** Reage; tocar na mesma reação de novo a remove; tocar em outra troca. */

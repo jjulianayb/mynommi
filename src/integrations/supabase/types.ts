@@ -728,6 +728,7 @@ export type Database = {
           author_id: string
           body: string
           created_at: string
+          editado_em: string | null
           expires_at: string | null
           id: string
           location: string
@@ -740,6 +741,7 @@ export type Database = {
           author_id: string
           body: string
           created_at?: string
+          editado_em?: string | null
           expires_at?: string | null
           id?: string
           location?: string
@@ -752,6 +754,7 @@ export type Database = {
           author_id?: string
           body?: string
           created_at?: string
+          editado_em?: string | null
           expires_at?: string | null
           id?: string
           location?: string
@@ -1286,6 +1289,7 @@ export type Database = {
           author: string
           body: string | null
           created_at: string
+          editado_em: string | null
           id: string
           sender_id: string
           sticker: number | null
@@ -1295,6 +1299,7 @@ export type Database = {
           author?: string
           body?: string | null
           created_at?: string
+          editado_em?: string | null
           id?: string
           sender_id: string
           sticker?: number | null
@@ -1304,6 +1309,7 @@ export type Database = {
           author?: string
           body?: string | null
           created_at?: string
+          editado_em?: string | null
           id?: string
           sender_id?: string
           sticker?: number | null

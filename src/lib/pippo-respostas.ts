@@ -16,12 +16,133 @@ export type RespostaDoPippo = {
   /** Perguntas que fazem sentido logo depois desta. */
   depois: string[];
   ir?: {
-    to: "/descobrir" | "/grupos" | "/perfil" | "/convites" | "/convidar" | "/ajuda";
+    to:
+      | "/descobrir"
+      | "/grupos"
+      | "/perfil"
+      | "/convites"
+      | "/convidar"
+      | "/ajuda"
+      | "/notificacoes"
+      | "/radar";
     rotulo: string;
   };
 };
 
 export const RESPOSTAS_DO_PIPPO: RespostaDoPippo[] = [
+  // --- Respostas de caminho (18/11) -------------------------------------
+  // A Ana Flávia perguntou "como editar minha tribo?" e o Pippo explicou o
+  // que é uma tribo. Explicação no lugar de caminho é a pior resposta
+  // possível: ela já sabia o que era, queria saber onde ficava o botão.
+  // Estas respostas dizem **o caminho**, na ordem dos toques, e por isso as
+  // palavras-chave compostas valem o dobro no casamento — senão "editar
+  // minha tribo" cai na resposta de "o que é tribo".
+  {
+    id: "editar-tribo",
+    abre: "Essa é no caminho curto.",
+    depois: ["capa-tribo", "editar-post", "tribo"],
+    pergunta: "Como edito minha tribo?",
+    resposta:
+      "Abra a sua tribo em Tribos e toque em Editar minha tribo. Lá você muda nome, o que a tribo é, as regras dela e quem pode criar rolê. Só quem criou a tribo vê esse botão.",
+    // Só frases que trazem "tribo" junto. "editar" e "edito" soltos ficaram
+    // de fora de propósito: com eles, "como edito ou apago uma publicação
+    // minha" empatava aqui e caía na resposta errada pela ordem da lista.
+    palavras: [
+      "editar minha tribo",
+      "edito minha tribo",
+      "editar a tribo",
+      "edito a tribo",
+      "editar tribo",
+      "editar grupo",
+      "mudar minha tribo",
+      "mudar a tribo",
+      "configurar tribo",
+      "alterar tribo",
+      "ajustes da tribo",
+    ],
+    ir: { to: "/grupos", rotulo: "Ir para Tribos" },
+  },
+  {
+    id: "capa-tribo",
+    abre: "Capa boa muda a cara da tribo.",
+    depois: ["editar-tribo", "pagina", "tribo"],
+    pergunta: "Como troco a capa da tribo?",
+    resposta:
+      "Abra a sua tribo, toque em Editar minha tribo e escolha a capa ali. Dá para enviar uma foto ou pegar uma das prontas, e você ajusta o enquadramento antes de salvar.",
+    palavras: [
+      "capa da tribo",
+      "trocar a capa",
+      "troco a capa",
+      "mudar a capa",
+      "foto da tribo",
+      "imagem da tribo",
+      "capa",
+      "fundo da tribo",
+    ],
+    ir: { to: "/grupos", rotulo: "Ir para Tribos" },
+  },
+  {
+    id: "editar-post",
+    abre: "Dá para arrumar depois de publicado, sim.",
+    depois: ["editar-tribo", "ver-avisos", "tribo"],
+    pergunta: "Como edito ou apago uma publicação minha?",
+    resposta:
+      "Na sua própria publicação, toque nos três pontinhos no canto dela: aparecem Editar e Apagar. Vale para o que você escreveu na tribo também. Quando você edita, fica marcado que foi editado.",
+    palavras: [
+      "editar publicacao",
+      "editar minha publicacao",
+      "apago uma publicacao",
+      "apagar publicacao",
+      "apagar minha publicacao",
+      "editar post",
+      "apagar post",
+      "apagar minha mensagem",
+      "editar mensagem",
+      "excluir publicacao",
+      "excluir post",
+      "publicacao",
+      "postagem",
+      "apago",
+    ],
+  },
+  {
+    id: "ver-avisos",
+    abre: "O sininho é ali em cima.",
+    depois: ["editar-post", "match", "tribo"],
+    pergunta: "Onde vejo minhas notificações?",
+    resposta:
+      "Toque no sininho no alto da tela. Lá está quem entrou nas suas tribos, quem comentou e os matches. Tocar num aviso te leva direto para onde ele aconteceu.",
+    palavras: [
+      "ver notificacoes",
+      "minhas notificacoes",
+      "vejo minhas notificacoes",
+      "onde vejo os avisos",
+      "sininho",
+      "sino",
+      "notificacoes",
+    ],
+    ir: { to: "/notificacoes", rotulo: "Ver meus avisos" },
+  },
+  {
+    id: "onde-roles",
+    abre: "Rolê fica guardadinho no menu.",
+    depois: ["tribo", "editar-tribo", "match"],
+    pergunta: "Onde ficam os rolês?",
+    resposta:
+      "Abra o menu no canto da tela: lá estão Rolês, Radar, Meus amigos e Clube. Rolê também aparece dentro de cada tribo, na aba Rolês.",
+    // "role" e "encontro" soltos ficaram de fora: com eles, "como marco um
+    // rolê?" empatava aqui e roubava a resposta de como criar um.
+    palavras: [
+      "onde ficam os roles",
+      "onde estao os roles",
+      "onde fica os roles",
+      "achar role",
+      "achar os roles",
+      "roles",
+      "menu lateral",
+    ],
+  },
+
   {
     id: "instalar",
     abre: "Dica de ouro: deixa a nommi na tela do celular.",
@@ -259,3 +380,16 @@ export function respostaDeInstalar(
   const nome = plataforma === "ios" ? "iPhone" : plataforma === "android" ? "Android" : "computador";
   return [`No ${nome} é rapidinho:`, ...passos.map((x, n) => `${n + 1}. ${x}`)];
     }
+
+/**
+ * O que ele diz quando não sabe (pedido do Instinct, 18/11).
+ *
+ * Não inventar é metade; a outra metade é **não deixar a pessoa parada**. Por
+ * isso tem encaminhamento. E o texto fica aqui, não na tela, pelo mesmo
+ * motivo dos assuntos do Pippo morarem no banco: resposta do mascote é voz da
+ * casa, não enfeite de componente.
+ */
+export const NAO_SEI_AINDA = [
+  "Essa eu não sei responder ainda, e não vou inventar.",
+  "Me manda sua dúvida pela Ajuda que a equipe da nommi te responde.",
+];

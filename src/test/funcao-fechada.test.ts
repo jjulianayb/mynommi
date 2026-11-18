@@ -34,10 +34,21 @@ const PODEM_RESPONDER_A_ANONIMO = new Set([
 
 type Achada = { arquivo: string; nome: string; corpo: string };
 
+/**
+ * Tira comentário antes de olhar. Sem isto o extrator lê **prosa** como
+ * código: a 0071 explica num comentário que `moderar_post` é SECURITY
+ * DEFINER, e a função seguinte do arquivo era acusada de estar aberta por
+ * causa dessa frase. Mesmo cuidado do teste do `Avatar id={7}`, que conta
+ * ocorrências e precisa ignorar o comentário que cita o código antigo.
+ */
+function semComentario(sql: string): string {
+  return sql.replace(/\/\*[\s\S]*?\*\//g, "").replace(/--[^\n]*/g, "");
+}
+
 function funcoesSecurityDefiner(): Achada[] {
   const achadas: Achada[] = [];
   for (const arquivo of readdirSync(PASTA).filter((f) => f.endsWith(".sql"))) {
-    const sql = readFileSync(`${PASTA}/${arquivo}`, "utf8");
+    const sql = semComentario(readFileSync(`${PASTA}/${arquivo}`, "utf8"));
     // Cada CREATE [OR REPLACE] FUNCTION até o próximo, ou até o fim.
     const pedacos = sql.split(/CREATE\s+(?:OR\s+REPLACE\s+)?FUNCTION\s+/i).slice(1);
     for (const pedaco of pedacos) {

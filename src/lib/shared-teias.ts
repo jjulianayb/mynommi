@@ -12,6 +12,7 @@ type Row = {
   body: string | null;
   sticker: number | null;
   created_at: string;
+  editado_em?: string | null;
   reacoes_de_mensagem?: Reacao[] | null;
 };
 type Member = { user_id: string; nickname: string };
@@ -37,11 +38,13 @@ export function toMessage(row: Row, me: string, fotos: Fotos = {}): Message {
     ...(foto ? { authorAvatar: foto } : {}),
     coracoes: reacoes.length,
     euCurti: reacoes.some((r) => r.user_id === me),
+    ...(row.editado_em ? { editadoEm: row.editado_em } : {}),
   };
 }
 
 /** O que a tela pede do banco. A reação vem embutida: uma consulta, não uma por mensagem. */
-const COLUNAS = "id,teia_key,sender_id,author,body,sticker,created_at,reacoes_de_mensagem(user_id)";
+const COLUNAS =
+  "id,teia_key,sender_id,author,body,sticker,created_at,editado_em,reacoes_de_mensagem(user_id)";
 
 /** Real cross-account tribo: membership + messages stored in Lovable Cloud with live updates. */
 export function useSharedTeia(teiaId: number, userId: string | null, nickname: string) {
@@ -234,6 +237,39 @@ export function useSharedTeia(teiaId: number, userId: string | null, nickname: s
     if (error) void carregarMensagens();
   }
 
+  /**
+   * Quem escreveu reescreve o próprio recado. A permissão (0071) é só da
+   * coluna `body` e só de quem mandou; `editado_em` é carimbado por gatilho.
+   * O filtro de respeito vale no UPDATE também, então não dá para escrever
+   * limpo e editar sujo.
+   */
+  async function editarMensagem(mensagemId: string, texto: string) {
+    const limpo = texto.trim().slice(0, 1000);
+    if (!limpo || !userId) return false;
+    const { data, error } = await supabase
+      .from("teia_messages")
+      .update({ body: limpo })
+      .eq("id", mensagemId)
+      .select("id");
+    // Zero linhas = não é seu. Sem o `select` voltaria como sucesso calado.
+    if (error || !data || data.length === 0) return false;
+    await carregarMensagens();
+    return true;
+  }
+
+  /** Apaga o próprio recado. A política de 0030 já permitia; faltava a porta. */
+  async function apagarMensagem(mensagemId: string) {
+    if (!userId) return false;
+    const { data, error } = await supabase
+      .from("teia_messages")
+      .delete()
+      .eq("id", mensagemId)
+      .select("id");
+    if (error || !data || data.length === 0) return false;
+    await carregarMensagens();
+    return true;
+  }
+
   return {
     ready,
     joined,
@@ -242,6 +278,8 @@ export function useSharedTeia(teiaId: number, userId: string | null, nickname: s
     join,
     leave,
     send,
+    editarMensagem,
+    apagarMensagem,
     curtir,
     recarregar: carregarMensagens,
   };
