@@ -58,9 +58,12 @@
   scroll-snap-type: x mandatory;
   padding: 14px 0 34px;
   scrollbar-width: none;
-  margin: 0 -16px;
-  padding-left: calc((100vw - min(74vw, 300px)) / 2 - 8px);
-  padding-right: calc((100vw - min(74vw, 300px)) / 2 - 8px);
+  /* Centraliza a primeira e a última carta pela largura do próprio trilho
+     (50% do contêiner), não pela janela (100vw): em desktop o app fica numa
+     coluna e 100vw empurrava a primeira carta para fora da área visível.
+     A metade da carta é min(39vw, 165px) — a carta é min(78vw, 330px). */
+  padding-left: max(0px, calc(50% - min(39vw, 165px)));
+  padding-right: max(0px, calc(50% - min(39vw, 165px)));
 }
 .dc-carrossel::-webkit-scrollbar {
   display: none;
