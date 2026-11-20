@@ -35,11 +35,29 @@ describe("conversa a sós", () => {
       recipient_id: "b",
       body: "oi",
       sticker: null,
+      sticker_path: null,
+      sticker_legenda: null,
       created_at: "2026-10-21T12:00:00Z",
       read_at: null,
     };
     expect(toMessage(r, "a").mine).toBe(true);
     expect(toMessage(r, "b").mine).toBe(false);
+  });
+  it("monta a figurinha criada a partir do caminho gravado", () => {
+    const r = {
+      id: "2",
+      sender_id: "a",
+      recipient_id: "b",
+      body: null,
+      sticker: null,
+      sticker_path: "a/conversa-1.webp",
+      sticker_legenda: "bora?",
+      created_at: "2026-10-21T12:00:00Z",
+      read_at: null,
+    };
+    const m = toMessage(r, "a");
+    expect(m.custom?.caption).toBe("bora?");
+    expect(m.custom?.src).toContain("a/conversa-1.webp");
   });
   it("separa os dias da conversa", () => {
     const hoje = new Date("2026-10-21T15:00:00Z");

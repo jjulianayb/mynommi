@@ -1,0 +1,30 @@
+/* Legenda da figurinha criada: entra por cima da prévia enquanto a pessoa
+   digita, sem refazer a imagem a cada letra. No salvamento a legenda vai para
+   dentro do arquivo (makeSticker) com este mesmo desenho: Baloo 2 800 branca
+   com contorno escuro, perto da base. */
+.sticker-preview {
+  position: relative;
+  display: inline-block;
+}
+.sticker-preview-caption {
+  position: absolute;
+  left: 50%;
+  bottom: 8%;
+  transform: translateX(-50%);
+  max-width: 92%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: "Baloo 2", sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 1.15;
+  color: #fff;
+  text-shadow:
+    -2px -2px 0 #1b2230,
+    2px -2px 0 #1b2230,
+    -2px 2px 0 #1b2230,
+    2px 2px 0 #1b2230,
+    0 0 6px rgba(27, 34, 48, 0.9);
+  pointer-events: none;
+}

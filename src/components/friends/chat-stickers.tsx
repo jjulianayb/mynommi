@@ -21,6 +21,7 @@ import { useFriends } from "./store";
 import { useDemoSession } from "./session";
 import { useMeuTitulo } from "@/lib/embaixadora";
 import { useCreditosFigurinha } from "@/lib/figurinha-creditos";
+import "./chat-stickers.css";
 
 export function ChatSticker({
   id,
@@ -100,15 +101,43 @@ function StickerMaker({ onDone }: { onDone: () => void }) {
   const [src, setSrc] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
-  async function build(f: File, text: string) {
+  const [salvando, setSalvando] = useState(false);
+  // A base (foto recortada) é montada uma vez só. A legenda entra por cima na
+  // prévia e só vai para dentro da imagem na hora de salvar: antes disso,
+  // cada letra digitada refazia o canvas inteiro e o celular travava.
+  async function build(f: File) {
     setBusy(true);
     try {
-      setSrc(await makeSticker(f, text));
+      setSrc(await makeSticker(f, ""));
     } catch {
       notify("Não foi possível usar essa foto. Tente outra.");
     } finally {
       setBusy(false);
     }
+  }
+  async function salvar() {
+    if (!src || salvando) return;
+    setSalvando(true);
+    let final = src;
+    const texto = caption.trim();
+    if (texto && file) {
+      try {
+        final = await makeSticker(file, texto);
+      } catch {
+        notify("A legenda não entrou. Salvei a figurinha sem ela.");
+      }
+    }
+    setState((st) => ({
+      ...st,
+      customStickers: addCustomSticker(st.customStickers ?? [], {
+        id: "c" + Date.now(),
+        src: final,
+        caption: texto,
+      }),
+    }));
+    setSalvando(false);
+    notify("Figurinha salva em Minhas.");
+    onDone();
   }
   return (
     <div className="sticker-maker">
@@ -125,7 +154,7 @@ function StickerMaker({ onDone }: { onDone: () => void }) {
                 const f = e.target.files?.[0];
                 if (!f) return;
                 setFile(f);
-                void build(f, "");
+                void build(f);
               }}
             />
           </label>
@@ -138,6 +167,7 @@ function StickerMaker({ onDone }: { onDone: () => void }) {
         <>
           <div className="sticker-preview">
             <ChatSticker id={0} custom={{ src, caption }} />
+            {caption.trim() && <span className="sticker-preview-caption">{caption.trim()}</span>}
           </div>
           <label>
             Escrever algo <small>opcional</small>
@@ -146,11 +176,7 @@ function StickerMaker({ onDone }: { onDone: () => void }) {
               maxLength={MAX_CAPTION}
               value={caption}
               placeholder="ex.: bora marcar"
-              onChange={(e) => {
-                const v = e.target.value;
-                setCaption(v);
-                if (file) void build(file, v);
-              }}
+              onChange={(e) => setCaption(e.target.value)}
             />
           </label>
           <div className="sticker-maker-actions">
@@ -165,23 +191,8 @@ function StickerMaker({ onDone }: { onDone: () => void }) {
             >
               Trocar foto
             </Button>
-            <Button
-              type="button"
-              disabled={busy}
-              onClick={() => {
-                setState((st) => ({
-                  ...st,
-                  customStickers: addCustomSticker(st.customStickers ?? [], {
-                    id: "c" + Date.now(),
-                    src,
-                    caption: caption.trim(),
-                  }),
-                }));
-                notify("Figurinha salva em Minhas.");
-                onDone();
-              }}
-            >
-              Salvar figurinha
+            <Button type="button" disabled={busy || salvando} onClick={() => void salvar()}>
+              {salvando ? "Salvando…" : "Salvar figurinha"}
             </Button>
           </div>
         </>

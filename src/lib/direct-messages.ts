@@ -1,11 +1,14 @@
 import { supabase } from "@/integrations/supabase/client";
 import { useCallback, useEffect, useState } from "react";
 import { enderecoDaImagem } from "@/lib/covers";
+import { urlFigurinha } from "@/lib/figurinha-envio";
 
 export type DirectMessage = {
   id: string;
   body: string | null;
   sticker: number | null;
+  /** Figurinha criada no app: imagem própria com a legenda escrita na hora. */
+  custom?: { src: string; caption: string };
   mine: boolean;
   createdAt: string;
   readAt: string | null;
@@ -59,6 +62,8 @@ type Row = {
   recipient_id: string;
   body: string | null;
   sticker: number | null;
+  sticker_path: string | null;
+  sticker_legenda: string | null;
   created_at: string;
   read_at: string | null;
 };
@@ -66,6 +71,9 @@ export const toMessage = (r: Row, me: string): DirectMessage => ({
   id: r.id,
   body: r.body,
   sticker: r.sticker,
+  ...(r.sticker_path
+    ? { custom: { src: urlFigurinha(r.sticker_path), caption: r.sticker_legenda ?? "" } }
+    : {}),
   mine: r.sender_id === me,
   createdAt: r.created_at,
   readAt: r.read_at,
@@ -130,7 +138,7 @@ export function useConversa(me: string | null, outroId: string | null) {
     if (!me || !outroId) return;
     const { data } = await supabase
       .from("direct_messages")
-      .select("id,sender_id,recipient_id,body,sticker,created_at,read_at")
+      .select("id,sender_id,recipient_id,body,sticker,sticker_path,sticker_legenda,created_at,read_at")
       .or(
         `and(sender_id.eq.${me},recipient_id.eq.${outroId}),and(sender_id.eq.${outroId},recipient_id.eq.${me})`,
       )

@@ -1,0 +1,3 @@
+/* Esconde o selo "Edit with Lovable" do site publicado (pedido da Ju, 17/11).
+   Arquivo proprio: styles.css fica congelado na divisao com o Claude. */
+#lovable-badge{display:none!important}

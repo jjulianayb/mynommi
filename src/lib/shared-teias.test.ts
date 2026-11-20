@@ -7,6 +7,8 @@ const row = {
   author: "Bia",
   body: "oi",
   sticker: null,
+  sticker_path: null,
+  sticker_legenda: null,
   created_at: "2026-10-12T18:00:00Z",
 };
 describe("toMessage", () => {

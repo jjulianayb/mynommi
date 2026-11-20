@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { SemFoto, Avatar, Icon } from "./art";
 import { ChatSticker, ChatStickerTray } from "./chat-stickers";
 import { Esqueleto, EmptyState } from "./surfaces";
+import { enviarFigurinhaCriada } from "@/lib/figurinha-envio";
 import {
   useConversas,
   useConversa,
@@ -77,7 +78,7 @@ export function DirectChat({
   nickname: string;
   avatar: string;
 }) {
-  const { messages, ready, send } = useConversa(me, outroId);
+  const { messages, ready, send, reload } = useConversa(me, outroId);
   const [text, setText] = useState("");
   const [tray, setTray] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -140,7 +141,7 @@ export function DirectChat({
                     {m.body ? (
                       <p className="bubble">{m.body}</p>
                     ) : (
-                      <ChatSticker id={m.sticker ?? 0} />
+                      <ChatSticker id={m.sticker ?? 0} custom={m.custom} />
                     )}
                     <time className="message-time">
                       {hourOf(m.createdAt)}
@@ -193,6 +194,22 @@ export function DirectChat({
           onSend={(id) => {
             void enviar({ sticker: id });
             setTray(false);
+          }}
+          onSendCustom={(c) => {
+            // A figurinha criada sobe para o bucket e vira mensagem de verdade.
+            void (async () => {
+              setBusy(true);
+              const ok = await enviarFigurinhaCriada({
+                de: me,
+                para: outroId,
+                src: c.src,
+                legenda: c.caption,
+              });
+              setBusy(false);
+              setTray(false);
+              if (ok) await reload();
+              else setErro("Não consegui mandar a figurinha. Tenta de novo.");
+            })();
           }}
           onClose={() => setTray(false)}
         />

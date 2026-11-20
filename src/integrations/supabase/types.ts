@@ -322,6 +322,8 @@ export type Database = {
           recipient_id: string
           sender_id: string
           sticker: number | null
+          sticker_legenda: string | null
+          sticker_path: string | null
         }
         Insert: {
           body?: string | null
@@ -331,6 +333,8 @@ export type Database = {
           recipient_id: string
           sender_id: string
           sticker?: number | null
+          sticker_legenda?: string | null
+          sticker_path?: string | null
         }
         Update: {
           body?: string | null
@@ -340,6 +344,8 @@ export type Database = {
           recipient_id?: string
           sender_id?: string
           sticker?: number | null
+          sticker_legenda?: string | null
+          sticker_path?: string | null
         }
         Relationships: []
       }
@@ -1293,6 +1299,8 @@ export type Database = {
           id: string
           sender_id: string
           sticker: number | null
+          sticker_legenda: string | null
+          sticker_path: string | null
           teia_key: string
         }
         Insert: {
@@ -1303,6 +1311,8 @@ export type Database = {
           id?: string
           sender_id: string
           sticker?: number | null
+          sticker_legenda?: string | null
+          sticker_path?: string | null
           teia_key: string
         }
         Update: {
@@ -1313,6 +1323,8 @@ export type Database = {
           id?: string
           sender_id?: string
           sticker?: number | null
+          sticker_legenda?: string | null
+          sticker_path?: string | null
           teia_key?: string
         }
         Relationships: []

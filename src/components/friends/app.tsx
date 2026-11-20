@@ -1743,10 +1743,6 @@ export function GroupDetail({ id, boasvindas }: { id: number; boasvindas?: boole
                 <Composer
                   onSend={(m) => {
                     if (cloud) {
-                      if (m.custom) {
-                        notify("Figurinhas criadas por você ainda ficam só neste aparelho.");
-                        return;
-                      }
                       void shared.send(m).then((ok) => {
                         if (!ok) notify("Não deu para enviar. Confira a internet e tente de novo.");
                       });

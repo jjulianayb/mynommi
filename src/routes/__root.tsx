@@ -11,6 +11,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import seloCss from "../components/friends/selo-lovable.css?url";
 import { FriendsProvider } from "../components/friends/store";
 import { SocialShell } from "../components/friends/social-shell";
 import { DemoSessionProvider } from "../components/friends/session";
@@ -111,6 +112,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "stylesheet",
         href: appCss,
+      },
+      {
+        rel: "stylesheet",
+        href: seloCss,
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "icon", href: "/icon-192.png", type: "image/png", sizes: "192x192" },

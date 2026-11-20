@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { enderecoDaImagem } from "./covers";
+import { enviarFigurinhaCriada, urlFigurinha } from "./figurinha-envio";
 import type { Message } from "./friends-data";
 
 type Reacao = { user_id: string };
@@ -11,6 +12,8 @@ type Row = {
   author: string;
   body: string | null;
   sticker: number | null;
+  sticker_path: string | null;
+  sticker_legenda: string | null;
   created_at: string;
   editado_em?: string | null;
   reacoes_de_mensagem?: Reacao[] | null;
@@ -30,6 +33,9 @@ export function toMessage(row: Row, me: string, fotos: Fotos = {}): Message {
   return {
     ...(row.body != null ? { text: row.body } : {}),
     ...(row.sticker != null ? { sticker: row.sticker } : {}),
+    ...(row.sticker_path
+      ? { custom: { src: urlFigurinha(row.sticker_path), caption: row.sticker_legenda ?? "" } }
+      : {}),
     mine: row.sender_id === me,
     ...(row.sender_id === me ? {} : { author: row.author || "nommi" }),
     time,
@@ -44,7 +50,7 @@ export function toMessage(row: Row, me: string, fotos: Fotos = {}): Message {
 
 /** O que a tela pede do banco. A reação vem embutida: uma consulta, não uma por mensagem. */
 const COLUNAS =
-  "id,teia_key,sender_id,author,body,sticker,created_at,editado_em,reacoes_de_mensagem(user_id)";
+  "id,teia_key,sender_id,author,body,sticker,sticker_path,sticker_legenda,created_at,editado_em,reacoes_de_mensagem(user_id)";
 
 /** Real cross-account tribo: membership + messages stored in Lovable Cloud with live updates. */
 export function useSharedTeia(teiaId: number, userId: string | null, nickname: string) {
@@ -183,7 +189,19 @@ export function useSharedTeia(teiaId: number, userId: string | null, nickname: s
     await loadMembers();
   }
   async function send(m: Message) {
-    if (!userId || (!m.text && m.sticker === undefined)) return false;
+    if (!userId) return false;
+    if (m.custom) {
+      const ok = await enviarFigurinhaCriada({
+        de: userId,
+        teiaKey: key,
+        autor: nickname,
+        src: m.custom.src,
+        legenda: m.custom.caption,
+      });
+      if (ok) await carregarMensagens();
+      return ok;
+    }
+    if (!m.text && m.sticker === undefined) return false;
     const { data, error } = await supabase
       .from("teia_messages")
       .insert({

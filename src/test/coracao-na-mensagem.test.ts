@@ -67,6 +67,8 @@ describe("a mensagem que vem do banco", () => {
     author: "Beatriz",
     body: "oi gente",
     sticker: null,
+    sticker_path: null,
+    sticker_legenda: null,
     created_at: "2026-11-04T12:00:00Z",
   };
 
