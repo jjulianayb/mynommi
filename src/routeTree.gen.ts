@@ -27,6 +27,7 @@ import { Route as DescobrirRouteImport } from './routes/descobrir'
 import { Route as EscreverAmigaRouteImport } from './routes/escrever-amiga'
 import { Route as GruposRouteImport } from './routes/grupos'
 import { Route as LancarDesafioRouteImport } from './routes/lancar-desafio'
+import { Route as LandingRouteImport } from './routes/landing'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LoginParceiroRouteImport } from './routes/login-parceiro'
 import { Route as NotificacoesRouteImport } from './routes/notificacoes'
@@ -134,6 +135,11 @@ const GruposRoute = GruposRouteImport.update({
 const LancarDesafioRoute = LancarDesafioRouteImport.update({
   id: '/lancar-desafio',
   path: '/lancar-desafio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LandingRoute = LandingRouteImport.update({
+  id: '/landing',
+  path: '/landing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -247,6 +253,7 @@ export interface FileRoutesByFullPath {
   '/escrever-amiga': typeof EscreverAmigaRoute
   '/grupos': typeof GruposRoute
   '/lancar-desafio': typeof LancarDesafioRoute
+  '/landing': typeof LandingRoute
   '/login': typeof LoginRoute
   '/login-parceiro': typeof LoginParceiroRoute
   '/notificacoes': typeof NotificacoesRoute
@@ -285,6 +292,7 @@ export interface FileRoutesByTo {
   '/escrever-amiga': typeof EscreverAmigaRoute
   '/grupos': typeof GruposRoute
   '/lancar-desafio': typeof LancarDesafioRoute
+  '/landing': typeof LandingRoute
   '/login': typeof LoginRoute
   '/login-parceiro': typeof LoginParceiroRoute
   '/notificacoes': typeof NotificacoesRoute
@@ -324,6 +332,7 @@ export interface FileRoutesById {
   '/escrever-amiga': typeof EscreverAmigaRoute
   '/grupos': typeof GruposRoute
   '/lancar-desafio': typeof LancarDesafioRoute
+  '/landing': typeof LandingRoute
   '/login': typeof LoginRoute
   '/login-parceiro': typeof LoginParceiroRoute
   '/notificacoes': typeof NotificacoesRoute
@@ -364,6 +373,7 @@ export interface FileRouteTypes {
     | '/escrever-amiga'
     | '/grupos'
     | '/lancar-desafio'
+    | '/landing'
     | '/login'
     | '/login-parceiro'
     | '/notificacoes'
@@ -402,6 +412,7 @@ export interface FileRouteTypes {
     | '/escrever-amiga'
     | '/grupos'
     | '/lancar-desafio'
+    | '/landing'
     | '/login'
     | '/login-parceiro'
     | '/notificacoes'
@@ -440,6 +451,7 @@ export interface FileRouteTypes {
     | '/escrever-amiga'
     | '/grupos'
     | '/lancar-desafio'
+    | '/landing'
     | '/login'
     | '/login-parceiro'
     | '/notificacoes'
@@ -479,6 +491,7 @@ export interface RootRouteChildren {
   EscreverAmigaRoute: typeof EscreverAmigaRoute
   GruposRoute: typeof GruposRoute
   LancarDesafioRoute: typeof LancarDesafioRoute
+  LandingRoute: typeof LandingRoute
   LoginRoute: typeof LoginRoute
   LoginParceiroRoute: typeof LoginParceiroRoute
   NotificacoesRoute: typeof NotificacoesRoute
@@ -625,6 +638,13 @@ declare module '@tanstack/react-router' {
       path: '/lancar-desafio'
       fullPath: '/lancar-desafio'
       preLoaderRoute: typeof LancarDesafioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/landing': {
+      id: '/landing'
+      path: '/landing'
+      fullPath: '/landing'
+      preLoaderRoute: typeof LandingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -775,6 +795,7 @@ const rootRouteChildren: RootRouteChildren = {
   EscreverAmigaRoute: EscreverAmigaRoute,
   GruposRoute: GruposRoute,
   LancarDesafioRoute: LancarDesafioRoute,
+  LandingRoute: LandingRoute,
   LoginRoute: LoginRoute,
   LoginParceiroRoute: LoginParceiroRoute,
   NotificacoesRoute: NotificacoesRoute,
