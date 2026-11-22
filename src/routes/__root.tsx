@@ -95,6 +95,33 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "apple-mobile-web-app-status-bar-style", content: "default" },
       { name: "application-name", content: "nommi" },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              name: "Nommi",
+              url: "https://nommibr.com.br/",
+              logo: "https://nommibr.com.br/icon-512.png",
+              email: "contato@nommibr.com.br",
+              sameAs: [
+                "https://www.instagram.com/nommi.br",
+                "https://linkedin.com/company/nommibr",
+              ],
+            },
+            {
+              "@type": "WebSite",
+              name: "Nommi",
+              url: "https://nommibr.com.br/",
+              inLanguage: "pt-BR",
+            },
+          ],
+        }),
+      },
+    ],
     links: [
       {
         rel: "preload",

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nommi - App de amizade para fazer amigos de verdade</title>
+<meta name="description" content="Nommi é o app de amizade para fazer amigos de verdade: encontre pessoas com os seus interesses, entre em tribos e leve a conversa para um café, um parque ou um rolê na sua cidade. Grátis, começando por São Paulo.">
+<link rel="canonical" href="https://nommibr.com.br/landing">
+<meta property="og:title" content="Nommi - Amizade de verdade, perto de você">
+<meta property="og:description" content="O app de amizade que encontra pessoas com os seus interesses e leva a conversa para um café, um parque, uma tribo, de verdade.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nommibr.com.br/landing">
+<meta property="og:image" content="https://nommibr.com.br/landing/corrida.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Nommi - Amizade de verdade, perto de você">
+<meta name="twitter:description" content="O app de amizade que encontra pessoas com os seus interesses e leva a conversa para um café, um parque, uma tribo, de verdade.">
+<meta name="robots" content="index,follow">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Nommi",
+  "url": "https://nommibr.com.br/",
+  "applicationCategory": "SocialNetworkingApplication",
+  "operatingSystem": "Web",
+  "description": "App de amizade para fazer amigos de verdade: pessoas com os seus interesses, tribos e encontros em lugares reais.",
+  "inLanguage": "pt-BR",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "BRL" },
+  "areaServed": "BR"
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --verde:#075e3b; --verde-2:#00a651; --ouro:#ffd34d; --coral:#ef675a; --creme:#f7f0de;
+  }
+  body { font-family:"DM Sans",sans-serif; background:#faf9f6; color:var(--verde); overflow-x:hidden; }
+  .wrap { max-width:430px; margin:0 auto; }
+
+  @keyframes floaty { 0%{transform:translateY(0) rotate(var(--r,0deg))} 100%{transform:translateY(-10px) rotate(var(--r,0deg))} }
+  @keyframes drift { 0%{transform:translate(0,0) scale(1)} 100%{transform:translate(24px,-18px) scale(1.15)} }
+  @keyframes shimmer { to { background-position:200% center; } }
+  @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,211,77,.45)} 50%{box-shadow:0 0 0 14px rgba(255,211,77,0)} }
+
+  .reveal { opacity:0; transform:translateY(26px); transition:opacity .7s ease, transform .7s cubic-bezier(.2,.7,.3,1); }
+  .reveal.in { opacity:1; transform:translateY(0); }
+
+  /* HERO */
+  .hero { position:relative; min-height:640px; display:flex; flex-direction:column; justify-content:flex-end; padding:0 26px 48px; border-radius:0 0 40px 40px; overflow:hidden; isolation:isolate; }
+  .hero-bg { position:absolute; inset:-60px 0; z-index:-3;
+    background:url('/landing/corrida.jpg') center 40%/cover no-repeat; will-change:transform; }
+  .hero::before { content:""; position:absolute; inset:0; z-index:-2;
+    background:linear-gradient(180deg, rgba(7,94,59,.25) 0%, rgba(7,94,59,.72) 58%, rgba(5,64,40,.96) 100%); }
+  .hero::after { content:""; position:absolute; inset:0; z-index:-1; opacity:.35;
+    background-image:linear-gradient(rgba(255,255,255,.14) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.14) 1px,transparent 1px);
+    background-size:44px 44px;
+    mask-image:linear-gradient(180deg,transparent 30%,#000 100%); -webkit-mask-image:linear-gradient(180deg,transparent 30%,#000 100%); }
+  .orb { position:absolute; border-radius:50%; filter:blur(46px); z-index:-1; opacity:.55; animation:drift 9s ease-in-out infinite alternate; }
+  .orb1 { width:190px; height:190px; background:var(--coral); top:56px; left:-60px; }
+  .orb2 { width:150px; height:150px; background:var(--ouro); top:190px; right:-50px; animation-delay:2.2s; opacity:.45; }
+
+  .glass-chip { position:absolute; display:flex; align-items:center; gap:8px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.35);
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    border-radius:999px; padding:9px 15px; font-size:13px; font-weight:700; color:#fff;
+    box-shadow:0 8px 24px rgba(0,0,0,.22); animation:floaty 4.5s ease-in-out infinite alternate; }
+  .glass-chip svg { width:17px; height:17px; stroke:var(--ouro); }
+  .cf1 { top:98px; left:20px; --r:-4deg; animation-delay:.2s; }
+  .cf2 { top:64px; right:16px; --r:3deg; animation-delay:1.2s; }
+  .cf3 { top:186px; right:24px; --r:2deg; animation-delay:2.1s; }
+
+  .hero-inner { animation:none; }
+  .logo { font-family:"Baloo 2"; font-weight:800; font-size:30px; color:var(--ouro); letter-spacing:.5px; }
+  .hero h1 { font-family:"Baloo 2"; font-weight:800; font-size:33px; line-height:1.12; color:#fff; margin:14px 0 12px; }
+  .hero h1 em { font-style:normal;
+    background:linear-gradient(90deg,var(--ouro),#fff2c4,var(--ouro)); background-size:200% auto;
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    animation:shimmer 3.2s linear infinite; }
+  .hero p { color:var(--creme); font-size:16px; line-height:1.5; }
+  .cta { display:inline-block; background:linear-gradient(135deg,#ffd34d,#ffb400); color:var(--verde); font-family:"Baloo 2"; font-weight:700; font-size:19px;
+    padding:15px 42px; border-radius:999px; text-decoration:none; margin-top:26px;
+    box-shadow:0 4px 0 #b8860b, 0 10px 30px rgba(255,211,77,.35); animation:pulse 2.6s ease-in-out infinite; }
+  .cta:active { transform:translateY(2px); box-shadow:0 2px 0 #b8860b; animation:none; }
+  .sp-tag { display:inline-flex; align-items:center; gap:7px; background:rgba(0,166,81,.25); border:1px solid rgba(0,166,81,.8);
+    color:#c8f5dd; font-size:13px; font-weight:700; padding:7px 16px; border-radius:999px; margin-top:22px; backdrop-filter:blur(6px); }
+  .sp-tag .dot { width:7px; height:7px; border-radius:50%; background:#3ee08a; box-shadow:0 0 8px #3ee08a; }
+
+  section { padding:46px 26px; }
+  h2 { font-family:"Baloo 2"; font-weight:800; font-size:25px; margin-bottom:8px; text-align:center; }
+  .sub { text-align:center; font-size:14px; color:#3d6b58; margin-bottom:26px; }
+
+  /* CONTADORES */
+  .stats { display:flex; gap:12px; margin-top:-30px; position:relative; z-index:3; padding:0 26px; }
+  .stat { flex:1; background:rgba(255,255,255,.75); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+    border:1px solid rgba(7,94,59,.12); border-radius:20px; padding:16px 8px; text-align:center; box-shadow:0 10px 30px rgba(7,94,59,.12); }
+  .stat .num { font-family:"Baloo 2"; font-weight:800; font-size:26px;
+    background:linear-gradient(120deg,var(--verde),var(--verde-2)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .stat small { display:block; font-size:11.5px; color:#3d6b58; margin-top:2px; line-height:1.3; }
+
+  /* TRIBOS */
+  .tribos { background:var(--creme); border-radius:32px; margin:26px 12px 0; padding:38px 20px 30px; position:relative; overflow:hidden; }
+  .tribos::before { content:""; position:absolute; inset:0; opacity:.5;
+    background-image:radial-gradient(rgba(7,94,59,.10) 1.5px,transparent 1.5px); background-size:22px 22px; }
+  .tribo-grid { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; position:relative; }
+  .tribo { background:rgba(255,255,255,.85); backdrop-filter:blur(8px); border:1px solid rgba(7,94,59,.10);
+    border-radius:20px; padding:18px 14px 14px; width:calc(50% - 6px); text-align:center;
+    box-shadow:0 4px 16px rgba(7,94,59,.08); animation:floaty 5s ease-in-out infinite alternate; }
+  .tribo:nth-child(2){ animation-delay:.8s; --r:2deg; }
+  .tribo:nth-child(3){ animation-delay:1.6s; --r:-2deg; }
+  .tribo:nth-child(4){ animation-delay:2.4s; --r:1.5deg; }
+  .tribo .ico { width:46px; height:46px; margin:0 auto 10px; border-radius:14px; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(135deg,var(--verde),var(--verde-2)); box-shadow:0 6px 14px rgba(7,94,59,.25); }
+  .tribo .ico svg { width:24px; height:24px; stroke:#fff; }
+  .tribo:nth-child(2) .ico { background:linear-gradient(135deg,#b8860b,var(--ouro)); }
+  .tribo:nth-child(3) .ico { background:linear-gradient(135deg,#c2453a,var(--coral)); }
+  .tribo:nth-child(4) .ico { background:linear-gradient(135deg,#075e3b,#0a8a58); }
+  .tribo strong { font-family:"Baloo 2"; font-size:16px; display:block; }
+  .tribo small { font-size:12px; color:#3d6b58; }
+
+  /* FOTOS */
+  .polaroids { display:flex; justify-content:center; gap:0; margin:10px 0 4px; }
+  .pol { width:31%; background:#fff; padding:7px 7px 20px; border-radius:12px; box-shadow:0 10px 24px rgba(7,94,59,.16); }
+  .pol img { width:100%; border-radius:7px; display:block; aspect-ratio:3/4; object-fit:cover; }
+  .pol:nth-child(1){ transform:rotate(-6deg) translateY(6px); z-index:1; }
+  .pol:nth-child(2){ transform:rotate(2deg); z-index:2; }
+  .pol:nth-child(3){ transform:rotate(6deg) translateY(8px); z-index:1; }
+
+  /* PASSOS */
+  .step { display:flex; gap:15px; align-items:flex-start; background:#fff; border:1px solid rgba(7,94,59,.10); border-radius:20px; padding:17px; margin-bottom:13px;
+    box-shadow:0 4px 14px rgba(7,94,59,.06); }
+  .step .n { font-family:"Baloo 2"; font-weight:800; font-size:19px; color:#fff; width:38px; height:38px; border-radius:13px;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0; transform:rotate(-5deg);
+    background:linear-gradient(135deg,var(--coral),#c2453a); box-shadow:0 5px 12px rgba(239,103,90,.35); }
+  .step.s2 .n { background:linear-gradient(135deg,var(--verde-2),#007e46); transform:rotate(4deg); box-shadow:0 5px 12px rgba(0,166,81,.3); }
+  .step.s3 .n { background:linear-gradient(135deg,var(--ouro),#b8860b); transform:rotate(-3deg); box-shadow:0 5px 12px rgba(255,211,77,.4); }
+  .step strong { display:block; font-size:16px; margin-bottom:3px; }
+  .step p { font-size:14px; line-height:1.45; color:#3d6b58; }
+
+  /* CARD EXEMPLO */
+  .card-preview { background:#fff; border-radius:26px; padding:22px; text-align:center; position:relative;
+    border:1px solid rgba(255,211,77,.6); box-shadow:0 0 0 3px rgba(255,211,77,.25), 0 14px 34px rgba(7,94,59,.14); }
+  .tag-exemplo { position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--coral); color:#fff;
+    font-size:11px; font-weight:700; padding:4px 14px; border-radius:999px; letter-spacing:.4px; }
+  .card-preview .foto { width:100%; border-radius:18px; aspect-ratio:4/3; object-fit:cover; object-position:center 22%; display:block; margin-bottom:14px; }
+  .card-preview .nome { font-family:"Baloo 2"; font-weight:700; font-size:20px; }
+  .card-preview .meta { font-size:13px; color:#3d6b58; margin:4px 0 12px; }
+  .chips span { display:inline-block; background:var(--creme); border-radius:999px; padding:6px 13px; font-size:13px; font-weight:500; margin:3px; }
+  .procura { margin-top:13px; font-size:14px; font-style:italic; }
+
+  /* SEGURANCA */
+  .seguranca { background:linear-gradient(160deg,#075e3b,#043b25); color:var(--creme); border-radius:28px; margin:0 12px;
+    padding:36px 26px; text-align:center; position:relative; overflow:hidden; }
+  .seguranca::before { content:""; position:absolute; inset:0; opacity:.3;
+    background-image:linear-gradient(rgba(255,255,255,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.12) 1px,transparent 1px);
+    background-size:38px 38px; mask-image:radial-gradient(circle at 50% 0%,#000,transparent 75%);
+    -webkit-mask-image:radial-gradient(circle at 50% 0%,#000,transparent 75%); }
+  .seguranca h2 { color:var(--ouro); margin-bottom:12px; position:relative; }
+  .seguranca p { font-size:14px; line-height:1.55; position:relative; }
+  .seguranca .ico { width:52px; height:52px; margin:0 auto 14px; border-radius:16px; position:relative;
+    background:rgba(255,211,77,.15); border:1px solid rgba(255,211,77,.45); display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 26px rgba(255,211,77,.25); }
+  .seguranca .ico svg { width:26px; height:26px; stroke:var(--ouro); }
+
+
+  /* PIPPO */
+  .pippo-hero { position:absolute; right:6px; bottom:-8px; width:104px; z-index:2;
+    filter:drop-shadow(0 8px 16px rgba(0,0,0,.35)); animation:floaty 4s ease-in-out infinite alternate; }
+  .pippo-final { width:150px; margin:0 auto 6px; display:block; animation:floaty 4s ease-in-out infinite alternate; }
+  .bubble { display:inline-block; background:#fff; color:var(--verde); font-weight:700; font-size:14px;
+    border-radius:18px 18px 18px 4px; padding:9px 16px; margin-bottom:10px;
+    box-shadow:0 6px 18px rgba(7,94,59,.15); }
+
+  .final { text-align:center; padding:48px 26px 56px; }
+  .final h2 { margin-bottom:8px; }
+  .final p { font-size:15px; color:#3d6b58; margin-bottom:4px; }
+  footer { text-align:center; font-size:12px; color:#3d6b58; padding:0 26px 34px; line-height:1.7; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero-bg" id="heroBg"></div>
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="glass-chip cf1">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>
+      café das 10h
+    </div>
+    <div class="glass-chip cf2">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>
+      trilha leve
+    </div>
+    <div class="glass-chip cf3">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      clube do livro
+    </div>
+    <img class="pippo-hero" src="/landing/pippo-busto.png" alt="Pippo, o mascote do Nommi">
+    <div class="hero-inner">
+      <div class="logo">nommi</div>
+      <h1>Sua próxima amizade está a um <em>"bora?"</em> de distância.</h1>
+      <p>O app de amizade que encontra pessoas com os seus interesses e leva a conversa para um café, um parque, uma tribo, de verdade.</p>
+      <a class="cta" href="/conta?modo=criar">Quero entrar</a>
+      <br>
+      <span class="sp-tag"><span class="dot"></span>Começando por São Paulo · grátis</span>
+    </div>
+  </div>
+
+  <div class="stats reveal">
+    <div class="stat"><span class="num" data-count="10">0</span><small>Pippins de boas-vindas</small></div>
+    <div class="stat"><span class="num" data-count="8">0</span><small>tribos oficiais pra entrar</small></div>
+    <div class="stat"><span class="num" data-count="2" data-prefix="+">0</span><small>Pippins por convite aceito</small></div>
+  </div>
+
+  <section style="padding-top:36px">
+    <div class="reveal">
+      <h2>Tem uma tribo com a sua cara</h2>
+      <p class="sub">Grupos de pessoas que se encontram de verdade, do jeito que você gosta.</p>
+    </div>
+    <div class="tribos reveal">
+      <div class="tribo-grid">
+        <div class="tribo">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg></div>
+          <strong>Café &amp; Prosa</strong><small>encontros de manhã</small>
+        </div>
+        <div class="tribo">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg></div>
+          <strong>Trilha Leve</strong><small>natureza sem pressa</small>
+        </div>
+        <div class="tribo">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+          <strong>Clube do Livro</strong><small>um livro, muitos assuntos</small>
+        </div>
+        <div class="tribo">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4-2 7-5.5 7-10-2.5 0-4.5 1-6 3 1-4-1-8-4-9 1 3-1 6-3 8s-3 5 0 8c1.5 1.5 4 2 6 0z" transform="rotate(180 12 12)"/></svg></div>
+          <strong>Yoga no Parque</strong><small>alongar e conversar</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:14px">
+    <div class="reveal">
+      <h2>Gente de verdade, rolês de verdade</h2>
+      <p class="sub">Corrida na lagoa, vinho com os amigos, noite de karaokê.</p>
+    </div>
+    <div class="polaroids reveal">
+      <div class="pol"><img src="/landing/vinho.jpg" alt="Grupo de quatro amigos brindando com taças de vinho ao pôr do sol"></div>
+      <div class="pol"><img src="/landing/pizza.jpg" alt="Grupo de amigos conversando e rindo em volta de uma pizza"></div>
+      <div class="pol"><img src="/landing/karaoke.jpg" alt="Grupo de amigos se divertindo numa noite de karaokê"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="reveal">
+      <h2>Como funciona</h2>
+      <p class="sub">Três passos e você já está no jogo.</p>
+    </div>
+    <div class="step reveal">
+      <div class="n">1</div>
+      <div>
+        <strong>Monte seu perfil</strong>
+        <p>Foto, cidade e o que você está procurando: alguém pra caminhar, sair, trocar ideia ou rir até a barriga doer.</p>
+      </div>
+    </div>
+    <div class="step reveal s2">
+      <div class="n">2</div>
+      <div>
+        <strong>Descubra pessoas e tribos</strong>
+        <p>O Nommi mostra pessoas com interesses parecidos com os seus e tribos para você se juntar, sem lista infinita e sem perfil fake.</p>
+      </div>
+    </div>
+    <div class="step reveal s3">
+      <div class="n">3</div>
+      <div>
+        <strong>Encontre pessoalmente</strong>
+        <p>Ative o Radar num lugar real, junte-se a um encontro da sua tribo e ainda ganhe vantagens em cafés e espaços parceiros.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:6px">
+    <div class="reveal">
+      <h2>É assim que você aparece</h2>
+      <p class="sub">Seu cartão de visita dentro do app.</p>
+    </div>
+    <div class="card-preview reveal">
+      <span class="tag-exemplo">EXEMPLO ILUSTRATIVO</span>
+      <img class="foto" src="/landing/card.jpg" alt="Foto ilustrativa de perfil: mulher adulta sorrindo com naturalidade">
+      <div class="nome">Mariana, 34</div>
+      <div class="meta">Vila Madalena, São Paulo · SP</div>
+      <div class="chips">
+        <span>café especial</span><span>trilha leve</span><span>livros</span><span>yoga</span>
+      </div>
+      <p class="procura">"Procuro uma amiga para café no sábado de manhã e boas conversas."</p>
+    </div>
+  </section>
+
+  <section style="padding-top:6px">
+    <div class="seguranca reveal">
+      <div class="ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+      </div>
+      <h2>Só gente de verdade.</h2>
+      <p>Perfis com foto obrigatória, verificação de conta e um espaço feito para conexões reais. Você escolhe o que mostra e para quem.</p>
+    </div>
+  </section>
+
+  <div class="final reveal">
+    <span class="bubble">Eu te mostro o caminho!</span>
+    <img class="pippo-final" src="/landing/pippo-aponta.png" alt="Pippo apontando para cima, mascote do Nommi">
+    <h2>Bora começar?</h2>
+    <p>Cadastro grátis, leva menos de 2 minutos.</p>
+    <a class="cta" href="/conta?modo=criar">Criar meu perfil</a>
+  </div>
+
+  <footer>
+    nommibr.com.br · contato@nommibr.com.br<br>
+    <a href="/" style="color:#075e3b">Abrir o app</a> · <a href="/termos" style="color:#075e3b">Termos</a> · <a href="/privacidade" style="color:#075e3b">Privacidade</a><br>
+    Nommi - encontre sua tribo.<br>
+    <span style="opacity:.65">Fotos meramente ilustrativas.</span>
+  </footer>
+
+</div>
+
+<script>
+  // Modo ?print: tudo revelado, contadores no valor final (para capturas estáticas)
+  const PRINT = location.search.includes('print');
+
+  // Reveal on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  if (PRINT) {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+    document.querySelectorAll('.num').forEach(el => el.textContent = (el.dataset.prefix || '') + el.dataset.count);
+  } else {
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Contadores
+  const counters = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      counters.unobserve(entry.target);
+      const el = entry.target, target = +el.dataset.count, prefix = el.dataset.prefix || '';
+      const t0 = performance.now(), dur = 1400;
+      const tick = (now) => {
+        const p = Math.min((now - t0) / dur, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = prefix + Math.round(target * eased);
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+  }, { threshold: 0.4 });
+  document.querySelectorAll('.num').forEach(el => counters.observe(el));
+  }
+
+  // Parallax leve no hero
+  const bg = document.getElementById('heroBg');
+  addEventListener('scroll', () => {
+    const y = Math.min(scrollY, 500);
+    bg.style.transform = `translateY(${y * 0.25}px)`;
+  }, { passive: true });
+</script>
+</body>
+</html>
