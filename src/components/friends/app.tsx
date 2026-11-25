@@ -773,10 +773,15 @@ function DemoDiscover() {
 function MessageList({
   messages,
   onCurtir,
+  onEditar,
+  onApagar,
 }: {
   messages: Message[];
   /** Só em conta real. Sem isto a bolha não ganha coração nenhum. */
   onCurtir?: (mensagemId: string) => void;
+  /** Só na conversa da tribo, em conta real: o autor reescreve o próprio recado. */
+  onEditar?: (mensagemId: string, texto: string) => Promise<boolean>;
+  onApagar?: (mensagemId: string) => Promise<boolean>;
 }) {
   const end = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -785,14 +790,36 @@ function MessageList({
   return (
     <div className="message-list">
       {messages.map((m, i) => (
-        <MessageRow key={m.id ?? i} m={m} {...(onCurtir ? { onCurtir } : {})} />
+        <MessageRow
+          key={m.id ?? i}
+          m={m}
+          {...(onCurtir ? { onCurtir } : {})}
+          {...(onEditar ? { onEditar } : {})}
+          {...(onApagar ? { onApagar } : {})}
+        />
       ))}
       <div ref={end} />
     </div>
   );
 }
 
-function MessageRow({ m, onCurtir }: { m: Message; onCurtir?: (mensagemId: string) => void }) {
+function MessageRow({
+  m,
+  onCurtir,
+  onEditar,
+  onApagar,
+}: {
+  m: Message;
+  onCurtir?: (mensagemId: string) => void;
+  onEditar?: (mensagemId: string, texto: string) => Promise<boolean>;
+  onApagar?: (mensagemId: string) => Promise<boolean>;
+}) {
+  const podeMexer = !!m.mine && !!m.id && !!m.text && !!onEditar && !!onApagar;
+  const [editando, setEditando] = useState(false);
+  const [rascunho, setRascunho] = useState(m.text ?? "");
+  const [confirmaApagar, setConfirmaApagar] = useState(false);
+  const [ocupada, setOcupada] = useState(false);
+  const [falhou, setFalhou] = useState(false);
   const podeCurtir = !!onCurtir && !!m.id;
   const [pulsa, setPulsa] = useState(false);
   function curtir() {
@@ -813,13 +840,80 @@ function MessageRow({ m, onCurtir }: { m: Message; onCurtir?: (mensagemId: strin
       {!m.mine && <RostoDeQuemFalou m={m} />}
       <div className="message-content" {...(podeCurtir ? { onClick: doisToques, onDoubleClick: curtir } : {})}>
         {m.author && <small>{m.author}</small>}
-        {m.text ? (
+        {m.text && editando ? (
+          <div className="msg-edicao" onClick={(e) => e.stopPropagation()}>
+            <textarea
+              className="input"
+              aria-label="Editar o recado"
+              rows={3}
+              maxLength={1000}
+              value={rascunho}
+              onChange={(e) => setRascunho(e.target.value)}
+            />
+            <div className="msg-edicao-acoes">
+              <Button
+                size="sm"
+                disabled={ocupada || !rascunho.trim()}
+                onClick={async () => {
+                  setOcupada(true);
+                  const ok = await onEditar!(m.id!, rascunho);
+                  setOcupada(false);
+                  setFalhou(!ok);
+                  if (ok) setEditando(false);
+                }}
+              >
+                Salvar
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => setEditando(false)}>
+                Cancelar
+              </Button>
+            </div>
+            {falhou && <small>Não deu para salvar. Tente de novo.</small>}
+          </div>
+        ) : m.text ? (
           <p className="bubble">{m.text}</p>
         ) : (
           <>
             <ChatSticker id={m.sticker ?? 0} custom={m.custom} />
             {!m.mine && <SaveStickerButton message={m} />}
           </>
+        )}
+        {podeMexer && !editando && (
+          <div className="msg-donos" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              onClick={() => {
+                setRascunho(m.text ?? "");
+                setFalhou(false);
+                setEditando(true);
+              }}
+            >
+              Editar
+            </button>
+            {confirmaApagar ? (
+              <>
+                <button
+                  type="button"
+                  disabled={ocupada}
+                  onClick={async () => {
+                    setOcupada(true);
+                    const ok = await onApagar!(m.id!);
+                    setOcupada(false);
+                    if (!ok) setConfirmaApagar(false);
+                  }}
+                >
+                  Apagar mesmo
+                </button>
+                <button type="button" onClick={() => setConfirmaApagar(false)}>
+                  Manter
+                </button>
+              </>
+            ) : (
+              <button type="button" onClick={() => setConfirmaApagar(true)}>
+                Apagar
+              </button>
+            )}
+          </div>
         )}
         <div className="message-pe">
           <time className="message-time">{m.time ?? "09:41"}</time>
@@ -1738,7 +1832,13 @@ export function GroupDetail({ id, boasvindas }: { id: number; boasvindas?: boole
                 )}
                 <MessageList
                   messages={cloud ? shared.messages : state.groupMessages[id] || []}
-                  {...(cloud ? { onCurtir: shared.curtir } : {})}
+                  {...(cloud
+                    ? {
+                        onCurtir: shared.curtir,
+                        onEditar: shared.editarMensagem,
+                        onApagar: shared.apagarMensagem,
+                      }
+                    : {})}
                 />
                 <Composer
                   onSend={(m) => {

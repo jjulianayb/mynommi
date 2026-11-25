@@ -15,6 +15,7 @@ import {
   MAX_BODY,
   MAX_COMMENT,
   MAX_MEDIA,
+  editPost,
   type Post,
   type FeedScope,
   type CreateResult,
@@ -279,6 +280,13 @@ export function PostCard({
   const { notify } = useFriends();
   const [comments, setComments] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [opcoes, setOpcoes] = useState(false);
+  const [editando, setEditando] = useState(false);
+  const [texto, setTexto] = useState(post.body);
+  const [corpo, setCorpo] = useState(post.body);
+  const [foiEditado, setFoiEditado] = useState(post.editadoEm !== null);
+  const [erroEdicao, setErroEdicao] = useState("");
+  const [salvando, setSalvando] = useState(false);
   return (
     <article className="community-post">
       <header>
@@ -297,7 +305,7 @@ export function PostCard({
             variant="ghost"
             size="icon"
             aria-label="Opções do post"
-            onClick={() => setConfirmDelete(true)}
+            onClick={() => setOpcoes(true)}
           >
             <Icon name="more" />
           </Button>
@@ -305,7 +313,8 @@ export function PostCard({
           <SafetyMenu me={me} targetUserId={post.authorId} targetUserName={post.authorName} />
         )}
       </header>
-      <p>{post.body}</p>
+      <p>{corpo}</p>
+      {foiEditado && <small className="small-note">editado</small>}
       {post.media.length > 0 && (
         <div className="community-post-gallery">
           {post.media
@@ -354,6 +363,69 @@ export function PostCard({
       </div>
       {comments && (
         <CommentsSheet me={me} post={post} nickname={nickname} onClose={() => setComments(false)} />
+      )}
+      {opcoes && (
+        <Sheet title="Seu post" onClose={() => setOpcoes(false)}>
+          <Button
+            className="wide"
+            variant="secondary"
+            onClick={() => {
+              setOpcoes(false);
+              setTexto(corpo);
+              setErroEdicao("");
+              setEditando(true);
+            }}
+          >
+            <Icon name="edit" />
+            Editar texto
+          </Button>
+          <Button
+            className="wide"
+            variant="secondary"
+            onClick={() => {
+              setOpcoes(false);
+              setConfirmDelete(true);
+            }}
+          >
+            <Icon name="trash" />
+            Apagar post
+          </Button>
+        </Sheet>
+      )}
+      {editando && (
+        <Sheet title="Editar o post" onClose={() => setEditando(false)}>
+          <textarea
+            className="input"
+            aria-label="Texto do post"
+            rows={5}
+            maxLength={MAX_BODY}
+            value={texto}
+            onChange={(e) => setTexto(e.target.value)}
+          />
+          {erroEdicao && <p className="small-note">{erroEdicao}</p>}
+          <Button
+            className="wide"
+            disabled={salvando || !texto.trim()}
+            onClick={async () => {
+              setSalvando(true);
+              const r = await editPost(post.id, texto);
+              setSalvando(false);
+              if (!r.ok) {
+                setErroEdicao(r.error);
+                return;
+              }
+              setCorpo(texto.trim());
+              setFoiEditado(true);
+              setEditando(false);
+              notify("Post editado.");
+            }}
+          >
+            Salvar
+          </Button>
+          <Button variant="secondary" className="wide" onClick={() => setEditando(false)}>
+            Cancelar
+          </Button>
+        </Sheet>
       )}
       {confirmDelete && (
         <Sheet title="Apagar este post?" onClose={() => setConfirmDelete(false)}>

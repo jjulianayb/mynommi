@@ -272,6 +272,23 @@ export function SocialShell({ children }: { children: ReactNode }) {
             asChild
             variant="ghost"
             size="icon"
+            aria-label={"Avisos" + (avisosNovos > 0 ? ", " + avisosNovos + " por ler" : "")}
+          >
+            <Link to="/notificacoes" data-tour="avisos">
+              <span className="nav-icon">
+                <Icon name="bell" />
+                {avisosNovos > 0 && (
+                  <span className="nav-dot" aria-hidden="true">
+                    {avisosNovos > 9 ? "9+" : avisosNovos}
+                  </span>
+                )}
+              </span>
+            </Link>
+          </Button>
+          <Button
+            asChild
+            variant="ghost"
+            size="icon"
             aria-label={"Conversas" + (naoLidas > 0 ? ", " + naoLidas + " por ler" : "")}
           >
             <Link to="/conversas" data-tour="conversas">

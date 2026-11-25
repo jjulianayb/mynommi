@@ -107,6 +107,7 @@ Object.assign(icons, {
   stickers:
     '<path d="M5 3h14a2 2 0 0 1 2 2v9l-7 7H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM14 21v-7h7M8 11h.01M14 11h.01M8 15q3 3 6 0"/>',
   clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  edit: '<path d="M4 20h4L19 9l-4-4L4 16zM13 7l4 4"/>',
   bell: '<path d="M6 9a6 6 0 0 1 12 0v6l2 3H4l2-3V9M10 21h4"/>',
   more: '<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
   eye: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',

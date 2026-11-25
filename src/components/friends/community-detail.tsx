@@ -7,6 +7,7 @@ import { momentPhoto } from "@/lib/friends-photos";
 import type { Tribo } from "@/lib/tribos";
 import { people } from "@/lib/friends-data";
 import { coverStyle } from "@/lib/covers";
+import "./abas-da-tribo.css";
 
 function communityPhoto(tribo: Tribo) {
   const name = tribo.name.toLowerCase();
@@ -176,6 +177,12 @@ export function CommunityDetail({
             </Button>
           </div>
         </div>
+        {daDona && (
+          <Button variant="outline" className="community-editar-tribo" onClick={() => setTab("Sua tribo")}>
+            <Icon name="edit" />
+            Editar minha tribo
+          </Button>
+        )}
         {tribo.about && <p className="community-description">{tribo.about}</p>}
         <p className="community-description">
           {tribo.rule ||

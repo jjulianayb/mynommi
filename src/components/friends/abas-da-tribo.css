@@ -1,0 +1,47 @@
+/* Abas da tribo numa linha só. A grade de 3 colunas do styles.css (congelado)
+   jogava a 4a e a 5a aba para a segunda linha, e a "Sua tribo" da criadora
+   caía fora da vista. Aqui as abas ficam lado a lado e rolam na horizontal
+   se não couberem. */
+div[role="tablist"].community-tabs {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: none;
+  grid-auto-columns: minmax(0, 1fr);
+}
+div[role="tablist"].community-tabs > button {
+  white-space: normal;
+  text-align: center;
+  line-height: 1.15;
+  padding: 6px 4px;
+  font-size: 13px;
+  min-height: 52px;
+}
+.community-editar-tribo {
+  width: 100%;
+  color: var(--primary);
+  border-color: var(--primary);
+  margin-top: 4px;
+}
+
+/* Editar e apagar o próprio recado na conversa da tribo. */
+.msg-donos {
+  display: flex;
+  gap: 12px;
+  margin-top: 2px;
+}
+.msg-donos button {
+  background: none;
+  border: 0;
+  padding: 2px 0;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  text-decoration: underline;
+}
+.msg-edicao textarea {
+  width: 100%;
+}
+.msg-edicao-acoes {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
