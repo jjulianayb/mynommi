@@ -75,7 +75,7 @@ export function CoverEditor({
           <label className="sticker-pick-photo">
             <Icon name="image" />
             <b>Enviar uma foto</b>
-            <small>JPG, PNG ou WebP, até 4 MB.</small>
+            <small>Foto do celular, JPG, PNG ou WebP. A nommi ajusta o tamanho.</small>
             <input
               type="file"
               accept="image/*"

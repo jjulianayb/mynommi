@@ -1499,7 +1499,11 @@ export function GroupDetail({ id, boasvindas }: { id: number; boasvindas?: boole
   // O Pippo puxa assunto quando alguém abre a tribo dele. O banco decide se é
   // hora (20 h de intervalo) e qual é o assunto; a tela só avisa que tem gente.
   usePippoPuxaAssunto(id, cloud && shared.ready, cloud && shared.joined, shared.recarregar);
-  const amCreator = !!cloudUser && realTeia.row?.created_by === cloudUser.id;
+  // list_teias não devolve `created_by`, devolve `i_am_creator`. Comparar só o
+  // created_by dava sempre falso: a criadora não via "Trocar capa", "Sua tribo"
+  // nem os pedidos de entrada na própria tribo.
+  const amCreator =
+    !!cloudUser && (realTeia.row?.i_am_creator === true || realTeia.row?.created_by === cloudUser.id);
   const navigate = useNavigate();
   const g =
     (cloud && realTeia.row ? { ...toTeia(realTeia.row), members: shared.members.length } : undefined) ??

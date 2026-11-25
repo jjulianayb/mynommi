@@ -45,3 +45,12 @@ div[role="tablist"].community-tabs > button {
   gap: 8px;
   margin-top: 6px;
 }
+
+/* O botão "Trocar capa" ocupa o canto da capa; o aviso de imagem ilustrativa
+   vai para o outro canto para os dois não ficarem um em cima do outro. */
+.community-cover:has(.community-cover-edit) .community-cover-caption {
+  right: auto;
+  bottom: auto;
+  left: 12px;
+  top: 12px;
+}
